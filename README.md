@@ -65,7 +65,7 @@ for record in results:
     print(record.get_common_name())
 ```
 
-Note that records are only requested once per page after the prior page has been returned via the iterator ("lazy" loading).
+Note that records are only requested once during iteration and only after the prior page has been returned via the iterator ("lazy" loading).
 
 ### Serialization
 Users may request a dictionary representation:
@@ -80,7 +80,7 @@ results_dicts = result.to_dicts()
 print(results_dicts[0]['common_name'])
 ```
 
-This returns an iterator by default but it can be realized as a full list using the `list()` command.
+Note `to_dicts` returns an iterator by default but it can be realized as a full list using the `list()` command.
 
 ### Pandas
 The dictionary form of the data can be used to create a Pandas dataframe:
