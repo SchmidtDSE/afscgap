@@ -1,12 +1,16 @@
 # AFSC GAP for Python
 Microlibrary for pythonic interaction with the public bottom trawl surveys from the [NOAA AFSC GAP](https://www.fisheries.noaa.gov/contact/groundfish-assessment-program).
 
+<br>
+
 ## Purpose
 Unofficial microlibrary for interacting with the API for [bottom trawl surveys](https://www.fisheries.noaa.gov/alaska/commercial-fishing/alaska-groundfish-bottom-trawl-survey-data) from the [Ground Fish Assessment Program (GAP)](https://www.fisheries.noaa.gov/contact/groundfish-assessment-program), a dataset produced by the [Resource Assessment and Conservation Engineering (RACE) Division](https://www.fisheries.noaa.gov/about/resource-assessment-and-conservation-engineering-division) of the [Alaska Fisheries Science Center (AFSC)](https://www.fisheries.noaa.gov/about/alaska-fisheries-science-center) as part of the National Oceanic and Atmospheric Administration ([NOAA Fisheries](https://www.fisheries.noaa.gov/)).
 
 This low-dependency library provides a Python interface to these data with ability to query with filters and pagination, providing results in various formats compatible with different Python usage modalities (Pandas, pure-Python, etc). It adapts the [Oracle REST Data Service](https://www.oracle.com/database/technologies/appdev/rest.html) used by the agency with Python type hints for easy query and interface.
 
 Though not intended to be general, this project also provides an example for working with [Oracle REST Data Services (ORDS)](https://www.oracle.com/database/technologies/appdev/rest.html) APIs in Python.
+
+<br>
 
 ## Installation
 This open source library is available for install via Pypi / Pip:
@@ -17,9 +21,10 @@ $ pip install afscgap
 
 Note that its only dependency is [requests](https://docs.python-requests.org/en/latest/index.html) and Pandas / numpy are not expected.
 
+<br>
+
 ## Usage
 This library provides access to the public API endpoints with query keywords matching the column names described in the official [metadata repository](https://github.com/afsc-gap-products/metadata). Records are parsed into plain old Python objects with optional access to a dictionary representation.
-
 
 ### Basic Usage
 For example, this requests all records in 2021 from the Gulf of Alaska:
@@ -119,9 +124,13 @@ print(url)
 
 The query can be executed by making an HTTP GET request at the provided location.
 
+<br>
+
 ## License
 We are happy to make this library available under the LGPL v3 License (LGPL-3.0-or-later). See LICENSE for more details. (c) 2023 [The Eric and Wendy Schmidt Center for Data Science and the Environment
 at UC Berkeley](https://dse.berkeley.edu).
+
+<br>
 
 ## Developing
 Thanks for your support! Pull requests and issues very welcome. We have a few guidelines:
@@ -131,6 +140,8 @@ Thanks for your support! Pull requests and issues very welcome. We have a few gu
  - Type hints are encouraged and we aim for 80% coverage where feasible.
  - Docstrings are encouraged and we aim for 80% coverage.
  - Please check that you have no mypy errors when contributing.
+
+<br>
 
 ## Open Source
 We are happy to be part of the open source community. At this time, the only open source dependency used by this microlibrary is [Requests](https://docs.python-requests.org/en/latest/index.html) which is available under the [Apache v2 License](https://github.com/psf/requests/blob/main/LICENSE) from its [Kenneth Reitz and other contributors](https://github.com/psf/requests/graphs/contributors).
