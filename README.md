@@ -52,14 +52,14 @@ Note that this operation will cause multiple HTTP requests while the iterator ru
 By default, the library will iterate through all results and handle pagination behind the scenes. However, one can also request an individual page:
 
 ```
-results_for_page = result.page(start=100, limit=123)
+results_for_page = result.get_page(offset=100, limit=123)
 print(len(results_for_page))  # Will print 123
 ```
 
 Client code can also change the pagination behavior used when iterating:
 
 ```
-results = afscgap.query(year=2021, srvy='BSS', start=100, limit_per_page=200)
+results = afscgap.query(year=2021, srvy='BSS', offset=100, limit_per_page=200)
 
 for record in results:
     print(record.get_common_name())
@@ -122,7 +122,7 @@ url = afscgap.get_url(
 print(url)
 ```
 
-The query can be executed by making an HTTP GET request at the provided location.
+The query can be executed by making an HTTP GET request at the provided location. Note that a `get_page_url` method is also available on the `Cursor` object returned by `afscgap.query`.
 
 <br>
 
@@ -140,6 +140,8 @@ Thanks for your support! Pull requests and issues very welcome. We have a few gu
  - Type hints are encouraged and we aim for 80% coverage where feasible.
  - Docstrings are encouraged and we aim for 80% coverage.
  - Please check that you have no mypy errors when contributing.
+
+Note that imports should be in alphabetical order in groups of standard library, third-party, and then first party. It is an explicit goal to provide a class with type hints for all record fields. Getters on an immutable record object are encouraged as to enable use of the type system and docstrings for understanding the data structures. Data structures have been used that could allow for threaded request but everything is currently single threaded.
 
 <br>
 
