@@ -22,7 +22,7 @@ with Afscgap. If not, see <https://www.gnu.org/licenses/>.
 
 class Record:
 
-    def __init__(year: float, srvy: str, survey: str, survey_id: float,
+    def __init__(self, year: float, srvy: str, survey: str, survey_id: float,
         cruise: float, haul: float, stratum: float, station: str,
         vessel_name: str, vessel_id: float, date_time: str, latitude_dd: float,
         longitude_dd: float, species_code: float, common_name: str,

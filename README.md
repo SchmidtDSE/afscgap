@@ -101,8 +101,8 @@ import afscgap.query
 
 results = afscgap.query(
     year=2021,
-    latitude_dd={"$gte": 56.99, "$lte": 57.04},
-    longitude_dd={"$gte": -143.96, "$lte": -144.01}
+    latitude_dd={'$gte': 56.99, '$lte': 57.04},
+    longitude_dd={'$gte': -143.96, '$lte': -144.01}
 )
 ```
 
@@ -112,17 +112,17 @@ For more info about the options available, consider a helpful unaffiliated [gett
 For investigating issues or evaluating the underlying operations, you can also request a full URL for a query:
 
 ```
-url = afscgap.get_url(
+result = afscgap.query(
     year=2021,
     latitude_dd={'$gt': 56.99, '$lt': 57.04},
     longitude_dd={'$gt': -143.96, '$lt': -144.01}
 )
 
-# Will print https://apps-st.fisheries.noaa.gov/ods/foss/afsc_groundfish_survey/?q={"year":2021,"latitude_dd":{"$gt":56.99,"$lt": 57.04},"longitude_dd":{"$gt":-143.96,"$lt":-144.01}}
-print(url)
+# Will print something like https://apps-st.fisheries.noaa.gov/ods/foss/afsc_groundfish_survey/?q={"year":2021,"latitude_dd":{"$gt":56.99,"$lt": 57.04},"longitude_dd":{"$gt":-143.96,"$lt":-144.01}}&limit=10&offset=0
+print(result.get_page_url(limit=10, offset=0))
 ```
 
-The query can be executed by making an HTTP GET request at the provided location. Note that a `get_page_url` method is also available on the `Cursor` object returned by `afscgap.query`.
+The query can be executed by making an HTTP GET request at the provided location.
 
 <br>
 

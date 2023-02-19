@@ -26,26 +26,41 @@ import requests
 
 import afscgap.model
 
+DEFAULT_URL = 'https://apps-st.fisheries.noaa.gov/ods/foss/afsc_groundfish_survey/'
 OPT_INT = typing.Optional[int]
+OPT_STR = typing.Optional[str]
+
+
+def get_query_url(params: dict, base: OPT_STR = None) -> str:
+    if base is None:
+        base = DEFAULT_URL
+
+    all_items = params.items()
+    items_included = filter(lambda x: x[1] is not None, query_items)
+    included_dict = dict(items_included)
+    included_json = json.dumps(included_dict)
+
+    return '%s?q=%s' % (base, included_json)
 
 
 class Cursor(typing.Iterable[afscgap.model.Record]):
 
-    def __init__(self, base_url: str, limit: int, start_offset: int):
-        self._base_url = base_url
-        self._next_url = base_url
+    def __init__(self, query_url: str, limit: OPT_INT = None,
+        start_offset: OPT_INT = None):
+        self._query_url = query_url
         self._limit = limit
         self._start_offset = start_offset
         self._queue = queue.Queue()
         self._done = False
+        self._next_url = self.get_page_url()
 
     def get_base_url(self) -> str:
-        return self._base_url
+        return self._query_url
 
-    def get_limit(self) -> int:
+    def get_limit(self) -> OPT_INT:
         return self._limit
 
-    def get_start_offset(self) -> int:
+    def get_start_offset(self) -> OPT_INT:
         return self._start_offset
 
     def get_page_url(self, offset: OPT_INT = None,
@@ -56,8 +71,20 @@ class Cursor(typing.Iterable[afscgap.model.Record]):
 
         if limit is None:
             limit = self._limit
-        
-        return self._base_url + '&offset=%d&limit=%d' % (offset, limit)
+
+        pagination_params = []
+
+        if offset:
+            pagination_params.append('offset=%d' % offset)
+
+        if limit:
+            pagination_params.append('limit=%d' % limit)
+
+        if len(pagination_params) > 0:
+            pagination_params_str = '&'.join(pagination_params)
+            return self._query_url + '&' + pagination_params_str
+        else:
+            return self._query_url
 
     def get_page(self, offset: OPT_INT = None,
         limit: OPT_INT = None) -> typing.List[afscgap.model.Record]:
@@ -89,19 +116,20 @@ class Cursor(typing.Iterable[afscgap.model.Record]):
 
         result_parsed = result.json()
 
-        if result_parsed['hasMore']:
-            self._done = False
-            items_raw = result_parsed['items']
+        items_raw = result_parsed['items']
 
-            items_parsed = map(model.parse_record, items_raw)
-            for item_parsed in items_parsed:
-                self._queue.add(item_parsed)
+        items_parsed = map(model.parse_record, items_raw)
+        for item_parsed in items_parsed:
+            self._queue.add(item_parsed)
 
-            self._next_url = self._find_next_url(result_parsed)
-        else:
-            self._done = True
+        next_url = self._find_next_url(result_parsed)
+        self._done = next_url is None
+        self._next_url = next_url
 
-    def _find_next_url(self, target: dict) -> str:
+    def _find_next_url(self, target: dict) -> OPT_STR:
+        if not target['hasMore']:
+            return None
+
         links = target['links']
         matching = filter(lambda x: x['rel'] == 'next', links)
         matching_hrefs = map(lambda x: x['href'], matching)
