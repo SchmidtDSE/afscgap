@@ -29,6 +29,8 @@ import afscgap.model
 DEFAULT_URL = 'https://apps-st.fisheries.noaa.gov/ods/foss/afsc_groundfish_survey/'
 OPT_INT = typing.Optional[int]
 OPT_STR = typing.Optional[str]
+REQUESTOR = Callable[[str], requests.Response]
+OPT_REQUESTOR = typing.Optional[REQUESTOR]
 
 
 def get_query_url(params: dict, base: OPT_STR = None) -> str:
@@ -46,12 +48,18 @@ def get_query_url(params: dict, base: OPT_STR = None) -> str:
 class Cursor(typing.Iterable[afscgap.model.Record]):
 
     def __init__(self, query_url: str, limit: OPT_INT = None,
-        start_offset: OPT_INT = None):
+        start_offset: OPT_INT = None, requestor: OPT_REQUESTOR = None):
         self._query_url = query_url
         self._limit = limit
         self._start_offset = start_offset
         self._queue = queue.Queue()
         self._done = False
+
+        if requestor:
+            self._request_strategy = requestor
+        else:
+            self._request_strategy = lambda x: requsets.get(x)
+
         self._next_url = self.get_page_url()
 
     def get_base_url(self) -> str:
@@ -90,7 +98,7 @@ class Cursor(typing.Iterable[afscgap.model.Record]):
         limit: OPT_INT = None) -> typing.List[afscgap.model.Record]:
         url = self.get_page_url(offset, limit)
         
-        result = requests.get(url)
+        result = self._request_strategy(url)
         self._check_result(result)
         
         result_parsed = result.json()
@@ -111,7 +119,7 @@ class Cursor(typing.Iterable[afscgap.model.Record]):
         if self._done:
             return
 
-        result = requests.get(self._next_url)
+        result = self._request_strategy(self._next_url)
         self._check_result(result)
 
         result_parsed = result.json()

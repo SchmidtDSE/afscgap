@@ -49,9 +49,10 @@ def query(year: FLOAT_PARAM, srvy: STR_PARAM, survey: STR_PARAM,
     distance_fished_km: FLOAT_PARAM, net_width_m: FLOAT_PARAM,
     net_height_m: FLOAT_PARAM, area_swept_ha: FLOAT_PARAM,
     duration_hr: FLOAT_PARAM, tsn: INT_PARAM,
-    ak_survey_id: LONG_PARAM, limit: typing.Optional[int],
-    start_offset: typing.Optional[int],
-    base_url: typing.Optional[str]) -> afscgap.client.Cursor:
+    ak_survey_id: LONG_PARAM, limit: afscgap.client.OPT_INT,
+    start_offset: afscgap.client.OPT_INT,
+    base_url: afscgap.client.OPT_STR,
+    requestor: afscgap.client.OPT_REQUESTOR) -> afscgap.client.Cursor:
     
     all_dict = {
         'year': year,
@@ -95,5 +96,6 @@ def query(year: FLOAT_PARAM, srvy: STR_PARAM, survey: STR_PARAM,
     return afscgap.client.Cursor(
         query_url,
         limit=limit,
-        start_offset=start_offset
+        start_offset=start_offset,
+        requestor=requestor
     )
