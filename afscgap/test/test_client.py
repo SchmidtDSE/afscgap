@@ -29,8 +29,8 @@ import afscgap.test.test_util
 class ClientTests(unittest.TestCase):
 
     def setUp(self):
-        self._result_1 = self._make_result('result_1.json')
-        self._result_2 = self._make_result('result_2.json')
+        self._result_1 = afscgap.test.test_util.make_result('result_1.json')
+        self._result_2 = afscgap.test.test_util.make_result('result_2.json')
         self._mock_requsetor = unittest.mock.MagicMock(
             side_effect=[self._result_1, self._result_2]
         )
@@ -118,15 +118,3 @@ class ClientTests(unittest.TestCase):
         result = list(self._cursor.to_dicts())
         self.assertEqual(len(result), 20)
         self.assertEqual(result[0]['srvy'], 'GOA')
-
-    def _make_result(self, filename: str):
-        new_mock = unittest.mock.MagicMock()
-        new_mock.status_code = 200
-
-        loaded_data = afscgap.test.test_util.load_test_data(filename)
-
-        new_mock.json = unittest.mock.MagicMock(
-            return_value=loaded_data
-        )
-
-        return new_mock

@@ -21,6 +21,7 @@ with Afscgap. If not, see <https://www.gnu.org/licenses/>.
 import json
 import os
 import pathlib
+import unittest
 
 
 def load_test_data(filename: str) -> dict:
@@ -32,3 +33,16 @@ def load_test_data(filename: str) -> dict:
         loaded_data = json.load(f)
 
     return loaded_data
+
+
+def make_result(filename: str):
+    new_mock = unittest.mock.MagicMock()
+    new_mock.status_code = 200
+
+    loaded_data = load_test_data(filename)
+
+    new_mock.json = unittest.mock.MagicMock(
+        return_value=loaded_data
+    )
+
+    return new_mock
