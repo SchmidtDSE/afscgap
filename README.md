@@ -1,5 +1,5 @@
 # AFSC GAP for Python
-Microlibrary for pythonic interaction with the public bottom trawl surveys from the [NOAA AFSC GAP](https://www.fisheries.noaa.gov/contact/groundfish-assessment-program).
+Microlibrary for pythonic interaction with the public bottom trawl surveys data from the [NOAA AFSC GAP](https://www.fisheries.noaa.gov/contact/groundfish-assessment-program).
 
 <br>
 

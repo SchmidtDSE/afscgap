@@ -19,17 +19,18 @@ PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU Lesser General Public License along 
 with Afscgap. If not, see <https://www.gnu.org/licenses/>. 
 """
+import json
 import queue
 import typing
 
 import requests
 
 import afscgap.model
+from afscgap.util import OPT_INT
+from afscgap.util import OPT_STR
 
 DEFAULT_URL = 'https://apps-st.fisheries.noaa.gov/ods/foss/afsc_groundfish_survey/'
-OPT_INT = typing.Optional[int]
-OPT_STR = typing.Optional[str]
-REQUESTOR = Callable[[str], requests.Response]
+REQUESTOR = typing.Callable[[str], requests.Response]
 OPT_REQUESTOR = typing.Optional[REQUESTOR]
 
 
@@ -38,7 +39,7 @@ def get_query_url(params: dict, base: OPT_STR = None) -> str:
         base = DEFAULT_URL
 
     all_items = params.items()
-    items_included = filter(lambda x: x[1] is not None, query_items)
+    items_included = filter(lambda x: x[1] is not None, all_items)
     included_dict = dict(items_included)
     included_json = json.dumps(included_dict)
 
@@ -103,17 +104,25 @@ class Cursor(typing.Iterable[afscgap.model.Record]):
         
         result_parsed = result.json()
         items_raw = result_parsed['items']
-        return [model.parse_record(x) for x in items_raw]
+        return [afscgap.model.parse_record(x) for x in items_raw]
+
+    def to_dicts(self) -> typing.Iterable[dict]:
+        return map(lambda x: x.to_dict(), self)
 
     def __iter__(self) -> typing.Iterator[afscgap.model.Record]:
         return self
 
     def __next__(self) -> afscgap.model.Record:
+        self._queue_next_page_if_needed()
+
+        if self._queue.empty():
+            raise StopIteration()
+        else:
+            return self._queue.get()
+
+    def _queue_next_page_if_needed(self):
         if self._queue.empty():
             self._queue_next_page()
-
-        if self._done:
-            raise StopIteration()
 
     def _queue_next_page(self):
         if self._done:
@@ -126,9 +135,9 @@ class Cursor(typing.Iterable[afscgap.model.Record]):
 
         items_raw = result_parsed['items']
 
-        items_parsed = map(model.parse_record, items_raw)
+        items_parsed = map(afscgap.model.parse_record, items_raw)
         for item_parsed in items_parsed:
-            self._queue.add(item_parsed)
+            self._queue.put(item_parsed)
 
         next_url = self._find_next_url(result_parsed)
         self._done = next_url is None

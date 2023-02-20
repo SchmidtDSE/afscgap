@@ -30,7 +30,6 @@ import afscgap.client
 
 FLOAT_PARAM = typing.Optional[typing.Union[float, dict]]
 INT_PARAM = typing.Optional[typing.Union[int, dict]]
-LONG_PARAM = typing.Optional[typing.Union[long, dict]]
 STR_PARAM = typing.Optional[typing.Union[str, dict]]
 
 
@@ -49,7 +48,7 @@ def query(year: FLOAT_PARAM, srvy: STR_PARAM, survey: STR_PARAM,
     distance_fished_km: FLOAT_PARAM, net_width_m: FLOAT_PARAM,
     net_height_m: FLOAT_PARAM, area_swept_ha: FLOAT_PARAM,
     duration_hr: FLOAT_PARAM, tsn: INT_PARAM,
-    ak_survey_id: LONG_PARAM, limit: afscgap.client.OPT_INT,
+    ak_survey_id: INT_PARAM, limit: afscgap.client.OPT_INT,
     start_offset: afscgap.client.OPT_INT,
     base_url: afscgap.client.OPT_STR,
     requestor: afscgap.client.OPT_REQUESTOR) -> afscgap.client.Cursor:

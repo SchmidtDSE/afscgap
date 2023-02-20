@@ -18,6 +18,9 @@ PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU Lesser General Public License along 
 with Afscgap. If not, see <https://www.gnu.org/licenses/>. 
 """
+import typing
+
+from afscgap.util import OPT_FLOAT
 
 
 class Record:
@@ -26,13 +29,13 @@ class Record:
         cruise: float, haul: float, stratum: float, station: str,
         vessel_name: str, vessel_id: float, date_time: str, latitude_dd: float,
         longitude_dd: float, species_code: float, common_name: str,
-        scientific_name: str, taxon_confidence: str, cpue_kgha: float,
-        cpue_kgkm2: float, cpue_kg1000km2: float, cpue_noha: float,
-        cpue_nokm2: float, cpue_no1000km2: float, weight_kg: float,
+        scientific_name: str, taxon_confidence: str, cpue_kgha: OPT_FLOAT,
+        cpue_kgkm2: OPT_FLOAT, cpue_kg1000km2: OPT_FLOAT, cpue_noha: OPT_FLOAT,
+        cpue_nokm2: OPT_FLOAT, cpue_no1000km2: OPT_FLOAT, weight_kg: OPT_FLOAT,
         count: float, bottom_temperature_c: float, surface_temperature_c: float,
         depth_m: float, distance_fished_km: float, net_width_m: float,
         net_height_m: float, area_swept_ha: float, duration_hr: float, tsn: int,
-        ak_survey_id: long):
+        ak_survey_id: int):
         self._year = year
         self._srvy = srvy
         self._survey = survey
@@ -120,22 +123,22 @@ class Record:
     def get_taxon_confidence(self) -> str:
         return self._taxon_confidence
 
-    def get_cpue_kgha(self) -> float:
+    def get_cpue_kgha(self) -> OPT_FLOAT:
         return self._cpue_kgha
 
-    def get_cpue_kgkm2(self) -> float:
+    def get_cpue_kgkm2(self) -> OPT_FLOAT:
         return self._cpue_kgkm2
 
-    def get_cpue_kg1000km2(self) -> float:
+    def get_cpue_kg1000km2(self) -> OPT_FLOAT:
         return self._cpue_kg1000km2
 
-    def get_cpue_noha(self) -> float:
+    def get_cpue_noha(self) -> OPT_FLOAT:
         return self._cpue_noha
 
-    def get_cpue_nokm2(self) -> float:
+    def get_cpue_nokm2(self) -> OPT_FLOAT:
         return self._cpue_nokm2
 
-    def get_cpue_no1000km2(self) -> float:
+    def get_cpue_no1000km2(self) -> OPT_FLOAT:
         return self._cpue_no1000km2
 
     def get_weight_kg(self) -> float:
@@ -171,7 +174,7 @@ class Record:
     def get_tsn(self) -> int:
         return self._tsn
 
-    def get_ak_survey_id(self) -> long:
+    def get_ak_survey_id(self) -> int:
         return self._ak_survey_id
 
     def to_dict(self) -> dict:
@@ -214,6 +217,13 @@ class Record:
         }
 
 
+def get_opt_float(target) -> OPT_FLOAT:
+    if target:
+        return float(target)
+    else:
+        return None
+
+
 def parse_record(target: dict) -> Record:
     year = float(target['year'])
     srvy = str(target['srvy'])
@@ -232,12 +242,12 @@ def parse_record(target: dict) -> Record:
     common_name = str(target['common_name'])
     scientific_name = str(target['scientific_name'])
     taxon_confidence = str(target['taxon_confidence'])
-    cpue_kgha = float(target['cpue_kgha'])
-    cpue_kgkm2 = float(target['cpue_kgkm2'])
-    cpue_kg1000km2 = float(target['cpue_kg1000km2'])
-    cpue_noha = float(target['cpue_noha'])
-    cpue_nokm2 = float(target['cpue_nokm2'])
-    cpue_no1000km2 = float(target['cpue_no1000km2'])
+    cpue_kgha = get_opt_float(target['cpue_kgha'])
+    cpue_kgkm2 = get_opt_float(target['cpue_kgkm2'])
+    cpue_kg1000km2 = get_opt_float(target['cpue_kg1000km2'])
+    cpue_noha = get_opt_float(target['cpue_noha'])
+    cpue_nokm2 = get_opt_float(target['cpue_nokm2'])
+    cpue_no1000km2 = get_opt_float(target['cpue_no1000km2'])
     weight_kg = float(target['weight_kg'])
     count = float(target['count'])
     bottom_temperature_c = float(target['bottom_temperature_c'])
@@ -249,7 +259,7 @@ def parse_record(target: dict) -> Record:
     area_swept_ha = float(target['area_swept_ha'])
     duration_hr = float(target['duration_hr'])
     tsn = int(target['tsn'])
-    ak_survey_id = long(target['ak_survey_id'])
+    ak_survey_id = int(target['ak_survey_id'])
 
     return Record(
         year,

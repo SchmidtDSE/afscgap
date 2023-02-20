@@ -1,0 +1,50 @@
+"""
+Unit tests for data structures as part of afscgap.
+
+(c) 2023 The Eric and Wendy Schmidt Center for Data Science and the Environment
+at UC Berkeley.
+
+This file is part of afscgap.
+
+Afscgap is free software: you can redistribute it and/or modify it under the
+terms of the GNU Lesser General Public License as published by the Free Software 
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+
+Afscgap is distributed in the hope that it will be useful, but WITHOUT ANY 
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License along 
+with Afscgap. If not, see <https://www.gnu.org/licenses/>. 
+"""
+import unittest
+
+import afscgap.model
+import afscgap.test.test_util
+
+
+class ModelTests(unittest.TestCase):
+
+    def test_get_opt_float_valid(self):
+        self.assertAlmostEquals(afscgap.model.get_opt_float('1.48E+002'), 148)
+
+    def test_get_opt_float_not_given(self):
+        self.assertIsNone(afscgap.model.get_opt_float(None))
+
+    def test_parse_record(self):
+        result = afscgap.test.test_util.load_test_data('result_1.json')
+        parsed = afscgap.model.parse_record(result['items'][0])
+        self.assertEqual(parsed.get_srvy(), 'GOA')
+        self.assertAlmostEquals(parsed.get_vessel_id(), 148)
+        self.assertAlmostEquals(
+            parsed.get_cpue_kg1000km2(),
+            40.132273,
+            places=5
+        )
+
+    def test_to_dict(self):
+        result = afscgap.test.test_util.load_test_data('result_1.json')
+        parsed = afscgap.model.parse_record(result['items'][0])
+        parsed_dict = parsed.to_dict()
+        self.assertEqual(parsed_dict['srvy'], 'GOA')
