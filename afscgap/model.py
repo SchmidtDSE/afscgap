@@ -141,7 +141,7 @@ class Record:
     def get_cpue_no1000km2(self) -> OPT_FLOAT:
         return self._cpue_no1000km2
 
-    def get_weight_kg(self) -> float:
+    def get_weight_kg(self) -> OPT_FLOAT:
         return self._weight_kg
 
     def get_count(self) -> float:
@@ -248,7 +248,7 @@ def parse_record(target: dict) -> Record:
     cpue_noha = get_opt_float(target['cpue_noha'])
     cpue_nokm2 = get_opt_float(target['cpue_nokm2'])
     cpue_no1000km2 = get_opt_float(target['cpue_no1000km2'])
-    weight_kg = float(target['weight_kg'])
+    weight_kg = get_opt_float(target['weight_kg'])
     count = float(target['count'])
     bottom_temperature_c = float(target['bottom_temperature_c'])
     surface_temperature_c = float(target['surface_temperature_c'])

@@ -106,7 +106,7 @@ class ClientTests(unittest.TestCase):
     def test_check_result_not_ok(self):
         with self.assertRaises(RuntimeError):
             response = unittest.mock.MagicMock()
-            response.status = 400
+            response.status_code = 400
             self._cursor._check_result(response)
 
     def test_iterate(self):
@@ -121,7 +121,7 @@ class ClientTests(unittest.TestCase):
 
     def _make_result(self, filename: str):
         new_mock = unittest.mock.MagicMock()
-        new_mock.status = 200
+        new_mock.status_code = 200
 
         loaded_data = afscgap.test.test_util.load_test_data(filename)
 

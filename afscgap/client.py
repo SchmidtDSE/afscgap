@@ -53,13 +53,13 @@ class Cursor(typing.Iterable[afscgap.model.Record]):
         self._query_url = query_url
         self._limit = limit
         self._start_offset = start_offset
-        self._queue = queue.Queue()
+        self._queue: queue.Queue[afscgap.model.Record] = queue.Queue()
         self._done = False
 
         if requestor:
             self._request_strategy = requestor
         else:
-            self._request_strategy = lambda x: requsets.get(x)
+            self._request_strategy = lambda x: requests.get(x)
 
         self._next_url = self.get_page_url()
 
@@ -158,9 +158,9 @@ class Cursor(typing.Iterable[afscgap.model.Record]):
         return hrefs_realized[0]
 
     def _check_result(self, target: requests.Response):
-        if target.status != 200:
+        if target.status_code != 200:
             message = 'Got non-OK response from API: %d (%s)' % (
-                target.status,
+                target.status_code,
                 target.text
             )
             raise RuntimeError(message)
