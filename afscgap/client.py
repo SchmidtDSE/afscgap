@@ -32,6 +32,7 @@ from afscgap.util import OPT_STR
 DEFAULT_URL = 'https://apps-st.fisheries.noaa.gov/ods/foss/afsc_groundfish_survey/'
 REQUESTOR = typing.Callable[[str], requests.Response]
 OPT_REQUESTOR = typing.Optional[REQUESTOR]
+TIMEOUT = 60 * 5  # 5 minutes
 
 
 def get_query_url(params: dict, base: OPT_STR = None) -> str:
@@ -59,7 +60,7 @@ class Cursor(typing.Iterable[afscgap.model.Record]):
         if requestor:
             self._request_strategy = requestor
         else:
-            self._request_strategy = lambda x: requests.get(x)
+            self._request_strategy = lambda x: requests.get(x, timeout=TIMEOUT)
 
         self._next_url = self.get_page_url()
 
@@ -74,7 +75,7 @@ class Cursor(typing.Iterable[afscgap.model.Record]):
 
     def get_page_url(self, offset: OPT_INT = None,
         limit: OPT_INT = None) -> str:
-        
+
         if offset is None:
             offset = self._start_offset
 
@@ -98,10 +99,10 @@ class Cursor(typing.Iterable[afscgap.model.Record]):
     def get_page(self, offset: OPT_INT = None,
         limit: OPT_INT = None) -> typing.List[afscgap.model.Record]:
         url = self.get_page_url(offset, limit)
-        
+
         result = self._request_strategy(url)
         self._check_result(result)
-        
+
         result_parsed = result.json()
         items_raw = result_parsed['items']
         return [afscgap.model.parse_record(x) for x in items_raw]
@@ -154,7 +155,7 @@ class Cursor(typing.Iterable[afscgap.model.Record]):
 
         if len(hrefs_realized) == 0:
             raise RuntimeError('Could not find next URL but hasMore was true.')
-        
+
         return hrefs_realized[0]
 
     def _check_result(self, target: requests.Response):
