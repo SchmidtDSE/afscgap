@@ -18,7 +18,12 @@ PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU Lesser General Public License along 
 with Afscgap. If not, see <https://www.gnu.org/licenses/>. 
 """
+import re
+
 from afscgap.util import OPT_FLOAT
+
+DATE_REGEX = re.compile('(?P<month>\\d{2})/(?P<day>\\d{2})/(?P<year>\\d{4}) (?P<hours>\\d{2}):(?P<minutes>\\d{2}):(?P<seconds>\\d{2})')
+ISO_8601_TEMPLATE = '%s-%s-%sT%s:%s:%s'
 
 
 class Record:
@@ -222,6 +227,22 @@ def get_opt_float(target) -> OPT_FLOAT:
         return None
 
 
+def parse_datetime(target: str) -> str:
+    match = DATE_REGEX.match(target)
+    
+    if not match:
+        return target
+
+    year = match.group('year')
+    month = match.group('month')
+    day = match.group('day')
+    hours = match.group('hours')
+    minutes = match.group('minutes')
+    seconds = match.group('seconds')
+
+    return ISO_8601_TEMPLATE % (year, month, day, hours, minutes, seconds)
+
+
 def parse_record(target: dict) -> Record:
     year = float(target['year'])
     srvy = str(target['srvy'])
@@ -233,7 +254,7 @@ def parse_record(target: dict) -> Record:
     station = str(target['station'])
     vessel_name = str(target['vessel_name'])
     vessel_id = float(target['vessel_id'])
-    date_time = str(target['date_time'])
+    date_time = parse_datetime(str(target['date_time']))
     latitude_dd = float(target['latitude_dd'])
     longitude_dd = float(target['longitude_dd'])
     species_code = float(target['species_code'])

@@ -126,6 +126,15 @@ The query can be executed by making an HTTP GET request at the provided location
 
 <br>
 
+## Schema
+A Python-typed description of the fields is provided from `afscgap.model.Record`:
+
+
+
+For more information on the schema, see the [metadata](https://github.com/afsc-gap-products/metadata) repository but note that the fields may be slightly different in the Python library per what is actually returned by the API.
+
+<br>
+
 ## License
 We are happy to make this library available under the LGPL v3 License (LGPL-3.0-or-later). See LICENSE for more details. (c) 2023 [The Eric and Wendy Schmidt Center for Data Science and the Environment
 at UC Berkeley](https://dse.berkeley.edu).

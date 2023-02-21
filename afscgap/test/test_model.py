@@ -48,3 +48,11 @@ class ModelTests(unittest.TestCase):
         parsed = afscgap.model.parse_record(result['items'][0])
         parsed_dict = parsed.to_dict()
         self.assertEqual(parsed_dict['srvy'], 'GOA')
+
+    def test_parse_datetime_success(self):
+        result = afscgap.model.parse_datetime('07/16/2021 11:30:22')
+        self.assertEqual(result, '2021-07-16T11:30:22')
+
+    def test_parse_datetime_fail(self):
+        result = afscgap.model.parse_datetime('test')
+        self.assertEqual(result, 'test')
