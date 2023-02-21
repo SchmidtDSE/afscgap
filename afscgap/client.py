@@ -118,14 +118,14 @@ class Cursor(typing.Iterable[afscgap.model.Record]):
 
         if ignore_invalid:
             parsed_no_none = filter(lambda x: x is not None, parsed_with_none)
-            return list(parsed_no_none)
-        
-        parsed = list(parsed_with_none)
-        
-        if None in parsed:
-            raise RuntimeError('Encountered invalid record.')
+            return list(parsed_no_none)  # type: ignore
+        else:
+            parsed = list(parsed_with_none)
 
-        return parsed
+            if None in parsed:
+                raise RuntimeError('Encountered invalid record.')
+
+            return parsed  # type: ignore
 
     def get_invalid(self) -> queue.Queue[dict]:
         return self._invalid_queue
@@ -166,9 +166,9 @@ class Cursor(typing.Iterable[afscgap.model.Record]):
 
         for parse_result in items_parsed:
             if parse_result.meets_requirements(allow_incomplete):
-                self._queue.add(parse_result.get_parsed())
+                self._queue.put(parse_result.get_parsed())
             else:
-                self._invalid_queue.add(parse_result.get_raw_record())
+                self._invalid_queue.put(parse_result.get_raw_record())
 
         next_url = self._find_next_url(result_parsed)
         self._done = next_url is None

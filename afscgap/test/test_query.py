@@ -50,3 +50,36 @@ class QueryTests(unittest.TestCase):
         )
         results = list(result)
         self.assertEquals(len(results), 20)
+
+    def test_query_dict_filter_incomplete(self):
+        result = afscgap.query(
+            year=2021,
+            latitude_dd={'$gte': 56.99, '$lte': 57.04},
+            longitude_dd={'$gte': -143.96, '$lte': -144.01},
+            requestor=self._mock_requestor,
+            filter_incomplete=True
+        )
+        results = list(result)
+        self.assertEquals(len(results), 19)
+
+    def test_query_dict_invalid_filter_incomplete(self):
+        result = afscgap.query(
+            year=2021,
+            latitude_dd={'$gte': 56.99, '$lte': 57.04},
+            longitude_dd={'$gte': -143.96, '$lte': -144.01},
+            requestor=self._mock_requestor,
+            filter_incomplete=True
+        )
+        list(result)
+        self.assertEquals(result.get_invalid().qsize(), 2)
+
+    def test_query_dict_invalid_keep_incomplete(self):
+        result = afscgap.query(
+            year=2021,
+            latitude_dd={'$gte': 56.99, '$lte': 57.04},
+            longitude_dd={'$gte': -143.96, '$lte': -144.01},
+            requestor=self._mock_requestor,
+            filter_incomplete=False
+        )
+        list(result)
+        self.assertEquals(result.get_invalid().qsize(), 1)

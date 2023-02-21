@@ -46,6 +46,26 @@ class ModelTests(unittest.TestCase):
             places=5
         )
 
+    def test_try_parse_success(self):
+        result = afscgap.test.test_util.load_test_data('result_1.json')
+        parsed = afscgap.model.try_parse(result['items'][0])
+        self.assertTrue(parsed.meets_requirements(True))
+        self.assertTrue(parsed.meets_requirements(False))
+        self.assertIsNotNone(parsed.get_parsed())
+
+    def test_try_parse_invalid(self):
+        result = afscgap.test.test_util.load_test_data('result_1.json')
+        parsed = afscgap.model.try_parse(result['items'][9])
+        self.assertTrue(parsed.meets_requirements(True))
+        self.assertFalse(parsed.meets_requirements(False))
+        self.assertIsNotNone(parsed.get_parsed())
+
+    def test_try_parse_incomplete(self):
+        parsed = afscgap.model.try_parse({})
+        self.assertFalse(parsed.meets_requirements(True))
+        self.assertFalse(parsed.meets_requirements(False))
+        self.assertIsNone(parsed.get_parsed())
+
     def test_to_dict(self):
         result = afscgap.test.test_util.load_test_data('result_1.json')
         parsed = afscgap.model.parse_record(result['items'][0])

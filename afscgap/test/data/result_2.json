@@ -429,7 +429,8 @@
           "href": "https://apps-st.fisheries.noaa.gov/ods/foss/afsc_groundfish_survey/1827538"
         }
       ]
-    }
+    },
+    {}
   ],
   "hasMore": false,
   "limit": 10,

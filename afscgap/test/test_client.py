@@ -38,6 +38,11 @@ class ClientTests(unittest.TestCase):
             'BASE_URL',
             requestor=self._mock_requsetor
         )
+        self._cursor_filter_incomplete = afscgap.client.Cursor(
+            'BASE_URL',
+            requestor=self._mock_requsetor,
+            filter_incomplete=True
+        )
         self._cursor_override = afscgap.client.Cursor(
             'BASE_URL',
             limit=12,
@@ -86,6 +91,17 @@ class ClientTests(unittest.TestCase):
         self.assertEqual(len(result), 10)
         self.assertEqual(result[0].get_srvy(), 'GOA')
 
+    def test_get_page_invalid(self):
+        self._cursor.get_page()
+        
+        with self.assertRaises(RuntimeError):
+            self._cursor.get_page()
+
+    def test_get_page_invalid_ignore(self):
+        self._cursor.get_page(ignore_invalid=True)
+        result = self._cursor.get_page(ignore_invalid=True)
+        self.assertEqual(len(result), 10)
+
     def test_find_next_url_present(self):
         loaded_data = afscgap.test.test_util.load_test_data('result_1.json')
         next_url = self._cursor._find_next_url(loaded_data)
@@ -114,7 +130,17 @@ class ClientTests(unittest.TestCase):
         self.assertEqual(len(result), 20)
         self.assertEqual(result[0].get_srvy(), 'GOA')
 
+    def test_iterate_incomplete(self):
+        result = list(self._cursor_filter_incomplete)
+        self.assertEqual(len(result), 19)
+        self.assertEqual(result[0].get_srvy(), 'GOA')
+
     def test_to_dicts(self):
         result = list(self._cursor.to_dicts())
         self.assertEqual(len(result), 20)
+        self.assertEqual(result[0]['srvy'], 'GOA')
+
+    def test_to_dicts_incomplete(self):
+        result = list(self._cursor_filter_incomplete.to_dicts())
+        self.assertEqual(len(result), 19)
         self.assertEqual(result[0]['srvy'], 'GOA')

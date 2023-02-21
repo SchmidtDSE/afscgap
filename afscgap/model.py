@@ -19,6 +19,7 @@ You should have received a copy of the GNU Lesser General Public License along
 with Afscgap. If not, see <https://www.gnu.org/licenses/>. 
 """
 import re
+import typing
 
 from afscgap.util import OPT_FLOAT
 
@@ -226,7 +227,7 @@ class Record:
             self._bottom_temperature_c,
             self._surface_temperature_c
         ]
-        
+
         has_none = None in optional_fields
         all_fields_present = not has_none
         has_valid_date_time = ISO_8601_REGEX.match(self._date_time) is not None
@@ -277,7 +278,7 @@ class Record:
         return target
 
 
-def get_opt_float(t_maybearget) -> OPT_FLOAT:
+def get_opt_float(target) -> OPT_FLOAT:
     if target:
         try:
             return float(target)
@@ -389,17 +390,17 @@ class ParseResult:
         return self._raw_record
 
     def get_parsed(self) -> typing.Optional[Record]:
-        return self._parsed_record
+        return self._parsed
 
     def meets_requirements(self, allow_incomplete: bool) -> bool:
-        if self._parsed_record is None:
+        if self._parsed is None:
             return False
 
-        return record.is_complete() or allow_incomplete
+        return self._parsed.is_complete() or allow_incomplete
 
 
 def try_parse(target: dict) -> ParseResult:
     try:
         return ParseResult(target, parse_record(target))
-    except ValueError, KeyError:
+    except (ValueError, KeyError):
         return ParseResult(target, None)
