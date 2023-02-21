@@ -2,6 +2,7 @@
 Microlibrary for pythonic interaction with the public bottom trawl surveys data from the [NOAA AFSC GAP](https://www.fisheries.noaa.gov/contact/groundfish-assessment-program).
 
 <br>
+<br>
 
 ## Purpose
 Unofficial microlibrary for interacting with the API for [bottom trawl surveys](https://www.fisheries.noaa.gov/alaska/commercial-fishing/alaska-groundfish-bottom-trawl-survey-data) from the [Ground Fish Assessment Program (GAP)](https://www.fisheries.noaa.gov/contact/groundfish-assessment-program), a dataset produced by the [Resource Assessment and Conservation Engineering (RACE) Division](https://www.fisheries.noaa.gov/about/resource-assessment-and-conservation-engineering-division) of the [Alaska Fisheries Science Center (AFSC)](https://www.fisheries.noaa.gov/about/alaska-fisheries-science-center) as part of the National Oceanic and Atmospheric Administration ([NOAA Fisheries](https://www.fisheries.noaa.gov/)).
@@ -10,6 +11,7 @@ This low-dependency library provides a Python interface to these data with abili
 
 Though not intended to be general, this project also provides an example for working with [Oracle REST Data Services (ORDS)](https://www.oracle.com/database/technologies/appdev/rest.html) APIs in Python.
 
+<br>
 <br>
 
 ## Installation
@@ -25,6 +27,8 @@ Note that its only dependency is [requests](https://docs.python-requests.org/en/
 
 ## Usage
 This library provides access to the public API endpoints with query keywords matching the column names described in the official [metadata repository](https://github.com/afsc-gap-products/metadata). Records are parsed into plain old Python objects with optional access to a dictionary representation.
+
+<br>
 
 ### Basic Usage
 For example, this requests all records in 2021 from the Gulf of Alaska:
@@ -48,6 +52,8 @@ for record in result:
 
 Note that this operation will cause multiple HTTP requests while the iterator runs.
 
+<br>
+
 ### Pagination
 By default, the library will iterate through all results and handle pagination behind the scenes. However, one can also request an individual page:
 
@@ -67,6 +73,8 @@ for record in results:
 
 Note that records are only requested once during iteration and only after the prior page has been returned via the iterator ("lazy" loading).
 
+<br>
+
 ### Serialization
 Users may request a dictionary representation:
 
@@ -82,6 +90,8 @@ print(results_dicts[0]['common_name'])
 
 Note `to_dicts` returns an iterator by default but it can be realized as a full list using the `list()` command.
 
+<br>
+
 ### Pandas
 The dictionary form of the data can be used to create a Pandas dataframe:
 
@@ -92,6 +102,8 @@ pandas.DataFrame(results.to_dicts())
 ```
 
 Note that Pandas is not required to use this library.
+
+<br>
 
 ### Advanced Filtering
 Finally, users may provide advanced queries using Oracle's REST API query parameters. For example, this queries for 2021 records with haul from the Gulf of Alaska roughly near [geohash](https://en.wikipedia.org/wiki/Geohash) bf1s7:
@@ -107,6 +119,38 @@ results = afscgap.query(
 ```
 
 For more info about the options available, consider a helpful unaffiliated [getting started tutorial from Jeff Smith](https://www.thatjeffsmith.com/archive/2019/09/some-query-filtering-examples-in-ords/).
+
+<br>
+
+### Handeling incomplete records
+Metadata fields such as `year` are always required to make a `Record` whereas others such as catch weight `cpue_kgkm2` are not present on all records returned by the API and are optional. See the Schema section below for additional details. For fields with optional values:
+
+ - A maybe getter (`get_cpue_kgkm2_maybe`) is provided which will return None without error if the value is not provided or could not be parsed.
+ - A regular getter (`get_cpue_kgkm2`) is provided which asserts the value is not None before it is returned.
+
+`Record` objects also have an `is_complete` method which returns true if both all optional fields on the `Record` are non-None and the `date_time` field on the `Record` is a valid ISO 8601 string. By default, records for which `is_complete` are false are returned when iterating or through `get_page` but this can be overridden by with the `filter_incomplete` keyword argument like so:
+
+```
+results = afscgap.query(
+    year=2021,
+    filter_incomplete=True
+)
+
+for result in results:
+    assert result.is_complete()
+```
+
+Results returned by the API for which non-Optional fields could not be parsed (like missing `year`) are considered "invalid" and always excluded during iteration when those raw unreadable records are kept in a `queue.Queue[dict]` that can be accessed via `get_invalid` like so:
+
+```
+results = list(afscgap.query(year=2021))
+invalid_queue = results.get_invalid()
+print(invalid_queue.empty())
+```
+
+Note that this queue is filled during iteration (like `for result in results` or `list(results)`) and not `get_page` whose invalid record handeling behavior can be specified via the `ignore_invalid` keyword.
+
+<br>
 
 ### Debugging
 For investigating issues or evaluating the underlying operations, you can also request a full URL for a query:
@@ -125,9 +169,16 @@ print(result.get_page_url(limit=10, offset=0))
 The query can be executed by making an HTTP GET request at the provided location.
 
 <br>
+<br>
 
-## Schema
-A Python-typed description of the fields is provided from `afscgap.model.Record`:
+## Data structure
+The schmea drive the getters and filters available on in the library.
+
+<br>
+
+### Schema
+
+A Python-typed description of the fields is provided below.
 
 | **Field**             | **Python Type** | **Description* |
 |-----------------------|-----------------|----------------|
@@ -171,10 +222,58 @@ For more information on the schema, see the [metadata](https://github.com/afsc-g
 
 <br>
 
+### 
+
+These fields are avilable as getters on `afscgap.model.Record` (`result.get_srvy()`) and may be used as optional filters on the query `asfcgagp.query(srvy='GOA')`. Fields which are `Optional` have two getters. First, the "regular" getter (`result.get_count()`) will assert that the field is not None before returning a non-optional. The second "maybe" getter (`result.get_count_maybe()`) will return None if the value was not provided or could not be parsed.
+
+| **Filter keyword**    | **Regular Getter**                   | **Maybe Getter**                                     |
+|-----------------------|--------------------------------------|------------------------------------------------------|
+| year                  | get_year() -> float                  |                                                      |
+| srvy                  | get_srvy() -> str                    |                                                      |
+| survey                | get_survey() -> str                  |                                                      |
+| survey_id             | get_survey_id() -> float             |                                                      |
+| cruise                | get_cruise() -> float                |                                                      |
+| haul                  | get_haul() -> float                  |                                                      |
+| stratum               | get_stratum() -> float               |                                                      |
+| station               | get_station() -> str                 |                                                      |
+| vessel_name           | get_vessel_name() -> str             |                                                      |
+| vessel_id             | get_vessel_id() -> float             |                                                      |
+| date_time             | get_date_time() -> str               |                                                      |
+| latitude_dd           | get_latitude_dd() -> float           |                                                      |
+| longitude_dd          | get_longitude_dd() -> float          |                                                      |
+| species_code          | get_species_code() -> float          |                                                      |
+| common_name           | get_common_name() -> str             |                                                      |
+| scientific_name       | get_scientific_name() -> str         |                                                      |
+| taxon_confidence      | get_taxon_confidence() -> str        | get_cpue_kgha_maybe() -> Optional[float]             |
+| cpue_kgha             | get_cpue_kgha() -> float             | get_cpue_kgkm2_maybe() -> Optional[float]            |
+| cpue_kgkm2            | get_cpue_kgkm2() -> float            | get_cpue_kg1000km2_maybe() -> Optional[float]        |
+| cpue_kg1000km2        | get_cpue_kg1000km2() -> float        | get_cpue_noha_maybe() -> Optional[float]             |
+| cpue_noha             | get_cpue_noha() -> float             | get_cpue_nokm2_maybe() -> Optional[float]            |
+| cpue_nokm2            | get_cpue_nokm2() -> float            | get_cpue_no1000km2_maybe() -> Optional[float]        |
+| cpue_no1000km2        | get_cpue_no1000km2() -> float        | get_weight_kg_maybe() -> Optional[float]             |
+| weight_kg             | get_weight_kg() -> float             | get_count_maybe() -> Optional[float]                 |
+| count                 | get_count() -> float                 | get_bottom_temperature_c_maybe() -> Optional[float]  |
+| bottom_temperature_c  | get_bottom_temperature_c() -> float  | get_surface_temperature_c_maybe() -> Optional[float] |
+| surface_temperature_c | get_surface_temperature_c() -> float | get_surface_temperature_c() -> Optional[float]       |
+| depth_m               | get_depth_m() -> float               |                                                      |
+| distance_fished_km    | get_distance_fished_km() -> float    |                                                      |
+| net_width_m           | get_net_width_m() -> float           |                                                      |
+| net_height_m          | get_net_height_m() -> float          |                                                      |
+| area_swept_ha         | get_area_swept_ha() -> float         |                                                      |
+| duration_hr           | get_duration_hr() -> float           |                                                      |
+| tsn                   | get_tsn() -> int                     |                                                      |
+| ak_survey_id          | get_ak_survey_id() -> int            |                                                      |
+
+`Record` objects also have a `is_complete` method which returns true if all of the fields with an `Optional` type are non-None and the `date_time` could be parsed and made into an ISO 8601 string.
+
+<br>
+<br>
+
 ## License
 We are happy to make this library available under the LGPL v3 License (LGPL-3.0-or-later). See LICENSE for more details. (c) 2023 [The Eric and Wendy Schmidt Center for Data Science and the Environment
 at UC Berkeley](https://dse.berkeley.edu).
 
+<br>
 <br>
 
 ## Developing
@@ -188,6 +287,7 @@ Thanks for your support! Pull requests and issues very welcome. We have a few gu
 
 Note that imports should be in alphabetical order in groups of standard library, third-party, and then first party. It is an explicit goal to provide a class with type hints for all record fields. Getters on an immutable record object are encouraged as to enable use of the type system and docstrings for understanding the data structures. Data structures have been used that could allow for threaded request but everything is currently single threaded.
 
+<br>
 <br>
 
 ## Open Source
