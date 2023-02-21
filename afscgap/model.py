@@ -396,7 +396,7 @@ class ParseResult:
         if self._parsed is None:
             return False
 
-        return self._parsed.is_complete() or allow_incomplete
+        return allow_incomplete or self._parsed.is_complete()
 
 
 def try_parse(target: dict) -> ParseResult:
