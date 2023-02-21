@@ -280,10 +280,10 @@ at UC Berkeley](https://dse.berkeley.edu).
 Thanks for your support! Pull requests and issues very welcome. We have a few guidelines:
 
  - Please follow the Google Python Style Guide where possible for compatibility with the existing codebase.
- - Tests are encouraged and we aim for 80% coverage where feasible.
- - Type hints are encouraged and we aim for 80% coverage where feasible.
- - Docstrings are encouraged and we aim for 80% coverage.
- - Please check that you have no mypy errors when contributing.
+ - Tests are encouraged and we aim for 80% coverage where feasible excluding simple getters.
+ - Type hints are encouraged and we aim for 80% coverage where feasible excluding tests.
+ - Docstrings are encouraged and we aim for 80% coverage excluding tests.
+ - Please check that you have no mypy or pylint errors when contributing (tests are run via CI/CD).
 
 Note that imports should be in alphabetical order in groups of standard library, third-party, and then first party. It is an explicit goal to provide a class with type hints for all record fields. Getters on an immutable record object are encouraged as to enable use of the type system and docstrings for understanding the data structures. Data structures have been used that could allow for threaded request but everything is currently single threaded.
 
