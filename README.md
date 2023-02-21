@@ -181,8 +181,8 @@ The schmea drive the getters and filters available on in the library.
 
 A Python-typed description of the fields is provided below.
 
-| **Field**             | **Python Type** | **Description* |
-|-----------------------|-----------------|----------------|
+| **Field**             | **Python Type** | **Description** |
+|-----------------------|-----------------|-----------------|
 | year                  | float           | Year for the survey in which this observation was made. |
 | srvy                  | str             | The name of the survey in which this observation was made. NBS (N Bearing Sea), EBS (SE Bearing Sea), BSS (Bearing Sea Slope), or GOA (Gulf of Alaska) |
 | survey                | str             | Long form description of the survey in which the observation was made. |
