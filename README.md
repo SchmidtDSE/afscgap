@@ -285,6 +285,8 @@ Thanks for your support! Pull requests and issues very welcome. We have a few gu
  - Type hints are encouraged and we aim for 80% coverage where feasible.
  - Docstrings are encouraged and we aim for 80% coverage.
  - Please check that you have no mypy errors when contributing.
+ - Please check that you have no pylint errors when contributing.
+ - As contributors may be periodic, please do not re-write history / squash commits for ease of fast forward.
 
 Note that imports should be in alphabetical order in groups of standard library, third-party, and then first party. It is an explicit goal to provide a class with type hints for all record fields. Getters on an immutable record object are encouraged as to enable use of the type system and docstrings for understanding the data structures. Data structures have been used that could allow for threaded request but everything is currently single threaded.
 
