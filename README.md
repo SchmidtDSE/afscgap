@@ -129,7 +129,43 @@ The query can be executed by making an HTTP GET request at the provided location
 ## Schema
 A Python-typed description of the fields is provided from `afscgap.model.Record`:
 
-
+| **Field**             | **Python Type** | **Description**                                                                                                                                                                       |
+|-----------------------|-----------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| year                  | float           | Year for the survey in which this observation was made.                                                                                                                               |
+| srvy                  | str             | The name of the survey in which this observation was made. NBS (N Bearing Sea), EBS (SE Bearing Sea), BSS (Bearing Sea Slope), or GOA (Gulf of Alaska).                               |
+| survey                | str             | Long form description of the survey in which the observation was made.                                                                                                                |
+| survey_id             | float           | Unique numeric ID for the survey.                                                                                                                                                     |
+| cruise                | float           | An ID uniquely identifying the cruise in which the observation was made. Multiple cruises in a survey.                                                                                |
+| haul                  | float           | An ID uniquely identifying the haul in which this observation was made. Multiple hauls per cruises.                                                                                   |
+| stratum               | float           | Unique ID for statistical area / survey combination as described in the metadata or 0 if an experimental tow.                                                                         |
+| station               | str             | Station associated with the survey.                                                                                                                                                   |
+| vessel_name           | str             | Unique ID describing the vessel that made this observation. This is left as a string but, in practice, is likely numeric.                                                             |
+| vessel_id             | float           | Name of the vessel at the time the observation was made with multiple names potentially associated with a vessel ID.                                                                  |
+| date_time             | str             | The date and time of the haul which has been attempted to be transformed to an ISO 8601 string without timezone info. If it couldn’t be transformed, the original string is reported. |
+| latitude_dd           | float           | Latitude in decimal degrees associated with the haul.                                                                                                                                 |
+| longitude_dd          | float           | Longitude in decimal degrees associated with the haul.                                                                                                                                |
+| species_code          | float           | Unique ID associated with the species observed.                                                                                                                                       |
+| common_name           | str             | The “common name” associated with the species observed. Example: Pacific glass shrimp                                                                                                 |
+| scientific_name       | str             | The “scientific name” associated with the species observed. Example: Pasiphaea pacifica                                                                                               |
+| taxon_confidence      | str             | Confidence flag regarding ability to identify species (High, Moderate, Low). In practice, this can also be Unassessed.                                                                |
+| cpue_kgha             | Optional[float] | Catch weight divided by net area (kg / hectares) if available. See metadata. None if could not interpret as a float.                                                                  |
+| cpue_kgkm2            | Optional[float] | Catch weight divided by net area (kg / km^2) if available. See metadata. None if could not interpret as a float.                                                                      |
+| cpue_kg1000km2        | Optional[float] | Catch weight divided by net area (kg / km^2 * 1000) if available. See metadata. None if could not interpret as a float.                                                               |
+| cpue_noha             | Optional[float] | Catch number divided by net sweep area if available (count / hectares). See metadata. None if could not interpret as a float.                                                         |
+| cpue_nokm2            | Optional[float] | Catch number divided by net sweep area if available (count / km^2). See metadata. None if could not interpret as a float.                                                             |
+| cpue_no1000km2        | Optional[float] | Catch number divided by net sweep area if available (count / km^2 * 1000). See metadata. None if could not interpret as a float.                                                      |
+| weight_kg             | Optional[float] | Taxon weight (kg) if available. See metadata. None if could not interpret as a float.                                                                                                 |
+| count                 | Optional[float] | Total number of organism individuals in haul. None if could not interpret as a float.                                                                                                 |
+| bottom_temperature_c  | Optional[float] | Bottom temperature associated with observation if available in Celsius. None if not given or could not interpret as a float.                                                          |
+| surface_temperature_c | Optional[float] | Surface temperature associated with observation if available in Celsius. None if not given or could not interpret as a float.                                                         |
+| depth_m               | float           | Depth of the bottom in meters.                                                                                                                                                        |
+| distance_fished_km    | float           | Distance of the net fished as km.                                                                                                                                                     |
+| net_width_m           | float           | Distance of the net fished as m.                                                                                                                                                      |
+| net_height_m          | float           | Height of the net fished as m.                                                                                                                                                        |
+| area_swept_ha         | float           | Area covered by the net while fishing in hectares.                                                                                                                                    |
+| duration_hr           | float           | Duration of the haul as number of hours.                                                                                                                                              |
+| tsn                   | int             | Taxonomic information system species code.                                                                                                                                            |
+| ak_survey_id          | int             | AK identifier for the survey.                                                                                                                                                         |
 
 For more information on the schema, see the [metadata](https://github.com/afsc-gap-products/metadata) repository but note that the fields may be slightly different in the Python library per what is actually returned by the API.
 
