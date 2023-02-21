@@ -50,11 +50,14 @@ def get_query_url(params: dict, base: OPT_STR = None) -> str:
 class Cursor(typing.Iterable[afscgap.model.Record]):
 
     def __init__(self, query_url: str, limit: OPT_INT = None,
-        start_offset: OPT_INT = None, requestor: OPT_REQUESTOR = None):
+        start_offset: OPT_INT = None, filter_incomplete: bool = False,
+        requestor: OPT_REQUESTOR = None):
         self._query_url = query_url
         self._limit = limit
         self._start_offset = start_offset
+        self._filter_incomplete = filter_incomplete
         self._queue: queue.Queue[afscgap.model.Record] = queue.Queue()
+        self._invalid_queue: queue.Queue[dict] = queue.Queue()
         self._done = False
 
         if requestor:
@@ -72,6 +75,9 @@ class Cursor(typing.Iterable[afscgap.model.Record]):
 
     def get_start_offset(self) -> OPT_INT:
         return self._start_offset
+
+    def get_filtering_incomplete(self) -> bool:
+        return self._filter_incomplete
 
     def get_page_url(self, offset: OPT_INT = None,
         limit: OPT_INT = None) -> str:
@@ -97,7 +103,8 @@ class Cursor(typing.Iterable[afscgap.model.Record]):
             return self._query_url
 
     def get_page(self, offset: OPT_INT = None,
-        limit: OPT_INT = None) -> typing.List[afscgap.model.Record]:
+        limit: OPT_INT = None,
+        ignore_invalid: bool = False) -> typing.List[afscgap.model.Record]:
         url = self.get_page_url(offset, limit)
 
         result = self._request_strategy(url)
@@ -105,7 +112,23 @@ class Cursor(typing.Iterable[afscgap.model.Record]):
 
         result_parsed = result.json()
         items_raw = result_parsed['items']
-        return [afscgap.model.parse_record(x) for x in items_raw]
+
+        parsed_maybe = map(afscgap.model.try_parse, items_raw)
+        parsed_with_none = map(lambda x: x.get_parsed(), parsed_maybe)
+
+        if ignore_invalid:
+            parsed_no_none = filter(lambda x: x is not None, parsed_with_none)
+            return list(parsed_no_none)
+        
+        parsed = list(parsed_with_none)
+        
+        if None in parsed:
+            raise RuntimeError('Encountered invalid record.')
+
+        return parsed
+
+    def get_invalid(self) -> queue.Queue[dict]:
+        return self._invalid_queue
 
     def to_dicts(self) -> typing.Iterable[dict]:
         return map(lambda x: x.to_dict(), self)
@@ -114,15 +137,15 @@ class Cursor(typing.Iterable[afscgap.model.Record]):
         return self
 
     def __next__(self) -> afscgap.model.Record:
-        self._queue_next_page_if_needed()
+        self._load_next_page()
 
         if self._queue.empty():
             raise StopIteration()
         else:
             return self._queue.get()
 
-    def _queue_next_page_if_needed(self):
-        if self._queue.empty():
+    def _load_next_page(self):
+        while self._queue.empty() and not self._done:
             self._queue_next_page()
 
     def _queue_next_page(self):
@@ -136,13 +159,21 @@ class Cursor(typing.Iterable[afscgap.model.Record]):
 
         items_raw = result_parsed['items']
 
-        items_parsed = map(afscgap.model.parse_record, items_raw)
-        for item_parsed in items_parsed:
-            self._queue.put(item_parsed)
+        items_parsed = map(afscgap.model.try_parse, items_raw)
+
+        # If we are filtering incomplete records, we will not allow incomplete.
+        allow_incomplete = not self._filter_incomplete
+
+        for parse_result in items_parsed:
+            if parse_result.meets_requirements(allow_incomplete):
+                self._queue.add(parse_result.get_parsed())
+            else:
+                self._invalid_queue.add(parse_result.get_raw_record())
 
         next_url = self._find_next_url(result_parsed)
         self._done = next_url is None
         self._next_url = next_url
+
 
     def _find_next_url(self, target: dict) -> OPT_STR:
         if not target['hasMore']:

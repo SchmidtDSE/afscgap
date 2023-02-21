@@ -23,7 +23,8 @@ import re
 from afscgap.util import OPT_FLOAT
 
 # pylint: disable=C0301
-DATE_REGEX = re.compile('(?P<month>\\d{2})/(?P<day>\\d{2})/(?P<year>\\d{4}) (?P<hours>\\d{2}):(?P<minutes>\\d{2}):(?P<seconds>\\d{2})')
+DATE_REGEX = re.compile('(?P<month>\\d{2})\\/(?P<day>\\d{2})\\/(?P<year>\\d{4}) (?P<hours>\\d{2})\\:(?P<minutes>\\d{2})\\:(?P<seconds>\\d{2})')
+ISO_8601_REGEX = re.compile('^\\d{4}\\-\\d{2}\\-\\d{2}T\\d{2}\\:\\d{2}\\:\\d{2}$')
 ISO_8601_TEMPLATE = '%s-%s-%sT%s:%s:%s'
 
 
@@ -128,35 +129,65 @@ class Record:
     def get_taxon_confidence(self) -> str:
         return self._taxon_confidence
 
-    def get_cpue_kgha(self) -> OPT_FLOAT:
+    def get_cpue_kgha_maybe(self) -> OPT_FLOAT:
         return self._cpue_kgha
 
-    def get_cpue_kgkm2(self) -> OPT_FLOAT:
+    def get_cpue_kgkm2_maybe(self) -> OPT_FLOAT:
         return self._cpue_kgkm2
 
-    def get_cpue_kg1000km2(self) -> OPT_FLOAT:
+    def get_cpue_kg1000km2_maybe(self) -> OPT_FLOAT:
         return self._cpue_kg1000km2
 
-    def get_cpue_noha(self) -> OPT_FLOAT:
+    def get_cpue_noha_maybe(self) -> OPT_FLOAT:
         return self._cpue_noha
 
-    def get_cpue_nokm2(self) -> OPT_FLOAT:
+    def get_cpue_nokm2_maybe(self) -> OPT_FLOAT:
         return self._cpue_nokm2
 
-    def get_cpue_no1000km2(self) -> OPT_FLOAT:
+    def get_cpue_no1000km2_maybe(self) -> OPT_FLOAT:
         return self._cpue_no1000km2
 
-    def get_weight_kg(self) -> OPT_FLOAT:
+    def get_weight_kg_maybe(self) -> OPT_FLOAT:
         return self._weight_kg
 
-    def get_count(self) -> OPT_FLOAT:
+    def get_count_maybe(self) -> OPT_FLOAT:
         return self._count
 
-    def get_bottom_temperature_c(self) -> OPT_FLOAT:
+    def get_bottom_temperature_c_maybe(self) -> OPT_FLOAT:
         return self._bottom_temperature_c
 
-    def get_surface_temperature_c(self) -> OPT_FLOAT:
+    def get_surface_temperature_c_maybe(self) -> OPT_FLOAT:
         return self._surface_temperature_c
+
+    def get_cpue_kgha(self) -> float:
+        return self._assert_present(self._cpue_kgha)
+
+    def get_cpue_kgkm2(self) -> float:
+        return self._assert_present(self._cpue_kgkm2)
+
+    def get_cpue_kg1000km2(self) -> float:
+        return self._assert_present(self._cpue_kg1000km2)
+
+    def get_cpue_noha(self) -> float:
+        return self._assert_present(self._cpue_noha)
+
+    def get_cpue_nokm2(self) -> float:
+        return self._assert_present(self._cpue_nokm2)
+
+    def get_cpue_no1000km2(self) -> float:
+        return self._assert_present(self._cpue_no1000km2)
+
+    def get_weight_kg(self) -> float:
+        return self._assert_present(self._weight_kg)
+
+    def get_count(self) -> float:
+        return self._assert_present(self._count)
+
+    def get_bottom_temperature_c(self) -> float:
+        return self._assert_present(self._bottom_temperature_c)
+
+    def get_surface_temperature_c(self) -> float:
+        return self._assert_present(self._surface_temperature_c)
 
     def get_depth_m(self) -> float:
         return self._depth_m
@@ -181,6 +212,26 @@ class Record:
 
     def get_ak_survey_id(self) -> int:
         return self._ak_survey_id
+
+    def is_complete(self) -> bool:
+        optional_fields = [
+            self._cpue_kgha,
+            self._cpue_kgkm2,
+            self._cpue_kg1000km2,
+            self._cpue_noha,
+            self._cpue_nokm2,
+            self._cpue_no1000km2,
+            self._weight_kg,
+            self._count,
+            self._bottom_temperature_c,
+            self._surface_temperature_c
+        ]
+        
+        has_none = None in optional_fields
+        all_fields_present = not has_none
+        has_valid_date_time = ISO_8601_REGEX.match(self._date_time) is not None
+
+        return all_fields_present and has_valid_date_time
 
     def to_dict(self) -> dict:
         return {
@@ -221,8 +272,12 @@ class Record:
             'ak_survey_id': self._ak_survey_id,
         }
 
+    def _assert_present(self, target: OPT_FLOAT) -> float:
+        assert target is not None
+        return target
 
-def get_opt_float(target) -> OPT_FLOAT:
+
+def get_opt_float(t_maybearget) -> OPT_FLOAT:
     if target:
         try:
             return float(target)
@@ -322,3 +377,29 @@ def parse_record(target: dict) -> Record:
         tsn,
         ak_survey_id
     )
+
+
+class ParseResult:
+
+    def __init__(self, raw_record: dict, parsed: typing.Optional[Record]):
+        self._raw_record = raw_record
+        self._parsed = parsed
+
+    def get_raw_record(self) -> dict:
+        return self._raw_record
+
+    def get_parsed(self) -> typing.Optional[Record]:
+        return self._parsed_record
+
+    def meets_requirements(self, allow_incomplete: bool) -> bool:
+        if self._parsed_record is None:
+            return False
+
+        return record.is_complete() or allow_incomplete
+
+
+def try_parse(target: dict) -> ParseResult:
+    try:
+        return ParseResult(target, parse_record(target))
+    except ValueError, KeyError:
+        return ParseResult(target, None)

@@ -72,7 +72,8 @@ def query(
     limit: afscgap.client.OPT_INT = None,
     start_offset: afscgap.client.OPT_INT = None,
     base_url: afscgap.client.OPT_STR = None,
-    requestor: afscgap.client.OPT_REQUESTOR = None) -> afscgap.client.Cursor:
+    requestor: afscgap.client.OPT_REQUESTOR = None,
+    filter_incomplete: bool = False) -> afscgap.client.Cursor:
 
     all_dict = {
         'year': year,
@@ -117,5 +118,6 @@ def query(
         query_url,
         limit=limit,
         start_offset=start_offset,
-        requestor=requestor
+        requestor=requestor,
+        filter_incomplete=filter_incomplete
     )
