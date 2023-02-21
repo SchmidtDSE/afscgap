@@ -2,6 +2,7 @@
 Microlibrary for pythonic interaction with the public bottom trawl surveys data from the [NOAA AFSC GAP](https://www.fisheries.noaa.gov/contact/groundfish-assessment-program).
 
 <br>
+<br>
 
 ## Purpose
 Unofficial microlibrary for interacting with the API for [bottom trawl surveys](https://www.fisheries.noaa.gov/alaska/commercial-fishing/alaska-groundfish-bottom-trawl-survey-data) from the [Ground Fish Assessment Program (GAP)](https://www.fisheries.noaa.gov/contact/groundfish-assessment-program), a dataset produced by the [Resource Assessment and Conservation Engineering (RACE) Division](https://www.fisheries.noaa.gov/about/resource-assessment-and-conservation-engineering-division) of the [Alaska Fisheries Science Center (AFSC)](https://www.fisheries.noaa.gov/about/alaska-fisheries-science-center) as part of the National Oceanic and Atmospheric Administration ([NOAA Fisheries](https://www.fisheries.noaa.gov/)).
@@ -10,6 +11,7 @@ This low-dependency library provides a Python interface to these data with abili
 
 Though not intended to be general, this project also provides an example for working with [Oracle REST Data Services (ORDS)](https://www.oracle.com/database/technologies/appdev/rest.html) APIs in Python.
 
+<br>
 <br>
 
 ## Installation
@@ -25,6 +27,8 @@ Note that its only dependency is [requests](https://docs.python-requests.org/en/
 
 ## Usage
 This library provides access to the public API endpoints with query keywords matching the column names described in the official [metadata repository](https://github.com/afsc-gap-products/metadata). Records are parsed into plain old Python objects with optional access to a dictionary representation.
+
+<br>
 
 ### Basic Usage
 For example, this requests all records in 2021 from the Gulf of Alaska:
@@ -48,6 +52,8 @@ for record in result:
 
 Note that this operation will cause multiple HTTP requests while the iterator runs.
 
+<br>
+
 ### Pagination
 By default, the library will iterate through all results and handle pagination behind the scenes. However, one can also request an individual page:
 
@@ -67,6 +73,8 @@ for record in results:
 
 Note that records are only requested once during iteration and only after the prior page has been returned via the iterator ("lazy" loading).
 
+<br>
+
 ### Serialization
 Users may request a dictionary representation:
 
@@ -82,6 +90,8 @@ print(results_dicts[0]['common_name'])
 
 Note `to_dicts` returns an iterator by default but it can be realized as a full list using the `list()` command.
 
+<br>
+
 ### Pandas
 The dictionary form of the data can be used to create a Pandas dataframe:
 
@@ -92,6 +102,8 @@ pandas.DataFrame(results.to_dicts())
 ```
 
 Note that Pandas is not required to use this library.
+
+<br>
 
 ### Advanced Filtering
 Finally, users may provide advanced queries using Oracle's REST API query parameters. For example, this queries for 2021 records with haul from the Gulf of Alaska roughly near [geohash](https://en.wikipedia.org/wiki/Geohash) bf1s7:
@@ -107,6 +119,8 @@ results = afscgap.query(
 ```
 
 For more info about the options available, consider a helpful unaffiliated [getting started tutorial from Jeff Smith](https://www.thatjeffsmith.com/archive/2019/09/some-query-filtering-examples-in-ords/).
+
+<br>
 
 ### Debugging
 For investigating issues or evaluating the underlying operations, you can also request a full URL for a query:
@@ -125,9 +139,10 @@ print(result.get_page_url(limit=10, offset=0))
 The query can be executed by making an HTTP GET request at the provided location.
 
 <br>
+<br>
 
 ## Schema
-A Python-typed description of the fields is provided from `afscgap.model.Record`:
+A Python-typed description of the fields is provided below. These fields are avilable as getters on `afscgap.model.Record` (`result.get_srvy()`) and may be used as optional filters on the query `asfcgagp.query(srvy='GOA')`.
 
 | **Field**             | **Python Type** | **Description* |
 |-----------------------|-----------------|----------------|
@@ -170,11 +185,13 @@ A Python-typed description of the fields is provided from `afscgap.model.Record`
 For more information on the schema, see the [metadata](https://github.com/afsc-gap-products/metadata) repository but note that the fields may be slightly different in the Python library per what is actually returned by the API.
 
 <br>
+<br>
 
 ## License
 We are happy to make this library available under the LGPL v3 License (LGPL-3.0-or-later). See LICENSE for more details. (c) 2023 [The Eric and Wendy Schmidt Center for Data Science and the Environment
 at UC Berkeley](https://dse.berkeley.edu).
 
+<br>
 <br>
 
 ## Developing
@@ -188,6 +205,7 @@ Thanks for your support! Pull requests and issues very welcome. We have a few gu
 
 Note that imports should be in alphabetical order in groups of standard library, third-party, and then first party. It is an explicit goal to provide a class with type hints for all record fields. Getters on an immutable record object are encouraged as to enable use of the type system and docstrings for understanding the data structures. Data structures have been used that could allow for threaded request but everything is currently single threaded.
 
+<br>
 <br>
 
 ## Open Source
