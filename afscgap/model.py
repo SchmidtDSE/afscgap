@@ -22,6 +22,7 @@ import re
 
 from afscgap.util import OPT_FLOAT
 
+# pylint: disable=C0301
 DATE_REGEX = re.compile('(?P<month>\\d{2})/(?P<day>\\d{2})/(?P<year>\\d{4}) (?P<hours>\\d{2}):(?P<minutes>\\d{2}):(?P<seconds>\\d{2})')
 ISO_8601_TEMPLATE = '%s-%s-%sT%s:%s:%s'
 
@@ -233,7 +234,7 @@ def get_opt_float(target) -> OPT_FLOAT:
 
 def parse_datetime(target: str) -> str:
     match = DATE_REGEX.match(target)
-    
+
     if not match:
         return target
 
