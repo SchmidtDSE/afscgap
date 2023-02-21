@@ -74,10 +74,18 @@ class ModelTests(unittest.TestCase):
         parsed_dict = parsed.to_dict()
         self.assertEqual(parsed_dict['srvy'], 'GOA')
 
-    def test_parse_datetime_success(self):
-        result = afscgap.model.parse_datetime('07/16/2021 11:30:22')
+    def test_convert_to_iso8601_success(self):
+        result = afscgap.model.convert_to_iso8601('07/16/2021 11:30:22')
         self.assertEqual(result, '2021-07-16T11:30:22')
 
-    def test_parse_datetime_fail(self):
-        result = afscgap.model.parse_datetime('test')
+    def test_convert_to_iso8601_fail(self):
+        result = afscgap.model.convert_to_iso8601('test')
         self.assertEqual(result, 'test')
+
+    def test_iso8601_regex(self):
+        self.assertIsNone(
+            afscgap.model.ISO_8601_REGEX.match('07/16/2021 11:30:22')
+        )
+        self.assertIsNotNone(
+            afscgap.model.ISO_8601_REGEX.match('2021-07-16T11:30:22')
+        )

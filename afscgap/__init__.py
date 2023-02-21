@@ -1,10 +1,15 @@
 """
 Main entrypoint into the afscgap library which allows for Pythonic access to the
-interacting with the API for the Ground Fish Assessment Program (GAP), a dataset 
-produced by the Resource Assessment and Conservation Engineering (RACE) Division 
-of the Alaska Fisheries Science Center (AFSC) as part of the National Oceanic
-and Atmospheric Administration (NOAA Fisheries). Note that this is a community-
-provided library and is not officially endorsed by NOAA.
+interacting with AFSC GAP. This contains everything needed by client code to
+interact with the library.
+
+
+Note that this library supports Pythonic utilization of the API for the Ground
+Fish Assessment Program (GAP), a dataset  produced by the Resource Assessment
+and Conservation Engineering (RACE) Division  of the Alaska Fisheries Science
+Center (AFSC) as part of the National Oceanic and Atmospheric Administration
+(NOAA Fisheries). Note that this is a community-provided library and is not
+officially endorsed by NOAA.
 
 (c) 2023 The Eric and Wendy Schmidt Center for Data Science and the Environment
 at UC Berkeley.
@@ -27,10 +32,12 @@ import json
 import typing
 
 import afscgap.client
+import afscgap.model
 
+STR_OR_DICT = typing.Union[str, dict]
 FLOAT_PARAM = typing.Optional[typing.Union[float, dict]]
 INT_PARAM = typing.Optional[typing.Union[int, dict]]
-STR_PARAM = typing.Optional[typing.Union[str, dict]]
+STR_PARAM = typing.Optional[STR_OR_DICT]
 
 
 def query(
@@ -104,6 +111,10 @@ def query(
             made. Pass None if no filter should be applied. Defaults to None.
         date_time: Filter on the date and time of the haul as an ISO 8601
             string. Pass None if no filter should be applied. Defaults to None.
+            If given an ISO 8601 string, will convert from ISO 8601 to the API
+            datetime string format. Similarly, if given a dictionary, all values
+            matching an ISO 8601 string will be converted to the API datetime
+            string format.
         latitude_dd: Filter on latitude in decimal degrees associated with the
             haul. Pass None if no filter should be applied. Defaults to None.
         longitude_dd: Filter on longitude in decimal degrees associated with the
@@ -178,6 +189,7 @@ def query(
             the results, putting them in the invalid records queue. If false,
             they are included and their is_complete() will return false.
             Defaults to false.
+    
     Returns:
         Cursor to manage HTTP requests and query results.
     """
@@ -193,7 +205,7 @@ def query(
         'station': station,
         'vessel_name': vessel_name,
         'vessel_id': vessel_id,
-        'date_time': date_time,
+        'date_time': convert_from_iso8601(date_time),
         'latitude_dd': latitude_dd,
         'longitude_dd': longitude_dd,
         'species_code': species_code,
@@ -228,3 +240,35 @@ def query(
         requestor=requestor,
         filter_incomplete=filter_incomplete
     )
+
+
+def convert_from_iso8601(target: STR_PARAM) -> STR_PARAM:
+    """Convert strings from ISO 8601 format to API format.
+
+    Args:
+        target: The string or dictionary in which to perform the
+            transformations.
+
+    Returns:
+        If given an ISO 8601 string, will convert from ISO 8601 to the API
+        datetime string format. Similarly, if given a dictionary, all values
+        matching an ISO 8601 string will be converted to the API datetime string
+        format. If given None, returns None.
+    """
+    if target is None:
+        return None
+    elif isinstance(target, str):
+        return afscgap.model.convert_from_iso8601(target)
+    elif isinstance(target, dict):
+        items = target.items()
+        output_dict = {}
+
+        for key, value in items:
+            if isinstance(value, str):
+                output_dict[key] = afscgap.model.convert_from_iso8601(value)
+            else:
+                output_dict[key] = value
+
+        return output_dict
+    else:
+        return target

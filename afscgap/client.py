@@ -29,6 +29,7 @@ import afscgap.model
 from afscgap.util import OPT_INT
 from afscgap.util import OPT_STR
 
+ACCEPTABLE_CODES = [200]
 DEFAULT_URL = 'https://apps-st.fisheries.noaa.gov/ods/foss/afsc_groundfish_survey/'
 REQUESTOR = typing.Callable[[str], requests.Response]
 OPT_REQUESTOR = typing.Optional[REQUESTOR]
@@ -43,6 +44,7 @@ def get_query_url(params: dict, base: OPT_STR = None) -> str:
             None means no filter should be applied on that field.
         base: The URL at which the API service can be found. If None, will use
             DEFAULT_URL. Defaults to None.
+    
     Returns:
         URL at which an HTTP GET request can be made to execute the desired
         query.
@@ -172,6 +174,7 @@ class Cursor(typing.Iterable[afscgap.model.Record]):
                 true, will silently throw away records which could not be
                 parsed. If false, will raise an exception if a record can not
                 be parsed.
+        
         Returns:
             Results from the page which, regardless of ignore_invalid, may
             contain a mixture of complete and incomplete records.
@@ -199,15 +202,45 @@ class Cursor(typing.Iterable[afscgap.model.Record]):
             return parsed  # type: ignore
 
     def get_invalid(self) -> queue.Queue[dict]:
+        """Get a queue of invalid / incomplete records found so far.
+
+        Returns:
+            Queue with dictionaries containing the raw data returned from the
+            API that did not have valid values for all required fields. Note
+            that this will include incomplete records as well if
+            get_filtering_incomplete() is true and will not contain incomplete
+            records otherwise.
+        """
         return self._invalid_queue
 
     def to_dicts(self) -> typing.Iterable[dict]:
+        """Create an iterator which converts Records to dicts.
+
+        Returns:
+            Iterator which returns dictionaries instead of Record objects but
+            has otherwise the same beahavior as iterating in this Cursor
+            directly.
+        """
         return map(lambda x: x.to_dict(), self)
 
     def __iter__(self) -> typing.Iterator[afscgap.model.Record]:
+        """Indicate that this Cursor can be iterated on. 
+
+        Returns:
+            This object as an iterator.
+        """
         return self
 
     def __next__(self) -> afscgap.model.Record:
+        """Get the next value for this Cursor inside an interator operation.
+
+        Returns:
+            The next value waiting if cached in the cursor's results queue or
+            as just retrieved from a new page gathered by HTTP request.
+
+        Raises:
+            StopIteration: Raised if no data remain.
+        """
         self._load_next_page()
 
         if self._queue.empty():
@@ -216,10 +249,22 @@ class Cursor(typing.Iterable[afscgap.model.Record]):
             return self._queue.get()
 
     def _load_next_page(self):
+        """Request and parse additional results if they exist.
+
+        Request and parse the next page(s) of results if one exists, putting it
+        into the waiting results queues. Note that this will contiune to
+        request new pages until finding valid results or no results remain.
+        """
         while self._queue.empty() and not self._done:
             self._queue_next_page()
 
     def _queue_next_page(self):
+        """Request the next page of waiting results.
+
+        Request the next page of waiting results, putting newly returned data
+        into the waiting queues and updating the next url / done internal
+        state in the process.
+        """
         if self._done:
             return
 
@@ -247,6 +292,15 @@ class Cursor(typing.Iterable[afscgap.model.Record]):
 
 
     def _find_next_url(self, target: dict) -> OPT_STR:
+        """Look for the URL with the next page of results if it exists.
+
+        Args:
+            target: The raw complete parsed JSON response from the API.
+        
+        Returns:
+            The URL where the next page of results can be found via HTTP GET
+            request or None if target indicates that no results remain.
+        """
         if not target['hasMore']:
             return None
 
@@ -261,7 +315,16 @@ class Cursor(typing.Iterable[afscgap.model.Record]):
         return hrefs_realized[0]
 
     def _check_result(self, target: requests.Response):
-        if target.status_code != 200:
+        """Assert that a result returned an acceptable status code.
+
+        Args:
+            target: The response to check.
+
+        Raises:
+            RuntimeError: Raised if the response returned indicates an issue or
+                unexpected status code.
+        """
+        if target.status_code not in ACCEPTABLE_CODES:
             message = 'Got non-OK response from API: %d (%s)' % (
                 target.status_code,
                 target.text
