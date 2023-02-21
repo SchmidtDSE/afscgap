@@ -24,6 +24,7 @@ $ pip install afscgap
 Note that its only dependency is [requests](https://docs.python-requests.org/en/latest/index.html) and Pandas / numpy are not expected.
 
 <br>
+<br>
 
 ## Usage
 This library provides access to the public API endpoints with query keywords matching the column names described in the official [metadata repository](https://github.com/afsc-gap-products/metadata). Records are parsed into plain old Python objects with optional access to a dictionary representation.
@@ -122,7 +123,7 @@ For more info about the options available, consider a helpful unaffiliated [gett
 
 <br>
 
-### Handeling incomplete records
+### Incomplete or invalid records
 Metadata fields such as `year` are always required to make a `Record` whereas others such as catch weight `cpue_kgkm2` are not present on all records returned by the API and are optional. See the Schema section below for additional details. For fields with optional values:
 
  - A maybe getter (`get_cpue_kgkm2_maybe`) is provided which will return None without error if the value is not provided or could not be parsed.
@@ -222,7 +223,7 @@ For more information on the schema, see the [metadata](https://github.com/afsc-g
 
 <br>
 
-### 
+### Filters and getters
 
 These fields are avilable as getters on `afscgap.model.Record` (`result.get_srvy()`) and may be used as optional filters on the query `asfcgagp.query(srvy='GOA')`. Fields which are `Optional` have two getters. First, the "regular" getter (`result.get_count()`) will assert that the field is not None before returning a non-optional. The second "maybe" getter (`result.get_count_maybe()`) will return None if the value was not provided or could not be parsed.
 
