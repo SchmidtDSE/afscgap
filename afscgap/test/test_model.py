@@ -32,6 +32,9 @@ class ModelTests(unittest.TestCase):
     def test_get_opt_float_not_given(self):
         self.assertIsNone(afscgap.model.get_opt_float(None))
 
+    def test_get_opt_float_na(self):
+        self.assertIsNone(afscgap.model.get_opt_float('NA'))
+
     def test_parse_record(self):
         result = afscgap.test.test_util.load_test_data('result_1.json')
         parsed = afscgap.model.parse_record(result['items'][0])

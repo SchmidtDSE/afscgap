@@ -35,9 +35,10 @@ class Record:
         scientific_name: str, taxon_confidence: str, cpue_kgha: OPT_FLOAT,
         cpue_kgkm2: OPT_FLOAT, cpue_kg1000km2: OPT_FLOAT, cpue_noha: OPT_FLOAT,
         cpue_nokm2: OPT_FLOAT, cpue_no1000km2: OPT_FLOAT, weight_kg: OPT_FLOAT,
-        count: float, bottom_temperature_c: float, surface_temperature_c: float,
-        depth_m: float, distance_fished_km: float, net_width_m: float,
-        net_height_m: float, area_swept_ha: float, duration_hr: float, tsn: int,
+        count: OPT_FLOAT, bottom_temperature_c: OPT_FLOAT,
+        surface_temperature_c: OPT_FLOAT, depth_m: float,
+        distance_fished_km: float, net_width_m: float, net_height_m: float,
+        area_swept_ha: float, duration_hr: float, tsn: int,
         ak_survey_id: int):
         self._year = year
         self._srvy = srvy
@@ -147,13 +148,13 @@ class Record:
     def get_weight_kg(self) -> OPT_FLOAT:
         return self._weight_kg
 
-    def get_count(self) -> float:
+    def get_count(self) -> OPT_FLOAT:
         return self._count
 
-    def get_bottom_temperature_c(self) -> float:
+    def get_bottom_temperature_c(self) -> OPT_FLOAT:
         return self._bottom_temperature_c
 
-    def get_surface_temperature_c(self) -> float:
+    def get_surface_temperature_c(self) -> OPT_FLOAT:
         return self._surface_temperature_c
 
     def get_depth_m(self) -> float:
@@ -222,7 +223,10 @@ class Record:
 
 def get_opt_float(target) -> OPT_FLOAT:
     if target:
-        return float(target)
+        try:
+            return float(target)
+        except ValueError:
+            return None
     else:
         return None
 
