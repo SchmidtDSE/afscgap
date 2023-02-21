@@ -24,6 +24,7 @@ $ pip install afscgap
 Note that its only dependency is [requests](https://docs.python-requests.org/en/latest/index.html) and Pandas / numpy are not expected.
 
 <br>
+<br>
 
 ## Usage
 This library provides access to the public API endpoints with query keywords matching the column names described in the official [metadata repository](https://github.com/afsc-gap-products/metadata). Records are parsed into plain old Python objects with optional access to a dictionary representation.
@@ -122,7 +123,7 @@ For more info about the options available, consider a helpful unaffiliated [gett
 
 <br>
 
-### Handeling incomplete records
+### Incomplete or invalid records
 Metadata fields such as `year` are always required to make a `Record` whereas others such as catch weight `cpue_kgkm2` are not present on all records returned by the API and are optional. See the Schema section below for additional details. For fields with optional values:
 
  - A maybe getter (`get_cpue_kgkm2_maybe`) is provided which will return None without error if the value is not provided or could not be parsed.
@@ -180,8 +181,8 @@ The schmea drive the getters and filters available on in the library.
 
 A Python-typed description of the fields is provided below.
 
-| **Field**             | **Python Type** | **Description* |
-|-----------------------|-----------------|----------------|
+| **Field**             | **Python Type** | **Description** |
+|-----------------------|-----------------|-----------------|
 | year                  | float           | Year for the survey in which this observation was made. |
 | srvy                  | str             | The name of the survey in which this observation was made. NBS (N Bearing Sea), EBS (SE Bearing Sea), BSS (Bearing Sea Slope), or GOA (Gulf of Alaska) |
 | survey                | str             | Long form description of the survey in which the observation was made. |
@@ -222,7 +223,7 @@ For more information on the schema, see the [metadata](https://github.com/afsc-g
 
 <br>
 
-### 
+### Filters and getters
 
 These fields are avilable as getters on `afscgap.model.Record` (`result.get_srvy()`) and may be used as optional filters on the query `asfcgagp.query(srvy='GOA')`. Fields which are `Optional` have two getters. First, the "regular" getter (`result.get_count()`) will assert that the field is not None before returning a non-optional. The second "maybe" getter (`result.get_count_maybe()`) will return None if the value was not provided or could not be parsed.
 
@@ -280,10 +281,12 @@ at UC Berkeley](https://dse.berkeley.edu).
 Thanks for your support! Pull requests and issues very welcome. We have a few guidelines:
 
  - Please follow the Google Python Style Guide where possible for compatibility with the existing codebase.
- - Tests are encouraged and we aim for 80% coverage where feasible excluding simple getters.
- - Type hints are encouraged and we aim for 80% coverage where feasible excluding tests.
- - Docstrings are encouraged and we aim for 80% coverage excluding tests.
- - Please check that you have no mypy or pylint errors when contributing (tests are run via CI/CD).
+ - Tests are encouraged and we aim for 80% coverage where feasible.
+ - Type hints are encouraged and we aim for 80% coverage where feasible.
+ - Docstrings are encouraged and we aim for 80% coverage.
+ - Please check that you have no mypy errors when contributing.
+ - Please check that you have no pylint errors when contributing.
+ - As contributors may be periodic, please do not re-write history / squash commits for ease of fast forward.
 
 Note that imports should be in alphabetical order in groups of standard library, third-party, and then first party. It is an explicit goal to provide a class with type hints for all record fields. Getters on an immutable record object are encouraged as to enable use of the type system and docstrings for understanding the data structures. Data structures have been used that could allow for threaded request but everything is currently single threaded.
 

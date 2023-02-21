@@ -23,6 +23,8 @@ import unittest
 import afscgap.model
 import afscgap.test.test_util
 
+# pylint: disable=C0115, C0116
+
 
 class ModelTests(unittest.TestCase):
 

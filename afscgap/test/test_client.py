@@ -25,6 +25,8 @@ import unittest.mock
 import afscgap.client
 import afscgap.test.test_util
 
+# pylint: disable=C0115, C0116
+
 
 class ClientTests(unittest.TestCase):
 

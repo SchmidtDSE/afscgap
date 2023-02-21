@@ -23,6 +23,8 @@ import os
 import pathlib
 import unittest
 
+# pylint: disable=C0115, C0116
+
 
 def load_test_data(filename: str) -> dict:
     parent_dir = pathlib.Path(__file__).parent.absolute()

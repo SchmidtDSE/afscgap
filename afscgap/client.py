@@ -36,6 +36,17 @@ TIMEOUT = 60 * 5  # 5 minutes
 
 
 def get_query_url(params: dict, base: OPT_STR = None) -> str:
+    """Get the URL at which a query can be made.
+
+    Args:
+        params: Dictionary of filters to apply to the query where a value of
+            None means no filter should be applied on that field.
+        base: The URL at which the API service can be found. If None, will use
+            DEFAULT_URL. Defaults to None.
+    Returns:
+        URL at which an HTTP GET request can be made to execute the desired
+        query.
+    """
     if base is None:
         base = DEFAULT_URL
 
@@ -48,10 +59,26 @@ def get_query_url(params: dict, base: OPT_STR = None) -> str:
 
 
 class Cursor(typing.Iterable[afscgap.model.Record]):
+    """Object to make HTTP and manage interpretation of results."""
 
     def __init__(self, query_url: str, limit: OPT_INT = None,
         start_offset: OPT_INT = None, filter_incomplete: bool = False,
         requestor: OPT_REQUESTOR = None):
+        """Create a new cursor to manage a request.
+
+        Args:
+            query_url: The URL for the query without pagination information.
+            limit: The maximum number of records to return per page.
+            start_offset: The number of records being skipped (number of records
+                prior to query_url).
+            filter_incomplete: Flag indicating if incomplete records should be
+                silently filtered. If true, they will not be returned during
+                iteration and placed in the queue at get_invalid(). If false,
+                they will be returned and those incomplete records'
+                get_complete() will return false. Defaults to false.
+            requestor: Strategy to make HTTP GET requests. If None, will default
+                to requests.get.
+        """
         self._query_url = query_url
         self._limit = limit
         self._start_offset = start_offset
@@ -68,19 +95,50 @@ class Cursor(typing.Iterable[afscgap.model.Record]):
         self._next_url = self.get_page_url()
 
     def get_base_url(self) -> str:
+        """Get the URL at which the first page of query results can be found.
+
+        Returns:
+            The URL for the query without pagination information. 
+        """
         return self._query_url
 
     def get_limit(self) -> OPT_INT:
+        """Get the page size limit.
+
+        Returns:
+            The maximum number of records to return per page.
+        """
         return self._limit
 
     def get_start_offset(self) -> OPT_INT:
+        """Get the number of inital records to ignore.
+
+        Returns:
+            The number of records being skipped at the start of the result set.
+        """
         return self._start_offset
 
     def get_filtering_incomplete(self) -> bool:
+        """Determine if this cursor is silently filtering incomplete records.
+
+        Returns:
+            Flag indicating if incomplete records should be silently filtered.
+            If true, they will not be returned during iteration and placed in
+            the queue at get_invalid(). If false, they will be returned and
+            those incomplete records' get_complete() will return false.
+        """
         return self._filter_incomplete
 
     def get_page_url(self, offset: OPT_INT = None,
         limit: OPT_INT = None) -> str:
+        """Get a URL at which a page can be found using this cursor's base url.
+
+        Args:
+            offset: The number of records to skip prior to the page.
+            limit: The maximum number of records to return in the page.
+        Returns:
+            URL at which the requested page can be found.
+        """
 
         if offset is None:
             offset = self._start_offset
@@ -105,6 +163,19 @@ class Cursor(typing.Iterable[afscgap.model.Record]):
     def get_page(self, offset: OPT_INT = None,
         limit: OPT_INT = None,
         ignore_invalid: bool = False) -> typing.List[afscgap.model.Record]:
+        """Get a page using this cursor's base url.
+
+        Args:
+            offset: The number of records to skip prior to the page.
+            limit: The maximum number of records to return in the page.
+            ignore_invalid: Flag indicating how to handle invalid records. If
+                true, will silently throw away records which could not be
+                parsed. If false, will raise an exception if a record can not
+                be parsed.
+        Returns:
+            Results from the page which, regardless of ignore_invalid, may
+            contain a mixture of complete and incomplete records.
+        """
         url = self.get_page_url(offset, limit)
 
         result = self._request_strategy(url)

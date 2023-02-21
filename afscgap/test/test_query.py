@@ -22,6 +22,8 @@ import unittest
 
 import afscgap.test.test_util
 
+# pylint: disable=C0115, C0116
+
 
 class QueryTests(unittest.TestCase):
 

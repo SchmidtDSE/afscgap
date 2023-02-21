@@ -74,6 +74,113 @@ def query(
     base_url: afscgap.client.OPT_STR = None,
     requestor: afscgap.client.OPT_REQUESTOR = None,
     filter_incomplete: bool = False) -> afscgap.client.Cursor:
+    """Execute a query against the AFSC GAP API.
+
+    Args:
+        year: Filter on year for the survey in which this observation was made.
+            Pass None if no filter should be applied. Defaults to None.
+        srvy: Filter on the short name of the survey in which this observation
+            was made. Pass None if no filter should be applied. Defaults to
+            None.
+        survey: Filter on long form description of the survey in which the
+            observation was made. Pass None if no filter should be applied.
+            Defaults to None.
+        survey_id: Filter on unique numeric ID for the survey. Pass None if no
+            filter should be applied. Defaults to None.
+        cruise: Filter on an ID uniquely identifying the cruise in which the
+            observation was made. Pass None if no filter should be applied.
+            Defaults to None.
+        haul: Filter on an ID uniquely identifying the haul in which this
+            observation was made. Pass None if no filter should be applied.
+            Defaults to None.
+        stratum: Filter on unique ID for statistical area / survey combination.
+            Pass None if no filter should be applied. Defaults to None.
+        station: Filter on station associated with the survey. Pass None if no
+            filter should be applied. Defaults to None.
+        vessel_name: Filter on unique ID describing the vessel that made this
+            observation. Pass None if no filter should be applied. Defaults to
+            None.
+        vessel_id: Filter on name of the vessel at the time the observation was
+            made. Pass None if no filter should be applied. Defaults to None.
+        date_time: Filter on the date and time of the haul as an ISO 8601
+            string. Pass None if no filter should be applied. Defaults to None.
+        latitude_dd: Filter on latitude in decimal degrees associated with the
+            haul. Pass None if no filter should be applied. Defaults to None.
+        longitude_dd: Filter on longitude in decimal degrees associated with the
+            haul. Pass None if no filter should be applied. Defaults to None.
+        species_code: Filter on unique ID associated with the species observed.
+            Pass None if no filter should be applied. Defaults to None.
+        common_name: Filter on the “common name” associated with the species
+            observed. Pass None if no filter should be applied. Defaults to
+            None.
+        scientific_name: Filter on the “scientific name” associated with the
+            species observed. Pass None if no filter should be applied. Defaults
+            to None.
+        taxon_confidence: Filter on confidence flag regarding ability to
+            identify species. Pass None if no filter should be applied. Defaults
+            to None.
+        cpue_kgha: Filter on catch weight divided by net area (kg / hectares) if
+            available. Pass None if no filter should be applied. Defaults to
+            None.
+        cpue_kgkm2: Filter on catch weight divided by net area (kg / km^2) if
+            available. Pass None if no filter should be applied. Defaults to
+            None.
+        cpue_kg1000km2: Filter on catch weight divided by net area (kg / km^2 *
+            1000) if available. Pass None if no filter should be applied.
+            Defaults to None.
+        cpue_noha: Filter on catch number divided by net sweep area if available
+            (count / hectares). Pass None if no filter should be applied.
+            Defaults to None.
+        cpue_nokm2: Filter on catch number divided by net sweep area if
+            available (count / km^2). Pass None if no filter should be applied.
+            Defaults to None.
+        cpue_no1000km2: Filter on catch number divided by net sweep area if
+            available (count / km^2 * 1000). Pass None if no filter should be
+            applied. Defaults to None.
+        weight_kg: Filter on taxon weight (kg) if available. Pass None if no
+            filter should be applied. Defaults to None.
+        count: Filter on total number of organism individuals in haul. Pass None
+            if no filter should be applied. Defaults to None.
+        bottom_temperature_c: Filter on bottom temperature associated with
+            observation if available in Celsius. Pass None if no filter should
+            be applied. Defaults to None.
+        surface_temperature_c: Filter on surface temperature associated with
+            observation if available in Celsius. Pass None if no filter should
+            be applied. Defaults to None.
+        depth_m: Filter on depth of the bottom in meters. Pass None if no filter
+            should be applied. Defaults to None.
+        distance_fished_km: Filter on distance of the net fished as km. Pass
+            None if no filter should be applied. Defaults to None.
+        net_width_m: Filter on distance of the net fished as m. Pass None if no
+            filter should be applied. Defaults to None.
+        net_height_m: Filter on height of the net fished as m. Pass None if no
+            filter should be applied. Defaults to None.
+        area_swept_ha: Filter on area covered by the net while fishing in
+            hectares. Pass None if no filter should be applied. Defaults to
+            None.
+        duration_hr: Filter on duration of the haul as number of hours. Pass
+            None if no filter should be applied. Defaults to None.
+        tsn: Filter on taxonomic information system species code. Pass None if
+            no filter should be applied. Defaults to None.
+        ak_survey_id: Filter on AK identifier for the survey. Pass None if no
+            filter should be applied. Defaults to None.
+        limit: The maximum number of results to retrieve per HTTP request. If
+            None or not provided, will use API's default.
+        start_offset: The number of initial results to skip in retrieving
+            results. If None or not provided, none will be skipped. 
+        base_url: The URL at which the API can be found. If None, will use
+            default (offical URL at time of release). See
+            afscgap.client.DEFAULT_URL.
+        requestor: Strategy to use for making HTTP requests. If None, will use
+            a default as defined by afscgap.client.Cursor.
+        filter_incomplete: Flag indicating if "incomplete" records should be
+            filtered. If true, "incomplete" records are silently filtered from
+            the results, putting them in the invalid records queue. If false,
+            they are included and their is_complete() will return false.
+            Defaults to false.
+    Returns:
+        Cursor to manage HTTP requests and query results.
+    """
 
     all_dict = {
         'year': year,
