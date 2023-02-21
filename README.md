@@ -122,6 +122,36 @@ For more info about the options available, consider a helpful unaffiliated [gett
 
 <br>
 
+### Handeling incomplete records
+Metadata fields such as `year` are always required to make a `Record` whereas others such as catch weight `cpue_kgkm2` are not present on all records returned by the API and are optional. See the Schema section below for additional details. For fields with optional values:
+
+ - A maybe getter (`get_cpue_kgkm2_maybe`) is provided which will return None without error if the value is not provided or could not be parsed.
+ - A regular getter (`get_cpue_kgkm2`) is provided which asserts the value is not None before it is returned.
+
+`Record` objects also have an `is_complete` method which returns true if both all optional fields on the `Record` are non-None and the `date_time` field on the `Record` is a valid ISO 8601 string. By default, records for which `is_complete` are false are returned when iterating or through `get_page` but this can be overridden by with the `filter_incomplete` keyword argument like so:
+
+```
+results = afscgap.query(
+    year=2021,
+    filter_incomplete=True
+)
+
+for result in results:
+    assert result.is_complete()
+```
+
+Results returned by the API for which non-Optional fields could not be parsed (like missing `year`) are considered "invalid" and always excluded during iteration when those raw unreadable records are kept in a `queue.Queue[dict]` that can be accessed via `get_invalid` like so:
+
+```
+results = list(afscgap.query(year=2021))
+invalid_queue = results.get_invalid()
+print(invalid_queue.empty())
+```
+
+Note that this queue is filled during iteration (like `for result in results` or `list(results)`) and not `get_page` whose invalid record handeling behavior can be specified via the `ignore_invalid` keyword.
+
+<br>
+
 ### Debugging
 For investigating issues or evaluating the underlying operations, you can also request a full URL for a query:
 
@@ -141,8 +171,14 @@ The query can be executed by making an HTTP GET request at the provided location
 <br>
 <br>
 
-## Schema
-A Python-typed description of the fields is provided below. These fields are avilable as getters on `afscgap.model.Record` (`result.get_srvy()`) and may be used as optional filters on the query `asfcgagp.query(srvy='GOA')`.
+## Data structure
+The schmea drive the getters and filters available on in the library.
+
+<br>
+
+### Schema
+
+A Python-typed description of the fields is provided below.
 
 | **Field**             | **Python Type** | **Description* |
 |-----------------------|-----------------|----------------|
@@ -183,6 +219,52 @@ A Python-typed description of the fields is provided below. These fields are avi
 | ak_survey_id          | int             | AK identifier for the survey. |
 
 For more information on the schema, see the [metadata](https://github.com/afsc-gap-products/metadata) repository but note that the fields may be slightly different in the Python library per what is actually returned by the API.
+
+<br>
+
+### 
+
+These fields are avilable as getters on `afscgap.model.Record` (`result.get_srvy()`) and may be used as optional filters on the query `asfcgagp.query(srvy='GOA')`. Fields which are `Optional` have two getters. First, the "regular" getter (`result.get_count()`) will assert that the field is not None before returning a non-optional. The second "maybe" getter (`result.get_count_maybe()`) will return None if the value was not provided or could not be parsed.
+
+| **Filter keyword**    | **Regular Getter**                   | **Maybe Getter**                                     |
+|-----------------------|--------------------------------------|------------------------------------------------------|
+| year                  | get_year() -> float                  |                                                      |
+| srvy                  | get_srvy() -> str                    |                                                      |
+| survey                | get_survey() -> str                  |                                                      |
+| survey_id             | get_survey_id() -> float             |                                                      |
+| cruise                | get_cruise() -> float                |                                                      |
+| haul                  | get_haul() -> float                  |                                                      |
+| stratum               | get_stratum() -> float               |                                                      |
+| station               | get_station() -> str                 |                                                      |
+| vessel_name           | get_vessel_name() -> str             |                                                      |
+| vessel_id             | get_vessel_id() -> float             |                                                      |
+| date_time             | get_date_time() -> str               |                                                      |
+| latitude_dd           | get_latitude_dd() -> float           |                                                      |
+| longitude_dd          | get_longitude_dd() -> float          |                                                      |
+| species_code          | get_species_code() -> float          |                                                      |
+| common_name           | get_common_name() -> str             |                                                      |
+| scientific_name       | get_scientific_name() -> str         |                                                      |
+| taxon_confidence      | get_taxon_confidence() -> str        | get_cpue_kgha_maybe() -> Optional[float]             |
+| cpue_kgha             | get_cpue_kgha() -> float             | get_cpue_kgkm2_maybe() -> Optional[float]            |
+| cpue_kgkm2            | get_cpue_kgkm2() -> float            | get_cpue_kg1000km2_maybe() -> Optional[float]        |
+| cpue_kg1000km2        | get_cpue_kg1000km2() -> float        | get_cpue_noha_maybe() -> Optional[float]             |
+| cpue_noha             | get_cpue_noha() -> float             | get_cpue_nokm2_maybe() -> Optional[float]            |
+| cpue_nokm2            | get_cpue_nokm2() -> float            | get_cpue_no1000km2_maybe() -> Optional[float]        |
+| cpue_no1000km2        | get_cpue_no1000km2() -> float        | get_weight_kg_maybe() -> Optional[float]             |
+| weight_kg             | get_weight_kg() -> float             | get_count_maybe() -> Optional[float]                 |
+| count                 | get_count() -> float                 | get_bottom_temperature_c_maybe() -> Optional[float]  |
+| bottom_temperature_c  | get_bottom_temperature_c() -> float  | get_surface_temperature_c_maybe() -> Optional[float] |
+| surface_temperature_c | get_surface_temperature_c() -> float | get_surface_temperature_c() -> Optional[float]       |
+| depth_m               | get_depth_m() -> float               |                                                      |
+| distance_fished_km    | get_distance_fished_km() -> float    |                                                      |
+| net_width_m           | get_net_width_m() -> float           |                                                      |
+| net_height_m          | get_net_height_m() -> float          |                                                      |
+| area_swept_ha         | get_area_swept_ha() -> float         |                                                      |
+| duration_hr           | get_duration_hr() -> float           |                                                      |
+| tsn                   | get_tsn() -> int                     |                                                      |
+| ak_survey_id          | get_ak_survey_id() -> int            |                                                      |
+
+`Record` objects also have a `is_complete` method which returns true if all of the fields with an `Optional` type are non-None and the `date_time` could be parsed and made into an ISO 8601 string.
 
 <br>
 <br>
