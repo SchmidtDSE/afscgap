@@ -163,7 +163,7 @@ invalid_queue = results.get_invalid()
 print(invalid_queue.empty())
 ```
 
-Note that this queue is filled during iteration (like `for result in results` or `list(results)`) and not `get_page` whose invalid record handeling behavior can be specified via the `ignore_invalid` keyword.
+Note that this queue is filled during iteration (like `for result in results` or `list(results)`) and not `get_page` whose invalid record handling behavior can be specified via the `ignore_invalid` keyword.
 
 <br>
 
@@ -187,7 +187,7 @@ The query can be executed by making an HTTP GET request at the provided location
 <br>
 
 ## Data structure
-The schmea drive the getters and filters available on in the library.
+The schema drives the getters and filters available on in the library.
 
 <br>
 
@@ -239,7 +239,7 @@ For more information on the schema, see the [metadata](https://github.com/afsc-g
 
 ### Filters and getters
 
-These fields are avilable as getters on `afscgap.model.Record` (`result.get_srvy()`) and may be used as optional filters on the query `asfcgagp.query(srvy='GOA')`. Fields which are `Optional` have two getters. First, the "regular" getter (`result.get_count()`) will assert that the field is not None before returning a non-optional. The second "maybe" getter (`result.get_count_maybe()`) will return None if the value was not provided or could not be parsed.
+These fields are available as getters on `afscgap.model.Record` (`result.get_srvy()`) and may be used as optional filters on the query `asfcgagp.query(srvy='GOA')`. Fields which are `Optional` have two getters. First, the "regular" getter (`result.get_count()`) will assert that the field is not None before returning a non-optional. The second "maybe" getter (`result.get_count_maybe()`) will return None if the value was not provided or could not be parsed.
 
 | **Filter keyword**    | **Regular Getter**                   | **Maybe Getter**                                     |
 |-----------------------|--------------------------------------|------------------------------------------------------|
@@ -259,17 +259,17 @@ These fields are avilable as getters on `afscgap.model.Record` (`result.get_srvy
 | species_code          | get_species_code() -> float          |                                                      |
 | common_name           | get_common_name() -> str             |                                                      |
 | scientific_name       | get_scientific_name() -> str         |                                                      |
-| taxon_confidence      | get_taxon_confidence() -> str        | get_cpue_kgha_maybe() -> Optional[float]             |
-| cpue_kgha             | get_cpue_kgha() -> float             | get_cpue_kgkm2_maybe() -> Optional[float]            |
-| cpue_kgkm2            | get_cpue_kgkm2() -> float            | get_cpue_kg1000km2_maybe() -> Optional[float]        |
-| cpue_kg1000km2        | get_cpue_kg1000km2() -> float        | get_cpue_noha_maybe() -> Optional[float]             |
-| cpue_noha             | get_cpue_noha() -> float             | get_cpue_nokm2_maybe() -> Optional[float]            |
-| cpue_nokm2            | get_cpue_nokm2() -> float            | get_cpue_no1000km2_maybe() -> Optional[float]        |
-| cpue_no1000km2        | get_cpue_no1000km2() -> float        | get_weight_kg_maybe() -> Optional[float]             |
-| weight_kg             | get_weight_kg() -> float             | get_count_maybe() -> Optional[float]                 |
-| count                 | get_count() -> float                 | get_bottom_temperature_c_maybe() -> Optional[float]  |
-| bottom_temperature_c  | get_bottom_temperature_c() -> float  | get_surface_temperature_c_maybe() -> Optional[float] |
-| surface_temperature_c | get_surface_temperature_c() -> float | get_surface_temperature_c() -> Optional[float]       |
+| taxon_confidence      | get_taxon_confidence() -> str        |                                                      |
+| cpue_kgha             | get_cpue_kgha() -> float             | get_cpue_kgha_maybe() -> Optional[float]             |
+| cpue_kgkm2            | get_cpue_kgkm2() -> float            | get_cpue_kgkm2_maybe() -> Optional[float]            |
+| cpue_kg1000km2        | get_cpue_kg1000km2() -> float        | get_cpue_kg1000km2_maybe() -> Optional[float]        |
+| cpue_noha             | get_cpue_noha() -> float             | get_cpue_noha_maybe() -> Optional[float]             |
+| cpue_nokm2            | get_cpue_nokm2() -> float            | get_cpue_nokm2_maybe() -> Optional[float]            |
+| cpue_no1000km2        | get_cpue_no1000km2() -> float        | get_cpue_no1000km2_maybe() -> Optional[float]        |
+| weight_kg             | get_weight_kg() -> float             | get_weight_kg_maybe() -> Optional[float]             |
+| count                 | get_count() -> float                 | get_count_maybe() -> Optional[float]                 |
+| bottom_temperature_c  | get_bottom_temperature_c() -> float  | get_bottom_temperature_c_maybe() -> Optional[float]  |
+| surface_temperature_c | get_surface_temperature_c() -> float | get_surface_temperature_c_maybe() -> Optional[float] |
 | depth_m               | get_depth_m() -> float               |                                                      |
 | distance_fished_km    | get_distance_fished_km() -> float    |                                                      |
 | net_width_m           | get_net_width_m() -> float           |                                                      |
@@ -279,7 +279,7 @@ These fields are avilable as getters on `afscgap.model.Record` (`result.get_srvy
 | tsn                   | get_tsn() -> int                     |                                                      |
 | ak_survey_id          | get_ak_survey_id() -> int            |                                                      |
 
-`Record` objects also have a `is_complete` method which returns true if all of the fields with an `Optional` type are non-None and the `date_time` could be parsed and made into an ISO 8601 string.
+`Record` objects also have a `is_complete` method which returns true if all the fields with an `Optional` type are non-None and the `date_time` could be parsed and made into an ISO 8601 string.
 
 <br>
 <br>

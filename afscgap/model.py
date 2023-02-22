@@ -732,7 +732,7 @@ def parse_record(target: dict) -> Record:
     Raises:
         ValueError: Exception raised if a field has an unexpected type or cannot
             be parsed to an expected type.
-        KeyError: Expception raised if an expected field is not found.
+        KeyError: Exception raised if an expected field is not found.
 
     Returns:
         Newly parsed record.
