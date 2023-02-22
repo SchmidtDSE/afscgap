@@ -22,6 +22,7 @@ import re
 import typing
 
 from afscgap.util import OPT_FLOAT
+from afscgap.util import OPT_INT
 
 # pylint: disable=C0301
 DATE_REGEX = re.compile('(?P<month>\\d{2})\\/(?P<day>\\d{2})\\/(?P<year>\\d{4}) (?P<hours>\\d{2})\\:(?P<minutes>\\d{2})\\:(?P<seconds>\\d{2})')
@@ -43,7 +44,7 @@ class Record:
         count: OPT_FLOAT, bottom_temperature_c: OPT_FLOAT,
         surface_temperature_c: OPT_FLOAT, depth_m: float,
         distance_fished_km: float, net_width_m: float, net_height_m: float,
-        area_swept_ha: float, duration_hr: float, tsn: int,
+        area_swept_ha: float, duration_hr: float, tsn: OPT_INT,
         ak_survey_id: int):
         """Create a new record.
 
@@ -442,6 +443,15 @@ class Record:
         Returns:
             Taxonomic information system species code.
         """
+        return self._assert_int_present(self._tsn)
+
+    def get_tsn_maybe(self) -> OPT_INT:
+        """Get the field labeled as tsn in the API or None.
+
+        Returns:
+            Taxonomic information system species code if it could be parsed as
+            an int and None otherwise.
+        """
         return self._tsn
 
     def get_ak_survey_id(self) -> int:
@@ -463,7 +473,7 @@ class Record:
             Catch weight divided by net area (kg / hectares) if available. See
             metadata.
         """
-        return self._assert_present(self._cpue_kgha)
+        return self._assert_float_present(self._cpue_kgha)
 
     def get_cpue_kgkm2(self) -> float:
         """Get the value of field cpue_kgkm2 with validity assert.
@@ -476,7 +486,7 @@ class Record:
             Catch weight divided by net area (kg / km^2) if available. See
             metadata.
         """
-        return self._assert_present(self._cpue_kgkm2)
+        return self._assert_float_present(self._cpue_kgkm2)
 
     def get_cpue_kg1000km2(self) -> float:
         """Get the value of field cpue_kg1000km2 with validity assert.
@@ -489,7 +499,7 @@ class Record:
             Catch weight divided by net area (kg / km^2 * 1000) if available.
             See metadata.
         """
-        return self._assert_present(self._cpue_kg1000km2)
+        return self._assert_float_present(self._cpue_kg1000km2)
 
     def get_cpue_noha(self) -> float:
         """Get the value of field cpue_noha with validity assert.
@@ -502,7 +512,7 @@ class Record:
             Catch number divided by net sweep area if available (count /
             hectares). See metadata.
         """
-        return self._assert_present(self._cpue_noha)
+        return self._assert_float_present(self._cpue_noha)
 
     def get_cpue_nokm2(self) -> float:
         """Get the value of field cpue_nokm2 with validity assert.
@@ -515,7 +525,7 @@ class Record:
             Catch number divided by net sweep area if available (count / km^2).
             See metadata.
         """
-        return self._assert_present(self._cpue_nokm2)
+        return self._assert_float_present(self._cpue_nokm2)
 
     def get_cpue_no1000km2(self) -> float:
         """Get the value of field cpue_no1000km2 with validity assert.
@@ -528,7 +538,7 @@ class Record:
             Catch number divided by net sweep area if available (count / km^2 *
             1000). See metadata.
         """
-        return self._assert_present(self._cpue_no1000km2)
+        return self._assert_float_present(self._cpue_no1000km2)
 
     def get_weight_kg(self) -> float:
         """Get the value of field weight_kg with validity assert.
@@ -540,7 +550,7 @@ class Record:
         Returns:
             Taxon weight (kg) if available. See metadata.
         """
-        return self._assert_present(self._weight_kg)
+        return self._assert_float_present(self._weight_kg)
 
     def get_count(self) -> float:
         """Get the value of field count with validity assert.
@@ -552,7 +562,7 @@ class Record:
         Returns:
             Total number of organism individuals in haul.
         """
-        return self._assert_present(self._count)
+        return self._assert_float_present(self._count)
 
     def get_bottom_temperature_c(self) -> float:
         """Get the value of field bottom_temperature_c with validity assert.
@@ -565,7 +575,7 @@ class Record:
             Bottom temperature associated with observation if available in
             Celsius.
         """
-        return self._assert_present(self._bottom_temperature_c)
+        return self._assert_float_present(self._bottom_temperature_c)
 
     def get_surface_temperature_c(self) -> float:
         """Get the value of field surface_temperature_c with validity assert.
@@ -578,7 +588,7 @@ class Record:
             Surface temperature associated with observation if available in
             Celsius. None if not
         """
-        return self._assert_present(self._surface_temperature_c)
+        return self._assert_float_present(self._surface_temperature_c)
 
     def is_complete(self) -> bool:
         """Determine if this record has all of its values filled in.
@@ -597,7 +607,8 @@ class Record:
             self._weight_kg,
             self._count,
             self._bottom_temperature_c,
-            self._surface_temperature_c
+            self._surface_temperature_c,
+            self._tsn
         ]
 
         has_none = None in optional_fields
@@ -651,7 +662,11 @@ class Record:
             'ak_survey_id': self._ak_survey_id,
         }
 
-    def _assert_present(self, target: OPT_FLOAT) -> float:
+    def _assert_float_present(self, target: OPT_FLOAT) -> float:
+        assert target is not None
+        return target
+
+    def _assert_int_present(self, target: OPT_INT) -> int:
         assert target is not None
         return target
 
@@ -669,6 +684,25 @@ def get_opt_float(target) -> OPT_FLOAT:
     if target:
         try:
             return float(target)
+        except ValueError:
+            return None
+    else:
+        return None
+
+
+def get_opt_int(target) -> OPT_INT:
+    """Attempt to parse a value as an int, returning None if there is an error.
+
+    Args:
+        target: The value to try to interpret as an int.
+
+    Returns:
+        The value of target as an int or None if there was an issue in parsing
+        like that target is None.
+    """
+    if target:
+        try:
+            return int(target)
         except ValueError:
             return None
     else:
@@ -761,16 +795,16 @@ def parse_record(target: dict) -> Record:
     cpue_nokm2 = get_opt_float(target['cpue_nokm2'])
     cpue_no1000km2 = get_opt_float(target['cpue_no1000km2'])
     weight_kg = get_opt_float(target['weight_kg'])
-    count = float(target['count'])
-    bottom_temperature_c = float(target['bottom_temperature_c'])
-    surface_temperature_c = float(target['surface_temperature_c'])
+    count = get_opt_float(target['count'])
+    bottom_temperature_c = get_opt_float(target['bottom_temperature_c'])
+    surface_temperature_c = get_opt_float(target['surface_temperature_c'])
     depth_m = float(target['depth_m'])
     distance_fished_km = float(target['distance_fished_km'])
     net_width_m = float(target['net_width_m'])
     net_height_m = float(target['net_height_m'])
     area_swept_ha = float(target['area_swept_ha'])
     duration_hr = float(target['duration_hr'])
-    tsn = int(target['tsn'])
+    tsn = get_opt_int(target['tsn'])
     ak_survey_id = int(target['ak_survey_id'])
 
     return Record(
