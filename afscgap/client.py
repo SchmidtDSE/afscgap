@@ -201,7 +201,7 @@ class Cursor(typing.Iterable[afscgap.model.Record]):
 
             return parsed  # type: ignore
 
-    def get_invalid(self) -> queue.Queue[dict]:
+    def get_invalid(self) -> 'queue.Queue[dict]':
         """Get a queue of invalid / incomplete records found so far.
 
         Returns:
