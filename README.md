@@ -210,10 +210,17 @@ for result in results:
 Results returned by the API for which non-Optional fields could not be parsed (like missing `year`) are considered "invalid" and always excluded during iteration when those raw unreadable records are kept in a `queue.Queue[dict]` that can be accessed via `get_invalid` like so:
 
 ```
-results = afscgap.query(year=2021)
+results = afscgap.query(year=2021, srvy='GOA')
 valid = list(results)
+
 invalid_queue = results.get_invalid()
-print(invalid_queue.qsize() / len(valid))
+percent_invalid = invalid_queue.qsize() / len(valid) * 100
+print('Percent invalid: %%%.2f' % percent_invalid)
+
+complete = filter(lambda x: x.is_complete(), valid)
+num_complete = sum(map(lambda x: 1, complete))
+percent_complete = num_complete / len(valid) * 100
+print('Percent complete: %%%.2f' % percent_complete)
 ```
 
 Note that this queue is filled during iteration (like `for result in results` or `list(results)`) and not `get_page` whose invalid record handeling behavior can be specified via the `ignore_invalid` keyword.

@@ -437,11 +437,20 @@ class Record:
         """
         return self._duration_hr
 
-    def get_tsn(self) -> OPT_INT:
+    def get_tsn(self) -> int:
         """Get the field labeled as tsn in the API.
 
         Returns:
             Taxonomic information system species code.
+        """
+        return self._assert_int_present(self._tsn)
+
+    def get_tsn_maybe(self) -> OPT_INT:
+        """Get the field labeled as tsn in the API or None.
+
+        Returns:
+            Taxonomic information system species code if it could be parsed as
+            an int and None otherwise.
         """
         return self._tsn
 
@@ -464,7 +473,7 @@ class Record:
             Catch weight divided by net area (kg / hectares) if available. See
             metadata.
         """
-        return self._assert_present(self._cpue_kgha)
+        return self._assert_float_present(self._cpue_kgha)
 
     def get_cpue_kgkm2(self) -> float:
         """Get the value of field cpue_kgkm2 with validity assert.
@@ -477,7 +486,7 @@ class Record:
             Catch weight divided by net area (kg / km^2) if available. See
             metadata.
         """
-        return self._assert_present(self._cpue_kgkm2)
+        return self._assert_float_present(self._cpue_kgkm2)
 
     def get_cpue_kg1000km2(self) -> float:
         """Get the value of field cpue_kg1000km2 with validity assert.
@@ -490,7 +499,7 @@ class Record:
             Catch weight divided by net area (kg / km^2 * 1000) if available.
             See metadata.
         """
-        return self._assert_present(self._cpue_kg1000km2)
+        return self._assert_float_present(self._cpue_kg1000km2)
 
     def get_cpue_noha(self) -> float:
         """Get the value of field cpue_noha with validity assert.
@@ -503,7 +512,7 @@ class Record:
             Catch number divided by net sweep area if available (count /
             hectares). See metadata.
         """
-        return self._assert_present(self._cpue_noha)
+        return self._assert_float_present(self._cpue_noha)
 
     def get_cpue_nokm2(self) -> float:
         """Get the value of field cpue_nokm2 with validity assert.
@@ -516,7 +525,7 @@ class Record:
             Catch number divided by net sweep area if available (count / km^2).
             See metadata.
         """
-        return self._assert_present(self._cpue_nokm2)
+        return self._assert_float_present(self._cpue_nokm2)
 
     def get_cpue_no1000km2(self) -> float:
         """Get the value of field cpue_no1000km2 with validity assert.
@@ -529,7 +538,7 @@ class Record:
             Catch number divided by net sweep area if available (count / km^2 *
             1000). See metadata.
         """
-        return self._assert_present(self._cpue_no1000km2)
+        return self._assert_float_present(self._cpue_no1000km2)
 
     def get_weight_kg(self) -> float:
         """Get the value of field weight_kg with validity assert.
@@ -541,7 +550,7 @@ class Record:
         Returns:
             Taxon weight (kg) if available. See metadata.
         """
-        return self._assert_present(self._weight_kg)
+        return self._assert_float_present(self._weight_kg)
 
     def get_count(self) -> float:
         """Get the value of field count with validity assert.
@@ -553,7 +562,7 @@ class Record:
         Returns:
             Total number of organism individuals in haul.
         """
-        return self._assert_present(self._count)
+        return self._assert_float_present(self._count)
 
     def get_bottom_temperature_c(self) -> float:
         """Get the value of field bottom_temperature_c with validity assert.
@@ -566,7 +575,7 @@ class Record:
             Bottom temperature associated with observation if available in
             Celsius.
         """
-        return self._assert_present(self._bottom_temperature_c)
+        return self._assert_float_present(self._bottom_temperature_c)
 
     def get_surface_temperature_c(self) -> float:
         """Get the value of field surface_temperature_c with validity assert.
@@ -579,7 +588,7 @@ class Record:
             Surface temperature associated with observation if available in
             Celsius. None if not
         """
-        return self._assert_present(self._surface_temperature_c)
+        return self._assert_float_present(self._surface_temperature_c)
 
     def is_complete(self) -> bool:
         """Determine if this record has all of its values filled in.
@@ -653,7 +662,11 @@ class Record:
             'ak_survey_id': self._ak_survey_id,
         }
 
-    def _assert_present(self, target: OPT_FLOAT) -> float:
+    def _assert_float_present(self, target: OPT_FLOAT) -> float:
+        assert target is not None
+        return target
+
+    def _assert_int_present(self, target: OPT_INT) -> int:
         assert target is not None
         return target
 
