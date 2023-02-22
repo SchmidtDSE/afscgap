@@ -677,7 +677,7 @@ def get_opt_float(target) -> OPT_FLOAT:
         return None
 
 
-def get_opt_int(target) -> OPT_FLOAT:
+def get_opt_int(target) -> OPT_INT:
     """Attempt to parse a value as an int, returning None if there is an error.
 
     Args:
