@@ -144,6 +144,14 @@ The dictionary form of the data can be used to create a Pandas dataframe:
 ```
 import pandas
 
+import afscgap
+
+results = afscgap.query(
+    year=2021,
+    srvy='GOA',
+    scientific_name='Pasiphaea pacifica'
+)
+
 pandas.DataFrame(results.to_dicts())
 ```
 
@@ -152,15 +160,15 @@ Note that Pandas is not required to use this library.
 <br>
 
 ### Advanced Filtering
-Finally, users may provide advanced queries using Oracle's REST API query parameters. For example, this queries for 2021 records with haul from the Gulf of Alaska roughly near [geohash](https://en.wikipedia.org/wiki/Geohash) bf1s7:
+Finally, users may provide advanced queries using Oracle's REST API query parameters. For example, this queries for 2021 records with haul from the Gulf of Alaska in a specific geograph area:
 
 ```
-import afscgap.query
+import afscgap
 
 results = afscgap.query(
     year=2021,
-    latitude_dd={'$gte': 56.99, '$lte': 57.04},
-    longitude_dd={'$gte': -143.96, '$lte': -144.01}
+    latitude_dd={'$between': [56, 57]},
+    longitude_dd={'$between': [-161, -160]}
 )
 
 count_by_common_name = {}
@@ -171,7 +179,7 @@ for record in results:
     count_by_common_name[common_name] = count
 ```
 
-For more info about the options available, consider a helpful unaffiliated [getting started tutorial from Jeff Smith](https://www.thatjeffsmith.com/archive/2019/09/some-query-filtering-examples-in-ords/).
+For more info about the options available, consider the [Oracle docs](https://docs.oracle.com/en/database/oracle/oracle-rest-data-services/19.2/aelig/developing-REST-applications.html#GUID-F0A4D4F9-443B-4EB9-A1D3-1CDE0A8BAFF2) or a helpful unaffiliated [getting started tutorial from Jeff Smith](https://www.thatjeffsmith.com/archive/2019/09/some-query-filtering-examples-in-ords/).
 
 <br>
 
@@ -186,6 +194,12 @@ Metadata fields such as `year` are always required to make a `Record` whereas ot
 ```
 results = afscgap.query(
     year=2021,
+    srvy='GOA',
+    scientific_name='Pasiphaea pacifica'
+)
+
+results = afscgap.query(
+    year=2021,
     filter_incomplete=True
 )
 
@@ -196,9 +210,10 @@ for result in results:
 Results returned by the API for which non-Optional fields could not be parsed (like missing `year`) are considered "invalid" and always excluded during iteration when those raw unreadable records are kept in a `queue.Queue[dict]` that can be accessed via `get_invalid` like so:
 
 ```
-results = list(afscgap.query(year=2021))
+results = afscgap.query(year=2021)
+valid = list(results)
 invalid_queue = results.get_invalid()
-print(invalid_queue.empty())
+print(invalid_queue.qsize() / len(valid))
 ```
 
 Note that this queue is filled during iteration (like `for result in results` or `list(results)`) and not `get_page` whose invalid record handeling behavior can be specified via the `ignore_invalid` keyword.
@@ -211,11 +226,10 @@ For investigating issues or evaluating the underlying operations, you can also r
 ```
 results = afscgap.query(
     year=2021,
-    latitude_dd={'$gt': 56.99, '$lt': 57.04},
-    longitude_dd={'$gt': -143.96, '$lt': -144.01}
+    latitude_dd={'$between': [56, 57]},
+    longitude_dd={'$between': [-161, -160]}
 )
 
-# Will print something like https://apps-st.fisheries.noaa.gov/ods/foss/afsc_groundfish_survey/?q={"year":2021,"latitude_dd":{"$gt":56.99,"$lt": 57.04},"longitude_dd":{"$gt":-143.96,"$lt":-144.01}}&limit=10&offset=0
 print(results.get_page_url(limit=10, offset=0))
 ```
 
