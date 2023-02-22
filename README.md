@@ -77,19 +77,19 @@ Note that this operation will cause multiple HTTP requests while the iterator ru
 By default, the library will iterate through all results and handle pagination behind the scenes. However, one can also request an individual page:
 
 ```
-results_for_page = results.get_page(offset=100, limit=123)
-print(len(results_for_page))  # Will print 123
-```
-
-Client code can also change the pagination behavior used when iterating:
-
-```
 results = afscgap.query(
     year=2021,
     srvy='GOA',
     scientific_name='Pasiphaea pacifica'
 )
 
+results_for_page = results.get_page(offset=20, limit=100)
+print(len(results_for_page))  # Will print 32 (results contains 52 records)
+```
+
+Client code can also change the pagination behavior used when iterating:
+
+```
 results = afscgap.query(
     year=2021,
     srvy='GOA',
@@ -134,7 +134,7 @@ for record in results_dicts:
     print(record['bottom_temperature_c'])
 ```
 
-Note `to_dicts` returns an iterator by default but it can be realized as a full list using the `list()` command.
+Note `to_dicts` returns an iterator by default, but it can be realized as a full list using the `list()` command.
 
 <br>
 
@@ -160,7 +160,7 @@ Note that Pandas is not required to use this library.
 <br>
 
 ### Advanced Filtering
-Finally, users may provide advanced queries using Oracle's REST API query parameters. For example, this queries for 2021 records with haul from the Gulf of Alaska in a specific geograph area:
+Finally, users may provide advanced queries using Oracle's REST API query parameters. For example, this queries for 2021 records with haul from the Gulf of Alaska in a specific geographic area:
 
 ```
 import afscgap
@@ -195,11 +195,7 @@ Metadata fields such as `year` are always required to make a `Record` whereas ot
 results = afscgap.query(
     year=2021,
     srvy='GOA',
-    scientific_name='Pasiphaea pacifica'
-)
-
-results = afscgap.query(
-    year=2021,
+    scientific_name='Pasiphaea pacifica',
     filter_incomplete=True
 )
 
