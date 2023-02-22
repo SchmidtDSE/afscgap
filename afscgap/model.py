@@ -22,6 +22,7 @@ import re
 import typing
 
 from afscgap.util import OPT_FLOAT
+from afscgap.util import OPT_INT
 
 # pylint: disable=C0301
 DATE_REGEX = re.compile('(?P<month>\\d{2})\\/(?P<day>\\d{2})\\/(?P<year>\\d{4}) (?P<hours>\\d{2})\\:(?P<minutes>\\d{2})\\:(?P<seconds>\\d{2})')
@@ -43,7 +44,7 @@ class Record:
         count: OPT_FLOAT, bottom_temperature_c: OPT_FLOAT,
         surface_temperature_c: OPT_FLOAT, depth_m: float,
         distance_fished_km: float, net_width_m: float, net_height_m: float,
-        area_swept_ha: float, duration_hr: float, tsn: int,
+        area_swept_ha: float, duration_hr: float, tsn: OPT_INT,
         ak_survey_id: int):
         """Create a new record.
 
@@ -436,7 +437,7 @@ class Record:
         """
         return self._duration_hr
 
-    def get_tsn(self) -> int:
+    def get_tsn(self) -> OPT_INT:
         """Get the field labeled as tsn in the API.
 
         Returns:
@@ -597,7 +598,8 @@ class Record:
             self._weight_kg,
             self._count,
             self._bottom_temperature_c,
-            self._surface_temperature_c
+            self._surface_temperature_c,
+            self._tsn
         ]
 
         has_none = None in optional_fields
@@ -669,6 +671,25 @@ def get_opt_float(target) -> OPT_FLOAT:
     if target:
         try:
             return float(target)
+        except ValueError:
+            return None
+    else:
+        return None
+
+
+def get_opt_int(target) -> OPT_FLOAT:
+    """Attempt to parse a value as an int, returning None if there is an error.
+
+    Args:
+        target: The value to try to interpret as an int.
+
+    Returns:
+        The value of target as an int or None if there was an issue in parsing
+        like that target is None.
+    """
+    if target:
+        try:
+            return int(target)
         except ValueError:
             return None
     else:
@@ -761,16 +782,16 @@ def parse_record(target: dict) -> Record:
     cpue_nokm2 = get_opt_float(target['cpue_nokm2'])
     cpue_no1000km2 = get_opt_float(target['cpue_no1000km2'])
     weight_kg = get_opt_float(target['weight_kg'])
-    count = float(target['count'])
-    bottom_temperature_c = float(target['bottom_temperature_c'])
-    surface_temperature_c = float(target['surface_temperature_c'])
+    count = get_opt_float(target['count'])
+    bottom_temperature_c = get_opt_float(target['bottom_temperature_c'])
+    surface_temperature_c = get_opt_float(target['surface_temperature_c'])
     depth_m = float(target['depth_m'])
     distance_fished_km = float(target['distance_fished_km'])
     net_width_m = float(target['net_width_m'])
     net_height_m = float(target['net_height_m'])
     area_swept_ha = float(target['area_swept_ha'])
     duration_hr = float(target['duration_hr'])
-    tsn = int(target['tsn'])
+    tsn = get_opt_int(target['tsn'])
     ak_survey_id = int(target['ak_survey_id'])
 
     return Record(

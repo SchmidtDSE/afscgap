@@ -32,37 +32,41 @@ This library provides access to the public API endpoints with query keywords mat
 <br>
 
 ### Basic Usage
-For example, this requests all records of Pasiphaea pacifica in 2021 from the Gulf of Alaska to get the median bottom temperature:
+For example, this requests all records of Pasiphaea pacifica in 2021 from the Gulf of Alaska to get the median bottom temperature when they were observed:
 
 ```
 import statistics
 
 import afscgap
 
-result = afscgap.query(
+results = afscgap.query(
     year=2021,
     srvy='GOA',
     scientific_name='Pasiphaea pacifica'
 )
 
-temperatures = [record.get_bottom_temperature() for record in result]
+temperatures = [record.get_bottom_temperature_c() for record in results]
 print(statistics.median(temperatures))
 ```
 
-Using an iterator will have the library negotiate pagination behind the scenes:
+Using an iterator will have the library negotiate pagination behind the scenes. You can do this with list comprehensions, maps, etc or with a good old for loop like in this example which gets a histogram of temperatures:
 
 ```
-count_by_common_name = {}
+count_by_temperature_c = {}
 
-result = afscgap.query(
+results = afscgap.query(
     year=2021,
-    srvy='BSS'
+    srvy='GOA',
+    scientific_name='Pasiphaea pacifica'
 )
 
-for record in result:
-    common_name = record.get_common_name()
-    count = count_by_common_name.get(common_name, 0) + 1
-    count_by_common_name[common_name] = count
+for record in results:
+    temp = record.get_bottom_temperature_c()
+    temp_rounded = round(temp)
+    count = count_by_temperature_c.get(temp_rounded, 0) + 1
+    count_by_temperature_c[temp_rounded] = count
+
+print(count_by_temperature_c)
 ```
 
 Note that this operation will cause multiple HTTP requests while the iterator runs.
@@ -73,17 +77,29 @@ Note that this operation will cause multiple HTTP requests while the iterator ru
 By default, the library will iterate through all results and handle pagination behind the scenes. However, one can also request an individual page:
 
 ```
-results_for_page = result.get_page(offset=100, limit=123)
+results_for_page = results.get_page(offset=100, limit=123)
 print(len(results_for_page))  # Will print 123
 ```
 
 Client code can also change the pagination behavior used when iterating:
 
 ```
-results = afscgap.query(year=2021, srvy='BSS', offset=100, limit_per_page=200)
+results = afscgap.query(
+    year=2021,
+    srvy='GOA',
+    scientific_name='Pasiphaea pacifica'
+)
+
+results = afscgap.query(
+    year=2021,
+    srvy='GOA',
+    scientific_name='Pasiphaea pacifica',
+    start_offset=10,
+    limit=200
+)
 
 for record in results:
-    print(record.get_common_name())
+    print(record.get_bottom_temperature_c())
 ```
 
 Note that records are only requested once during iteration and only after the prior page has been returned via the iterator ("lazy" loading).
@@ -94,13 +110,28 @@ Note that records are only requested once during iteration and only after the pr
 Users may request a dictionary representation:
 
 ```
+results = afscgap.query(
+    year=2021,
+    srvy='GOA',
+    scientific_name='Pasiphaea pacifica'
+)
+
 # Get dictionary from individual record
-for record in result:
-    common_name = record.to_dict()
+for record in results:
+    dict_representation = record.to_dict()
+    print(dict_representation['bottom_temperature_c'])
+
+results = afscgap.query(
+    year=2021,
+    srvy='GOA',
+    scientific_name='Pasiphaea pacifica'
+)
 
 # Get dictionary for all records
-results_dicts = result.to_dicts()
-print(results_dicts[0]['common_name'])
+results_dicts = results.to_dicts()
+
+for record in results_dicts:
+    print(record['bottom_temperature_c'])
 ```
 
 Note `to_dicts` returns an iterator by default but it can be realized as a full list using the `list()` command.
@@ -131,6 +162,13 @@ results = afscgap.query(
     latitude_dd={'$gte': 56.99, '$lte': 57.04},
     longitude_dd={'$gte': -143.96, '$lte': -144.01}
 )
+
+count_by_common_name = {}
+
+for record in results:
+    common_name = record.get_common_name()
+    count = count_by_common_name.get(common_name, 0) + 1
+    count_by_common_name[common_name] = count
 ```
 
 For more info about the options available, consider a helpful unaffiliated [getting started tutorial from Jeff Smith](https://www.thatjeffsmith.com/archive/2019/09/some-query-filtering-examples-in-ords/).
@@ -171,14 +209,14 @@ Note that this queue is filled during iteration (like `for result in results` or
 For investigating issues or evaluating the underlying operations, you can also request a full URL for a query:
 
 ```
-result = afscgap.query(
+results = afscgap.query(
     year=2021,
     latitude_dd={'$gt': 56.99, '$lt': 57.04},
     longitude_dd={'$gt': -143.96, '$lt': -144.01}
 )
 
 # Will print something like https://apps-st.fisheries.noaa.gov/ods/foss/afsc_groundfish_survey/?q={"year":2021,"latitude_dd":{"$gt":56.99,"$lt": 57.04},"longitude_dd":{"$gt":-143.96,"$lt":-144.01}}&limit=10&offset=0
-print(result.get_page_url(limit=10, offset=0))
+print(results.get_page_url(limit=10, offset=0))
 ```
 
 The query can be executed by making an HTTP GET request at the provided location.
