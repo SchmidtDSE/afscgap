@@ -32,23 +32,43 @@ This library provides access to the public API endpoints with query keywords mat
 <br>
 
 ### Basic Usage
-For example, this requests all records in 2021 from the Gulf of Alaska:
+For example, this requests all records of Pasiphaea pacifica in 2021 from the Gulf of Alaska to get the median bottom temperature when they were observed:
 
 ```
+import statistics
+
 import afscgap
 
-result = afscgap.query(year=2021, srvy='BSS')
+results = afscgap.query(
+    year=2021,
+    srvy='GOA',
+    scientific_name='Pasiphaea pacifica'
+)
+
+temperatures = [record.get_bottom_temperature_c() for record in results]
+print(statistics.median(temperatures))
 ```
 
-Using an iterator will have the library negotiate pagination behind the scenes:
+Note that `afscgap.query` is the main entry point which returns `Record` objects whose fields and methods are defined in the [data structure section](https://github.com/SchmidtDSE/afscgap#data-structure).
+
+Using an iterator will have the library negotiate pagination behind the scenes. You can do this with list comprehensions, maps, etc or with a good old for loop like in this example which gets a histogram of temperatures:
 
 ```
-count_by_common_name = {}
+count_by_temperature_c = {}
 
-for record in result:
-    common_name = record.get_common_name()
-    count = count_by_common_name.get(common_name, 0) + 1
-    count_by_common_name[common_name] = count
+results = afscgap.query(
+    year=2021,
+    srvy='GOA',
+    scientific_name='Pasiphaea pacifica'
+)
+
+for record in results:
+    temp = record.get_bottom_temperature_c()
+    temp_rounded = round(temp)
+    count = count_by_temperature_c.get(temp_rounded, 0) + 1
+    count_by_temperature_c[temp_rounded] = count
+
+print(count_by_temperature_c)
 ```
 
 Note that this operation will cause multiple HTTP requests while the iterator runs.
@@ -59,17 +79,29 @@ Note that this operation will cause multiple HTTP requests while the iterator ru
 By default, the library will iterate through all results and handle pagination behind the scenes. However, one can also request an individual page:
 
 ```
-results_for_page = result.get_page(offset=100, limit=123)
-print(len(results_for_page))  # Will print 123
+results = afscgap.query(
+    year=2021,
+    srvy='GOA',
+    scientific_name='Pasiphaea pacifica'
+)
+
+results_for_page = results.get_page(offset=20, limit=100)
+print(len(results_for_page))  # Will print 32 (results contains 52 records)
 ```
 
 Client code can also change the pagination behavior used when iterating:
 
 ```
-results = afscgap.query(year=2021, srvy='BSS', offset=100, limit_per_page=200)
+results = afscgap.query(
+    year=2021,
+    srvy='GOA',
+    scientific_name='Pasiphaea pacifica',
+    start_offset=10,
+    limit=200
+)
 
 for record in results:
-    print(record.get_common_name())
+    print(record.get_bottom_temperature_c())
 ```
 
 Note that records are only requested once during iteration and only after the prior page has been returned via the iterator ("lazy" loading).
@@ -80,16 +112,31 @@ Note that records are only requested once during iteration and only after the pr
 Users may request a dictionary representation:
 
 ```
+results = afscgap.query(
+    year=2021,
+    srvy='GOA',
+    scientific_name='Pasiphaea pacifica'
+)
+
 # Get dictionary from individual record
-for record in result:
-    common_name = record.to_dict()
+for record in results:
+    dict_representation = record.to_dict()
+    print(dict_representation['bottom_temperature_c'])
+
+results = afscgap.query(
+    year=2021,
+    srvy='GOA',
+    scientific_name='Pasiphaea pacifica'
+)
 
 # Get dictionary for all records
-results_dicts = result.to_dicts()
-print(results_dicts[0]['common_name'])
+results_dicts = results.to_dicts()
+
+for record in results_dicts:
+    print(record['bottom_temperature_c'])
 ```
 
-Note `to_dicts` returns an iterator by default but it can be realized as a full list using the `list()` command.
+Note `to_dicts` returns an iterator by default, but it can be realized as a full list using the `list()` command.
 
 <br>
 
@@ -99,6 +146,14 @@ The dictionary form of the data can be used to create a Pandas dataframe:
 ```
 import pandas
 
+import afscgap
+
+results = afscgap.query(
+    year=2021,
+    srvy='GOA',
+    scientific_name='Pasiphaea pacifica'
+)
+
 pandas.DataFrame(results.to_dicts())
 ```
 
@@ -107,19 +162,26 @@ Note that Pandas is not required to use this library.
 <br>
 
 ### Advanced Filtering
-Finally, users may provide advanced queries using Oracle's REST API query parameters. For example, this queries for 2021 records with haul from the Gulf of Alaska roughly near [geohash](https://en.wikipedia.org/wiki/Geohash) bf1s7:
+Finally, users may provide advanced queries using Oracle's REST API query parameters. For example, this queries for 2021 records with haul from the Gulf of Alaska in a specific geographic area:
 
 ```
-import afscgap.query
+import afscgap
 
 results = afscgap.query(
     year=2021,
-    latitude_dd={'$gte': 56.99, '$lte': 57.04},
-    longitude_dd={'$gte': -143.96, '$lte': -144.01}
+    latitude_dd={'$between': [56, 57]},
+    longitude_dd={'$between': [-161, -160]}
 )
+
+count_by_common_name = {}
+
+for record in results:
+    common_name = record.get_common_name()
+    count = count_by_common_name.get(common_name, 0) + 1
+    count_by_common_name[common_name] = count
 ```
 
-For more info about the options available, consider a helpful unaffiliated [getting started tutorial from Jeff Smith](https://www.thatjeffsmith.com/archive/2019/09/some-query-filtering-examples-in-ords/).
+For more info about the options available, consider the [Oracle docs](https://docs.oracle.com/en/database/oracle/oracle-rest-data-services/19.2/aelig/developing-REST-applications.html#GUID-F0A4D4F9-443B-4EB9-A1D3-1CDE0A8BAFF2) or a helpful unaffiliated [getting started tutorial from Jeff Smith](https://www.thatjeffsmith.com/archive/2019/09/some-query-filtering-examples-in-ords/).
 
 <br>
 
@@ -134,6 +196,8 @@ Metadata fields such as `year` are always required to make a `Record` whereas ot
 ```
 results = afscgap.query(
     year=2021,
+    srvy='GOA',
+    scientific_name='Pasiphaea pacifica',
     filter_incomplete=True
 )
 
@@ -144,12 +208,20 @@ for result in results:
 Results returned by the API for which non-Optional fields could not be parsed (like missing `year`) are considered "invalid" and always excluded during iteration when those raw unreadable records are kept in a `queue.Queue[dict]` that can be accessed via `get_invalid` like so:
 
 ```
-results = list(afscgap.query(year=2021))
+results = afscgap.query(year=2021, srvy='GOA')
+valid = list(results)
+
 invalid_queue = results.get_invalid()
-print(invalid_queue.empty())
+percent_invalid = invalid_queue.qsize() / len(valid) * 100
+print('Percent invalid: %%%.2f' % percent_invalid)
+
+complete = filter(lambda x: x.is_complete(), valid)
+num_complete = sum(map(lambda x: 1, complete))
+percent_complete = num_complete / len(valid) * 100
+print('Percent complete: %%%.2f' % percent_complete)
 ```
 
-Note that this queue is filled during iteration (like `for result in results` or `list(results)`) and not `get_page` whose invalid record handeling behavior can be specified via the `ignore_invalid` keyword.
+Note that this queue is filled during iteration (like `for result in results` or `list(results)`) and not `get_page` whose invalid record handling behavior can be specified via the `ignore_invalid` keyword.
 
 <br>
 
@@ -157,14 +229,13 @@ Note that this queue is filled during iteration (like `for result in results` or
 For investigating issues or evaluating the underlying operations, you can also request a full URL for a query:
 
 ```
-result = afscgap.query(
+results = afscgap.query(
     year=2021,
-    latitude_dd={'$gt': 56.99, '$lt': 57.04},
-    longitude_dd={'$gt': -143.96, '$lt': -144.01}
+    latitude_dd={'$between': [56, 57]},
+    longitude_dd={'$between': [-161, -160]}
 )
 
-# Will print something like https://apps-st.fisheries.noaa.gov/ods/foss/afsc_groundfish_survey/?q={"year":2021,"latitude_dd":{"$gt":56.99,"$lt": 57.04},"longitude_dd":{"$gt":-143.96,"$lt":-144.01}}&limit=10&offset=0
-print(result.get_page_url(limit=10, offset=0))
+print(results.get_page_url(limit=10, offset=0))
 ```
 
 The query can be executed by making an HTTP GET request at the provided location.
@@ -173,7 +244,7 @@ The query can be executed by making an HTTP GET request at the provided location
 <br>
 
 ## Data structure
-The schmea drive the getters and filters available on in the library.
+The schema drives the getters and filters available on in the library.
 
 <br>
 
@@ -225,7 +296,7 @@ For more information on the schema, see the [metadata](https://github.com/afsc-g
 
 ### Filters and getters
 
-These fields are avilable as getters on `afscgap.model.Record` (`result.get_srvy()`) and may be used as optional filters on the query `asfcgagp.query(srvy='GOA')`. Fields which are `Optional` have two getters. First, the "regular" getter (`result.get_count()`) will assert that the field is not None before returning a non-optional. The second "maybe" getter (`result.get_count_maybe()`) will return None if the value was not provided or could not be parsed.
+These fields are available as getters on `afscgap.model.Record` (`result.get_srvy()`) and may be used as optional filters on the query `asfcgagp.query(srvy='GOA')`. Fields which are `Optional` have two getters. First, the "regular" getter (`result.get_count()`) will assert that the field is not None before returning a non-optional. The second "maybe" getter (`result.get_count_maybe()`) will return None if the value was not provided or could not be parsed.
 
 | **Filter keyword**    | **Regular Getter**                   | **Maybe Getter**                                     |
 |-----------------------|--------------------------------------|------------------------------------------------------|
@@ -245,17 +316,17 @@ These fields are avilable as getters on `afscgap.model.Record` (`result.get_srvy
 | species_code          | get_species_code() -> float          |                                                      |
 | common_name           | get_common_name() -> str             |                                                      |
 | scientific_name       | get_scientific_name() -> str         |                                                      |
-| taxon_confidence      | get_taxon_confidence() -> str        | get_cpue_kgha_maybe() -> Optional[float]             |
-| cpue_kgha             | get_cpue_kgha() -> float             | get_cpue_kgkm2_maybe() -> Optional[float]            |
-| cpue_kgkm2            | get_cpue_kgkm2() -> float            | get_cpue_kg1000km2_maybe() -> Optional[float]        |
-| cpue_kg1000km2        | get_cpue_kg1000km2() -> float        | get_cpue_noha_maybe() -> Optional[float]             |
-| cpue_noha             | get_cpue_noha() -> float             | get_cpue_nokm2_maybe() -> Optional[float]            |
-| cpue_nokm2            | get_cpue_nokm2() -> float            | get_cpue_no1000km2_maybe() -> Optional[float]        |
-| cpue_no1000km2        | get_cpue_no1000km2() -> float        | get_weight_kg_maybe() -> Optional[float]             |
-| weight_kg             | get_weight_kg() -> float             | get_count_maybe() -> Optional[float]                 |
-| count                 | get_count() -> float                 | get_bottom_temperature_c_maybe() -> Optional[float]  |
-| bottom_temperature_c  | get_bottom_temperature_c() -> float  | get_surface_temperature_c_maybe() -> Optional[float] |
-| surface_temperature_c | get_surface_temperature_c() -> float | get_surface_temperature_c() -> Optional[float]       |
+| taxon_confidence      | get_taxon_confidence() -> str        |                                                      |
+| cpue_kgha             | get_cpue_kgha() -> float             | get_cpue_kgha_maybe() -> Optional[float]             |
+| cpue_kgkm2            | get_cpue_kgkm2() -> float            | get_cpue_kgkm2_maybe() -> Optional[float]            |
+| cpue_kg1000km2        | get_cpue_kg1000km2() -> float        | get_cpue_kg1000km2_maybe() -> Optional[float]        |
+| cpue_noha             | get_cpue_noha() -> float             | get_cpue_noha_maybe() -> Optional[float]             |
+| cpue_nokm2            | get_cpue_nokm2() -> float            | get_cpue_nokm2_maybe() -> Optional[float]            |
+| cpue_no1000km2        | get_cpue_no1000km2() -> float        | get_cpue_no1000km2_maybe() -> Optional[float]        |
+| weight_kg             | get_weight_kg() -> float             | get_weight_kg_maybe() -> Optional[float]             |
+| count                 | get_count() -> float                 | get_count_maybe() -> Optional[float]                 |
+| bottom_temperature_c  | get_bottom_temperature_c() -> float  | get_bottom_temperature_c_maybe() -> Optional[float]  |
+| surface_temperature_c | get_surface_temperature_c() -> float | get_surface_temperature_c_maybe() -> Optional[float] |
 | depth_m               | get_depth_m() -> float               |                                                      |
 | distance_fished_km    | get_distance_fished_km() -> float    |                                                      |
 | net_width_m           | get_net_width_m() -> float           |                                                      |
@@ -265,7 +336,7 @@ These fields are avilable as getters on `afscgap.model.Record` (`result.get_srvy
 | tsn                   | get_tsn() -> int                     |                                                      |
 | ak_survey_id          | get_ak_survey_id() -> int            |                                                      |
 
-`Record` objects also have a `is_complete` method which returns true if all of the fields with an `Optional` type are non-None and the `date_time` could be parsed and made into an ISO 8601 string.
+`Record` objects also have a `is_complete` method which returns true if all the fields with an `Optional` type are non-None and the `date_time` could be parsed and made into an ISO 8601 string.
 
 <br>
 <br>
