@@ -32,18 +32,27 @@ This library provides access to the public API endpoints with query keywords mat
 <br>
 
 ### Basic Usage
-For example, this requests all records in 2021 from the Gulf of Alaska:
+For example, this requests all records of Pasiphaea pacifica in 2021 from the Gulf of Alaska:
 
 ```
 import afscgap
 
-result = afscgap.query(year=2021, srvy='BSS')
+result = afscgap.query(
+    year=2021,
+    srvy='BSS',
+    scientific_name='Pasiphaea pacifica'
+)
 ```
 
 Using an iterator will have the library negotiate pagination behind the scenes:
 
 ```
 count_by_common_name = {}
+
+result = afscgap.query(
+    year=2021,
+    srvy='BSS'
+)
 
 for record in result:
     common_name = record.get_common_name()
