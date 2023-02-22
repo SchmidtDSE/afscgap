@@ -49,6 +49,8 @@ temperatures = [record.get_bottom_temperature_c() for record in results]
 print(statistics.median(temperatures))
 ```
 
+Note that `afscgap.query` is the main entry point which returns `Record` objects whose fields and methods are defined in the [data structure section](https://github.com/SchmidtDSE/afscgap#data-structure).
+
 Using an iterator will have the library negotiate pagination behind the scenes. You can do this with list comprehensions, maps, etc or with a good old for loop like in this example which gets a histogram of temperatures:
 
 ```
