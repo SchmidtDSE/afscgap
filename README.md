@@ -32,16 +32,21 @@ This library provides access to the public API endpoints with query keywords mat
 <br>
 
 ### Basic Usage
-For example, this requests all records of Pasiphaea pacifica in 2021 from the Gulf of Alaska:
+For example, this requests all records of Pasiphaea pacifica in 2021 from the Gulf of Alaska to get the median bottom temperature:
 
 ```
+import statistics
+
 import afscgap
 
 result = afscgap.query(
     year=2021,
-    srvy='BSS',
+    srvy='GOA',
     scientific_name='Pasiphaea pacifica'
 )
+
+temperatures = [record.get_bottom_temperature() for record in result]
+print(statistics.median(temperatures))
 ```
 
 Using an iterator will have the library negotiate pagination behind the scenes:
