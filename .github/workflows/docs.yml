@@ -4,7 +4,9 @@
 name: docs
 
 on:
-  [push]
+  push:
+    branches:
+      - main
 
 permissions:
   contents: read
