@@ -1,13 +1,29 @@
 # AFSC GAP for Python
 Microlibrary for pythonic interaction with the public bottom trawl surveys data from the [NOAA AFSC GAP](https://www.fisheries.noaa.gov/contact/groundfish-assessment-program).
 
+![build workflow status](https://github.com/SchmidtDSE/afscgap/actions/workflows/build.yml/badge.svg?branch=main)
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+[![Python 3.7+](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/release/python-370/)
+[![Pypi Badge](https://img.shields.io/pypi/v/afscgap)](https://pypi.org/project/afscgap/)
+![docs](https://github.com/SchmidtDSE/afscgap/actions/workflows/docs.yml/badge.svg?branch=main)
+
 <br>
 <br>
 
 ## Purpose
-Unofficial microlibrary for interacting with the API for [bottom trawl surveys](https://www.fisheries.noaa.gov/alaska/commercial-fishing/alaska-groundfish-bottom-trawl-survey-data) from the [Ground Fish Assessment Program (GAP)](https://www.fisheries.noaa.gov/contact/groundfish-assessment-program), a dataset produced by the [Resource Assessment and Conservation Engineering (RACE) Division](https://www.fisheries.noaa.gov/about/resource-assessment-and-conservation-engineering-division) of the [Alaska Fisheries Science Center (AFSC)](https://www.fisheries.noaa.gov/about/alaska-fisheries-science-center) as part of the National Oceanic and Atmospheric Administration ([NOAA Fisheries](https://www.fisheries.noaa.gov/)).
+Unofficial microlibrary for interacting with the API for [bottom trawl surveys](https://www.fisheries.noaa.gov/alaska/commercial-fishing/alaska-groundfish-bottom-trawl-survey-data) from the [Ground Fish Assessment Program (GAP)](https://www.fisheries.noaa.gov/contact/groundfish-assessment-program), a dataset produced by the [Resource Assessment and Conservation Engineering (RACE) Division](https://www.fisheries.noaa.gov/about/resource-assessment-and-conservation-engineering-division) of the [Alaska Fisheries Science Center (AFSC)](https://www.fisheries.noaa.gov/about/alaska-fisheries-science-center) as part of the National Oceanic and Atmospheric Administration's Fisheries organization ([NOAA Fisheries](https://www.fisheries.noaa.gov/)).
 
-This low-dependency library provides a Python interface to these data with ability to query with filters and pagination, providing results in various formats compatible with different Python usage modalities (Pandas, pure-Python, etc). It adapts the [Oracle REST Data Service](https://www.oracle.com/database/technologies/appdev/rest.html) used by the agency with Python type hints for easy query and interface.
+<br>
+
+### Need
+Scientists and developers working on ocean health have an interest in survey data from organizations like [NOAA Fisheries](https://www.fisheries.noaa.gov/). However, interacting with the GAP API from NOAA AFSC in Python requires understanding a complex schema, how to interact with a proprietary REST data service, forming long query URLs, and navigating pagination. These various elements together may increase the barrier for working with these data, limiting their reach within the Python community.
+
+<br>
+
+### Goal
+This low-dependency library provides a type-annoated and documented Python interface to these data with ability to query with filters and pagination, providing results in various formats compatible with different Python usage modalities (Pandas, pure-Python, etc).
+
+It adapts the [Oracle REST Data Service](https://www.oracle.com/database/technologies/appdev/rest.html) used by the agency with Python type hints for easy query and interface. Furthermore, Python docstrings annotate the data structures provided by the API to help users navigate the various fields avilable, offering contextual documentation when supported by Python IDEs.
 
 Though not intended to be general, this project also provides an example for working with [Oracle REST Data Services (ORDS)](https://www.oracle.com/database/technologies/appdev/rest.html) APIs in Python.
 
@@ -287,7 +303,7 @@ A Python-typed description of the fields is provided below.
 | net_height_m          | float           | Height of the net fished as m. |
 | area_swept_ha         | float           | Area covered by the net while fishing in hectares. |
 | duration_hr           | float           | Duration of the haul as number of hours. |
-| tsn                   | int             | Taxonomic information system species code. |
+| tsn                   | Optional[int]   | Taxonomic information system species code. |
 | ak_survey_id          | int             | AK identifier for the survey. |
 
 For more information on the schema, see the [metadata](https://github.com/afsc-gap-products/metadata) repository but note that the fields may be slightly different in the Python library per what is actually returned by the API.
@@ -333,7 +349,7 @@ These fields are available as getters on `afscgap.model.Record` (`result.get_srv
 | net_height_m          | get_net_height_m() -> float          |                                                      |
 | area_swept_ha         | get_area_swept_ha() -> float         |                                                      |
 | duration_hr           | get_duration_hr() -> float           |                                                      |
-| tsn                   | get_tsn() -> int                     |                                                      |
+| tsn                   | get_tsn() -> int                     | get_tsn_maybe() -> Optional[int]                     |
 | ak_survey_id          | get_ak_survey_id() -> int            |                                                      |
 
 `Record` objects also have a `is_complete` method which returns true if all the fields with an `Optional` type are non-None and the `date_time` could be parsed and made into an ISO 8601 string.
@@ -348,21 +364,45 @@ at UC Berkeley](https://dse.berkeley.edu).
 <br>
 <br>
 
-## Developing
-Thanks for your support! Pull requests and issues very welcome. We have a few guidelines:
+## Community
+Thanks for your support! Pull requests and issues very welcome.
+
+<br>
+
+### Contribution guidelines
+We have a few guidelines:
 
  - Please follow the Google Python Style Guide where possible for compatibility with the existing codebase.
  - Tests are encouraged and we aim for 80% coverage where feasible.
  - Type hints are encouraged and we aim for 80% coverage where feasible.
  - Docstrings are encouraged and we aim for 80% coverage.
  - Please check that you have no mypy errors when contributing.
- - Please check that you have no pylint errors when contributing.
+ - Please check that you have no linting (pycodestyle, pyflakes) errors when contributing.
  - As contributors may be periodic, please do not re-write history / squash commits for ease of fast forward.
+ - Open source is an act of love. Please be kind and respectful of all contributors at all levels.
 
 Note that imports should be in alphabetical order in groups of standard library, third-party, and then first party. It is an explicit goal to provide a class with type hints for all record fields. Getters on an immutable record object are encouraged as to enable use of the type system and docstrings for understanding the data structures. Data structures have been used that could allow for threaded request but everything is currently single threaded.
+
+<br>
+
+### Contacts
+[Sam Pottinger](https://github.com/sampottinger) is the primary contact. Thanks to [Giulia Zarpellon](https://github.com/gizarp) and [Carl Boettiger](https://github.com/cboettig) for their contributions. This is a project of the [The Eric and Wendy Schmidt Center for Data Science and the Environment
+at UC Berkeley](https://dse.berkeley.edu). Please contact us via dse@berkeley.edu.
 
 <br>
 <br>
 
 ## Open Source
-We are happy to be part of the open source community. At this time, the only open source dependency used by this microlibrary is [Requests](https://docs.python-requests.org/en/latest/index.html) which is available under the [Apache v2 License](https://github.com/psf/requests/blob/main/LICENSE) from its [Kenneth Reitz and other contributors](https://github.com/psf/requests/graphs/contributors).
+We are happy to be part of the open source community.
+
+At this time, the only open source dependency used by this microlibrary is [Requests](https://docs.python-requests.org/en/latest/index.html) which is available under the [Apache v2 License](https://github.com/psf/requests/blob/main/LICENSE) from [Kenneth Reitz and other contributors](https://github.com/psf/requests/graphs/contributors).
+
+Our build and documentation systems also use the following but are not distributed with or linked to the project itself:
+
+ - [mypy](https://github.com/python/mypy) under the [MIT License](https://github.com/python/mypy/blob/master/LICENSE) from Jukka Lehtosalo, Dropbox, and other contributors.
+ - [nose2](https://docs.nose2.io/en/latest/index.html) under a [BSD license](https://github.com/nose-devs/nose2/blob/main/license.txt) from Jason Pellerin and other contributors.
+ - [pdoc](https://github.com/mitmproxy/pdoc) under the [Unlicense license](https://github.com/mitmproxy/pdoc/blob/main/LICENSE) from [Andrew Gallant](https://github.com/BurntSushi) and [Maximilian Hils](https://github.com/mhils).
+ - [pycodestyle](https://pycodestyle.pycqa.org/en/latest/) under the [Expat License](https://github.com/PyCQA/pycodestyle/blob/main/LICENSE) from Johann C. Rocholl, Florent Xicluna, and Ian Lee.
+ - [pyflakes](https://github.com/PyCQA/pyflakes) under the [MIT License](https://github.com/PyCQA/pyflakes/blob/main/LICENSE) from Divmod, Florent Xicluna, and other contributors.
+
+Thank you to all of these projects for their contribution.

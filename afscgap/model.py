@@ -7,16 +7,16 @@ at UC Berkeley.
 This file is part of afscgap.
 
 Afscgap is free software: you can redistribute it and/or modify it under the
-terms of the GNU Lesser General Public License as published by the Free Software 
+terms of the GNU Lesser General Public License as published by the Free Software
 Foundation, either version 3 of the License, or (at your option) any later
 version.
 
-Afscgap is distributed in the hope that it will be useful, but WITHOUT ANY 
-WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+Afscgap is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Lesser General Public License along 
-with Afscgap. If not, see <https://www.gnu.org/licenses/>. 
+You should have received a copy of the GNU Lesser General Public License along
+with Afscgap. If not, see <https://www.gnu.org/licenses/>.
 """
 import re
 import typing
@@ -24,10 +24,13 @@ import typing
 from afscgap.util import OPT_FLOAT
 from afscgap.util import OPT_INT
 
-# pylint: disable=C0301
-DATE_REGEX = re.compile('(?P<month>\\d{2})\\/(?P<day>\\d{2})\\/(?P<year>\\d{4}) (?P<hours>\\d{2})\\:(?P<minutes>\\d{2})\\:(?P<seconds>\\d{2})')
+DATE_REGEX = re.compile('(?P<month>\\d{2})\\/(?P<day>\\d{2})\\/' + \
+    '(?P<year>\\d{4}) (?P<hours>\\d{2})\\:(?P<minutes>\\d{2})\\:' + \
+    '(?P<seconds>\\d{2})')
 DATE_TEMPLATE = '%s/%s/%s %s:%s:%s'
-ISO_8601_REGEX = re.compile('(?P<year>\\d{4})\\-(?P<month>\\d{2})\\-(?P<day>\\d{2})T(?P<hours>\\d{2})\\:(?P<minutes>\\d{2})\\:(?P<seconds>\\d{2})')
+ISO_8601_REGEX = re.compile('(?P<year>\\d{4})\\-(?P<month>\\d{2})\\-' + \
+    '(?P<day>\\d{2})T(?P<hours>\\d{2})\\:(?P<minutes>\\d{2})\\:' + \
+    '(?P<seconds>\\d{2})')
 ISO_8601_TEMPLATE = '%s-%s-%sT%s:%s:%s'
 
 
@@ -277,7 +280,7 @@ class Record:
 
         Returns:
             The “common name” associated with the species observed. Example:
-            Pacific glass shrimp 
+            Pacific glass shrimp.
         """
         return self._common_name
 
@@ -286,7 +289,7 @@ class Record:
 
         Returns:
             The “scientific name” associated with the species observed. Example:
-            Pasiphaea pacifica 
+            Pasiphaea pacifica.
         """
         return self._scientific_name
 
