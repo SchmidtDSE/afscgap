@@ -1,12 +1,16 @@
 """
-Main entrypoint into the afscgap library which allows for Pythonic access to the
-interacting with AFSC GAP. This contains everything needed by client code to
-interact with the library.
+.. include:: ../README.md
 
+<br>
+<br>
 
-Note that this library supports Pythonic utilization of the API for the Ground
-Fish Assessment Program (GAP), a dataset  produced by the Resource Assessment
-and Conservation Engineering (RACE) Division  of the Alaska Fisheries Science
+# API docs
+
+Library which allows for Pythonic access to the interacting with AFSC GAP.
+
+This library supports Pythonic utilization of the API for the Ground
+Fish Assessment Program (GAP), a dataset produced by the Resource Assessment
+and Conservation Engineering (RACE) Division of the Alaska Fisheries Science
 Center (AFSC) as part of the National Oceanic and Atmospheric Administration
 (NOAA Fisheries). Note that this is a community-provided library and is not
 officially endorsed by NOAA.
@@ -28,7 +32,6 @@ PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU Lesser General Public License along 
 with Afscgap. If not, see <https://www.gnu.org/licenses/>. 
 """
-import json
 import typing
 
 import afscgap.client

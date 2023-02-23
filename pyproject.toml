@@ -22,4 +22,4 @@ afscgap = ["py.typed"]
 "Bug Tracker" = "https://github.com/SchmidtDSE/afscgap/issues"
 
 [project.optional-dependencies]
-dev = ["nose2", "mypy", "pylint", "types-requests"]
+dev = ["nose2", "mypy", "pyflakes", "types-requests", "pdoc"]

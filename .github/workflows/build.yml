@@ -20,4 +20,4 @@ jobs:
       - name: Check types
         run: mypy **/*.py
       - name: Lint
-        run: pylint **/*.py
+        run: pyflakes **/*.py
