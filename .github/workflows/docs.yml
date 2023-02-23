@@ -1,7 +1,7 @@
 # Thanks https://github.com/mitmproxy/pdoc/blob/main/.github/workflows/docs.yml
 # Under the unlicense license (https://github.com/mitmproxy/pdoc/blob/main/LICENSE).
 
-name: website
+name: docs
 
 on:
   push:
