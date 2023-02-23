@@ -10,7 +10,7 @@ Unofficial microlibrary for interacting with the API for [bottom trawl surveys](
 <br>
 
 ### Need
-Scientists and developers interacting with the GAP API from NOAA AFSC in Python require understanding a complex data schema, how to interact with a proprietary REST data service, forming long query URLs, and navigating pagination. This may increase the barrier for working with these data, limiting their reach within the Python community.
+Scientists and developers working on ocean health have an interest in survey data from organizations like [NOAA Fisheries](https://www.fisheries.noaa.gov/)). However, interacting with the GAP API from NOAA AFSC in Python requires understanding a complex data schema, how to interact with a proprietary REST data service, forming long query URLs, and navigating pagination. These various elements together may increase the barrier for working with these data, limiting their reach within the Python community.
 
 <br>
 
