@@ -22,4 +22,8 @@ afscgap = ["py.typed"]
 "Bug Tracker" = "https://github.com/SchmidtDSE/afscgap/issues"
 
 [project.optional-dependencies]
-dev = ["nose2", "mypy", "pyflakes", "pycodestyle", "types-requests", "pdoc"]
+dev = ["build", "nose2", "mypy", "pyflakes", "pycodestyle", "types-requests", "pdoc", "twine"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
