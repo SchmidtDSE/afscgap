@@ -2,6 +2,7 @@ on:
   workflow_run:
     workflows: 
       - afscgap
+      - docs
     branches:
       - main
     types: 
@@ -24,4 +25,4 @@ jobs:
       - name: Package
         run: python3 -m build
       - name: Upload
-        run: python3 -m twine upload dist/*
+        run: python3 -m twine upload dist/* -u __token__ -p ${{ secrets.PYPI_TOKEN }}
