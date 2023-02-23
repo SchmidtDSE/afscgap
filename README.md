@@ -6,6 +6,7 @@ Microlibrary for pythonic interaction with the public bottom trawl surveys data 
 [![Python 3.7+](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/release/python-370/)
 [![Pypi Badge](https://img.shields.io/pypi/v/afscgap)](https://pypi.org/project/afscgap/)
 ![docs](https://github.com/SchmidtDSE/afscgap/actions/workflows/docs.yml/badge.svg?branch=main)
+[![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
 See [project Github](https://github.com/SchmidtDSE/afscgap) and [webpage](https://schmidtdse.github.io/afscgap/afscgap.html).
 
@@ -360,7 +361,7 @@ These fields are available as getters on `afscgap.model.Record` (`result.get_srv
 <br>
 
 ## License
-We are happy to make this library available under the LGPL v3 License (LGPL-3.0-or-later). See LICENSE for more details. (c) 2023 [The Eric and Wendy Schmidt Center for Data Science and the Environment
+We are happy to make this library available under the BSD 3-Clause license. See LICENSE for more details. (c) 2023 [The Eric and Wendy Schmidt Center for Data Science and the Environment
 at UC Berkeley](https://dse.berkeley.edu).
 
 <br>
