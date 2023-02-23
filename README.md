@@ -7,7 +7,15 @@ Microlibrary for pythonic interaction with the public bottom trawl surveys data 
 ## Purpose
 Unofficial microlibrary for interacting with the API for [bottom trawl surveys](https://www.fisheries.noaa.gov/alaska/commercial-fishing/alaska-groundfish-bottom-trawl-survey-data) from the [Ground Fish Assessment Program (GAP)](https://www.fisheries.noaa.gov/contact/groundfish-assessment-program), a dataset produced by the [Resource Assessment and Conservation Engineering (RACE) Division](https://www.fisheries.noaa.gov/about/resource-assessment-and-conservation-engineering-division) of the [Alaska Fisheries Science Center (AFSC)](https://www.fisheries.noaa.gov/about/alaska-fisheries-science-center) as part of the National Oceanic and Atmospheric Administration ([NOAA Fisheries](https://www.fisheries.noaa.gov/)).
 
-This low-dependency library provides a Python interface to these data with ability to query with filters and pagination, providing results in various formats compatible with different Python usage modalities (Pandas, pure-Python, etc). It adapts the [Oracle REST Data Service](https://www.oracle.com/database/technologies/appdev/rest.html) used by the agency with Python type hints for easy query and interface.
+<br>
+
+### Need
+Scientists and developers interacting with the GAP API from NOAA AFSC in Python require understanding a complex data schema, how to interact with a proprietary REST data service, forming long query URLs, and navigating pagination. This may increase the barrier for working with these data, limiting their reach within the Python community.
+
+<br>
+
+### Goal
+This low-dependency library provides a type-annoated and documented Python interface to these data with ability to query with filters and pagination, providing results in various formats compatible with different Python usage modalities (Pandas, pure-Python, etc). It adapts the [Oracle REST Data Service](https://www.oracle.com/database/technologies/appdev/rest.html) used by the agency with Python type hints for easy query and interface. Furthermore, Python docstrings annotate the data structures provided by the API to help users navigate the various fields avialable, offering contextual documentation when supported by Python IDEs.
 
 Though not intended to be general, this project also provides an example for working with [Oracle REST Data Services (ORDS)](https://www.oracle.com/database/technologies/appdev/rest.html) APIs in Python.
 
@@ -348,8 +356,13 @@ at UC Berkeley](https://dse.berkeley.edu).
 <br>
 <br>
 
-## Developing
-Thanks for your support! Pull requests and issues very welcome. We have a few guidelines:
+## Community
+Thanks for your support! Pull requests and issues very welcome.
+
+<br>
+
+### Contribution guidelines
+We have a few guidelines:
 
  - Please follow the Google Python Style Guide where possible for compatibility with the existing codebase.
  - Tests are encouraged and we aim for 80% coverage where feasible.
@@ -358,8 +371,15 @@ Thanks for your support! Pull requests and issues very welcome. We have a few gu
  - Please check that you have no mypy errors when contributing.
  - Please check that you have no pylint errors when contributing.
  - As contributors may be periodic, please do not re-write history / squash commits for ease of fast forward.
+ - Open source is an act of love. Please be kind and respectful of all contributors at all levels.
 
 Note that imports should be in alphabetical order in groups of standard library, third-party, and then first party. It is an explicit goal to provide a class with type hints for all record fields. Getters on an immutable record object are encouraged as to enable use of the type system and docstrings for understanding the data structures. Data structures have been used that could allow for threaded request but everything is currently single threaded.
+
+<br>
+
+### Contacts
+[Sam Pottinger](https://github.com/sampottinger) is the primary contact. Thanks to [Giulia Zarpellon](https://github.com/gizarp) and [Carl Boettiger](https://github.com/cboettig) for their contributions. This is a project of the [The Eric and Wendy Schmidt Center for Data Science and the Environment
+at UC Berkeley](https://dse.berkeley.edu). Please contact us via dse@berkeley.edu.
 
 <br>
 <br>
