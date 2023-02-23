@@ -3,6 +3,9 @@
 
 name: docs
 
+on:
+  [push]
+
 permissions:
   contents: read
 
