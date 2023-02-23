@@ -5,6 +5,7 @@ Microlibrary for pythonic interaction with the public bottom trawl surveys data 
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![Python 3.7+](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/release/python-370/)
 [![Pypi Badge](https://img.shields.io/pypi/v/afscgap)](https://pypi.org/project/afscgap/)
+![docs](https://github.com/SchmidtDSE/afscgap/actions/workflows/docs.yml/badge.svg?branch=main)
 
 <br>
 <br>
