@@ -19,5 +19,7 @@ jobs:
         run: nose2
       - name: Check types
         run: mypy **/*.py
-      - name: Lint
+      - name: Check errors
         run: pyflakes **/*.py
+      - name: Check style
+        run: pycodestyle **/*.py

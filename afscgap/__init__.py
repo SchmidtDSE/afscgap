@@ -21,16 +21,16 @@ at UC Berkeley.
 This file is part of afscgap.
 
 Afscgap is free software: you can redistribute it and/or modify it under the
-terms of the GNU Lesser General Public License as published by the Free Software 
+terms of the GNU Lesser General Public License as published by the Free Software
 Foundation, either version 3 of the License, or (at your option) any later
 version.
 
-Afscgap is distributed in the hope that it will be useful, but WITHOUT ANY 
-WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+Afscgap is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Lesser General Public License along 
-with Afscgap. If not, see <https://www.gnu.org/licenses/>. 
+You should have received a copy of the GNU Lesser General Public License along
+with Afscgap. If not, see <https://www.gnu.org/licenses/>.
 """
 import typing
 
@@ -181,7 +181,7 @@ def query(
         limit: The maximum number of results to retrieve per HTTP request. If
             None or not provided, will use API's default.
         start_offset: The number of initial results to skip in retrieving
-            results. If None or not provided, none will be skipped. 
+            results. If None or not provided, none will be skipped.
         base_url: The URL at which the API can be found. If None, will use
             default (offical URL at time of release). See
             afscgap.client.DEFAULT_URL.
@@ -192,7 +192,7 @@ def query(
             the results, putting them in the invalid records queue. If false,
             they are included and their is_complete() will return false.
             Defaults to false.
-    
+
     Returns:
         Cursor to manage HTTP requests and query results.
     """

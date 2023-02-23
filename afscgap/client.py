@@ -8,16 +8,16 @@ at UC Berkeley.
 This file is part of afscgap.
 
 Afscgap is free software: you can redistribute it and/or modify it under the
-terms of the GNU Lesser General Public License as published by the Free Software 
+terms of the GNU Lesser General Public License as published by the Free Software
 Foundation, either version 3 of the License, or (at your option) any later
 version.
 
-Afscgap is distributed in the hope that it will be useful, but WITHOUT ANY 
-WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+Afscgap is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
-You should have received a copy of the GNU Lesser General Public License along 
-with Afscgap. If not, see <https://www.gnu.org/licenses/>. 
+You should have received a copy of the GNU Lesser General Public License along
+with Afscgap. If not, see <https://www.gnu.org/licenses/>.
 """
 import json
 import queue
@@ -30,7 +30,8 @@ from afscgap.util import OPT_INT
 from afscgap.util import OPT_STR
 
 ACCEPTABLE_CODES = [200]
-DEFAULT_URL = 'https://apps-st.fisheries.noaa.gov/ods/foss/afsc_groundfish_survey/'
+DEFAULT_DOMAIN = 'https://apps-st.fisheries.noaa.gov'
+DEFAULT_URL = DEFAULT_DOMAIN + '/ods/foss/afsc_groundfish_survey/'
 REQUESTOR = typing.Callable[[str], requests.Response]
 OPT_REQUESTOR = typing.Optional[REQUESTOR]
 TIMEOUT = 60 * 5  # 5 minutes
@@ -44,7 +45,7 @@ def get_query_url(params: dict, base: OPT_STR = None) -> str:
             None means no filter should be applied on that field.
         base: The URL at which the API service can be found. If None, will use
             DEFAULT_URL. Defaults to None.
-    
+
     Returns:
         URL at which an HTTP GET request can be made to execute the desired
         query.
@@ -100,7 +101,7 @@ class Cursor(typing.Iterable[afscgap.model.Record]):
         """Get the URL at which the first page of query results can be found.
 
         Returns:
-            The URL for the query without pagination information. 
+            The URL for the query without pagination information.
         """
         return self._query_url
 
@@ -174,7 +175,7 @@ class Cursor(typing.Iterable[afscgap.model.Record]):
                 true, will silently throw away records which could not be
                 parsed. If false, will raise an exception if a record can not
                 be parsed.
-        
+
         Returns:
             Results from the page which, regardless of ignore_invalid, may
             contain a mixture of complete and incomplete records.
@@ -224,7 +225,7 @@ class Cursor(typing.Iterable[afscgap.model.Record]):
         return map(lambda x: x.to_dict(), self)
 
     def __iter__(self) -> typing.Iterator[afscgap.model.Record]:
-        """Indicate that this Cursor can be iterated on. 
+        """Indicate that this Cursor can be iterated on.
 
         Returns:
             This object as an iterator.
@@ -290,13 +291,12 @@ class Cursor(typing.Iterable[afscgap.model.Record]):
         self._done = next_url is None
         self._next_url = next_url
 
-
     def _find_next_url(self, target: dict) -> OPT_STR:
         """Look for the URL with the next page of results if it exists.
 
         Args:
             target: The raw complete parsed JSON response from the API.
-        
+
         Returns:
             The URL where the next page of results can be found via HTTP GET
             request or None if target indicates that no results remain.

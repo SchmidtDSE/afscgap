@@ -377,7 +377,7 @@ We have a few guidelines:
  - Type hints are encouraged and we aim for 80% coverage where feasible.
  - Docstrings are encouraged and we aim for 80% coverage.
  - Please check that you have no mypy errors when contributing.
- - Please check that you have no pylint errors when contributing.
+ - Please check that you have no linting (pycodestyle, pyflakes) errors when contributing.
  - As contributors may be periodic, please do not re-write history / squash commits for ease of fast forward.
  - Open source is an act of love. Please be kind and respectful of all contributors at all levels.
 
@@ -402,6 +402,7 @@ Our build and documentation systems also use the following but are not distribut
  - [mypy](https://github.com/python/mypy) under the [MIT License](https://github.com/python/mypy/blob/master/LICENSE) from Jukka Lehtosalo, Dropbox, and other contributors.
  - [nose2](https://docs.nose2.io/en/latest/index.html) under a [BSD license](https://github.com/nose-devs/nose2/blob/main/license.txt) from Jason Pellerin and other contributors.
  - [pdoc](https://github.com/mitmproxy/pdoc) under the [Unlicense license](https://github.com/mitmproxy/pdoc/blob/main/LICENSE) from [Andrew Gallant](https://github.com/BurntSushi) and [Maximilian Hils](https://github.com/mhils).
+ - [pycodestyle](https://pycodestyle.pycqa.org/en/latest/) under the [Expat License](https://github.com/PyCQA/pycodestyle/blob/main/LICENSE) from Johann C. Rocholl, Florent Xicluna, and Ian Lee.
  - [pyflakes](https://github.com/PyCQA/pyflakes) under the [MIT License](https://github.com/PyCQA/pyflakes/blob/main/LICENSE) from Divmod, Florent Xicluna, and other contributors.
 
 Thank you to all of these projects for their contribution.
