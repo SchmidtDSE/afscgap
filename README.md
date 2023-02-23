@@ -15,7 +15,9 @@ Scientists and developers working on ocean health have an interest in survey dat
 <br>
 
 ### Goal
-This low-dependency library provides a type-annoated and documented Python interface to these data with ability to query with filters and pagination, providing results in various formats compatible with different Python usage modalities (Pandas, pure-Python, etc). It adapts the [Oracle REST Data Service](https://www.oracle.com/database/technologies/appdev/rest.html) used by the agency with Python type hints for easy query and interface. Furthermore, Python docstrings annotate the data structures provided by the API to help users navigate the various fields avialable, offering contextual documentation when supported by Python IDEs.
+This low-dependency library provides a type-annoated and documented Python interface to these data with ability to query with filters and pagination, providing results in various formats compatible with different Python usage modalities (Pandas, pure-Python, etc).
+
+It adapts the [Oracle REST Data Service](https://www.oracle.com/database/technologies/appdev/rest.html) used by the agency with Python type hints for easy query and interface. Furthermore, Python docstrings annotate the data structures provided by the API to help users navigate the various fields avilable, offering contextual documentation when supported by Python IDEs.
 
 Though not intended to be general, this project also provides an example for working with [Oracle REST Data Services (ORDS)](https://www.oracle.com/database/technologies/appdev/rest.html) APIs in Python.
 
