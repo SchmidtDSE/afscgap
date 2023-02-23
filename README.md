@@ -7,6 +7,8 @@ Microlibrary for pythonic interaction with the public bottom trawl surveys data 
 [![Pypi Badge](https://img.shields.io/pypi/v/afscgap)](https://pypi.org/project/afscgap/)
 ![docs](https://github.com/SchmidtDSE/afscgap/actions/workflows/docs.yml/badge.svg?branch=main)
 
+See [project Github](https://github.com/SchmidtDSE/afscgap) and [webpage](https://schmidtdse.github.io/afscgap/afscgap.html).
+
 <br>
 <br>
 
@@ -370,7 +372,7 @@ Thanks for your support! Pull requests and issues very welcome.
 <br>
 
 ### Contribution guidelines
-We have a few guidelines:
+We invite contributions via [our project Github](https://github.com/SchmidtDSE/afscgap). We have a few guidelines:
 
  - Please follow the Google Python Style Guide where possible for compatibility with the existing codebase.
  - Tests are encouraged and we aim for 80% coverage where feasible.
