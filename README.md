@@ -287,7 +287,7 @@ A Python-typed description of the fields is provided below.
 | net_height_m          | float           | Height of the net fished as m. |
 | area_swept_ha         | float           | Area covered by the net while fishing in hectares. |
 | duration_hr           | float           | Duration of the haul as number of hours. |
-| tsn                   | int             | Taxonomic information system species code. |
+| tsn                   | Optional[int]   | Taxonomic information system species code. |
 | ak_survey_id          | int             | AK identifier for the survey. |
 
 For more information on the schema, see the [metadata](https://github.com/afsc-gap-products/metadata) repository but note that the fields may be slightly different in the Python library per what is actually returned by the API.
@@ -333,7 +333,7 @@ These fields are available as getters on `afscgap.model.Record` (`result.get_srv
 | net_height_m          | get_net_height_m() -> float          |                                                      |
 | area_swept_ha         | get_area_swept_ha() -> float         |                                                      |
 | duration_hr           | get_duration_hr() -> float           |                                                      |
-| tsn                   | get_tsn() -> int                     |                                                      |
+| tsn                   | get_tsn() -> int                     | get_tsn_maybe() -> Optional[int]                     |
 | ak_survey_id          | get_ak_survey_id() -> int            |                                                      |
 
 `Record` objects also have a `is_complete` method which returns true if all the fields with an `Optional` type are non-None and the `date_time` could be parsed and made into an ISO 8601 string.
