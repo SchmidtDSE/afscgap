@@ -373,18 +373,7 @@ Thanks for your support! Pull requests and issues very welcome.
 <br>
 
 ### Contribution guidelines
-We invite contributions via [our project Github](https://github.com/SchmidtDSE/afscgap). We have a few guidelines:
-
- - Please follow the Google Python Style Guide where possible for compatibility with the existing codebase.
- - Tests are encouraged and we aim for 80% coverage where feasible.
- - Type hints are encouraged and we aim for 80% coverage where feasible.
- - Docstrings are encouraged and we aim for 80% coverage.
- - Please check that you have no mypy errors when contributing.
- - Please check that you have no linting (pycodestyle, pyflakes) errors when contributing.
- - As contributors may be periodic, please do not re-write history / squash commits for ease of fast forward.
- - Open source is an act of love. Please be kind and respectful of all contributors at all levels.
-
-Note that imports should be in alphabetical order in groups of standard library, third-party, and then first party. It is an explicit goal to provide a class with type hints for all record fields. Getters on an immutable record object are encouraged as to enable use of the type system and docstrings for understanding the data structures. Data structures have been used that could allow for threaded request but everything is currently single threaded.
+We invite contributions via [our project Github](https://github.com/SchmidtDSE/afscgap). Please the [CONTRIBUTING.md](https://github.com/SchmidtDSE/afscgap/blob/main/CONTRIBUTING.md) file for more information.
 
 <br>
 
