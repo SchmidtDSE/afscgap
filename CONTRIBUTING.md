@@ -1,0 +1,59 @@
+# Contributing
+Thank you for your time! This quick doc will help you get started in the `afscgap` project.
+
+<br>
+
+## Welcome
+Thank you for your contribution. We appreciate the community's help in any capacity from filing an issue to opening a pull request. No matter how your contribution shows up, we are happy you are here.
+
+<br>
+
+## Coding guidelines
+In order to ensure the conceptual integrity and readability of our code, we have a few guidelines:
+
+ - Please try to follow the conventions laid out by the project in existing code. In cases of ambiguity, please refer to the [Google Python Style Guide](https://google.github.io/styleguide/pyguide.html) where possible.
+ - Tests are encouraged and we aim for 80% coverage where feasible.
+ - Type hints are encouraged and we aim for 80% coverage where feasible.
+ - Docstrings are encouraged and we aim for 80% coverage. Please use the [Google-style](https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html) to ensure that our automated documentation system can use your work.
+ - Please check that you have no mypy errors when contributing.
+ - Please check that you have no linting (pycodestyle, pyflakes) errors when contributing.
+ - As contributors may be periodic, please do not re-write history / squash commits for ease of fast forward.
+ - Imports should be in alphabetical order in groups of standard library, third-party, and then first party.
+
+Do not worry if you aren't sure that you met all of our the guidelines! We encourage pull requests and are happy to work through any necessary outstanding tasks with you.
+
+<br>
+
+## Design choices
+There are reasonable differences of opinion in the community about the ideal implementation. That in mind, there are a few opinionated choices we've made in the design of this library that we will maintain moving forward:
+
+ - It is an explicit goal to provide a class that offers type hints for all record fields for the data returned by the API. See `afscgap.model.Record`.
+ - For data structures, getters on an immutable record object are encouraged as to enable use of the type system and docstrings for understanding the data structures. This is important to provide contextual information in IDEs.
+ - Object attributes should be private and immutable whenever possible.
+ - Object immutable attributes should be prefixed by a single underscore available via getters.
+ - We wish to operate with as few dependencies as possible. At this stage, we want to limit that to only the requests library as described in the [README](https://github.com/SchmidtDSE/afscgap/blob/main/README.md).
+
+We encourage folks in our community to open issues if they wish to discuss these design choices further but, at this time, we will not be merging pull requests that do not conform to these choices.
+
+<br>
+
+## Scope
+Data structures have been used that could allow for threaded request but our current objective is to build a solid contribution as a single threaded non-async library. Please reach out if you are intersted in building an async version of the library but it is not currently the focus of project.
+
+<br>
+
+## Proceedure
+By contributing, you attest that you are legally permitted to provide code to the project and agree to release that code under the [project's license](https://github.com/SchmidtDSE/afscgap/blob/main/LICENSE.md). To make a contribution, please:
+
+ - If one is not already open, [open an issue](https://github.com/SchmidtDSE/afscgap/issues).
+ - [Open a pull request](https://github.com/SchmidtDSE/afscgap/pulls).
+ - Mark the pull request as draft until you pass checks and are ready for review.
+ - Indicate that your pull request closes your issue by saying "closes #" followed by your issue number in the PR description.
+ - At-mention [sampottinger](https://github.com/sampottinger) in your PR to be assigned a reviewer.
+
+If you would like to contribute code but don't have a specific issue to address, thank you! Please reach out to dse@berkeley.edu.
+
+<br>
+
+## Parting thoughts
+Open source is an act of love. Please be kind and respectful of all contributors. For more information, please see the [CONDUCT.md](https://github.com/SchmidtDSE/afscgap/blob/main/CONDUCT.md) file for our Code of Conduct.
