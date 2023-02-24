@@ -2,7 +2,6 @@ on:
   workflow_run:
     workflows: 
       - afscgap
-      - docs
     branches:
       - main
     types: 
