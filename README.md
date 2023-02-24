@@ -414,7 +414,7 @@ Thank you to all of these projects for their contribution.
 <br>
 
 ## Version history
-Major updates:
+Annotated version history:
 
  - `0.0.3`: Minor updates in documentation.
  - `0.0.2`: Re-license under BSD.
