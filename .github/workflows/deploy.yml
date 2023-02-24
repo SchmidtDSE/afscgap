@@ -24,4 +24,4 @@ jobs:
       - name: Package
         run: python3 -m build
       - name: Upload
-        run: python3 -m twine --skip-existing upload dist/* -u __token__ -p ${{ secrets.PYPI_TOKEN }}
+        run: python3 -m twine upload --skip-existing dist/* -u __token__ -p ${{ secrets.PYPI_TOKEN }}
