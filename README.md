@@ -409,3 +409,13 @@ Our build and documentation systems also use the following but are not distribut
  - [pyflakes](https://github.com/PyCQA/pyflakes) under the [MIT License](https://github.com/PyCQA/pyflakes/blob/main/LICENSE) from Divmod, Florent Xicluna, and other contributors.
 
 Thank you to all of these projects for their contribution.
+
+<br>
+<br>
+
+## Version history
+Major updates:
+
+ - `0.0.3`: Minor updates in documentation.
+ - `0.0.2`: Re-license under BSD.
+ - `0.0.1`: Initial release.
