@@ -55,5 +55,10 @@ If you would like to contribute code but don't have a specific issue to address,
 
 <br>
 
+## Standardization
+Note that, at this stage, we do not have an issue template as we let our community form its practices and norms organically. However, participants agree that a template may be added in the future. We may, however, ask you to add additional detail to your issues or PRs to ensure appropriate documentation for the community.
+
+<br>
+
 ## Parting thoughts
 Open source is an act of love. Please be kind and respectful of all contributors. For more information, please see the [CONDUCT.md](https://github.com/SchmidtDSE/afscgap/blob/main/CONDUCT.md) file for our Code of Conduct.
