@@ -6,6 +6,8 @@ on:
       - main
     types: 
       - completed
+    tags:
+      - v0.*
 
 jobs:
   upload_files:
