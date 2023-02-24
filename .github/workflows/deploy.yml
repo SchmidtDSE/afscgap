@@ -6,8 +6,6 @@ on:
       - main
     types: 
       - completed
-    tags:
-      - v0.*
 
 jobs:
   upload_files:
@@ -26,4 +24,4 @@ jobs:
       - name: Package
         run: python3 -m build
       - name: Upload
-        run: python3 -m twine upload dist/* -u __token__ -p ${{ secrets.PYPI_TOKEN }}
+        run: python3 -m twine --skip-existing upload dist/* -u __token__ -p ${{ secrets.PYPI_TOKEN }}
