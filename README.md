@@ -70,7 +70,7 @@ print(statistics.median(temperatures))
 
 Note that `afscgap.query` is the main entry point which returns `Record` objects whose fields and methods are defined in the [data structure section](https://github.com/SchmidtDSE/afscgap#data-structure).
 
-Using an iterator will have the library negotiate pagination behind the scenes. You can do this with list comprehensions, maps, etc or with a good old for loop like in this example which gets a histogram of temperatures:
+Using an iterator will have the library negotiate pagination behind the scenes. You can do this with list comprehensions, maps, etc or with a good old for loop like in this example which gets a histogram of haul temperatures:
 
 ```
 count_by_temperature_c = {}
@@ -94,36 +94,8 @@ Note that this operation will cause multiple HTTP requests while the iterator ru
 
 <br>
 
-### Pagination
-By default, the library will iterate through all results and handle pagination behind the scenes. However, one can also request an individual page:
-
-```
-results = afscgap.query(
-    year=2021,
-    srvy='GOA',
-    scientific_name='Pasiphaea pacifica'
-)
-
-results_for_page = results.get_page(offset=20, limit=100)
-print(len(results_for_page))  # Will print 32 (results contains 52 records)
-```
-
-Client code can also change the pagination behavior used when iterating:
-
-```
-results = afscgap.query(
-    year=2021,
-    srvy='GOA',
-    scientific_name='Pasiphaea pacifica',
-    start_offset=10,
-    limit=200
-)
-
-for record in results:
-    print(record.get_bottom_temperature_c())
-```
-
-Note that records are only requested once during iteration and only after the prior page has been returned via the iterator ("lazy" loading).
+### Absence data
+The API itself only provides presence data. This is further discussed in the data quality section below. Note that an issue is open to optionally infer absence records using a static file produced by NOAA AFSC GAP.
 
 <br>
 
@@ -196,7 +168,8 @@ count_by_common_name = {}
 
 for record in results:
     common_name = record.get_common_name()
-    count = count_by_common_name.get(common_name, 0) + 1
+    new_count = record.get_count()
+    count = count_by_common_name.get(common_name, 0) + new_count
     count_by_common_name[common_name] = count
 ```
 
@@ -204,60 +177,36 @@ For more info about the options available, consider the [Oracle docs](https://do
 
 <br>
 
-### Incomplete or invalid records
-Metadata fields such as `year` are always required to make a `Record` whereas others such as catch weight `cpue_kgkm2` are not present on all records returned by the API and are optional. See the Schema section below for additional details. For fields with optional values:
+### Pagination
+By default, the library will iterate through all results and handle pagination behind the scenes. However, one can also request an individual page:
 
- - A maybe getter (`get_cpue_kgkm2_maybe`) is provided which will return None without error if the value is not provided or could not be parsed.
- - A regular getter (`get_cpue_kgkm2`) is provided which asserts the value is not None before it is returned.
+```
+results = afscgap.query(
+    year=2021,
+    srvy='GOA',
+    scientific_name='Pasiphaea pacifica'
+)
 
-`Record` objects also have an `is_complete` method which returns true if both all optional fields on the `Record` are non-None and the `date_time` field on the `Record` is a valid ISO 8601 string. By default, records for which `is_complete` are false are returned when iterating or through `get_page` but this can be overridden by with the `filter_incomplete` keyword argument like so:
+results_for_page = results.get_page(offset=20, limit=100)
+print(len(results_for_page))  # Will print 32 (results contains 52 records)
+```
+
+Client code can also change the pagination behavior used when iterating:
 
 ```
 results = afscgap.query(
     year=2021,
     srvy='GOA',
     scientific_name='Pasiphaea pacifica',
-    filter_incomplete=True
+    start_offset=10,
+    limit=200
 )
 
-for result in results:
-    assert result.is_complete()
+for record in results:
+    print(record.get_bottom_temperature_c())
 ```
 
-Results returned by the API for which non-Optional fields could not be parsed (like missing `year`) are considered "invalid" and always excluded during iteration when those raw unreadable records are kept in a `queue.Queue[dict]` that can be accessed via `get_invalid` like so:
-
-```
-results = afscgap.query(year=2021, srvy='GOA')
-valid = list(results)
-
-invalid_queue = results.get_invalid()
-percent_invalid = invalid_queue.qsize() / len(valid) * 100
-print('Percent invalid: %%%.2f' % percent_invalid)
-
-complete = filter(lambda x: x.is_complete(), valid)
-num_complete = sum(map(lambda x: 1, complete))
-percent_complete = num_complete / len(valid) * 100
-print('Percent complete: %%%.2f' % percent_complete)
-```
-
-Note that this queue is filled during iteration (like `for result in results` or `list(results)`) and not `get_page` whose invalid record handling behavior can be specified via the `ignore_invalid` keyword.
-
-<br>
-
-### Debugging
-For investigating issues or evaluating the underlying operations, you can also request a full URL for a query:
-
-```
-results = afscgap.query(
-    year=2021,
-    latitude_dd={'$between': [56, 57]},
-    longitude_dd={'$between': [-161, -160]}
-)
-
-print(results.get_page_url(limit=10, offset=0))
-```
-
-The query can be executed by making an HTTP GET request at the provided location.
+Note that records are only requested once during iteration and only after the prior page has been returned via the iterator ("lazy" loading).
 
 <br>
 <br>
@@ -278,7 +227,7 @@ A Python-typed description of the fields is provided below.
 | survey                | str             | Long form description of the survey in which the observation was made. |
 | survey_id             | float           | Unique numeric ID for the survey. |
 | cruise                | float           | An ID uniquely identifying the cruise in which the observation was made. Multiple cruises in a survey. |
-| haul                  | float           | An ID uniquely identifying the haul in which this observation was made. Multiple hauls per cruises. |
+| haul                  | float           | An ID uniquely identifying the haul in which this observation was made. Multiple hauls per cruise. |
 | stratum               | float           | Unique ID for statistical area / survey combination as described in the metadata or 0 if an experimental tow. |
 | station               | str             | Station associated with the survey. |
 | vessel_name           | str             | Unique ID describing the vessel that made this observation. This is left as a string but, in practice, is likely numeric. |
@@ -360,6 +309,64 @@ These fields are available as getters on `afscgap.model.Record` (`result.get_srv
 <br>
 <br>
 
+## Data quality and completeness
+There are a few caveats for working with these data that are important for researchers to understand.
+
+<br>
+
+### Presence-only
+The API itself provides access to presence only data. This means that records are only given for when a species was found. However, this can cause issues if trying to aggregate data like, for example, to determine the weight of the species in a a region in terms of catch weight per hectare. The AFSC GAP API on its own would not necessarily provide the total nubmer of hecatres surveyed in that region becausae hauls without the species present would be excluded. Hypothetically, even without a species filter, a haul without any catch would be "invisible" in the API.
+
+Though it is not possible to resolve this issue using the AFSC GAP API service alone, an issue is open to infer absence data (hauls without the species present) using a static flat file provided by NOAA with haul information.
+
+<br>
+
+### Incomplete or invalid records
+Metadata fields such as `year` are always required to make a `Record` whereas others such as catch weight `cpue_kgkm2` are not present on all records returned by the API and are optional. See the Schema section below for additional details. For fields with optional values:
+
+ - A maybe getter (`get_cpue_kgkm2_maybe`) is provided which will return None without error if the value is not provided or could not be parsed.
+ - A regular getter (`get_cpue_kgkm2`) is provided which asserts the value is not None before it is returned.
+
+`Record` objects also have an `is_complete` method which returns true if both all optional fields on the `Record` are non-None and the `date_time` field on the `Record` is a valid ISO 8601 string. By default, records for which `is_complete` are false are returned when iterating or through `get_page` but this can be overridden by with the `filter_incomplete` keyword argument like so:
+
+```
+results = afscgap.query(
+    year=2021,
+    srvy='GOA',
+    scientific_name='Pasiphaea pacifica',
+    filter_incomplete=True
+)
+
+for result in results:
+    assert result.is_complete()
+```
+
+Results returned by the API for which non-Optional fields could not be parsed (like missing `year`) are considered "invalid" and always excluded during iteration when those raw unreadable records are kept in a `queue.Queue[dict]` that can be accessed via `get_invalid` like so:
+
+```
+results = afscgap.query(year=2021, srvy='GOA')
+valid = list(results)
+
+invalid_queue = results.get_invalid()
+percent_invalid = invalid_queue.qsize() / len(valid) * 100
+print('Percent invalid: %%%.2f' % percent_invalid)
+
+complete = filter(lambda x: x.is_complete(), valid)
+num_complete = sum(map(lambda x: 1, complete))
+percent_complete = num_complete / len(valid) * 100
+print('Percent complete: %%%.2f' % percent_complete)
+```
+
+Note that this queue is filled during iteration (like `for result in results` or `list(results)`) and not `get_page` whose invalid record handling behavior can be specified via the `ignore_invalid` keyword.
+
+<br>
+
+### Longitude
+Though not officially mentioned by the NOAA API, the authors of this library observe some positive longitudes in returned data where negative longitudes of the same magnitude would be expected. Users of the library should be careful to determine how to handle these records (inferring they should have been the same magnitude of longitude but negative or excluded). Publications should be careful to document their decision.
+
+<br>
+<br>
+
 ## License
 We are happy to make this library available under the BSD 3-Clause license. See LICENSE for more details. (c) 2023 [The Eric and Wendy Schmidt Center for Data Science and the Environment
 at UC Berkeley](https://dse.berkeley.edu).
@@ -374,6 +381,23 @@ Thanks for your support! Pull requests and issues very welcome.
 
 ### Contribution guidelines
 We invite contributions via [our project Github](https://github.com/SchmidtDSE/afscgap). Please the [CONTRIBUTING.md](https://github.com/SchmidtDSE/afscgap/blob/main/CONTRIBUTING.md) file for more information.
+
+<br>
+
+### Debugging
+While participating in the community, you may need to debug URL generation. Therefore, for investigating issues or evaluating the underlying operations, you can also request a full URL for a query:
+
+```
+results = afscgap.query(
+    year=2021,
+    latitude_dd={'$between': [56, 57]},
+    longitude_dd={'$between': [-161, -160]}
+)
+
+print(results.get_page_url(limit=10, offset=0))
+```
+
+The query can be executed by making an HTTP GET request at the provided location.
 
 <br>
 

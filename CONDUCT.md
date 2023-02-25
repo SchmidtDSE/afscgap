@@ -25,7 +25,8 @@ The community agrees the following is unacceptable:
  - Statements which are offensive or counter to our goals regarding inclusion.
  - Intimidation or threats of violence.
  - Sexually explicit or violent material including unwelcome sexual attention.
- - Other forms of harassment.
+ - Other forms of harassment including stalking and doxing.
+ - Use of these tools / software for malicious purpose.
 
 Please remember that this is a broad and public community.
 
