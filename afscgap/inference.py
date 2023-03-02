@@ -58,9 +58,11 @@ PARAMS_CHECKER = typing.Callable[[afscgap.model.Haul], bool]
 def build_cursor(params: dict, inner_cursor: afscgap.cursor.Cursor,
     requestor: OPT_REQUESTOR = None, hauls_url: afscgap.client.OPT_STR = None):
     params_safe = copy.deepcopy(params)
-    params_safe['date_time'] = afscgap.util.convert_from_iso8601(
-        params_safe['date_time']
-    )
+
+    if 'date_time' in params_safe:
+        params_safe['date_time'] = afscgap.util.convert_from_iso8601(
+            params_safe['date_time']
+        )
 
     hauls_data = get_hauls_data(
         params_safe,
@@ -157,7 +159,7 @@ class NegativeInferenceCursorDecorator(afscgap.cursor.Cursor):
 
         self._species_seen: typing.Dict[str, SpeciesRecord] = dict()
         self._species_hauls_seen: typing.Set[str] = set()
-        self._ak_survey_ids: typing.Dict[str, int]
+        self._ak_survey_ids: typing.Dict[str, int] = dict()
 
     def get_base_url(self) -> str:
         """Get the URL at which the first page of query results can be found.
@@ -892,26 +894,30 @@ class ZeroCatchHaulDecorator(afscgap.model.Record):
 
 
 def parse_haul(target: dict) -> afscgap.model.Haul:
-    srvy = target['Srvy']
-    survey = target['Survey']
-    survey_id = target['Survey Id']
-    cruise = target['Cruise']
-    haul = target['Haul']
-    stratum = target['Stratum']
-    station = target['Station']
-    vessel_name = target['Vessel Name']
-    vessel_id = target['Vessel Id']
-    date_time = afscgap.util.convert_to_iso8601(target['Date Time'])
-    latitude_dd = target['Latitude Dd']
-    longitude_dd = target['Longitude Dd']
-    bottom_temperature_c = target['Bottom Temperature C']
-    surface_temperature_c = target['Surface Temperature C']
-    depth_m = target['Depth M']
-    distance_fished_km = target['Distance Fished Km']
-    net_width_m = target['Net Width M']
-    net_height_m = target['Net Height M']
-    area_swept_ha = target['Area Swept Ha']
-    duration_hr = target['Duration Hr']
+    srvy = str(target['Srvy'])
+    survey = str(target['Survey'])
+    survey_id = float(target['Survey Id'])
+    cruise = float(target['Cruise'])
+    haul = float(target['Haul'])
+    stratum = float(target['Stratum'])
+    station = str(target['Station'])
+    vessel_name = str(target['Vessel Name'])
+    vessel_id = float(target['Vessel Id'])
+    date_time = str(afscgap.util.convert_to_iso8601(target['Date Time']))
+    latitude_dd = float(target['Latitude Dd'])
+    longitude_dd = float(target['Longitude Dd'])
+    bottom_temperature_c = afscgap.model.get_opt_float(
+        target['Bottom Temperature C']
+    )
+    surface_temperature_c = afscgap.model.get_opt_float(
+        target['Surface Temperature C']
+    )
+    depth_m = float(target['Depth M'])
+    distance_fished_km = float(target['Distance Fished Km'])
+    net_width_m = float(target['Net Width M'])
+    net_height_m = float(target['Net Height M'])
+    area_swept_ha = float(target['Area Swept Ha'])
+    duration_hr = float(target['Duration Hr'])
 
     return afscgap.model.Haul(
         srvy,
