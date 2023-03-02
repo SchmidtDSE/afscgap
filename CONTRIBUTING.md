@@ -34,9 +34,9 @@ There are reasonable differences of opinion in the community about the ideal imp
  - Object immutable attributes should be prefixed by a single underscore available via getters.
  - We wish to operate with as few dependencies as possible. At this stage, we want to limit that to only the requests library as described in the [README](https://github.com/SchmidtDSE/afscgap/blob/main/README.md).
  - We expect growth in functionality but, to maintain simplicity for end uers, we request that developers perfer [composition over inheritance](https://betterprogramming.pub/prefer-composition-over-inheritance-1602d5149ea1) in the form of [decoration over inheritance](https://dzone.com/articles/is-inheritance-dead) to allow for easy addition of transparent behavior.
- - The main release should be free of static files even if a flat file, contributed application, etc are part of the project. Those files should be requested by the user as needed to keep distribution size small.
+ - The release to pypi should be free of major static files even if a flat file, contributed application, etc are part of the project. Those files should be requested by the user as needed to keep distribution size small. Exceptions may be made for *small* stand alone files which, in totallity of related files, remains under 50 kilobytes.
 
-We encourage folks in our community to open issues if they wish to discuss these design choices further but, at this time, we will not be merging pull requests that do not conform to these choices.
+We encourage folks in our community to open issues if they wish to discuss these design choices further but, at this time, we may not merge pull requests that do not conform to these choices.
 
 <br>
 
