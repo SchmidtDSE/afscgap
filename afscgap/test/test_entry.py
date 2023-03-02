@@ -90,8 +90,21 @@ class EntryPointInferenceTests(unittest.TestCase):
             'hauls.csv'
         )
         self._mock_requestor = unittest.mock.MagicMock(
-            side_effect=[self._api_result, self._hauls_result]
+            side_effect=[self._hauls_result, self._api_result]
         )
+
+    def test_query_keep_presence_only(self):
+        mock_requestor = unittest.mock.MagicMock(
+            side_effect=[self._api_result]
+        )
+
+        result = afscgap.query(
+            year=2021,
+            requestor=mock_requestor,
+            presence_only=True
+        )
+        results = list(result)
+        self.assertEquals(len(results), 2)
 
     def test_query_primitive(self):
         warn_function = unittest.mock.MagicMock()
@@ -99,7 +112,7 @@ class EntryPointInferenceTests(unittest.TestCase):
         result = afscgap.query(
             year=2021,
             requestor=self._mock_requestor,
-            presence_only=True,
+            presence_only=False,
             warn_function=warn_function
         )
         results = list(result)
@@ -110,7 +123,7 @@ class EntryPointInferenceTests(unittest.TestCase):
         result = afscgap.query(
             year=2021,
             requestor=self._mock_requestor,
-            presence_only=True,
+            presence_only=False,
             warn_function=warn_function
         )
         warn_function.assert_called()
@@ -120,7 +133,7 @@ class EntryPointInferenceTests(unittest.TestCase):
         result = afscgap.query(
             year=2021,
             requestor=self._mock_requestor,
-            presence_only=True,
+            presence_only=False,
             suppress_large_warning=True,
             warn_function=warn_function
         )

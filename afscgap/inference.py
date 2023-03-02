@@ -55,7 +55,7 @@ HAUL_FILTERABLE_FIELDS = [
 PARAMS_CHECKER = typing.Callable[[afscgap.model.Haul], bool]
 
 
-def build_cursor(params: dict, inner_cursor: afscgap.cursor.Cursor,
+def build_inference_cursor(params: dict, inner_cursor: afscgap.cursor.Cursor,
     requestor: OPT_REQUESTOR = None, hauls_url: afscgap.client.OPT_STR = None):
     params_safe = copy.deepcopy(params)
 

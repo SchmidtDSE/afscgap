@@ -21,12 +21,27 @@ for Data Science and the Environment at UC Berkeley.
 This file is part of afscgap released under the BSD 3-Clause License. See
 LICENSE.txt.
 """
+import typing
+import warnings
+
 import afscgap.client
+import afscgap.inference
 import afscgap.model
 
 from afscgap.util import FLOAT_PARAM
 from afscgap.util import INT_PARAM
 from afscgap.util import STR_PARAM
+
+from afscgap.util import OPT_INT
+from afscgap.util import OPT_STR
+from afscgap.util import OPT_REQUESTOR
+
+WARN_FUNCTION = typing.Optional[typing.Callable[[str], None]]
+
+LARGE_WARNING = ' '.join([
+    'Your query may return a very large amount of records.',
+    'Be sure to interact with results in a memory efficient way.'
+])
 
 
 def query(
@@ -65,11 +80,15 @@ def query(
     duration_hr: FLOAT_PARAM = None,
     tsn: INT_PARAM = None,
     ak_survey_id: INT_PARAM = None,
-    limit: afscgap.client.OPT_INT = None,
-    start_offset: afscgap.client.OPT_INT = None,
-    base_url: afscgap.client.OPT_STR = None,
-    requestor: afscgap.client.OPT_REQUESTOR = None,
-    filter_incomplete: bool = False) -> afscgap.cursor.Cursor:
+    limit: OPT_INT = None,
+    start_offset: OPT_INT = None,
+    base_url: OPT_STR = None,
+    requestor: OPT_REQUESTOR = None,
+    filter_incomplete: bool = False,
+    presence_only: bool = True,
+    suppress_large_warning: bool = False,
+    hauls_url: OPT_STR = None,
+    warn_function: WARN_FUNCTION = None) -> afscgap.cursor.Cursor:
     """Execute a query against the AFSC GAP API.
 
     Args:
@@ -221,7 +240,7 @@ def query(
         'ak_survey_id': ak_survey_id
     }
 
-    return afscgap.client.build_api_cursor(
+    api_cursor = afscgap.client.build_api_cursor(
         all_dict_raw,
         limit=limit,
         start_offset=start_offset,
@@ -229,3 +248,22 @@ def query(
         requestor=requestor,
         base_url=base_url
     )
+
+    if presence_only:
+        return api_cursor
+
+    decorated_cursor = afscgap.inference.build_inference_cursor(
+        all_dict_raw,
+        api_cursor,
+        requestor=requestor,
+        hauls_url=hauls_url
+    )
+
+    if not suppress_large_warning:
+        if not warn_function:
+            warn_function = lambda x: warnings.warn(x)
+
+        warn_function(LARGE_WARNING)
+
+    return decorated_cursor
+ 
