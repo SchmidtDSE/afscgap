@@ -25,7 +25,7 @@ from afscgap.util import OPT_INT
 from afscgap.util import OPT_REQUESTOR
 from afscgap.util import OPT_STR
 
-DEFAULT_HAULS_URL = ''
+DEFAULT_HAULS_URL = 'https://pyafscgap.org/community/hauls.csv'
 
 HAUL_LIST = typing.List[afscgap.model.Haul]
 HAUL_FILTERABLE_FIELDS = [

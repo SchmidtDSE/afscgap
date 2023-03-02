@@ -135,7 +135,7 @@ message = template % (weight_per_area, total_weight, total_area)
 print(message)
 ```
 
-For more details on this feature, please see the data quality section below. Note that the library will emulate filtering in Python so that haul records are filtered just as presence records are filtered by the API service. However, at time of writing, "manual filtering" as described below using ORDS syntax is not supported when `presence_data=False`.
+For more details on this feature, please see the data quality section below. Note that the library will emulate filtering in Python so that haul records are filtered just as presence records are filtered by the API service. This works for "basic" and "advanced" filtering. However, at time of writing, "manual filtering" as described below using ORDS syntax is not supported when `presence_data=False`. Also, by default, a warning will be emitted 
 
 <br>
 
