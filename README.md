@@ -23,7 +23,7 @@ Note that GAP is a dataset produced by the [Resource Assessment and Conservation
 
 <br>
 
-### Needs
+#### Needs
 Scientists and developers working on ocean health have an interest in survey data from organizations like [NOAA Fisheries](https://www.fisheries.noaa.gov/). However,
 
  - Using the GAP API from NOAA AFSC in Python requires a lot of work: understanding a complex schema, determining how to interact with a proprietary REST data service, forming long query URLs, and navigating pagination. 
@@ -33,13 +33,13 @@ These various elements together may increase the barrier for working with these 
 
 <br>
 
-### Goals
+#### Goals
 This low-dependency tool set provides the following:
 
-#### API access
+##### API access
 A type-annoated and documented Python interface to the official API service with ability to query with filters and pagination, providing results in various formats compatible with different Python usage modalities (Pandas, pure-Python, etc). It adapts the HTTP-based API used by the agency with Python type hints for easy query and interface. Furthermore, Python docstrings annotate the data structures provided by the API to help users navigate the various fields avilable, offering contextual documentation when supported by Python IDEs. Though not intended to be general, this project also provides an example for working with [Oracle REST Data Services (ORDS)](https://www.oracle.com/database/technologies/appdev/rest.html) APIs in Python.
 
-#### Abscence inference
+##### Abscence inference
 Tools to infer absence or "zero catch" data as required for certain analysis and aggregation using a supplemental flat file dataset provided by NOAA ([RACEBASE](https://www.fisheries.noaa.gov/inport/item/22008)).
 
 <br>
@@ -62,7 +62,7 @@ This library provides access to the public API endpoints with query keywords mat
 
 <br>
 
-### Basic queries
+#### Basic queries
 For example, this requests all records of Pasiphaea pacifica in 2021 from the Gulf of Alaska to get the median bottom temperature when they were observed:
 
 ```
@@ -106,7 +106,7 @@ Note that this operation will cause multiple HTTP requests while the iterator ru
 
 <br>
 
-### Absence data
+#### Absence data
 One of the major limitations of the official API is that it only provides presence data. However, this library can optionally infer absence or "zero catch" records using a separate static file produced by NOAA AFSC GAP. The algorithm for this is further discussed in the data quality section below.
 
 Absence data / "zero catch" records inference can be turned on by setting `presence_only` to false in `query`. To demonstrate, this example total area swept and total weight for Gadus macrocephalus from the Aleutian Islands in 2021:
@@ -139,7 +139,7 @@ For more details on this feature, please see the data quality section below. Not
 
 <br>
 
-### Serialization
+#### Serialization
 Users may request a dictionary representation:
 
 ```
@@ -171,7 +171,7 @@ Note `to_dicts` returns an iterator by default, but it can be realized as a full
 
 <br>
 
-### Pandas
+#### Pandas
 The dictionary form of the data can be used to create a Pandas dataframe:
 
 ```
@@ -192,7 +192,7 @@ Note that Pandas is not required to use this library.
 
 <br>
 
-### Advanced filtering
+#### Advanced filtering
 You can provide range queries which translate to ORDS or Python emaulated filters. For example, the following requests before and including 2019:
 
 ```
@@ -227,7 +227,7 @@ For more advanced filters, please see manual filtering below.
 
 <br>
 
-### Manual filtering
+#### Manual filtering
 Users may provide advanced queries using Oracle's REST API query parameters. For example, this queries for 2021 records with haul from the Gulf of Alaska in a specific geographic area:
 
 ```
@@ -252,7 +252,7 @@ For more info about the options available, consider the [Oracle docs](https://do
 
 <br>
 
-### Manual pagination
+#### Manual pagination
 By default, the library will iterate through all results and handle pagination behind the scenes. However, one can also request an individual page:
 
 ```
@@ -291,7 +291,7 @@ The schema drives the getters and filters available on in the library.
 
 <br>
 
-### Schema
+#### Schema
 
 A Python-typed description of the fields is provided below.
 
@@ -337,7 +337,7 @@ For more information on the schema, see the [metadata](https://github.com/afsc-g
 
 <br>
 
-### Filters and getters
+#### Filters and getters
 
 These fields are available as getters on `afscgap.model.Record` (`result.get_srvy()`) and may be used as optional filters on the query `asfcgagp.query(srvy='GOA')`. Fields which are `Optional` have two getters. First, the "regular" getter (`result.get_count()`) will assert that the field is not None before returning a non-optional. The second "maybe" getter (`result.get_count_maybe()`) will return None if the value was not provided or could not be parsed.
 
@@ -389,10 +389,10 @@ There are a few caveats for working with these data that are important for resea
 
 <br>
 
-### Presence-only service and absence inference
+#### Presence-only service and absence inference
 The API itself provides access to presence only data. This means that records are only given for when a species was found. However, this can cause issues if trying to aggregate data like, for example, to determine the weight of the species in a a region in terms of catch weight per hectare. The AFSC GAP API on its own would not necessarily provide the total nubmer of hecatres surveyed in that region becausae hauls without the species present would be excluded. Hypothetically, even without a species filter, a haul without any catch would be "invisible" in the API.
 
-#### Algorithm
+##### Algorithm
 Though it is not possible to resolve this issue using the AFSC GAP API service alone, this library can infer those missing records using a separate static flat file provided by NOAA and the following algorithm:
 
 
@@ -405,7 +405,7 @@ Though it is not possible to resolve this issue using the AFSC GAP API service a
 
 This proceedure is disabled by default. However, it can be enabled through the `presence_only` keyword in `query` like so: `asfcgap.query(presence_only=False)`. Example included in the usage section above.
 
-#### Memory efficiency
+##### Memory efficiency
 Note that `presence_only=False` will return a lot of records. Indeed, in some queries, this may stretch to many millions. As described in `CONTRIBUTING.md`, a goal of this project is provide those data in a memory-efficient way and, specifically, these "zero catch" records are generated by the library's iterator as requested but never all held in memory at the same time. It is recommened that client code also take care in memory efficiency. This can be as simple as aggregating via `for` loops which only hold one record in memory at a time. Similarly, consider using `map`, `filter`, `reduce`, [itertools](https://docs.python.org/3/library/itertools.html), etc.
 
 Here is a practical memory efficient example using [geolib](https://pypi.org/project/geolib/) and [toolz](https://github.com/pytoolz/toolz) to aggregate catch data by 5 character geohash.
@@ -458,12 +458,12 @@ weight_by_area_by_geohash = dict(weight_by_area_tuples)
 
 For more details see the [Python functional programming guide](https://docs.python.org/3/howto/functional.html). All that said, for some queries, use of Pandas may lead to very heavy memory usage.
 
-#### Manual pagination of zero catch records
+##### Manual pagination of zero catch records
 The goal of `Cursor.get_page` is to pull results from a page returned for a query as it appears in the NOAA API service. Note that `get_page` will not return zero catch records even with `presence_only=False` because the "page" requested does not technically exist in the API service. In order to use the negative records inference feature, please use the iterator option instead.
 
 <br>
 
-### Incomplete or invalid records
+#### Incomplete or invalid records
 Metadata fields such as `year` are always required to make a `Record` whereas others such as catch weight `cpue_kgkm2` are not present on all records returned by the API and are optional. See the Schema section below for additional details. For fields with optional values:
 
  - A maybe getter (`get_cpue_kgkm2_maybe`) is provided which will return None without error if the value is not provided or could not be parsed.
@@ -503,7 +503,7 @@ Note that this queue is filled during iteration (like `for result in results` or
 
 <br>
 
-### Longitude
+#### Longitude
 Though not officially mentioned by the NOAA API, the authors of this library observe some positive longitudes in returned data where negative longitudes of the same magnitude would be expected. Users of the library should be careful to determine how to handle these records (inferring they should have been the same magnitude of longitude but negative or excluded). Publications should be careful to document their decision.
 
 <br>
@@ -521,12 +521,12 @@ Thanks for your support! Pull requests and issues very welcome.
 
 <br>
 
-### Contribution guidelines
+#### Contribution guidelines
 We invite contributions via [our project Github](https://github.com/SchmidtDSE/afscgap). Please the [CONTRIBUTING.md](https://github.com/SchmidtDSE/afscgap/blob/main/CONTRIBUTING.md) file for more information.
 
 <br>
 
-### Debugging
+#### Debugging
 While participating in the community, you may need to debug URL generation. Therefore, for investigating issues or evaluating the underlying operations, you can also request a full URL for a query:
 
 ```
@@ -543,7 +543,7 @@ The query can be executed by making an HTTP GET request at the provided location
 
 <br>
 
-### Contacts
+#### Contacts
 [Sam Pottinger](https://github.com/sampottinger) is the primary contact. Thanks to [Giulia Zarpellon](https://github.com/gizarp) and [Carl Boettiger](https://github.com/cboettig) for their contributions. This is a project of the [The Eric and Wendy Schmidt Center for Data Science and the Environment
 at UC Berkeley](https://dse.berkeley.edu). Please contact us via dse@berkeley.edu.
 
