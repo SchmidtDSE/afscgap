@@ -9,7 +9,7 @@ LICENSE.txt.
 """
 import unittest
 
-import afscgap.test.test_util
+import afscgap.test.test_tools
 
 # pylint: disable=C0115, C0116
 
@@ -17,8 +17,8 @@ import afscgap.test.test_util
 class EntryPointTests(unittest.TestCase):
 
     def setUp(self):
-        self._result_1 = afscgap.test.test_util.make_result('result_1.json')
-        self._result_2 = afscgap.test.test_util.make_result('result_2.json')
+        self._result_1 = afscgap.test.test_tools.make_result('result_1.json')
+        self._result_2 = afscgap.test.test_tools.make_result('result_2.json')
         self._mock_requestor = unittest.mock.MagicMock(
             side_effect=[self._result_1, self._result_2]
         )
@@ -74,26 +74,3 @@ class EntryPointTests(unittest.TestCase):
         )
         list(result)
         self.assertEquals(result.get_invalid().qsize(), 1)
-
-    def test_convert_from_iso8601_match_string(self):
-        result = afscgap.convert_from_iso8601('2021-07-16T11:30:22')
-        self.assertEquals(result, '07/16/2021 11:30:22')
-
-    def test_convert_from_iso8601_match_string_with_tz(self):
-        result = afscgap.convert_from_iso8601('2021-07-16T11:30:22Z')
-        self.assertEquals(result, '07/16/2021 11:30:22')
-
-    def test_convert_from_iso8601_match_dict(self):
-        test_dict = {
-            'a': '2021-07-16T11:30:22',
-            'b': 'test2',
-            'c': 3
-        }
-        result = afscgap.convert_from_iso8601(test_dict)
-        self.assertEquals(result['a'], '07/16/2021 11:30:22')
-        self.assertEquals(result['b'], 'test2')
-        self.assertEquals(result['c'], 3)
-
-    def test_convert_from_iso8601_match_none(self):
-        result = afscgap.convert_from_iso8601(3)
-        self.assertEquals(result, 3)

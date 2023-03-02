@@ -73,20 +73,45 @@ def convert_from_iso8601(target: STR_PARAM) -> STR_PARAM:
     if target is None:
         return None
     elif isinstance(target, str):
-        return convert_from_iso8601(target)
+        return convert_from_iso8601_str(target)
     elif isinstance(target, dict):
         items = target.items()
         output_dict = {}
 
         for key, value in items:
             if isinstance(value, str):
-                output_dict[key] = convert_from_iso8601(value)
+                output_dict[key] = convert_from_iso8601_str(value)
             else:
                 output_dict[key] = value
 
         return output_dict
     else:
         return target
+
+
+def convert_from_iso8601_str(target: str) -> str:
+    """Attempt converting an ISO 8601 string to an API-provided datetime.
+
+    Args:
+        target: The datetime string to try to interpret.
+
+    Returns:
+        The datetime input string as a ISO 8601 string or the original value of
+        target if it could not be parsed.
+    """
+    match = ISO_8601_REGEX.match(target)
+
+    if not match:
+        return target
+
+    year = match.group('year')
+    month = match.group('month')
+    day = match.group('day')
+    hours = match.group('hours')
+    minutes = match.group('minutes')
+    seconds = match.group('seconds')
+
+    return DATE_TEMPLATE % (month, day, year, hours, minutes, seconds)
 
 
 def convert_to_iso8601(target: str) -> str:

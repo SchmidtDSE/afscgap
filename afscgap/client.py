@@ -30,7 +30,7 @@ DEFAULT_URL = DEFAULT_DOMAIN + '/ods/foss/afsc_groundfish_survey/'
 def build_api_cursor(params: dict, limit: OPT_INT = None,
     start_offset: OPT_INT = None, filter_incomplete: bool = False,
     requestor: OPT_REQUESTOR = None,
-    base_url: afscgap.client.OPT_STR = None) -> afscgap.cursor.Cursor:
+    base_url: OPT_STR = None) -> afscgap.cursor.Cursor:
     params_safe = copy.deepcopy(params)
     params_safe['date_time'] = afscgap.util.convert_from_iso8601(
         params_safe['date_time']
@@ -277,7 +277,7 @@ class ApiServiceCursor(afscgap.cursor.Cursor):
 
         items_raw = result_parsed['items']
 
-        items_parsed = map(afscgap.model.try_parse, items_raw)
+        items_parsed = map(try_parse, items_raw)
 
         # If we are filtering incomplete records, we will not allow incomplete.
         allow_incomplete = not self._filter_incomplete
