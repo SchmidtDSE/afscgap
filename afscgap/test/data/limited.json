@@ -1,0 +1,112 @@
+{
+  "items": [
+    {
+      "year": 2021,
+      "srvy": "GOA",
+      "survey": "Gulf of Alaska Bottom Trawl Survey",
+      "survey_id": "4.7E+001",
+      "cruise": "2.02101E+005",
+      "haul": "2.15E+002",
+      "stratum": "4.0E+001",
+      "station": "362-169",
+      "vessel_name": "Ocean Explorer",
+      "vessel_id": "1.48E+002",
+      "date_time": "07/16/2021 11:30:22",
+      "latitude_dd": "5.9702970000000001E+001",
+      "longitude_dd": "-1.4008670000000001E+002",
+      "species_code": "6.35E+004",
+      "common_name": "euphausiid unid.",
+      "scientific_name": "Euphausiacea",
+      "taxon_confidence": "Unassessed",
+      "cpue_kgha": "4.0099999999999999E-004",
+      "cpue_kgkm2": "4.0132000000000001E-002",
+      "cpue_kg1000km2": "4.0132272999999998E+001",
+      "cpue_noha": "8.0264500000000005E-001",
+      "cpue_nokm2": "8.0264545999999996E+001",
+      "cpue_no1000km2": "8.0264545520999993E+004",
+      "weight_kg": "1.0E-003",
+      "count": "2.0E+000",
+      "bottom_temperature_c": "6.7999999999999998E+000",
+      "surface_temperature_c": "1.19E+001",
+      "depth_m": "9.4E+001",
+      "distance_fished_km": "1.466E+000",
+      "net_width_m": "1.6997E+001",
+      "net_height_m": "6.4820000000000002E+000",
+      "area_swept_ha": "2.4917601999999999E+000",
+      "duration_hr": "2.6500000000000001E-001",
+      "tsn": 95496,
+      "ak_survey_id": 1829280,
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://apps-st.fisheries.noaa.gov/ods/foss/afsc_groundfish_survey/1829280"
+        }
+      ]
+    },
+    {
+      "year": 2021,
+      "srvy": "GOA",
+      "survey": "Gulf of Alaska Bottom Trawl Survey",
+      "survey_id": "4.7E+001",
+      "cruise": "2.02101E+005",
+      "haul": "2.15E+002",
+      "stratum": "4.0E+001",
+      "station": "362-169",
+      "vessel_name": "Ocean Explorer",
+      "vessel_id": "1.48E+002",
+      "date_time": "07/16/2021 11:30:22",
+      "latitude_dd": "5.9702970000000001E+001",
+      "longitude_dd": "-1.4008670000000001E+002",
+      "species_code": "6.35E+004",
+      "common_name": "euphausiid unid.",
+      "scientific_name": "Euphausiacea2",
+      "taxon_confidence": "Unassessed",
+      "cpue_kgha": "4.0099999999999999E-004",
+      "cpue_kgkm2": "4.0132000000000001E-002",
+      "cpue_kg1000km2": "4.0132272999999998E+001",
+      "cpue_noha": "8.0264500000000005E-001",
+      "cpue_nokm2": "8.0264545999999996E+001",
+      "cpue_no1000km2": "8.0264545520999993E+004",
+      "weight_kg": "1.0E-003",
+      "count": "2.0E+000",
+      "bottom_temperature_c": "6.7999999999999998E+000",
+      "surface_temperature_c": "1.19E+001",
+      "depth_m": "9.4E+001",
+      "distance_fished_km": "1.466E+000",
+      "net_width_m": "1.6997E+001",
+      "net_height_m": "6.4820000000000002E+000",
+      "area_swept_ha": "2.4917601999999999E+000",
+      "duration_hr": "2.6500000000000001E-001",
+      "tsn": 95496,
+      "ak_survey_id": 1829280,
+      "links": [
+        {
+          "rel": "self",
+          "href": "https://apps-st.fisheries.noaa.gov/ods/foss/afsc_groundfish_survey/1829280"
+        }
+      ]
+    }
+  ],
+  "hasMore": false,
+  "limit": 10,
+  "offset": 0,
+  "count": 1,
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://apps-st.fisheries.noaa.gov/ods/foss/afsc_groundfish_survey/?q=%7B%22year%22:2021%2C%22latitude_dd%22:%7B%22%24gt%22:56.99%2C%22%24lt%22:+57.04%7D%2C%22longitude_dd%22:%7B%22%24gt%22:-143.96%2C%22%24lt%22:-144.01%7D%7D"
+    },
+    {
+      "rel": "edit",
+      "href": "https://apps-st.fisheries.noaa.gov/ods/foss/afsc_groundfish_survey/?q=%7B%22year%22:2021%2C%22latitude_dd%22:%7B%22%24gt%22:56.99%2C%22%24lt%22:+57.04%7D%2C%22longitude_dd%22:%7B%22%24gt%22:-143.96%2C%22%24lt%22:-144.01%7D%7D"
+    },
+    {
+      "rel": "describedby",
+      "href": "https://apps-st.fisheries.noaa.gov/ods/foss/metadata-catalog/afsc_groundfish_survey/"
+    },
+    {
+      "rel": "first",
+      "href": "https://apps-st.fisheries.noaa.gov/ods/foss/afsc_groundfish_survey/?q=%7B%22year%22:2021%2C%22latitude_dd%22:%7B%22%24gt%22:56.99%2C%22%24lt%22:+57.04%7D%2C%22longitude_dd%22:%7B%22%24gt%22:-143.96%2C%22%24lt%22:-144.01%7D%7D&limit=10"
+    }
+  ]
+}
