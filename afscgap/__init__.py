@@ -266,4 +266,3 @@ def query(
         warn_function(LARGE_WARNING)
 
     return decorated_cursor
- 
