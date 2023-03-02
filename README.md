@@ -36,11 +36,12 @@ These various elements together may increase the barrier for working with these 
 #### Goals
 This low-dependency tool set provides the following:
 
-##### API access
-A type-annoated and documented Python interface to the official API service with ability to query with filters and pagination, providing results in various formats compatible with different Python usage modalities (Pandas, pure-Python, etc). It adapts the HTTP-based API used by the agency with Python type hints for easy query and interface. Furthermore, Python docstrings annotate the data structures provided by the API to help users navigate the various fields avilable, offering contextual documentation when supported by Python IDEs. Though not intended to be general, this project also provides an example for working with [Oracle REST Data Services (ORDS)](https://www.oracle.com/database/technologies/appdev/rest.html) APIs in Python.
+ - **API access**: A type-annoated and documented Python interface to the official API service with ability to query with automated pagination, providing results in various formats compatible with different Python usage modalities (Pandas, pure-Python, etc). It adapts the HTTP-based API used by the agency with Python type hints for easy query and interface. 
+ - **Contextual documentation**: Python docstrings annotate the data structures provided by the API to help users navigate the various fields avilable, offering contextual documentation when supported by Python IDEs.
+ - **Abscence inference**: Tools to infer absence or "zero catch" data as required for certain analysis and aggregation using a [supplemental hauls flat file dataset](https://pyafscgap.org/community/hauls.csv). Note that this flat file is provided by and hosted for this library's community after being created from [non-API public AFSC GAP data](https://www.fisheries.noaa.gov/foss/f?p=215%3A28).
+ - **Query generation**: This library converts more common Python standard types to types usable by the API service and emulated in Python when needed, reducing the need to interact directly with [ORDS syntax](https://www.oracle.com/database/technologies/appdev/rest.html).
 
-##### Abscence inference
-Tools to infer absence or "zero catch" data as required for certain analysis and aggregation using a supplemental flat file dataset provided by NOAA ([RACEBASE](https://www.fisheries.noaa.gov/inport/item/22008)).
+Though not intended to be general, this project also provides an example for working with [Oracle REST Data Services (ORDS)](https://www.oracle.com/database/technologies/appdev/rest.html) APIs in Python.
 
 <br>
 <br>
@@ -58,12 +59,12 @@ Note that its only dependency is [requests](https://docs.python-requests.org/en/
 <br>
 
 ## Usage
-This library provides access to the public API endpoints with query keywords matching the column names described in the official [metadata repository](https://github.com/afsc-gap-products/metadata). Records returned by the service are parsed into plain old Python objects with optional access to a dictionary representation and augmentation with inferred "zero catch" records.
+This library provides access to the public API endpoints with optional zero catch ("absence") record inference. It offers keyword arguments for query filtering that match the column names described in the official [metadata repository](https://github.com/afsc-gap-products/metadata). Records returned by the service are parsed into plain old Python objects.
 
 <br>
 
 #### Basic queries
-For example, this requests all records of Pasiphaea pacifica in 2021 from the Gulf of Alaska to get the median bottom temperature when they were observed:
+The `afscgap.query` method is the main entry point into the library. For example, this requests all records of Pasiphaea pacifica in 2021 from the Gulf of Alaska to get the median bottom temperature when they were observed:
 
 ```
 import statistics
@@ -80,9 +81,7 @@ temperatures = [record.get_bottom_temperature_c() for record in results]
 print(statistics.median(temperatures))
 ```
 
-Note that `afscgap.query` is the main entry point which returns `Record` objects whose fields and methods are defined in the [data structure section](https://github.com/SchmidtDSE/afscgap#data-structure).
-
-Using an iterator will have the library negotiate pagination behind the scenes. You can do this with list comprehensions, maps, etc or with a good old for loop like in this example which gets a histogram of haul temperatures:
+Note that `afscgap.query` returns a [Cursor](https://schmidtdse.github.io/afscgap/cursor.html#Cursor). One can iterate over this `Cursor` to access [Record](https://schmidtdse.github.io/afscgap/model.html#Record) objects. You can do this with list comprehensions, maps, etc or with a good old for loop like in this example which gets a histogram of haul temperatures:
 
 ```
 count_by_temperature_c = {}
@@ -102,14 +101,14 @@ for record in results:
 print(count_by_temperature_c)
 ```
 
-Note that this operation will cause multiple HTTP requests while the iterator runs.
+See [data structure section](#data-structure). Using an iterator will have the library negotiate pagination behind the scenes so this operation will cause multiple HTTP requests while the iterator runs.
 
 <br>
 
-#### Absence data
-One of the major limitations of the official API is that it only provides presence data. However, this library can optionally infer absence or "zero catch" records using a separate static file produced by NOAA AFSC GAP. The algorithm for this is further discussed in the data quality section below.
+#### Enable absence data
+One of the major limitations of the official API is that it only provides presence data. However, this library can optionally infer absence or "zero catch" records using a separate static file produced by NOAA AFSC GAP. The [algorithm and details for abscense inference](#absence-vs-presence-data) is further discussed below.
 
-Absence data / "zero catch" records inference can be turned on by setting `presence_only` to false in `query`. To demonstrate, this example total area swept and total weight for Gadus macrocephalus from the Aleutian Islands in 2021:
+Absence data / "zero catch" records inference can be turned on by setting `presence_only` to false in `query`. To demonstrate, this example finds total area swept and total weight for Gadus macrocephalus from the Aleutian Islands in 2021:
 
 ```
 import afscgap
@@ -135,7 +134,7 @@ message = template % (weight_per_area, total_weight, total_area)
 print(message)
 ```
 
-For more details on this feature, please see the data quality section below. Note that the library will emulate filtering in Python so that haul records are filtered just as presence records are filtered by the API service. This works for "basic" and "advanced" filtering. However, at time of writing, "manual filtering" as described below using ORDS syntax is not supported when `presence_data=False`. Also, by default, a warning will be emitted 
+For more [details on the zero catch record feature](#absence-vs-presence-data), please see below.
 
 <br>
 
@@ -384,30 +383,12 @@ These fields are available as getters on `afscgap.model.Record` (`result.get_srv
 <br>
 <br>
 
-## Data quality and completeness
-There are a few caveats for working with these data that are important for researchers to understand.
+## Absence vs presence data
+The API itself provides access to presence only data. This means that records are only given for when a species was found. This can cause issues if trying to aggregate data like, for example, to determine the weight of the species in a region in terms of catch weight per hectare. The AFSC GAP API on its own would not necessarily provide the total nubmer of hecatres surveyed in that region because hauls without the species present would be excluded. That in mind, this library provides a method for inferring absence data.
 
 <br>
 
-#### Presence-only service and absence inference
-The API itself provides access to presence only data. This means that records are only given for when a species was found. However, this can cause issues if trying to aggregate data like, for example, to determine the weight of the species in a a region in terms of catch weight per hectare. The AFSC GAP API on its own would not necessarily provide the total nubmer of hecatres surveyed in that region becausae hauls without the species present would be excluded. Hypothetically, even without a species filter, a haul without any catch would be "invisible" in the API.
-
-##### Algorithm
-Though it is not possible to resolve this issue using the AFSC GAP API service alone, this library can infer those missing records using a separate static flat file provided by NOAA and the following algorithm:
-
-
- - Record the set of species observed from API service returned results.
- - Record the set of hauls (survey/cruse/hauls/species combinations) observed from API service returned results.
- - Return records normally while records remain available from the API service.
- - Upon exhaustion of the API service results, [download the ~1M hauls flat file](https://www.fisheries.noaa.gov/inport/item/22008.) from NOAA as listed in [InPort](.).
- - For each species observed in the API returned results check if that species had a record for each haul (survey/cruse/haul combination) reported in the flat file.
- - For any hauls without the species record, yield an 0 catch record from the iterator for that haul.
-
-This proceedure is disabled by default. However, it can be enabled through the `presence_only` keyword in `query` like so: `asfcgap.query(presence_only=False)`. Example included in the usage section above.
-
-##### Memory efficiency
-Note that `presence_only=False` will return a lot of records. Indeed, in some queries, this may stretch to many millions. As described in `CONTRIBUTING.md`, a goal of this project is provide those data in a memory-efficient way and, specifically, these "zero catch" records are generated by the library's iterator as requested but never all held in memory at the same time. It is recommened that client code also take care in memory efficiency. This can be as simple as aggregating via `for` loops which only hold one record in memory at a time. Similarly, consider using `map`, `filter`, `reduce`, [itertools](https://docs.python.org/3/library/itertools.html), etc.
-
+#### Example of absence data in aggregation
 Here is a practical memory efficient example using [geolib](https://pypi.org/project/geolib/) and [toolz](https://github.com/pytoolz/toolz) to aggregate catch data by 5 character geohash.
 
 ```
@@ -458,16 +439,49 @@ weight_by_area_by_geohash = dict(weight_by_area_tuples)
 
 For more details see the [Python functional programming guide](https://docs.python.org/3/howto/functional.html). All that said, for some queries, use of Pandas may lead to very heavy memory usage.
 
-##### Manual pagination of zero catch records
+<br>
+
+#### Abscence inference algorithm
+Though it is not possible to resolve this issue using the AFSC GAP API service alone, this library can infer those missing records using a separate static flat file provided by NOAA and the following algorithm:
+
+
+ - Record the set of species observed from API service returned results.
+ - Record the set of hauls observed from API service returned results.
+ - Return records normally while records remain available from the API service.
+ - Upon exhaustion of the API service results, [download the ~10M hauls flat file](https://pyafscgap.org/community/hauls.csv) from this library's community.
+ - For each species observed in the API returned results, check if that species had a record for each haul reported in the flat file.
+ - For any hauls without the species record, yield an 0 catch record from the iterator for that query.
+
+This proceedure is disabled by default. However, it can be enabled through the `presence_only` keyword in `query` like so: `asfcgap.query(presence_only=False)`.
+
+<br>
+
+#### Memory efficiency of absence inference
+Note that `presence_only=False` will return a lot of records. Indeed, in some queries, this may stretch to many millions. As described in [community guidelines](#community), a goal of this project is provide those data in a memory-efficient way and, specifically, these "zero catch" records are generated by the library's iterator as requested but never all held in memory at the same time. It is recommened that client code also take care in memory efficiency. This can be as simple as aggregating via `for` loops which only hold one record in memory at a time. Similarly, consider using `map`, `filter`, `reduce`, [itertools](https://docs.python.org/3/library/itertools.html), etc.
+
+<br>
+
+#### Manual pagination of zero catch records
 The goal of `Cursor.get_page` is to pull results from a page returned for a query as it appears in the NOAA API service. Note that `get_page` will not return zero catch records even with `presence_only=False` because the "page" requested does not technically exist in the API service. In order to use the negative records inference feature, please use the iterator option instead.
 
 <br>
 
-#### Incomplete or invalid records
-Metadata fields such as `year` are always required to make a `Record` whereas others such as catch weight `cpue_kgkm2` are not present on all records returned by the API and are optional. See the Schema section below for additional details. For fields with optional values:
+#### Filtering absence data
+Note that the library will emulate filtering in Python so that haul records are filtered just as presence records are filtered by the API service. This works for "basic" and "advanced" filtering. However, at time of writing, "manual filtering" as described below using ORDS syntax is not supported when `presence_data=False`. Also, by default, a warning will be emitted when using this feature to help new users be aware of potential memory issues. This can be suppressed by including `suppress_large_warning=True` in the call to query.
 
- - A maybe getter (`get_cpue_kgkm2_maybe`) is provided which will return None without error if the value is not provided or could not be parsed.
- - A regular getter (`get_cpue_kgkm2`) is provided which asserts the value is not None before it is returned.
+<br>
+<br>
+
+## Data quality and completeness
+There are a few caveats for working with these data that are important for researchers to understand.
+
+<br>
+
+#### Incomplete or invalid records
+Metadata fields such as `year` are always required to make a `Record` whereas others such as catch weight `cpue_kgkm2` are not present on all records returned by the API and are optional. See the [data structure section](#data-structure) for additional details. For fields with optional values:
+
+ - A maybe getter (like `get_cpue_kgkm2_maybe`) is provided which will return None without error if the value is not provided or could not be parsed.
+ - A regular getter (like `get_cpue_kgkm2`) is provided which asserts the value is not None before it is returned.
 
 `Record` objects also have an `is_complete` method which returns true if both all optional fields on the `Record` are non-None and the `date_time` field on the `Record` is a valid ISO 8601 string. By default, records for which `is_complete` are false are returned when iterating or through `get_page` but this can be overridden by with the `filter_incomplete` keyword argument like so:
 
@@ -553,9 +567,7 @@ at UC Berkeley](https://dse.berkeley.edu). Please contact us via dse@berkeley.ed
 ## Open Source
 We are happy to be part of the open source community.
 
-At this time, the only open source dependency used by this microlibrary is [Requests](https://docs.python-requests.org/en/latest/index.html) which is available under the [Apache v2 License](https://github.com/psf/requests/blob/main/LICENSE) from [Kenneth Reitz and other contributors](https://github.com/psf/requests/graphs/contributors).
-
-Our build and documentation systems also use the following but are not distributed with or linked to the project itself:
+At this time, the only open source dependency used by this microlibrary is [Requests](https://docs.python-requests.org/en/latest/index.html) which is available under the [Apache v2 License](https://github.com/psf/requests/blob/main/LICENSE) from [Kenneth Reitz and other contributors](https://github.com/psf/requests/graphs/contributors). Our build and documentation systems also use the following but are not distributed with or linked to the project itself:
 
  - [mypy](https://github.com/python/mypy) under the [MIT License](https://github.com/python/mypy/blob/master/LICENSE) from Jukka Lehtosalo, Dropbox, and other contributors.
  - [nose2](https://docs.nose2.io/en/latest/index.html) under a [BSD license](https://github.com/nose-devs/nose2/blob/main/license.txt) from Jason Pellerin and other contributors.

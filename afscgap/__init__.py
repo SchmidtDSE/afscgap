@@ -197,6 +197,10 @@ def query(
             the results, putting them in the invalid records queue. If false,
             they are included and their is_complete() will return false.
             Defaults to false.
+        presence_only
+        suppress_large_warning
+        hauls_url
+        warn_function
 
     Returns:
         Cursor to manage HTTP requests and query results.
