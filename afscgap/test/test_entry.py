@@ -14,7 +14,7 @@ import afscgap.test.test_tools
 # pylint: disable=C0115, C0116
 
 
-class EntryPointTests(unittest.TestCase):
+class EntryPointNoInferenceTests(unittest.TestCase):
 
     def setUp(self):
         self._result_1 = afscgap.test.test_tools.make_result_json(
@@ -78,3 +78,50 @@ class EntryPointTests(unittest.TestCase):
         )
         list(result)
         self.assertEquals(result.get_invalid().qsize(), 1)
+
+
+class EntryPointInferenceTests(unittest.TestCase):
+
+    def setUp(self):
+        self._api_result = afscgap.test.test_tools.make_result_json(
+            'limited.json'
+        )
+        self._hauls_result = afscgap.test.test_tools.make_result_text(
+            'hauls.csv'
+        )
+        self._mock_requestor = unittest.mock.MagicMock(
+            side_effect=[self._api_result, self._hauls_result]
+        )
+
+    def test_query_primitive(self):
+        warn_function = unittest.mock.MagicMock()
+
+        result = afscgap.query(
+            year=2021,
+            requestor=self._mock_requestor,
+            presence_only=True,
+            warn_function=warn_function
+        )
+        results = list(result)
+        self.assertEquals(len(results), 4)
+
+    def test_query_primitive_warning(self):
+        warn_function = unittest.mock.MagicMock()
+        result = afscgap.query(
+            year=2021,
+            requestor=self._mock_requestor,
+            presence_only=True,
+            warn_function=warn_function
+        )
+        warn_function.assert_called()
+
+    def test_query_primitive_suppress(self):
+        warn_function = unittest.mock.MagicMock()
+        result = afscgap.query(
+            year=2021,
+            requestor=self._mock_requestor,
+            presence_only=True,
+            suppress_large_warning=True,
+            warn_function=warn_function
+        )
+        warn_function.assert_not_called()
