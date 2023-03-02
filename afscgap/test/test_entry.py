@@ -14,7 +14,7 @@ import afscgap.test.test_util
 # pylint: disable=C0115, C0116
 
 
-class QueryTests(unittest.TestCase):
+class EntryPointTests(unittest.TestCase):
 
     def setUp(self):
         self._result_1 = afscgap.test.test_util.make_result('result_1.json')
