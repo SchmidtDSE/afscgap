@@ -197,11 +197,18 @@ def query(
             the results, putting them in the invalid records queue. If false,
             they are included and their is_complete() will return false.
             Defaults to false.
-        presence_only
-        suppress_large_warning
-        hauls_url
-        warn_function
-
+        presence_only: Flag indicating if abscence / zero catch data should be
+            inferred. If false, will run abscence data inference. If true, will
+            return presence only data as returned by the NOAA API service.
+            Defaults to true.
+        suppress_large_warning: Indicate if the library should warn when an
+            operation may consume a large amount of memory. If true, the warning
+            will not be emitted. Defaults to true.
+        hauls_url: The URL at which the flat file with hauls metadata can be
+            found or None if a default should be used. Defaults to None.
+        warn_function: Function to call with a message describing warnings
+            encountered. If None, will use warnings.warn. Defaults to None.
+    
     Returns:
         Cursor to manage HTTP requests and query results.
     """
