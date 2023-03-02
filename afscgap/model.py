@@ -23,7 +23,25 @@ ISO_8601_REGEX = re.compile('(?P<year>\\d{4})\\-(?P<month>\\d{2})\\-' + \
 ISO_8601_TEMPLATE = '%s-%s-%sT%s:%s:%s'
 
 
-class Record:
+class HaulKeyable:
+    
+    def get_srvy(self) -> str:
+        raise NotImplementedError('Use implementor.')
+    
+    def get_year(self) -> float:
+        raise NotImplementedError('Use implementor.')
+    
+    def get_vessel_id(self) -> float:
+        raise NotImplementedError('Use implementor.')
+    
+    def get_cruise(self) -> float:
+        raise NotImplementedError('Use implementor.')
+    
+    def get_haul(self) -> float:
+        raise NotImplementedError('Use implementor.')
+
+
+class Record(HaulKeyable):
     """Data structure describing a single record returned by the API."""
 
     def __init__(self, year: float, srvy: str, survey: str, survey_id: float,
@@ -435,7 +453,7 @@ class Record:
         Returns:
             Taxonomic information system species code.
         """
-        return self._assert_int_present(self._tsn)
+        return assert_int_present(self._tsn)
 
     def get_tsn_maybe(self) -> OPT_INT:
         """Get the field labeled as tsn in the API or None.
@@ -454,6 +472,14 @@ class Record:
         """
         return self._ak_survey_id
 
+    def get_ak_survey_id_maybe(self) -> OPT_INT:
+        """Get the field labeled as ak_survey_id in the API.
+
+        Returns:
+            AK identifier for the survey or None if not given.
+        """
+        return self._ak_survey_id
+
     def get_cpue_kgha(self) -> float:
         """Get the value of field cpue_kgha with validity assert.
 
@@ -465,7 +491,7 @@ class Record:
             Catch weight divided by net area (kg / hectares) if available. See
             metadata.
         """
-        return self._assert_float_present(self._cpue_kgha)
+        return assert_float_present(self._cpue_kgha)
 
     def get_cpue_kgkm2(self) -> float:
         """Get the value of field cpue_kgkm2 with validity assert.
@@ -478,7 +504,7 @@ class Record:
             Catch weight divided by net area (kg / km^2) if available. See
             metadata.
         """
-        return self._assert_float_present(self._cpue_kgkm2)
+        return assert_float_present(self._cpue_kgkm2)
 
     def get_cpue_kg1000km2(self) -> float:
         """Get the value of field cpue_kg1000km2 with validity assert.
@@ -491,7 +517,7 @@ class Record:
             Catch weight divided by net area (kg / km^2 * 1000) if available.
             See metadata.
         """
-        return self._assert_float_present(self._cpue_kg1000km2)
+        return assert_float_present(self._cpue_kg1000km2)
 
     def get_cpue_noha(self) -> float:
         """Get the value of field cpue_noha with validity assert.
@@ -504,7 +530,7 @@ class Record:
             Catch number divided by net sweep area if available (count /
             hectares). See metadata.
         """
-        return self._assert_float_present(self._cpue_noha)
+        return assert_float_present(self._cpue_noha)
 
     def get_cpue_nokm2(self) -> float:
         """Get the value of field cpue_nokm2 with validity assert.
@@ -517,7 +543,7 @@ class Record:
             Catch number divided by net sweep area if available (count / km^2).
             See metadata.
         """
-        return self._assert_float_present(self._cpue_nokm2)
+        return assert_float_present(self._cpue_nokm2)
 
     def get_cpue_no1000km2(self) -> float:
         """Get the value of field cpue_no1000km2 with validity assert.
@@ -530,7 +556,7 @@ class Record:
             Catch number divided by net sweep area if available (count / km^2 *
             1000). See metadata.
         """
-        return self._assert_float_present(self._cpue_no1000km2)
+        return assert_float_present(self._cpue_no1000km2)
 
     def get_weight_kg(self) -> float:
         """Get the value of field weight_kg with validity assert.
@@ -542,7 +568,7 @@ class Record:
         Returns:
             Taxon weight (kg) if available. See metadata.
         """
-        return self._assert_float_present(self._weight_kg)
+        return assert_float_present(self._weight_kg)
 
     def get_count(self) -> float:
         """Get the value of field count with validity assert.
@@ -554,7 +580,7 @@ class Record:
         Returns:
             Total number of organism individuals in haul.
         """
-        return self._assert_float_present(self._count)
+        return assert_float_present(self._count)
 
     def get_bottom_temperature_c(self) -> float:
         """Get the value of field bottom_temperature_c with validity assert.
@@ -567,7 +593,7 @@ class Record:
             Bottom temperature associated with observation if available in
             Celsius.
         """
-        return self._assert_float_present(self._bottom_temperature_c)
+        return assert_float_present(self._bottom_temperature_c)
 
     def get_surface_temperature_c(self) -> float:
         """Get the value of field surface_temperature_c with validity assert.
@@ -580,7 +606,7 @@ class Record:
             Surface temperature associated with observation if available in
             Celsius. None if not
         """
-        return self._assert_float_present(self._surface_temperature_c)
+        return assert_float_present(self._surface_temperature_c)
 
     def is_complete(self) -> bool:
         """Determine if this record has all of its values filled in.
@@ -654,13 +680,253 @@ class Record:
             'ak_survey_id': self._ak_survey_id,
         }
 
-    def _assert_float_present(self, target: OPT_FLOAT) -> float:
-        assert target is not None
-        return target
 
-    def _assert_int_present(self, target: OPT_INT) -> int:
-        assert target is not None
-        return target
+class Haul(HaulKeyable):
+
+    def __init__(self, srvy: str, survey: str, survey_id: float, cruise: float,
+        haul: float, stratum: float, station: str, vessel_name: str,
+        vessel_id: float, date_time: str, latitude_dd: float,
+        longitude_dd: float, bottom_temperature_c: OPT_FLOAT,
+        surface_temperature_c: OPT_FLOAT, depth_m: float, 
+        distance_fished_km: float, net_width_m: float, net_height_m: float,
+        area_swept_ha: float, duration_hr: float):
+        self._srvy = srvy
+        self._survey = survey
+        self._survey_id = survey_id
+        self._cruise = cruise
+        self._haul = haul
+        self._stratum = stratum
+        self._station = station
+        self._vessel_name = vessel_name
+        self._vessel_id = vessel_id
+        self._date_time = date_time
+        self._latitude_dd = latitude_dd
+        self._longitude_dd = longitude_dd
+        self._bottom_temperature_c = bottom_temperature_c
+        self._surface_temperature_c = surface_temperature_c
+        self._depth_m = depth_m
+        self._distance_fished_km = distance_fished_km
+        self._net_width_m = net_width_m
+        self._net_height_m = net_height_m
+        self._area_swept_ha = area_swept_ha
+        self._duration_hr = duration_hr
+
+    def get_year(self) -> float:
+        """Get year inferred from get_date_time().
+
+        Returns:
+            Year for the survey in which this observation was made.
+        """
+        return float(self.get_date_time().split('-')[0])
+
+    def get_date_time(self) -> str:
+        """Get the field labeled as date_time in the API.
+
+        Returns:
+            The date and time of the haul which has been attempted to be
+            transformed to an ISO 8601 string without timezone info. If it
+            couldn’t be transformed, the original string is reported.
+        """
+        return self._date_time
+
+   def get_srvy(self) -> str:
+        """Get the field labeled as srvy in the API.
+
+        Returns:
+            The name of the survey in which this observation was made. NBS (N
+            Bearing Sea), EBS (SE Bearing Sea), BSS (Bearing Sea Slope), or GOA
+            (Gulf of Alaska)
+        """
+        return self._srvy
+
+    def get_survey(self) -> str:
+        """Get the field labeled as survey in the API.
+
+        Returns:
+            Long form description of the survey in which the haul was made.
+        """
+        return self._survey
+
+    def get_survey_id(self) -> float:
+        """Get the field labeled as survey_id in the API.
+
+        Returns:
+            Unique numeric ID for the survey.
+        """
+        return self._survey_id
+
+    def get_cruise(self) -> float:
+        """Get the field labeled as cruise in the API.
+
+        Returns:
+            An ID uniquely identifying the cruise in which the haul was made.
+            Multiple cruises in a survey.
+        """
+        return self._cruise
+
+    def get_haul(self) -> float:
+        """Get the field labeled as haul in the API.
+
+        Returns:
+            An ID uniquely identifying the haul. Multiple hauls per cruises.
+        """
+        return self._haul
+
+    def get_stratum(self) -> float:
+        """Get the field labeled as stratum in the API.
+
+        Returns:
+            Unique ID for statistical area / survey combination as described in
+            the metadata or 0 if an experimental tow.
+        """
+        return self._stratum
+
+    def get_station(self) -> str:
+        """Get the field labeled as station in the API.
+
+        Returns:
+            Station associated with the survey.
+        """
+        return self._station
+
+    def get_vessel_name(self) -> str:
+        """Get the field labeled as vessel_name in the API.
+
+        Returns:
+            Unique ID describing the vessel that made this haul. Note this is
+            left as a string but, in practice, is likely numeric.
+        """
+        return self._vessel_name
+
+    def get_vessel_id(self) -> float:
+        """Get the field labeled as vessel_id in the API.
+
+        Returns:
+            Name of the vessel at the time the haul was made. Note that
+            multiple names are potentially associated with a vessel ID.
+        """
+        return self._vessel_id
+
+    def get_date_time(self) -> str:
+        """Get the field labeled as date_time in the API.
+
+        Returns:
+            The date and time of the haul which has been attempted to be
+            transformed to an ISO 8601 string without timezone info. If it
+            couldn’t be transformed, the original string is reported.
+        """
+        return self._date_time
+
+    def get_latitude_dd(self) -> float:
+        """Get the field labeled as latitude_dd in the API.
+
+        Returns:
+            Latitude in decimal degrees associated with the haul.
+        """
+        return self._latitude_dd
+
+    def get_longitude_dd(self) -> float:
+        """Get the field labeled as longitude_dd in the API.
+
+        Returns:
+            Longitude in decimal degrees associated with the haul.
+        """
+        return self._longitude_dd
+
+    def get_bottom_temperature_c_maybe(self) -> OPT_FLOAT:
+        """Get the field labeled as bottom_temperature_c in the API.
+
+        Returns:
+            Bottom temperature associated with haul if available in
+            Celsius. None if not given or could not interpret as a float.
+        """
+        return self._bottom_temperature_c
+
+    def get_surface_temperature_c_maybe(self) -> OPT_FLOAT:
+        """Get the field labeled as surface_temperature_c in the API.
+
+        Returns:
+            Surface temperature associated with haul if available in
+            Celsius. None if not given or could not interpret as a float.
+        """
+        return self._surface_temperature_c
+
+    def get_depth_m(self) -> float:
+        """Get the field labeled as depth_m in the API.
+
+        Returns:
+            Depth of the bottom in meters.
+        """
+        return self._depth_m
+
+    def get_distance_fished_km(self) -> float:
+        """Get the field labeled as distance_fished_km in the API.
+
+        Returns:
+            Distance of the net fished as km.
+        """
+        return self._distance_fished_km
+
+    def get_net_width_m(self) -> float:
+        """Get the field labeled as net_width_m in the API.
+
+        Returns:
+            Distance of the net fished as m.
+        """
+        return self._net_width_m
+
+    def get_net_height_m(self) -> float:
+        """Get the field labeled as net_height_m in the API.
+
+        Returns:
+            Height of the net fished as m.
+        """
+        return self._net_height_m
+
+    def get_area_swept_ha(self) -> float:
+        """Get the field labeled as area_swept_ha in the API.
+
+        Returns:
+            Area covered by the net while fishing in hectares.
+        """
+        return self._area_swept_ha
+
+    def get_duration_hr(self) -> float:
+        """Get the field labeled as duration_hr in the API.
+
+        Returns:
+            Duration of the haul as number of hours.
+        """
+        return self._duration_hr
+
+    def get_bottom_temperature_c(self) -> float:
+        """Get the value of field bottom_temperature_c with validity assert.
+
+        Raises:
+            AssertionError: Raised if this field was not given by the API or
+            could not be parsed as expected.
+
+        Returns:
+            Bottom temperature associated with haul if available in Celsius.
+        """
+        return assert_float_present(self._bottom_temperature_c)
+
+    def get_surface_temperature_c(self) -> float:
+        """Get the value of field surface_temperature_c with validity assert.
+
+        Raises:
+            AssertionError: Raised if this field was not given by the API or
+            could not be parsed as expected.
+
+        Returns:
+            Surface temperature associated with haul if available in Celsius.
+        """
+        return assert_float_present(self._surface_temperature_c)
+    
+    def is_complete(self) -> bool:
+        bottom_valid = self._bottom_temperature_c is not None
+        surface_valid = self._surface_temperature_c is not None
+        return bottom_valid and surface_valid
 
 
 def get_opt_float(target) -> OPT_FLOAT:
@@ -699,6 +965,16 @@ def get_opt_int(target) -> OPT_INT:
             return None
     else:
         return None
+
+
+def assert_float_present(self, target: OPT_FLOAT) -> float:
+    assert target is not None
+    return target
+
+
+def assert_int_present(self, target: OPT_INT) -> int:
+    assert target is not None
+    return target
 
 
 def convert_from_iso8601(target: str) -> str:
@@ -838,7 +1114,7 @@ def parse_record(target: dict) -> Record:
     )
 
 
-class ParseResult:
+class ParseRecordResult:
     """Object with the results of trying to parse a record from the API.
 
     Object with the results of trying to parse a record from the API, allowing
@@ -896,7 +1172,7 @@ class ParseResult:
         return allow_incomplete or self._parsed.is_complete()
 
 
-def try_parse(target: dict) -> ParseResult:
+def try_parse(target: dict) -> ParseRecordResult:
     """Attempt parsing a Record from an input item dictionary from the API.
 
     Params:
@@ -907,6 +1183,6 @@ def try_parse(target: dict) -> ParseResult:
         Parse result describing if the dictionary was parsed successfully.
     """
     try:
-        return ParseResult(target, parse_record(target))
+        return ParseRecordResult(target, parse_record(target))
     except (ValueError, KeyError):
-        return ParseResult(target, None)
+        return ParseRecordResult(target, None)
