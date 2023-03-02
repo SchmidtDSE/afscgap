@@ -139,8 +139,21 @@ def convert_to_iso8601(target: str) -> str:
 
 
 def is_iso8601(target: str) -> bool:
+    """Determine if a string matches an expected ISO 8601 format.
+
+    Args:
+        target: The string to test.
+
+    Returns:
+        True if it matches the expected format and false otherwise.
+    """
     return ISO_8601_REGEX.match(target) is not None
 
 
 def build_requestor() -> REQUESTOR:
+    """Build a requestor strategy that uses the requests library.
+
+    Returns:
+        Newly built strategy.
+    """
     return lambda x: requests.get(x, timeout=TIMEOUT)
