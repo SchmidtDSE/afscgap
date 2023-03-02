@@ -20,8 +20,12 @@ import afscgap.test.test_tools
 class ClientTests(unittest.TestCase):
 
     def setUp(self):
-        self._result_1 = afscgap.test.test_tools.make_result('result_1.json')
-        self._result_2 = afscgap.test.test_tools.make_result('result_2.json')
+        self._result_1 = afscgap.test.test_tools.make_result_json(
+            'result_1.json'
+        )
+        self._result_2 = afscgap.test.test_tools.make_result_json(
+            'result_2.json'
+        )
         self._mock_requsetor = unittest.mock.MagicMock(
             side_effect=[self._result_1, self._result_2]
         )
@@ -94,7 +98,9 @@ class ClientTests(unittest.TestCase):
         self.assertEqual(len(result), 10)
 
     def test_find_next_url_present(self):
-        loaded_data = afscgap.test.test_tools.load_test_data('result_1.json')
+        loaded_data = afscgap.test.test_tools.load_test_data_json(
+            'result_1.json'
+        )
         next_url = self._cursor._find_next_url(loaded_data)
         self.assertEqual(
             next_url,
@@ -102,7 +108,9 @@ class ClientTests(unittest.TestCase):
         )
 
     def test_find_next_url_not_present(self):
-        loaded_data = afscgap.test.test_tools.load_test_data('result_2.json')
+        loaded_data = afscgap.test.test_tools.load_test_data_json(
+            'result_2.json'
+        )
         next_url = self._cursor._find_next_url(loaded_data)
         self.assertIsNone(next_url)
 
@@ -127,7 +135,7 @@ class ClientTests(unittest.TestCase):
         self.assertEqual(result[0]['srvy'], 'GOA')
 
     def test_parse_record(self):
-        result = afscgap.test.test_tools.load_test_data('result_1.json')
+        result = afscgap.test.test_tools.load_test_data_json('result_1.json')
         parsed = afscgap.client.parse_record(result['items'][0])
         self.assertEqual(parsed.get_srvy(), 'GOA')
         self.assertAlmostEquals(parsed.get_vessel_id(), 148)
@@ -138,7 +146,7 @@ class ClientTests(unittest.TestCase):
         )
 
     def test_to_dict(self):
-        result = afscgap.test.test_tools.load_test_data('result_1.json')
+        result = afscgap.test.test_tools.load_test_data_json('result_1.json')
         parsed = afscgap.client.parse_record(result['items'][0])
         parsed_dict = parsed.to_dict()
         self.assertEqual(parsed_dict['srvy'], 'GOA')
@@ -150,14 +158,14 @@ class ClientTests(unittest.TestCase):
         self.assertIsNone(parsed.get_parsed())
 
     def test_try_parse_success(self):
-        result = afscgap.test.test_tools.load_test_data('result_1.json')
+        result = afscgap.test.test_tools.load_test_data_json('result_1.json')
         parsed = afscgap.client.try_parse(result['items'][0])
         self.assertTrue(parsed.meets_requirements(True))
         self.assertTrue(parsed.meets_requirements(False))
         self.assertIsNotNone(parsed.get_parsed())
 
     def test_try_parse_invalid(self):
-        result = afscgap.test.test_tools.load_test_data('result_1.json')
+        result = afscgap.test.test_tools.load_test_data_json('result_1.json')
         parsed = afscgap.client.try_parse(result['items'][9])
         self.assertTrue(parsed.meets_requirements(True))
         self.assertFalse(parsed.meets_requirements(False))

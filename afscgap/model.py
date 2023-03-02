@@ -543,7 +543,7 @@ class Haul(HaulKeyable):
         Returns:
             Year for the survey in which this observation was made.
         """
-        return float(self.get_date_time().split('-')[0])
+        return int(self.get_date_time().split('-')[0])
 
     def get_srvy(self) -> str:
         """Get the field labeled as srvy in the API.
@@ -746,6 +746,7 @@ class Haul(HaulKeyable):
 
     def to_dict(self) -> dict:
         return {
+            'year': self.get_year(),
             'srvy': self._srvy,
             'survey': self._survey,
             'survey_id': self._survey_id,

@@ -29,6 +29,7 @@ DEFAULT_HAULS_URL = ''
 
 HAUL_LIST = typing.List[afscgap.model.Haul]
 HAUL_FILTERABLE_FIELDS = [
+    'year',
     'srvy',
     'survey',
     'survey_id',
@@ -60,10 +61,9 @@ def build_cursor(params: dict, inner_cursor: afscgap.cursor.Cursor,
     params_safe['date_time'] = afscgap.util.convert_from_iso8601(
         params_safe['date_time']
     )
-    params_ords = afscgap.query_util.interpret_query_to_py(params_safe)
 
     hauls_data = get_hauls_data(
-        params_ords,
+        params_safe,
         requestor=requestor,
         hauls_url=hauls_url
     )
@@ -892,26 +892,26 @@ class ZeroCatchHaulDecorator(afscgap.model.Record):
 
 
 def parse_haul(target: dict) -> afscgap.model.Haul:
-    srvy = target['srvy']
-    survey = target['survey']
-    survey_id = target['survey_id']
-    cruise = target['cruise']
-    haul = target['haul']
-    stratum = target['stratum']
-    station = target['station']
-    vessel_name = target['vessel_name']
-    vessel_id = target['vessel_id']
-    date_time = target['date_time']
-    latitude_dd = target['latitude_dd']
-    longitude_dd = target['longitude_dd']
-    bottom_temperature_c = target['bottom_temperature_c']
-    surface_temperature_c = target['surface_temperature_c']
-    depth_m = target['depth_m']
-    distance_fished_km = target['distance_fished_km']
-    net_width_m = target['net_width_m']
-    net_height_m = target['net_height_m']
-    area_swept_ha = target['area_swept_ha']
-    duration_hr = target['duration_hr']
+    srvy = target['Srvy']
+    survey = target['Survey']
+    survey_id = target['Survey Id']
+    cruise = target['Cruise']
+    haul = target['Haul']
+    stratum = target['Stratum']
+    station = target['Station']
+    vessel_name = target['Vessel Name']
+    vessel_id = target['Vessel Id']
+    date_time = afscgap.util.convert_to_iso8601(target['Date Time'])
+    latitude_dd = target['Latitude Dd']
+    longitude_dd = target['Longitude Dd']
+    bottom_temperature_c = target['Bottom Temperature C']
+    surface_temperature_c = target['Surface Temperature C']
+    depth_m = target['Depth M']
+    distance_fished_km = target['Distance Fished Km']
+    net_width_m = target['Net Width M']
+    net_height_m = target['Net Height M']
+    area_swept_ha = target['Area Swept Ha']
+    duration_hr = target['Duration Hr']
 
     return afscgap.model.Haul(
         srvy,

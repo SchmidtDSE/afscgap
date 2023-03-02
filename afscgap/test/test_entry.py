@@ -17,8 +17,12 @@ import afscgap.test.test_tools
 class EntryPointTests(unittest.TestCase):
 
     def setUp(self):
-        self._result_1 = afscgap.test.test_tools.make_result('result_1.json')
-        self._result_2 = afscgap.test.test_tools.make_result('result_2.json')
+        self._result_1 = afscgap.test.test_tools.make_result_json(
+            'result_1.json'
+        )
+        self._result_2 = afscgap.test.test_tools.make_result_json(
+            'result_2.json'
+        )
         self._mock_requestor = unittest.mock.MagicMock(
             side_effect=[self._result_1, self._result_2]
         )
