@@ -1,5 +1,5 @@
 """
-Logic for representing and working with data returned by the AFSC GAP API.
+Definition of common library data with its structures and interfaces.
 
 (c) 2023 Regents of University of California / The Eric and Wendy Schmidt Center
 for Data Science and the Environment at UC Berkeley.
@@ -14,20 +14,55 @@ OPT_RECORD = 'typing.Optional[Record]'
 
 
 class HaulKeyable:
+    """Interface for objects which can be associated to a specific haul.
+
+    Interface for objects which have enough information to be associated to a
+    specific haul but may not be the only data associated with that haul.
+    """
 
     def get_srvy(self) -> str:
+        """Get the field labeled as srvy in the API.
+
+        Returns:
+            The name of the survey with which this data point is associated.
+            Examples: NBS (N Bearing Sea), EBS (SE Bearing Sea), BSS (Bearing
+            Sea Slope), or GOA (Gulf of Alaska)
+        """
         raise NotImplementedError('Use implementor.')
 
     def get_year(self) -> float:
+        """Get the year in which or for which this data point was made.
+
+        Returns:
+            The four digit year like 2023 with which this data point is
+            associated.
+        """
         raise NotImplementedError('Use implementor.')
 
     def get_vessel_id(self) -> float:
+        """Get the ID of the vessel with which this data point is associated.
+
+        Returns:
+            Name of the vessel at the time the observation or inference was made
+            with multiple names potentially associated with a vessel ID.
+        """
         raise NotImplementedError('Use implementor.')
 
     def get_cruise(self) -> float:
+        """Get the ID of the cruise with which this data point is associated.
+
+        Returns:
+            An ID uniquely identifying the cruise in which or for which this
+            data point was made. Multiple cruises in a survey.
+        """
         raise NotImplementedError('Use implementor.')
 
     def get_haul(self) -> float:
+        """Get the ID of the haul with which this data point is associated.
+
+        Returns:
+            Unique ID for the haul with which this data point is associated.
+        """
         raise NotImplementedError('Use implementor.')
 
 
@@ -44,7 +79,8 @@ class Record(HaulKeyable):
         """Get the field labeled as year in the API.
 
         Returns:
-            Year for the survey in which this observation was made.
+            Year for the survey in which this observation was made or for which
+            an inferred zero catch record was generated.
         """
         raise NotImplementedError('Use implementor.')
 
@@ -52,9 +88,9 @@ class Record(HaulKeyable):
         """Get the field labeled as srvy in the API.
 
         Returns:
-            The name of the survey in which this observation was made. NBS (N
-            Bearing Sea), EBS (SE Bearing Sea), BSS (Bearing Sea Slope), or GOA
-            (Gulf of Alaska)
+            The name of the survey in which this observation or inference was
+            made. NBS (N Bearing Sea), EBS (SE Bearing Sea), BSS (Bearing Sea
+            Slope), or GOA (Gulf of Alaska)
         """
         raise NotImplementedError('Use implementor.')
 
@@ -63,7 +99,7 @@ class Record(HaulKeyable):
 
         Returns:
             Long form description of the survey in which the observation was
-            made.
+            made or for which an inferred zero catch record was made.
         """
         raise NotImplementedError('Use implementor.')
 
@@ -79,8 +115,8 @@ class Record(HaulKeyable):
         """Get the field labeled as cruise in the API.
 
         Returns:
-            An ID uniquely identifying the cruise in which the observation was
-            made. Multiple cruises in a survey.
+            An ID uniquely identifying the cruise in which the observation or
+            inferrence was made. Multiple cruises in a survey.
         """
         raise NotImplementedError('Use implementor.')
 
@@ -88,8 +124,8 @@ class Record(HaulKeyable):
         """Get the field labeled as haul in the API.
 
         Returns:
-            An ID uniquely identifying the haul in which this observation was
-            made. Multiple hauls per cruises.
+            An ID uniquely identifying the haul in which this observation or
+            inference was made. Multiple hauls per cruises.
         """
         raise NotImplementedError('Use implementor.')
 
@@ -114,8 +150,8 @@ class Record(HaulKeyable):
         """Get the field labeled as vessel_name in the API.
 
         Returns:
-            Unique ID describing the vessel that made this observation. This is
-            left as a string but, in practice, is likely numeric.
+            Unique ID describing the vessel that made this observation or
+            inference.
         """
         raise NotImplementedError('Use implementor.')
 
@@ -124,7 +160,8 @@ class Record(HaulKeyable):
 
         Returns:
             Name of the vessel at the time the observation was made with
-            multiple names potentially associated with a vessel ID.
+            multiple names potentially associated with a vessel ID. May be
+            emulated in the case of inferred records
         """
         raise NotImplementedError('Use implementor.')
 
@@ -158,7 +195,8 @@ class Record(HaulKeyable):
         """Get the field labeled as species_code in the API.
 
         Returns:
-            Unique ID associated with the species observed.
+            Unique ID associated with the species observed or for which a zero
+            catch record was inferred.
         """
         raise NotImplementedError('Use implementor.')
 
@@ -166,8 +204,8 @@ class Record(HaulKeyable):
         """Get the field labeled as common_name in the API.
 
         Returns:
-            The “common name” associated with the species observed. Example:
-            Pacific glass shrimp.
+            The “common name” associated with the species observed or for which
+            a zero catch record was inferred. Example: Pacific glass shrimp.
         """
         raise NotImplementedError('Use implementor.')
 
@@ -175,8 +213,8 @@ class Record(HaulKeyable):
         """Get the field labeled as scientific_name in the API.
 
         Returns:
-            The “scientific name” associated with the species observed. Example:
-            Pasiphaea pacifica.
+            The “scientific name” associated with the species observed or for
+            which a zero catch record was inferred. Example: Pasiphaea pacifica.
         """
         raise NotImplementedError('Use implementor.')
 
@@ -194,7 +232,8 @@ class Record(HaulKeyable):
 
         Returns:
             Catch weight divided by net area (kg / hectares) if available. See
-            metadata. None if could not interpret as a float.
+            metadata. None if could not interpret as a float. If an inferred
+            zero catch record, will be zero.
         """
         raise NotImplementedError('Use implementor.')
 
@@ -203,7 +242,8 @@ class Record(HaulKeyable):
 
         Returns:
             Catch weight divided by net area (kg / km^2) if available. See
-            metadata. None if could not interpret as a float.
+            metadata. None if could not interpret as a float. If an inferred
+            zero catch record, will be zero.
         """
         raise NotImplementedError('Use implementor.')
 
@@ -212,7 +252,8 @@ class Record(HaulKeyable):
 
         Returns:
             Catch weight divided by net area (kg / km^2 * 1000) if available.
-            See metadata. None if could not interpret as a float.
+            See metadata. None if could not interpret as a float. If an inferred
+            zero catch record, will be zero.
         """
         raise NotImplementedError('Use implementor.')
 
@@ -221,7 +262,8 @@ class Record(HaulKeyable):
 
         Returns:
             Catch number divided by net sweep area if available (count /
-            hectares). See metadata. None if could not interpret as a float.
+            hectares). See metadata. None if could not interpret as a float. If
+            an inferred zero catch record, will be zero.
         """
         raise NotImplementedError('Use implementor.')
 
@@ -230,7 +272,8 @@ class Record(HaulKeyable):
 
         Returns:
             Catch number divided by net sweep area if available (count / km^2).
-            See metadata. None if could not interpret as a float.
+            See metadata. None if could not interpret as a float. If an inferred
+            zero catch record, will be zero.
         """
         raise NotImplementedError('Use implementor.')
 
@@ -239,7 +282,8 @@ class Record(HaulKeyable):
 
         Returns:
             Catch number divided by net sweep area if available (count / km^2 *
-            1000). See metadata. None if could not interpret as a float.
+            1000). See metadata. None if could not interpret as a float. If an
+            inferred zero catch record, will be zero.
         """
         raise NotImplementedError('Use implementor.')
 
@@ -248,7 +292,8 @@ class Record(HaulKeyable):
 
         Returns:
             Taxon weight (kg) if available. See metadata. None if could not
-            interpret as a float.
+            interpret as a float. If an inferred zero catch record, will be
+            zero.
         """
         raise NotImplementedError('Use implementor.')
 
@@ -257,7 +302,8 @@ class Record(HaulKeyable):
 
         Returns:
             Total number of organism individuals in haul. None if could not
-            interpret as a float.
+            interpret as a float. If an inferred zero catch record, will be
+            zero.
         """
         raise NotImplementedError('Use implementor.')
 
@@ -265,8 +311,9 @@ class Record(HaulKeyable):
         """Get the field labeled as bottom_temperature_c in the API.
 
         Returns:
-            Bottom temperature associated with observation if available in
-            Celsius. None if not given or could not interpret as a float.
+            Bottom temperature associated with observation / inferrence if
+            available in Celsius. None if not given or could not interpret as a
+            float.
         """
         raise NotImplementedError('Use implementor.')
 
@@ -274,8 +321,9 @@ class Record(HaulKeyable):
         """Get the field labeled as surface_temperature_c in the API.
 
         Returns:
-            Surface temperature associated with observation if available in
-            Celsius. None if not given or could not interpret as a float.
+            Surface temperature associated with observation / inferrence if
+            available in Celsius. None if not given or could not interpret as a
+            float.
         """
         raise NotImplementedError('Use implementor.')
 
@@ -369,7 +417,7 @@ class Record(HaulKeyable):
 
         Returns:
             Catch weight divided by net area (kg / hectares) if available. See
-            metadata.
+            metadata. Will be zero if a zero catch record.
         """
         raise NotImplementedError('Use implementor.')
 
@@ -382,7 +430,7 @@ class Record(HaulKeyable):
 
         Returns:
             Catch weight divided by net area (kg / km^2) if available. See
-            metadata.
+            metadata. Will be zero if a zero catch record.
         """
         raise NotImplementedError('Use implementor.')
 
@@ -395,7 +443,7 @@ class Record(HaulKeyable):
 
         Returns:
             Catch weight divided by net area (kg / km^2 * 1000) if available.
-            See metadata.
+            See metadata. Will be zero if a zero catch record.
         """
         raise NotImplementedError('Use implementor.')
 
@@ -408,7 +456,7 @@ class Record(HaulKeyable):
 
         Returns:
             Catch number divided by net sweep area if available (count /
-            hectares). See metadata.
+            hectares). See metadata. Will be zero if a zero catch record.
         """
         raise NotImplementedError('Use implementor.')
 
@@ -421,7 +469,7 @@ class Record(HaulKeyable):
 
         Returns:
             Catch number divided by net sweep area if available (count / km^2).
-            See metadata.
+            See metadata. Will be zero if a zero catch record.
         """
         raise NotImplementedError('Use implementor.')
 
@@ -434,7 +482,7 @@ class Record(HaulKeyable):
 
         Returns:
             Catch number divided by net sweep area if available (count / km^2 *
-            1000). See metadata.
+            1000). See metadata. Will be zero if a zero catch record.
         """
         raise NotImplementedError('Use implementor.')
 
@@ -446,7 +494,8 @@ class Record(HaulKeyable):
             could not be parsed as expected.
 
         Returns:
-            Taxon weight (kg) if available. See metadata.
+            Taxon weight (kg) if available. See metadata. Will be zero if a zero
+            catch record.
         """
         raise NotImplementedError('Use implementor.')
 
@@ -458,7 +507,8 @@ class Record(HaulKeyable):
             could not be parsed as expected.
 
         Returns:
-            Total number of organism individuals in haul.
+            Total number of organism individuals in haul. Will be zero if a zero
+            catch record.
         """
         raise NotImplementedError('Use implementor.')
 
@@ -470,8 +520,8 @@ class Record(HaulKeyable):
             could not be parsed as expected.
 
         Returns:
-            Bottom temperature associated with observation if available in
-            Celsius.
+            Bottom temperature associated with observation / inferrence if
+            available in Celsius.
         """
         raise NotImplementedError('Use implementor.')
 
@@ -483,8 +533,8 @@ class Record(HaulKeyable):
             could not be parsed as expected.
 
         Returns:
-            Surface temperature associated with observation if available in
-            Celsius. None if not
+            Surface temperature associated with observation / inferrence if
+            available in Celsius. None if not
         """
         raise NotImplementedError('Use implementor.')
 
@@ -508,6 +558,12 @@ class Record(HaulKeyable):
 
 
 class Haul(HaulKeyable):
+    """Metadata about a haul performed in a survey.
+
+    Metadata about a haul performed in a survey which is typically maintained
+    for record inferrence and which does not typically leave the internals of
+    the afscgap library.
+    """
 
     def __init__(self, srvy: str, survey: str, survey_id: float, cruise: float,
         haul: float, stratum: float, station: str, vessel_name: str,
@@ -516,6 +572,39 @@ class Haul(HaulKeyable):
         surface_temperature_c: OPT_FLOAT, depth_m: float,
         distance_fished_km: float, net_width_m: float, net_height_m: float,
         area_swept_ha: float, duration_hr: float):
+        """Create a new Haul record.
+
+        Args:
+            srvy: The name of the survey in which this observation was made
+                like NBS.
+            survey: Long form description of the survey in which the haul was
+                made like Gulf of Alaska.
+            survey_id: Unique numeric ID for the survey.
+            cruise: An ID uniquely identifying the cruise in which the haul was
+                made.
+            haul: An ID uniquely identifying the haul.
+            stratum: Unique ID for statistical area / survey combination as
+                described in the metadata or 0 if an experimental tow.
+            station: Station associated with the survey.
+            vessel_name: Unique ID describing the vessel that made this haul.
+                Note this is left as a string but, in practice, is likely
+                numeric.
+            vessel_id: ID of the vessel at the time the haul was made.
+            date_time: The date and time of the haul which has been attempted to
+                be transformed to an ISO 8601 string without timezone info.
+            latitude_dd: Latitude in decimal degrees associated with the haul.
+            longitude_dd: Longitude in decimal degrees associated with the haul.
+            bottom_temperature_c: Bottom temperature associated with haul if
+                available in Celsius.
+            surface_temperature_c: Surface temperature associated with haul if
+                available in Celsius.
+            depth_m: Depth of the bottom in meters.
+            distance_fished_km: Distance of the net fished as km.
+            net_width_m: Distance of the net fished as m.
+            net_height_m: Height of the net fished as m.
+            area_swept_ha: Area covered by the net while fishing in hectares.
+            duration_hr: Duration of the haul as number of hours.
+        """
         self._srvy = srvy
         self._survey = survey
         self._survey_id = survey_id
@@ -546,7 +635,7 @@ class Haul(HaulKeyable):
         return int(self.get_date_time().split('-')[0])
 
     def get_srvy(self) -> str:
-        """Get the field labeled as srvy in the API.
+        """Get the field labeled as Srvy in the dataset.
 
         Returns:
             The name of the survey in which this observation was made. NBS (N
@@ -556,7 +645,7 @@ class Haul(HaulKeyable):
         return self._srvy
 
     def get_survey(self) -> str:
-        """Get the field labeled as survey in the API.
+        """Get the field labeled as Survey in the dataset.
 
         Returns:
             Long form description of the survey in which the haul was made.
@@ -564,7 +653,7 @@ class Haul(HaulKeyable):
         return self._survey
 
     def get_survey_id(self) -> float:
-        """Get the field labeled as survey_id in the API.
+        """Get the field labeled as Survey Id in the dataset.
 
         Returns:
             Unique numeric ID for the survey.
@@ -572,7 +661,7 @@ class Haul(HaulKeyable):
         return self._survey_id
 
     def get_cruise(self) -> float:
-        """Get the field labeled as cruise in the API.
+        """Get the field labeled as Cruise in the dataset.
 
         Returns:
             An ID uniquely identifying the cruise in which the haul was made.
@@ -581,7 +670,7 @@ class Haul(HaulKeyable):
         return self._cruise
 
     def get_haul(self) -> float:
-        """Get the field labeled as haul in the API.
+        """Get the field labeled as Haul in the dataset.
 
         Returns:
             An ID uniquely identifying the haul. Multiple hauls per cruises.
@@ -589,7 +678,7 @@ class Haul(HaulKeyable):
         return self._haul
 
     def get_stratum(self) -> float:
-        """Get the field labeled as stratum in the API.
+        """Get the field labeled as Stratum in the dataset.
 
         Returns:
             Unique ID for statistical area / survey combination as described in
@@ -598,7 +687,7 @@ class Haul(HaulKeyable):
         return self._stratum
 
     def get_station(self) -> str:
-        """Get the field labeled as station in the API.
+        """Get the field labeled as Station in the dataset.
 
         Returns:
             Station associated with the survey.
@@ -606,7 +695,7 @@ class Haul(HaulKeyable):
         return self._station
 
     def get_vessel_name(self) -> str:
-        """Get the field labeled as vessel_name in the API.
+        """Get the field labeled as Vessel Name in the dataset.
 
         Returns:
             Unique ID describing the vessel that made this haul. Note this is
@@ -615,16 +704,15 @@ class Haul(HaulKeyable):
         return self._vessel_name
 
     def get_vessel_id(self) -> float:
-        """Get the field labeled as vessel_id in the API.
+        """Get the field labeled as Vessel ID in the dataset.
 
         Returns:
-            Name of the vessel at the time the haul was made. Note that
-            multiple names are potentially associated with a vessel ID.
+            ID of the vessel at the time the haul was made.
         """
         return self._vessel_id
 
     def get_date_time(self) -> str:
-        """Get the field labeled as date_time in the API.
+        """Get the field labeled as Date Time in the dataset.
 
         Returns:
             The date and time of the haul which has been attempted to be
@@ -634,7 +722,7 @@ class Haul(HaulKeyable):
         return self._date_time
 
     def get_latitude_dd(self) -> float:
-        """Get the field labeled as latitude_dd in the API.
+        """Get the field labeled as Latitude Dd in the dataset.
 
         Returns:
             Latitude in decimal degrees associated with the haul.
@@ -642,7 +730,7 @@ class Haul(HaulKeyable):
         return self._latitude_dd
 
     def get_longitude_dd(self) -> float:
-        """Get the field labeled as longitude_dd in the API.
+        """Get the field labeled as Longitude Dd in the dataset.
 
         Returns:
             Longitude in decimal degrees associated with the haul.
@@ -650,7 +738,7 @@ class Haul(HaulKeyable):
         return self._longitude_dd
 
     def get_bottom_temperature_c_maybe(self) -> OPT_FLOAT:
-        """Get the field labeled as bottom_temperature_c in the API.
+        """Get the field labeled as Bottom Temperature C in the dataset.
 
         Returns:
             Bottom temperature associated with haul if available in
@@ -659,7 +747,7 @@ class Haul(HaulKeyable):
         return self._bottom_temperature_c
 
     def get_surface_temperature_c_maybe(self) -> OPT_FLOAT:
-        """Get the field labeled as surface_temperature_c in the API.
+        """Get the field labeled as Surface Temperature C in the dataset.
 
         Returns:
             Surface temperature associated with haul if available in
@@ -668,7 +756,7 @@ class Haul(HaulKeyable):
         return self._surface_temperature_c
 
     def get_depth_m(self) -> float:
-        """Get the field labeled as depth_m in the API.
+        """Get the field labeled as Depth N in the dataset.
 
         Returns:
             Depth of the bottom in meters.
@@ -676,7 +764,7 @@ class Haul(HaulKeyable):
         return self._depth_m
 
     def get_distance_fished_km(self) -> float:
-        """Get the field labeled as distance_fished_km in the API.
+        """Get the field labeled as Distance Fished Km in the dataset.
 
         Returns:
             Distance of the net fished as km.
@@ -684,7 +772,7 @@ class Haul(HaulKeyable):
         return self._distance_fished_km
 
     def get_net_width_m(self) -> float:
-        """Get the field labeled as net_width_m in the API.
+        """Get the field labeled as Net Width M in the dataset.
 
         Returns:
             Distance of the net fished as m.
@@ -692,7 +780,7 @@ class Haul(HaulKeyable):
         return self._net_width_m
 
     def get_net_height_m(self) -> float:
-        """Get the field labeled as net_height_m in the API.
+        """Get the field labeled as Net Height M in the dataset.
 
         Returns:
             Height of the net fished as m.
@@ -700,7 +788,7 @@ class Haul(HaulKeyable):
         return self._net_height_m
 
     def get_area_swept_ha(self) -> float:
-        """Get the field labeled as area_swept_ha in the API.
+        """Get the field labeled as Area Swept Ha in the dataset.
 
         Returns:
             Area covered by the net while fishing in hectares.
@@ -708,7 +796,7 @@ class Haul(HaulKeyable):
         return self._area_swept_ha
 
     def get_duration_hr(self) -> float:
-        """Get the field labeled as duration_hr in the API.
+        """Get the field labeled as Duration Hr in the dataset.
 
         Returns:
             Duration of the haul as number of hours.
@@ -716,7 +804,7 @@ class Haul(HaulKeyable):
         return self._duration_hr
 
     def get_bottom_temperature_c(self) -> float:
-        """Get the value of field bottom_temperature_c with validity assert.
+        """Get the value of field Bottom Temperature C with validity assert.
 
         Raises:
             AssertionError: Raised if this field was not given by the API or
@@ -728,7 +816,7 @@ class Haul(HaulKeyable):
         return assert_float_present(self._bottom_temperature_c)
 
     def get_surface_temperature_c(self) -> float:
-        """Get the value of field surface_temperature_c with validity assert.
+        """Get the value of field Surface Temperature C with validity assert.
 
         Raises:
             AssertionError: Raised if this field was not given by the API or
@@ -740,11 +828,21 @@ class Haul(HaulKeyable):
         return assert_float_present(self._surface_temperature_c)
 
     def is_complete(self) -> bool:
+        """Determine if this Haul has all optional fields set.
+
+        Returns:
+            True if all optional fields are non-None and false otherwise.
+        """
         bottom_valid = self._bottom_temperature_c is not None
         surface_valid = self._surface_temperature_c is not None
         return bottom_valid and surface_valid
 
     def to_dict(self) -> dict:
+        """Convert this object to a primitive dictionary representation.
+
+        Returns:
+            Dictionary representation which may have Nones.
+        """
         return {
             'year': self.get_year(),
             'srvy': self._srvy,
@@ -809,10 +907,32 @@ def get_opt_int(target) -> OPT_INT:
 
 
 def assert_float_present(target: OPT_FLOAT) -> float:
+    """Assert that a value is non-None before returning that value.
+
+    Args:
+        target: The value to check if not None.
+
+    Raises:
+        AssertionError: Raised if target is None.
+
+    Returns:
+        The value of target if not None.
+    """
     assert target is not None
     return target
 
 
 def assert_int_present(target: OPT_INT) -> int:
+    """Assert that a value is non-None before returning that value.
+
+    Args:
+        target: The value to check if not None.
+
+    Raises:
+        AssertionError: Raised if target is None.
+
+    Returns:
+        The value of target if not None.
+    """
     assert target is not None
     return target

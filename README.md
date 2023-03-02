@@ -8,7 +8,7 @@ Python tool chain for working with the public bottom trawl surveys data from the
 ![docs](https://github.com/SchmidtDSE/afscgap/actions/workflows/docs.yml/badge.svg?branch=main)
 [![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
-See [project Github](https://github.com/SchmidtDSE/afscgap) and [webpage](https://schmidtdse.github.io/afscgap/afscgap.html).
+See [webpage](https://schmidtdse.github.io/afscgap/afscgap.html) and [project Github](https://github.com/SchmidtDSE/afscgap).
 
 <br>
 <br>
@@ -286,7 +286,7 @@ Note that records are only requested once during iteration and only after the pr
 <br>
 
 ## Data structure
-The schema drives the getters and filters available on in the library.
+The schema drives the getters and filters available on in the library. Note that data structures are defined in the [model submodule](https://schmidtdse.github.io/afscgap/model.html) but client code generally only needs to interact with [Record](https://schmidtdse.github.io/afscgap/model.html#Record) objects.
 
 <br>
 
