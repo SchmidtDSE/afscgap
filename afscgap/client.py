@@ -1,6 +1,6 @@
 """
 Logic for making actual HTTP requests and managaing pagination when interfacing
-with AFSC GAP API.
+with the NOAA-run AFSC GAP API.
 
 (c) 2023 Regents of University of California / The Eric and Wendy Schmidt Center
 for Data Science and the Environment at UC Berkeley.
@@ -31,6 +31,27 @@ def build_api_cursor(params: dict, limit: OPT_INT = None,
     start_offset: OPT_INT = None, filter_incomplete: bool = False,
     requestor: OPT_REQUESTOR = None,
     base_url: OPT_STR = None) -> afscgap.cursor.Cursor:
+    """Build a cursor which will iterate over API service results.
+
+    Args:
+        params: Dictionary of filters to apply to the query where a value of
+            None means no filter should be applied on that field.
+        limit: The maximum number of records to return per page.
+        start_offset: The number of records being skipped (number of records
+            prior to query_url).
+        filter_incomplete: Flag indicating if incomplete records should be
+            silently filtered. If true, they will not be returned during
+            iteration and placed in the queue at get_invalid(). If false,
+            they will be returned and those incomplete records'
+            get_complete() will return false. Defaults to false.
+        requestor: Strategy to make HTTP GET requests. If None, will default
+            to requests.get.
+        base_url: The URL at which the API service can be found or None to use
+            a default. Defaults to None.
+
+    Returns:
+        Cursor which iterates over the results from the API service.
+    """
     params_safe = copy.deepcopy(params)
     params_safe['date_time'] = afscgap.util.convert_from_iso8601(
         params_safe['date_time']
