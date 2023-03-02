@@ -58,3 +58,12 @@ class UtilTests(unittest.TestCase):
     def test_convert_from_iso8601_match_none(self):
         result = afscgap.util.convert_from_iso8601(3)
         self.assertEquals(result, 3)
+
+    def test_is_iso8601_success(self):
+        self.assertTrue(afscgap.util.is_iso8601('2021-07-16T11:30:22'))
+
+    def test_is_iso8601_fail(self):
+        self.assertFalse(afscgap.util.is_iso8601('07/16/2021 11:30:22'))
+
+    def test_build_requestor(self):
+        self.assertIsNotNone(afscgap.util.build_requestor())

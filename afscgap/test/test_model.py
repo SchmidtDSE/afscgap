@@ -34,3 +34,23 @@ class ModelTests(unittest.TestCase):
 
     def test_get_opt_int_na(self):
         self.assertIsNone(afscgap.model.get_opt_int('NA'))
+
+    def test_assert_float_present_true(self):
+        self.assertAlmostEquals(
+            afscgap.model.assert_float_present(1.23),
+            1.23
+        )
+
+    def test_assert_float_present_false(self):
+        with self.assertRaises(AssertionError):
+            afscgap.model.assert_float_present(None)
+
+    def test_assert_int_present_true(self):
+        self.assertEquals(
+            afscgap.model.assert_int_present(123),
+            123
+        )
+
+    def test_assert_int_present_false(self):
+        with self.assertRaises(AssertionError):
+            afscgap.model.assert_int_present(None)
