@@ -208,7 +208,7 @@ def query(
             found or None if a default should be used. Defaults to None.
         warn_function: Function to call with a message describing warnings
             encountered. If None, will use warnings.warn. Defaults to None.
-    
+
     Returns:
         Cursor to manage HTTP requests and query results.
     """
