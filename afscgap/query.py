@@ -2,6 +2,9 @@ def interpret_query_to_ords(target: dict) -> dict:
     target_items = target.items()
 
     def interpret_value(value):
+        if value is None:
+            return None
+        
         if not isinstance(value, tuple):
             return value
 
@@ -28,6 +31,9 @@ def interpret_query_to_py(target: dict) -> dict:
     target_items = target.items()
 
     def interpret_value(value):
+        if value is None:
+            return None
+
         if isinstance(value, dict):
             raise RuntimeError('No ORDS params for presence_only=False.')
 

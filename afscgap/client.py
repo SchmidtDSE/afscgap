@@ -8,6 +8,7 @@ at UC Berkeley.
 This file is part of afscgap released under the BSD 3-Clause License. See
 LICENSE.txt.
 """
+import copy
 import json
 import queue
 import typing
@@ -16,18 +17,35 @@ import requests
 
 import afscgap.cursor
 import afscgap.model
+import afscgap.query
+import afscgap.util
+
 from afscgap.util import OPT_INT
 from afscgap.util import OPT_REQUESTOR
 from afscgap.util import OPT_STR
 
-ACCEPTABLE_CODES = [200]
 DEFAULT_DOMAIN = 'https://apps-st.fisheries.noaa.gov'
 DEFAULT_URL = DEFAULT_DOMAIN + '/ods/foss/afsc_groundfish_survey/'
 TIMEOUT = 60 * 5  # 5 minutes
 
 
-def build_api_cursor(params: dict) -> Cursor:
+def build_api_cursor(params: dict, limit: OPT_INT = None,
+    start_offset: OPT_INT = None, filter_incomplete: bool = False,
+    requestor: OPT_REQUESTOR = None,
+    base_url: afscgap.client.OPT_STR = None) -> afscgap.cursor.Cursor:
+    params_safe = copy.deepcopy(params)
+    params_safe['date_time'] = convert_from_iso8601(params_safe['date_time'])
+    params_ords = afscgap.query.interpret_query_to_ords(params_safe)
 
+    get_query_url(params_ords, base=base_url)
+
+    return ApiServiceCursor(
+        query_url,
+        limit=limit,
+        start_offset=start_offset,
+        requestor=requestor,
+        filter_incomplete=filter_incomplete
+    )
 
 
 def get_query_url(params: dict, base: OPT_STR = None) -> str:
@@ -176,7 +194,7 @@ class ApiServiceCursor(afscgap.cursor.Cursor):
         url = self.get_page_url(offset, limit)
 
         result = self._request_strategy(url)
-        self._check_result(result)
+        afscgap.util.check_result(result)
 
         result_parsed = result.json()
         items_raw = result_parsed['items']
@@ -253,7 +271,7 @@ class ApiServiceCursor(afscgap.cursor.Cursor):
             return
 
         result = self._request_strategy(self._next_url)
-        self._check_result(result)
+        afscgap.util.check_result(result)
 
         result_parsed = result.json()
 
@@ -296,23 +314,6 @@ class ApiServiceCursor(afscgap.cursor.Cursor):
             raise RuntimeError('Could not find next URL but hasMore was true.')
 
         return hrefs_realized[0]
-
-    def _check_result(self, target: requests.Response):
-        """Assert that a result returned an acceptable status code.
-
-        Args:
-            target: The response to check.
-
-        Raises:
-            RuntimeError: Raised if the response returned indicates an issue or
-                unexpected status code.
-        """
-        if target.status_code not in ACCEPTABLE_CODES:
-            message = 'Got non-OK response from API: %d (%s)' % (
-                target.status_code,
-                target.text
-            )
-            raise RuntimeError(message)
 
 
 def convert_from_iso8601(target: STR_PARAM) -> STR_PARAM:

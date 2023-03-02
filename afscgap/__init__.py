@@ -25,7 +25,6 @@ import typing
 
 import afscgap.client
 import afscgap.model
-import afscgap.query
 
 STR_OR_DICT = typing.Union[str, dict]
 RANGE_TUPLE = typing.Tuple[float]
@@ -226,4 +225,11 @@ def query(
         'ak_survey_id': ak_survey_id
     }
 
-    afscgap.client.build_cursor(all_dict_raw)
+    afscgap.client.build_cursor(
+        all_dict_raw,
+        limit=limit,
+        start_offset=start_offset,
+        filter_incomplete=filter_incomplete,
+        requestor=requestor,
+        base_url=base_url
+    )

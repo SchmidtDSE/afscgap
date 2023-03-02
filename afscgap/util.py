@@ -18,3 +18,23 @@ OPT_STR = typing.Optional[str]
 
 REQUESTOR = typing.Callable[[str], requests.Response]
 OPT_REQUESTOR = typing.Optional[REQUESTOR]
+
+ACCEPTABLE_CODES = [200]
+
+
+def check_result(target: requests.Response):
+    """Assert that a result returned an acceptable status code.
+
+    Args:
+        target: The response to check.
+
+    Raises:
+        RuntimeError: Raised if the response returned indicates an issue or
+            unexpected status code.
+    """
+    if target.status_code not in ACCEPTABLE_CODES:
+        message = 'Got non-OK response from API: %d (%s)' % (
+            target.status_code,
+            target.text
+        )
+        raise RuntimeError(message)

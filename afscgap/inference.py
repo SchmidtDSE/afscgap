@@ -7,15 +7,72 @@ at UC Berkeley.
 This file is part of afscgap released under the BSD 3-Clause License. See
 LICENSE.txt.
 """
+import csv
+import io
 import itertools
 import typing
 
 import afscgap.client
 import afscgap.model
+import afscgap.query
+import afscgap.util
 
 from afscgap.util import OPT_INT
 from afscgap.util import OPT_REQUESTOR
 from afscgap.util import OPT_STR
+
+DEFAULT_HAULS_URL = ''
+
+HAUL_LIST = typing.List[afscgap.model.Haul]
+
+
+def build_cursor(params: dict, inner_cursor: afscgap.client.Cursor,
+    requestor: OPT_REQUESTOR = None, hauls_url: afscgap.client.OPT_STR = None):
+    hauls_data = get_hauls_data(
+        params,
+        requestor=requestor,
+        hauls_url=hauls_url
+    )
+    return NegativeInferenceCursorDecorator(inner_cursor, hauls_data)
+
+
+def build_params_checker(params: dict) -> typing.Callable[[dict], bool]:
+
+    def build_query_function(key: str, checker):
+        return lambda target: checker(target[key])
+
+    params_py = afscgap.query.interpret_query_to_py(params)
+    params_py_items = params_py.items()
+    params_py_items_valid = filter(lambda x: x[1] is not None, params_py_items)
+    params_funcs = map(lambda x: build_query_function(x[0], x[1]))
+    params_funcs_realized = list(params_funcs)
+
+    def check_all(target: dict) -> bool:
+        not_allowed = filter(lambda x: not x(target), params_funcs_realized)
+        num_not_allowed = sum(map(lambda x: 1, not_allowed))
+        return num_not_allowed == 0
+
+    return check_all
+
+
+def get_hauls_data(params: dict, requestor: OPT_REQUESTOR = None,
+    hauls_url: afscgap.client.OPT_STR = None) -> HAUL_LIST:
+    if hauls_url is None:
+        hauls_url = DEFAULT_HAULS_URL
+
+    params_checker = build_params_checker(params)
+
+    response = requsetor(hauls_url)
+    afscgap.util.check_result(response)
+
+    response.encoding = 'utf-8'
+    response_io = io.StringIO(response.text, newline='')
+    
+    response_rows = csv.DictReader(response_io)
+    response_rows_allowed = filter(params_checker, response_rows)
+    hauls_records = map(afscgap.model.parse_haul, response_rows_allowed)
+
+    return list(hauls_records)
 
 
 class SpeciesRecord:
@@ -34,7 +91,7 @@ class SpeciesRecord:
         return self._common_name
     
     def get_species_code(self) -> float:
-        return self._species_code
+        return self._species_codeHAUL_LIST
     
     def get_tsn(self) -> OPT_INT:
         return self._tsn
@@ -43,13 +100,9 @@ class SpeciesRecord:
 class NegativeInferenceCursorDecorator(afscgap.client.Cursor):
 
     def __init__(self, inner_cursor: afscgap.client.Cursor,
-        hauls_data: typing.List[afscgap.model.Haul]):
+        hauls_data: HAUL_LIST):
         self._inner_cursor = inner_cursor
-
-        if hauls_data:
-            self._hauls_getter = lambda: hauls_data
-        else:
-            self._hauls_getter = lambda: self._get_hauls(requestor, hauls_url)
+        self._hauls_data = hauls_data
 
         self._started_inference = False
         self._inferences_iter: typing.Iterator[afscgap.model.Record] = iter([])
@@ -214,10 +267,9 @@ class NegativeInferenceCursorDecorator(afscgap.client.Cursor):
             return without_species
 
     def _start_inference(self):
-        hauls_seen = self._get_hauls()
         hauls_seen_with_key = map(
             lambda x: (self._get_haul_key(x), x),
-            hauls_seen
+            self._hauls_data
         )
         hauls_seen_by_key = dict(hauls_seen_with_key)
 
@@ -227,6 +279,7 @@ class NegativeInferenceCursorDecorator(afscgap.client.Cursor):
             scientific_names_seen,
             self._species_hauls_seen
         )
+
         missing_haul_keys_and_species_tuple = map(
             lambda x: x.split('/'),
             missing_keys
