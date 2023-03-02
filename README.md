@@ -135,7 +135,7 @@ message = template % (weight_per_area, total_weight, total_area)
 print(message)
 ```
 
-For more details on this feature, please see the data quality section below.
+For more details on this feature, please see the data quality section below. Note that the library will emulate filtering in Python so that haul records are filtered just as presence records are filtered by the API service. However, at time of writing, "manual filtering" as described below using ORDS syntax is not supported when `presence_data=False`.
 
 <br>
 
@@ -193,7 +193,42 @@ Note that Pandas is not required to use this library.
 <br>
 
 ### Advanced filtering
-Finally, users may provide advanced queries using Oracle's REST API query parameters. For example, this queries for 2021 records with haul from the Gulf of Alaska in a specific geographic area:
+You can provide range queries which translate to ORDS or Python emaulated filters. For example, the following requests before and including 2019:
+
+```
+results = afscgap.query(
+    year=(None, 2019),
+    srvy='GOA',
+    scientific_name='Pasiphaea pacifica'
+)
+```
+
+The following requests data after and including 2019:
+
+```
+results = afscgap.query(
+    year=(2019, None),
+    srvy='GOA',
+    scientific_name='Pasiphaea pacifica'
+)
+```
+
+Finally, the following requests data between 2015 and 2019 (includes 2015 and 2019):
+
+```
+results = afscgap.query(
+    year=(2015, 2019),
+    srvy='GOA',
+    scientific_name='Pasiphaea pacifica'
+)
+```
+
+For more advanced filters, please see manual filtering below.
+
+<br>
+
+### Manual filtering
+Users may provide advanced queries using Oracle's REST API query parameters. For example, this queries for 2021 records with haul from the Gulf of Alaska in a specific geographic area:
 
 ```
 import afscgap
