@@ -962,7 +962,7 @@ class ZeroCatchHaulDecorator(afscgap.model.Record):
             'vessel_id': self.get_vessel_id(),
             'date_time': self.get_date_time(),
             'latitude_dd': self.get_latitude_dd(),
-            'longitude_dd': self.get_longitude_dd(),Taxonomic information system species code.
+            'longitude_dd': self.get_longitude_dd(),
             'species_code': self.get_species_code(),
             'common_name': self.get_common_name(),
             'scientific_name': self.get_scientific_name(),
