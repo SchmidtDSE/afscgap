@@ -19,6 +19,7 @@ In order to ensure the conceptual integrity and readability of our code, we have
  - Please check that you have no linting (pycodestyle, pyflakes) errors when contributing.
  - As contributors may be periodic, please do not re-write history / squash commits for ease of fast forward.
  - Imports should be in alphabetical order in groups of standard library, third-party, and then first party.
+ - Imports in the form `from ... import ...` are discouraged except for type hints. They should appear in a logical grouping after other imports.
 
 Do not worry if you aren't sure that you met all of our the guidelines! We encourage pull requests and are happy to work through any necessary outstanding tasks with you.
 
@@ -32,6 +33,8 @@ There are reasonable differences of opinion in the community about the ideal imp
  - Object attributes should be private and immutable whenever possible.
  - Object immutable attributes should be prefixed by a single underscore available via getters.
  - We wish to operate with as few dependencies as possible. At this stage, we want to limit that to only the requests library as described in the [README](https://github.com/SchmidtDSE/afscgap/blob/main/README.md).
+ - We expect growth in functionality but, to maintain simplicity for end uers, we request that developers perfer [composition over inheritance](https://betterprogramming.pub/prefer-composition-over-inheritance-1602d5149ea1) in the form of [decoration over inheritance](https://dzone.com/articles/is-inheritance-dead) to allow for easy addition of transparent behavior.
+ - The main release should be free of static files even if a flat file, contributed application, etc are part of the project. Those files should be requested by the user as needed to keep distribution size small.
 
 We encourage folks in our community to open issues if they wish to discuss these design choices further but, at this time, we will not be merging pull requests that do not conform to these choices.
 
