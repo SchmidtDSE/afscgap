@@ -26,6 +26,7 @@ from afscgap.util import OPT_REQUESTOR
 from afscgap.util import OPT_STR
 
 DEFAULT_HAULS_URL = 'https://pyafscgap.org/community/hauls.csv'
+SPECIES_DICT = typing.Dict[str, afscgap.model.SpeciesRecord]
 
 HAUL_LIST = typing.List[afscgap.model.Haul]
 HAUL_FILTERABLE_FIELDS = [
@@ -57,6 +58,23 @@ PARAMS_CHECKER = typing.Callable[[afscgap.model.Haul], bool]
 
 def build_inference_cursor(params: dict, inner_cursor: afscgap.cursor.Cursor,
     requestor: OPT_REQUESTOR = None, hauls_url: afscgap.client.OPT_STR = None):
+    """Build a cursor which infers zero catch records.
+
+    Args:
+        params: Dictionary of filters to apply to the query where a value of
+            None means no filter should be applied on that field.
+        inner_cursor: Cursor which yields records which, when appearing, should
+            not be later inferred as zero catch records.
+        requestor: Strategy to make HTTP GET requests. If None, will default
+            to requests.get.
+        hauls_url: The URL at which the Hauls file can be found or None to use
+            a default. Defaults to None.
+
+    Returns:
+        Cursor which 1) first iterates over the inner_cursor and then
+        2) provides inferred zero catch records (for any hauls without observed
+        data from inner_cursor for a species).
+    """
     params_safe = copy.deepcopy(params)
 
     if 'date_time' in params_safe:
@@ -73,6 +91,17 @@ def build_inference_cursor(params: dict, inner_cursor: afscgap.cursor.Cursor,
 
 
 def build_params_checker(params: dict) -> PARAMS_CHECKER:
+    """Build a function that checks if a single Haul record should be filtered.
+
+    Args:
+        params: Dictionary of filters to apply to the query where a value of
+            None means no filter should be applied on that field.
+
+    Returns:
+        Function which returns true if the record given to it should be included
+        (is not filtered out) or false if it should be excluded from results to
+        meet a query requirement (is filtered out).
+    """
 
     def build_query_function(key: str, checker):
         return lambda target: checker(target[key])
@@ -104,6 +133,19 @@ def build_params_checker(params: dict) -> PARAMS_CHECKER:
 
 def get_hauls_data(params: dict, requestor: OPT_REQUESTOR = None,
     hauls_url: afscgap.client.OPT_STR = None) -> HAUL_LIST:
+    """Download Hauls from a URL and apply a filter specified by params.
+
+    Args:
+        params: Dictionary of filters to apply to the query where a value of
+            None means no filter should be applied on that field.
+        requestor: Strategy to make HTTP GET requests. If None, will default
+            to requests.get.
+        hauls_url: The URL at which the Hauls file can be found or None to use
+            a default. Defaults to None.
+
+    Returns:
+        List of Haul data after having applied the filters described by params.
+    """
     if hauls_url is None:
         hauls_url = DEFAULT_HAULS_URL
 
@@ -125,39 +167,31 @@ def get_hauls_data(params: dict, requestor: OPT_REQUESTOR = None,
     return list(response_hauls_filtered)
 
 
-class SpeciesRecord:
-
-    def __init__(self, scientific_name: str, common_name: str,
-        species_code: float, tsn: OPT_INT):
-        self._scientific_name = scientific_name
-        self._common_name = common_name
-        self._species_code = species_code
-        self._tsn = tsn
-
-    def get_scientific_name(self) -> str:
-        return self._scientific_name
-
-    def get_common_name(self) -> str:
-        return self._common_name
-
-    def get_species_code(self) -> float:
-        return self._species_code
-
-    def get_tsn(self) -> OPT_INT:
-        return self._tsn
-
-
 class NegativeInferenceCursorDecorator(afscgap.cursor.Cursor):
+    """Cursor augmenting another cursor with inferred negative records.
+
+    Cursor which exausts an inner cursor and then supplies inferred zero catch
+    records. Specifically, a Cursor which 1) first iterates over the
+    inner_cursor and then 2) provides inferred zero catch records (for any hauls
+    without observed data from inner_cursor for a species).
+    """
 
     def __init__(self, inner_cursor: afscgap.cursor.Cursor,
         hauls_data: HAUL_LIST):
+        """Decorate a cursor.
+
+        Args:
+            inner_cursor: The cursor to augment and from which to observe
+                presence data.
+            hauls_data: Metadata on all hauls relevant to the query.
+        """
         self._inner_cursor = inner_cursor
         self._hauls_data = hauls_data
 
         self._started_inference = False
         self._inferences_iter: typing.Iterator[afscgap.model.Record] = iter([])
 
-        self._species_seen: typing.Dict[str, SpeciesRecord] = dict()
+        self._species_seen: SPECIES_DICT = dict()
         self._species_hauls_seen: typing.Set[str] = set()
         self._ak_survey_ids: typing.Dict[str, int] = dict()
 
@@ -274,6 +308,11 @@ class NegativeInferenceCursorDecorator(afscgap.cursor.Cursor):
                 return self._get_next_inferred()
 
     def _record_record_meta(self, record: afscgap.model.Record):
+        """Record metadata from a record, indicating a haul / species was seen.
+
+        Args:
+            record: The record observed.
+        """
         key_with_species = self._get_haul_key(
             record,
             species=record.get_scientific_name()
@@ -285,7 +324,7 @@ class NegativeInferenceCursorDecorator(afscgap.cursor.Cursor):
         species_code = record.get_species_code()
         tsn = record.get_tsn_maybe()
 
-        self._species_seen[scientific_name] = SpeciesRecord(
+        self._species_seen[scientific_name] = afscgap.model.SpeciesRecord(
             scientific_name,
             common_name,
             species_code,
@@ -299,6 +338,17 @@ class NegativeInferenceCursorDecorator(afscgap.cursor.Cursor):
 
     def _get_haul_key(self, record: afscgap.model.HaulKeyable,
         species: OPT_STR = None) -> str:
+        """Get a string uniquely identifying an individual haul.
+
+        Args:
+            record: The record from which to derive a haul key.
+            speices: If given, include the species in the key. If not given, the
+                key will refer to the entire haul across all species. Note that
+                this should be the scientific name for a species.
+
+        Returns:
+            String uniquely identifying a haul across the entire dataset.
+        """
         ship_info_vals = [
             record.get_year(),
             record.get_vessel_id(),
@@ -317,6 +367,10 @@ class NegativeInferenceCursorDecorator(afscgap.cursor.Cursor):
             return without_species
 
     def _start_inference(self):
+        """Prepare to start inferrence.
+
+        Indicate that the inner cursor is exhaused, preparing to run inferrence.
+        """
         hauls_seen_with_key = map(
             lambda x: (self._get_haul_key(x), x),
             self._hauls_data
@@ -372,6 +426,17 @@ class NegativeInferenceCursorDecorator(afscgap.cursor.Cursor):
         self._started_inference = True
 
     def _get_next_inferred(self) -> typing.Optional[afscgap.model.Record]:
+        """Get the next inferred zero catch record.
+
+        Raises:
+            StopIteration: Raised if no records left to infer.
+            AssertionError: Raised if the cursor has not yet started inference.
+
+        Returns:
+            Next inferred absence data record.
+        """
+        assert self._started_inference
+
         try:
             return next(self._inferences_iter)
         except StopIteration:
@@ -380,6 +445,20 @@ class NegativeInferenceCursorDecorator(afscgap.cursor.Cursor):
     def _get_missing_keys(self, hauls_seen: typing.Iterable[str],
         scientific_names_seen: typing.Iterable[str],
         species_hauls_seen: typing.Set[str]) -> typing.Iterable[str]:
+        """Determine which species haul keys were expected but not observed.
+
+        Args:
+            hauls_seen: The haus seen (non-species keys).
+            scientific_names_seen: The name of the scientific names for species
+                observed across the entire dataset yielded by the user query.
+            species_hauls_seen: The haul / species keys or combinations actually
+                observed.
+
+        Returns:
+            Haul / species keys expected but not found in species_hauls_seen
+            given the hauls described in hauls_seen and the species seen in
+            scientific_names_seen.
+        """
         hauls_with_names = itertools.product(
             hauls_seen,
             scientific_names_seen
@@ -393,10 +472,26 @@ class NegativeInferenceCursorDecorator(afscgap.cursor.Cursor):
 
 
 class ZeroCatchHaulDecorator(afscgap.model.Record):
+    """Decorator for a Haul that makes it operate like a zero catch Record."""
 
     def __init__(self, haul: afscgap.model.Haul, scientific_name: str,
         common_name: str, species_code: float, tsn: OPT_INT,
         ak_survey_id: OPT_INT):
+        """Decorate a Haul to conform to the Record interface.
+
+        Args:
+            haul: The haul to decorate.
+            scientific_name: The scientific name of the species to be associated
+                with this record.
+            common_name: The common name of the species to be associated with
+                this record.
+            species_code: The species code of the species to be associated with
+                this record.
+            tsn: The taxonomic information system species code to be associated
+                with this record if known.
+            ak_survey_id: The AK survey ID to be associated with this record if
+                known.
+        """
         self._haul = haul
         self._scientific_name = scientific_name
         self._common_name = common_name
@@ -867,7 +962,7 @@ class ZeroCatchHaulDecorator(afscgap.model.Record):
             'vessel_id': self.get_vessel_id(),
             'date_time': self.get_date_time(),
             'latitude_dd': self.get_latitude_dd(),
-            'longitude_dd': self.get_longitude_dd(),
+            'longitude_dd': self.get_longitude_dd(),Taxonomic information system species code.
             'species_code': self.get_species_code(),
             'common_name': self.get_common_name(),
             'scientific_name': self.get_scientific_name(),
@@ -894,6 +989,15 @@ class ZeroCatchHaulDecorator(afscgap.model.Record):
 
 
 def parse_haul(target: dict) -> afscgap.model.Haul:
+    """Parse a Haul record from a row in the community Hauls flat file.
+
+    Args:
+        target: Dict describing a single row from the community-maintained
+            Hauls flat file.
+
+    Returns:
+        Haul record constructed from the input row.
+    """
     srvy = str(target['Srvy'])
     survey = str(target['Survey'])
     survey_id = float(target['Survey Id'])

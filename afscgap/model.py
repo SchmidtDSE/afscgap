@@ -868,6 +868,63 @@ class Haul(HaulKeyable):
         }
 
 
+class SpeciesRecord:
+    """Record of a species found within a dataset.
+
+    Largely used for internal record keeping inside the library, this record of
+    a species found within a dataset houses basic species metadata. Note that
+    this is not expected to leave the internals of the library.
+    """
+
+    def __init__(self, scientific_name: str, common_name: str,
+        species_code: float, tsn: OPT_INT):
+        """Create a new record of a species found in a datset.
+
+        Args:
+            scientific_name: The “scientific name” associated with the species
+                observed.
+            common_name: The “common name” associated with the species observed.
+            species_code: Unique ID associated with the species observed.
+            tsn: Taxonomic information system species code.
+        """
+        self._scientific_name = scientific_name
+        self._common_name = common_name
+        self._species_code = species_code
+        self._tsn = tsn
+
+    def get_scientific_name(self) -> str:
+        """Get the “scientific name” associated with the species.
+
+        Returns:
+            The “scientific name” associated with the species.
+        """
+        return self._scientific_name
+
+    def get_common_name(self) -> str:
+        """Get the “common name” associated with the species observed.
+
+        Returns:
+            The “common name” associated with the species observed.
+        """
+        return self._common_name
+
+    def get_species_code(self) -> float:
+        """Get the unique ID associated with the species observed.
+
+        Returns:
+            Unique ID associated with the species observed.
+        """
+        return self._species_code
+
+    def get_tsn(self) -> OPT_INT:
+        """Get the taxonomic information system species code.
+
+        Returns:
+            Taxonomic information system species code.
+        """
+        return self._tsn
+
+
 def get_opt_float(target) -> OPT_FLOAT:
     """Attempt to parse a value as a float, returning None if there is an error.
 
