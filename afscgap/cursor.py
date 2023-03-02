@@ -1,16 +1,14 @@
-import copy
-import json
+"""
+(c) 2023 Regents of University of California / The Eric and Wendy Schmidt Center
+for Data Science and the Environment at UC Berkeley.
+"""
+
 import queue
 import typing
 
-import requests
-
-import afscgap.cursor
 import afscgap.model
 
 from afscgap.util import OPT_INT
-from afscgap.util import OPT_REQUESTOR
-from afscgap.util import OPT_STR
 
 
 class Cursor(typing.Iterable[afscgap.model.Record]):

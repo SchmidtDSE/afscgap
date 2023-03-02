@@ -475,7 +475,7 @@ Though not officially mentioned by the NOAA API, the authors of this library obs
 <br>
 
 ## License
-We are happy to make this library available under the BSD 3-Clause license. See LICENSE for more details. (c) 2023 [The Eric and Wendy Schmidt Center for Data Science and the Environment
+We are happy to make this library available under the BSD 3-Clause license. See LICENSE for more details. (c) 2023 Regents of University of California. See the [Eric and Wendy Schmidt Center for Data Science and the Environment
 at UC Berkeley](https://dse.berkeley.edu).
 
 <br>

@@ -1,22 +1,26 @@
 """
 Tools for inferring missing, negative, or zero catch records.
 
-(c) 2023 The Eric and Wendy Schmidt Center for Data Science and the Environment
-at UC Berkeley.
+(c) 2023 Regents of University of California / The Eric and Wendy Schmidt Center
+for Data Science and the Environment at UC Berkeley.
 
 This file is part of afscgap released under the BSD 3-Clause License. See
 LICENSE.txt.
 """
+import copy
 import csv
 import io
 import itertools
+import queue
 import typing
 
 import afscgap.client
+import afscgap.cursor
 import afscgap.model
-import afscgap.query
+import afscgap.query_util
 import afscgap.util
 
+from afscgap.util import OPT_FLOAT
 from afscgap.util import OPT_INT
 from afscgap.util import OPT_REQUESTOR
 from afscgap.util import OPT_STR
@@ -24,31 +28,72 @@ from afscgap.util import OPT_STR
 DEFAULT_HAULS_URL = ''
 
 HAUL_LIST = typing.List[afscgap.model.Haul]
+HAUL_FILTERABLE_FIELDS = [
+    'srvy',
+    'survey',
+    'survey_id',
+    'cruise',
+    'haul',
+    'stratum',
+    'station',
+    'vessel_name',
+    'vessel_id',
+    'date_time',
+    'latitude_dd',
+    'longitude_dd',
+    'bottom_temperature_c',
+    'surface_temperature_c',
+    'depth_m',
+    'distance_fished_km',
+    'net_width_m',
+    'net_height_m',
+    'area_swept_ha',
+    'duration_hr'
+]
+
+PARAMS_CHECKER = typing.Callable[[afscgap.model.Haul], bool]
 
 
-def build_cursor(params: dict, inner_cursor: afscgap.client.Cursor,
+def build_cursor(params: dict, inner_cursor: afscgap.cursor.Cursor,
     requestor: OPT_REQUESTOR = None, hauls_url: afscgap.client.OPT_STR = None):
+    params_safe = copy.deepcopy(params)
+    params_safe['date_time'] = afscgap.util.convert_from_iso8601(
+        params_safe['date_time']
+    )
+    params_ords = afscgap.query_util.interpret_query_to_py(params_safe)
+
     hauls_data = get_hauls_data(
-        params,
+        params_ords,
         requestor=requestor,
         hauls_url=hauls_url
     )
     return NegativeInferenceCursorDecorator(inner_cursor, hauls_data)
 
 
-def build_params_checker(params: dict) -> typing.Callable[[dict], bool]:
+def build_params_checker(params: dict) -> PARAMS_CHECKER:
 
     def build_query_function(key: str, checker):
         return lambda target: checker(target[key])
 
-    params_py = afscgap.query.interpret_query_to_py(params)
+    params_py = afscgap.query_util.interpret_query_to_py(params)
     params_py_items = params_py.items()
-    params_py_items_valid = filter(lambda x: x[1] is not None, params_py_items)
-    params_funcs = map(lambda x: build_query_function(x[0], x[1]))
+    params_py_items_given = filter(lambda x: x[1] is not None, params_py_items)
+    params_py_items_valid = filter(
+        lambda x: x[0] in HAUL_FILTERABLE_FIELDS,
+        params_py_items_given
+    )
+    params_funcs = map(
+        lambda x: build_query_function(x[0], x[1]),
+        params_py_items_valid
+    )
     params_funcs_realized = list(params_funcs)
 
-    def check_all(target: dict) -> bool:
-        not_allowed = filter(lambda x: not x(target), params_funcs_realized)
+    def check_all(target: afscgap.model.Haul) -> bool:
+        target_dict = target.to_dict()
+        not_allowed = filter(
+            lambda x: not x(target_dict),
+            params_funcs_realized
+        )
         num_not_allowed = sum(map(lambda x: 1, not_allowed))
         return num_not_allowed == 0
 
@@ -62,17 +107,20 @@ def get_hauls_data(params: dict, requestor: OPT_REQUESTOR = None,
 
     params_checker = build_params_checker(params)
 
-    response = requsetor(hauls_url)
+    if requestor is None:
+        requestor = afscgap.util.build_requestor()
+
+    response = requestor(hauls_url)
     afscgap.util.check_result(response)
 
     response.encoding = 'utf-8'
     response_io = io.StringIO(response.text, newline='')
-    
-    response_rows = csv.DictReader(response_io)
-    response_rows_allowed = filter(params_checker, response_rows)
-    hauls_records = map(afscgap.model.parse_haul, response_rows_allowed)
 
-    return list(hauls_records)
+    response_rows = csv.DictReader(response_io)
+    response_hauls = map(parse_haul, response_rows)
+    response_hauls_filtered = filter(params_checker, response_hauls)
+
+    return list(response_hauls_filtered)
 
 
 class SpeciesRecord:
@@ -83,23 +131,23 @@ class SpeciesRecord:
         self._common_name = common_name
         self._species_code = species_code
         self._tsn = tsn
-    
+
     def get_scientific_name(self) -> str:
         return self._scientific_name
-    
+
     def get_common_name(self) -> str:
         return self._common_name
-    
+
     def get_species_code(self) -> float:
-        return self._species_codeHAUL_LIST
-    
+        return self._species_code
+
     def get_tsn(self) -> OPT_INT:
         return self._tsn
 
 
-class NegativeInferenceCursorDecorator(afscgap.client.Cursor):
+class NegativeInferenceCursorDecorator(afscgap.cursor.Cursor):
 
-    def __init__(self, inner_cursor: afscgap.client.Cursor,
+    def __init__(self, inner_cursor: afscgap.cursor.Cursor,
         hauls_data: HAUL_LIST):
         self._inner_cursor = inner_cursor
         self._hauls_data = hauls_data
@@ -175,7 +223,7 @@ class NegativeInferenceCursorDecorator(afscgap.client.Cursor):
             Results from the page which, regardless of ignore_invalid, may
             contain a mixture of complete and incomplete records.
         """
-        return self._inner_cursor.get_page_url(
+        return self._inner_cursor.get_page(
             offset=offset,
             limit=limit,
             ignore_invalid=ignore_invalid
@@ -255,13 +303,13 @@ class NegativeInferenceCursorDecorator(afscgap.client.Cursor):
             record.get_cruise(),
             record.get_haul()
         ]
-        ship_info_vals_int = map(lambda x: round(x), key_vals)
-        ship_info_vals_str = map(str, key_vals_int)
-        ship_info_vals_csv = ','.join(key_vals_int)
+        ship_info_vals_int = map(lambda x: round(x), ship_info_vals)
+        ship_info_vals_str = map(str, ship_info_vals_int)
+        ship_info_vals_csv = ','.join(ship_info_vals_str)
 
-        without_species = '%s:%s' % (record.get_srvy(), key_num_vals_csv)
+        without_species = '%s:%s' % (record.get_srvy(), ship_info_vals_csv)
 
-        if include_species:
+        if species:
             return '%s/%s' % (without_species, species)
         else:
             return without_species
@@ -286,7 +334,7 @@ class NegativeInferenceCursorDecorator(afscgap.client.Cursor):
         )
         missing_haul_keys_and_species = map(
             lambda x: {'haulKey': x[0], 'species': x[1]},
-            missing_keys
+            missing_haul_keys_and_species_tuple
         )
         missing_hauls_and_species = map(
             lambda x: {
@@ -299,14 +347,14 @@ class NegativeInferenceCursorDecorator(afscgap.client.Cursor):
         def make_inference_record(target: typing.Dict) -> afscgap.model.Record:
             scientific_name = target['species']
             haul = target['haul']
-            
+
             species_record = self._species_seen[scientific_name]
             common_name = species_record.get_common_name()
             species_code = species_record.get_species_code()
             tsn = species_record.get_tsn()
 
             ak_survey_id = self._ak_survey_ids.get(haul.get_survey(), None)
-            
+
             return ZeroCatchHaulDecorator(
                 haul,
                 scientific_name,
@@ -604,7 +652,7 @@ class ZeroCatchHaulDecorator(afscgap.model.Record):
         Returns:
             Distance of the net fished as m.
         """
-        return self._haul.get_net_width_m()
+        return self._haul.get_area_swept_ha() * 10000
 
     def get_net_height_m(self) -> float:
         """Get the field labeled as net_height_m in the API.
@@ -612,7 +660,7 @@ class ZeroCatchHaulDecorator(afscgap.model.Record):
         Returns:
             Height of the net fished as m.
         """
-        return self._haul.get_area_swept_m()
+        return self._haul.get_area_swept_ha()
 
     def get_area_swept_ha(self) -> float:
         """Get the field labeled as area_swept_ha in the API.
@@ -841,3 +889,49 @@ class ZeroCatchHaulDecorator(afscgap.model.Record):
             'tsn': self.get_tsn_maybe(),
             'ak_survey_id': self.get_ak_survey_id()
         }
+
+
+def parse_haul(target: dict) -> afscgap.model.Haul:
+    srvy = target['srvy']
+    survey = target['survey']
+    survey_id = target['survey_id']
+    cruise = target['cruise']
+    haul = target['haul']
+    stratum = target['stratum']
+    station = target['station']
+    vessel_name = target['vessel_name']
+    vessel_id = target['vessel_id']
+    date_time = target['date_time']
+    latitude_dd = target['latitude_dd']
+    longitude_dd = target['longitude_dd']
+    bottom_temperature_c = target['bottom_temperature_c']
+    surface_temperature_c = target['surface_temperature_c']
+    depth_m = target['depth_m']
+    distance_fished_km = target['distance_fished_km']
+    net_width_m = target['net_width_m']
+    net_height_m = target['net_height_m']
+    area_swept_ha = target['area_swept_ha']
+    duration_hr = target['duration_hr']
+
+    return afscgap.model.Haul(
+        srvy,
+        survey,
+        survey_id,
+        cruise,
+        haul,
+        stratum,
+        station,
+        vessel_name,
+        vessel_id,
+        date_time,
+        latitude_dd,
+        longitude_dd,
+        bottom_temperature_c,
+        surface_temperature_c,
+        depth_m,
+        distance_fished_km,
+        net_width_m,
+        net_height_m,
+        area_swept_ha,
+        duration_hr
+    )

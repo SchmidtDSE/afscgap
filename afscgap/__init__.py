@@ -15,22 +15,18 @@ Center (AFSC) as part of the National Oceanic and Atmospheric Administration
 (NOAA Fisheries). Note that this is a community-provided library and is not
 officially endorsed by NOAA.
 
-(c) 2023 The Eric and Wendy Schmidt Center for Data Science and the Environment
-at UC Berkeley.
+(c) 2023 Regents of University of California / The Eric and Wendy Schmidt Center
+for Data Science and the Environment at UC Berkeley.
 
 This file is part of afscgap released under the BSD 3-Clause License. See
 LICENSE.txt.
 """
-import typing
-
 import afscgap.client
 import afscgap.model
 
-STR_OR_DICT = typing.Union[str, dict]
-RANGE_TUPLE = typing.Tuple[float]
-FLOAT_PARAM = typing.Optional[typing.Union[float, dict, RANGE_TUPLE]]
-INT_PARAM = typing.Optional[typing.Union[int, dict, RANGE_TUPLE]]
-STR_PARAM = typing.Optional[STR_OR_DICT]
+from afscgap.util import FLOAT_PARAM
+from afscgap.util import INT_PARAM
+from afscgap.util import STR_PARAM
 
 
 def query(
@@ -73,7 +69,7 @@ def query(
     start_offset: afscgap.client.OPT_INT = None,
     base_url: afscgap.client.OPT_STR = None,
     requestor: afscgap.client.OPT_REQUESTOR = None,
-    filter_incomplete: bool = False) -> afscgap.client.Cursor:
+    filter_incomplete: bool = False) -> afscgap.cursor.Cursor:
     """Execute a query against the AFSC GAP API.
 
     Args:
@@ -225,7 +221,7 @@ def query(
         'ak_survey_id': ak_survey_id
     }
 
-    afscgap.client.build_cursor(
+    return afscgap.client.build_api_cursor(
         all_dict_raw,
         limit=limit,
         start_offset=start_offset,
