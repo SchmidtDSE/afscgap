@@ -347,7 +347,7 @@ class Record(HaulKeyable):
         """Get the field labeled as net_width_m in the API.
 
         Returns:
-            Distance of the net fished as m.
+            Distance of the net fished as m after asserting it is given.
         """
         raise NotImplementedError('Use implementor.')
 
@@ -355,7 +355,23 @@ class Record(HaulKeyable):
         """Get the field labeled as net_height_m in the API.
 
         Returns:
-            Height of the net fished as m.
+            Height of the net fished as m after asserting it is given.
+        """
+        raise NotImplementedError('Use implementor.')
+
+    def get_net_width_m_maybe(self) -> OPT_FLOAT:
+        """Get the field labeled as net_width_m in the API.
+
+        Returns:
+            Distance of the net fished as m or None if not given.
+        """
+        raise NotImplementedError('Use implementor.')
+
+    def get_net_height_m_maybe(self) -> OPT_FLOAT:
+        """Get the field labeled as net_height_m in the API.
+
+        Returns:
+            Height of the net fished as m or None if not given.
         """
         raise NotImplementedError('Use implementor.')
 
@@ -570,8 +586,8 @@ class Haul(HaulKeyable):
         vessel_id: float, date_time: str, latitude_dd: float,
         longitude_dd: float, bottom_temperature_c: OPT_FLOAT,
         surface_temperature_c: OPT_FLOAT, depth_m: float,
-        distance_fished_km: float, net_width_m: float, net_height_m: float,
-        area_swept_ha: float, duration_hr: float):
+        distance_fished_km: float, net_width_m: OPT_FLOAT,
+        net_height_m: OPT_FLOAT, area_swept_ha: float, duration_hr: float):
         """Create a new Haul record.
 
         Args:
@@ -600,8 +616,8 @@ class Haul(HaulKeyable):
                 available in Celsius.
             depth_m: Depth of the bottom in meters.
             distance_fished_km: Distance of the net fished as km.
-            net_width_m: Distance of the net fished as m.
-            net_height_m: Height of the net fished as m.
+            net_width_m: Distance of the net fished as m or None if not given.
+            net_height_m: Height of the net fished as m or None if not given.
             area_swept_ha: Area covered by the net while fishing in hectares.
             duration_hr: Duration of the haul as number of hours.
         """
@@ -750,6 +766,7 @@ class Haul(HaulKeyable):
         """Get the field labeled as Surface Temperature C in the dataset.
 
         Returns:
+
             Surface temperature associated with haul if available in
             Celsius. None if not given or could not interpret as a float.
         """
@@ -771,21 +788,37 @@ class Haul(HaulKeyable):
         """
         return self._distance_fished_km
 
+    def get_net_width_m_maybe(self) -> OPT_FLOAT:
+        """Get the field labeled as Net Width M in the dataset.
+
+        Returns:
+            Distance of the net fished as m if given or None.
+        """
+        return self._net_width_m
+
+    def get_net_height_m_maybe(self) -> OPT_FLOAT:
+        """Get the field labeled as Net Height M in the dataset.
+
+        Returns:
+            Height of the net fished as m if given or None.
+        """
+        return self._net_height_m
+
     def get_net_width_m(self) -> float:
         """Get the field labeled as Net Width M in the dataset.
 
         Returns:
-            Distance of the net fished as m.
+            Distance of the net fished as m after asserting it is given.
         """
-        return self._net_width_m
+        return assert_float_present(self._net_width_m)
 
     def get_net_height_m(self) -> float:
         """Get the field labeled as Net Height M in the dataset.
 
         Returns:
-            Height of the net fished as m.
+            Height of the net fished as m after asserting it is given.
         """
-        return self._net_height_m
+        return assert_float_present(self._net_height_m)
 
     def get_area_swept_ha(self) -> float:
         """Get the field labeled as Area Swept Ha in the dataset.

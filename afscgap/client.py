@@ -349,9 +349,9 @@ class ApiRecord(afscgap.model.Record):
         cpue_nokm2: OPT_FLOAT, cpue_no1000km2: OPT_FLOAT, weight_kg: OPT_FLOAT,
         count: OPT_FLOAT, bottom_temperature_c: OPT_FLOAT,
         surface_temperature_c: OPT_FLOAT, depth_m: float,
-        distance_fished_km: float, net_width_m: float, net_height_m: float,
-        area_swept_ha: float, duration_hr: float, tsn: OPT_INT,
-        ak_survey_id: int):
+        distance_fished_km: float, net_width_m: OPT_FLOAT,
+        net_height_m: OPT_FLOAT, area_swept_ha: float, duration_hr: float,
+        tsn: OPT_INT, ak_survey_id: int):
         """Create a new record.
 
         Args:
@@ -711,21 +711,37 @@ class ApiRecord(afscgap.model.Record):
         """
         return self._distance_fished_km
 
-    def get_net_width_m(self) -> float:
+    def get_net_width_m_maybe(self) -> OPT_FLOAT:
         """Get the field labeled as net_width_m in the API.
 
         Returns:
-            Distance of the net fished as m.
+            Distance of the net fished as m or None if not given.
         """
         return self._net_width_m
 
-    def get_net_height_m(self) -> float:
+    def get_net_height_m_maybe(self) -> OPT_FLOAT:
         """Get the field labeled as net_height_m in the API.
 
         Returns:
-            Height of the net fished as m.
+            Height of the net fished as m or None if not given.
         """
         return self._net_height_m
+
+    def get_net_width_m(self) -> OPT_FLOAT:
+        """Get the field labeled as net_width_m in the API.
+
+        Returns:
+            Distance of the net fished as m after asserting it is given.
+        """
+        return afscgap.model.assert_float_present(self._net_width_m)
+
+    def get_net_height_m(self) -> OPT_FLOAT:
+        """Get the field labeled as net_height_m in the API.
+
+        Returns:
+            Height of the net fished as m after asserting it is given.
+        """
+        return afscgap.model.assert_float_present(self._net_height_m)
 
     def get_area_swept_ha(self) -> float:
         """Get the field labeled as area_swept_ha in the API.
@@ -1024,8 +1040,8 @@ def parse_record(target: dict) -> afscgap.model.Record:
     )
     depth_m = float(target['depth_m'])
     distance_fished_km = float(target['distance_fished_km'])
-    net_width_m = float(target['net_width_m'])
-    net_height_m = float(target['net_height_m'])
+    net_width_m = afscgap.model.get_opt_float(target['net_width_m'])
+    net_height_m = afscgap.model.get_opt_float(target['net_height_m'])
     area_swept_ha = float(target['area_swept_ha'])
     duration_hr = float(target['duration_hr'])
     tsn = afscgap.model.get_opt_int(target['tsn'])

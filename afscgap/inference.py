@@ -743,21 +743,37 @@ class ZeroCatchHaulDecorator(afscgap.model.Record):
         """
         return self._haul.get_distance_fished_km()
 
-    def get_net_width_m(self) -> float:
+    def get_net_width_m_maybe(self) -> OPT_FLOAT:
         """Get the field labeled as net_width_m in the API.
 
         Returns:
-            Distance of the net fished as m.
+            Distance of the net fished as m or None if not given.
         """
-        return self._haul.get_area_swept_ha() * 10000
+        return self._haul.get_net_width_m_maybe()
 
-    def get_net_height_m(self) -> float:
+    def get_net_height_m_maybe(self) -> OPT_FLOAT:
         """Get the field labeled as net_height_m in the API.
 
         Returns:
-            Height of the net fished as m.
+            Height of the net fished as m or None if not given.
         """
-        return self._haul.get_area_swept_ha()
+        return self._haul.get_net_height_m_maybe()
+
+    def get_net_width_m(self) -> OPT_FLOAT:
+        """Get the field labeled as net_width_m in the API.
+
+        Returns:
+            Distance of the net fished as m after asserting it is given.
+        """
+        return self._haul.get_net_width_m()
+
+    def get_net_height_m(self) -> OPT_FLOAT:
+        """Get the field labeled as net_height_m in the API.
+
+        Returns:
+            Height of the net fished as m after asserting it is given.
+        """
+        return self._haul.get_net_height_m()
 
     def get_area_swept_ha(self) -> float:
         """Get the field labeled as area_swept_ha in the API.
@@ -781,8 +797,7 @@ class ZeroCatchHaulDecorator(afscgap.model.Record):
         Returns:
             TSN for species.
         """
-        assert self._tsn is not None
-        return self._tsn
+        return afscgap.model.assert_int_present(self._tsn)
 
     def get_tsn_maybe(self) -> OPT_INT:
         """Get taxonomic information system species code.
@@ -798,8 +813,7 @@ class ZeroCatchHaulDecorator(afscgap.model.Record):
         Returns:
             AK survey ID if found.
         """
-        assert self._ak_survey_id is not None
-        return self._ak_survey_id
+        return afscgap.model.assert_int_present(self._ak_survey_id)
 
     def get_ak_survey_id_maybe(self) -> OPT_INT:
         """Get the field labeled as ak_survey_id in the API.
@@ -1018,8 +1032,8 @@ def parse_haul(target: dict) -> afscgap.model.Haul:
     )
     depth_m = float(target['Depth M'])
     distance_fished_km = float(target['Distance Fished Km'])
-    net_width_m = float(target['Net Width M'])
-    net_height_m = float(target['Net Height M'])
+    net_width_m = afscgap.model.get_opt_float(target['Net Width M'])
+    net_height_m = afscgap.model.get_opt_float(target['Net Height M'])
     area_swept_ha = float(target['Area Swept Ha'])
     duration_hr = float(target['Duration Hr'])
 

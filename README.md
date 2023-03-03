@@ -371,8 +371,8 @@ These fields are available as getters on `afscgap.model.Record` (`result.get_srv
 | surface_temperature_c | get_surface_temperature_c() -> float | get_surface_temperature_c_maybe() -> Optional[float] |
 | depth_m               | get_depth_m() -> float               |                                                      |
 | distance_fished_km    | get_distance_fished_km() -> float    |                                                      |
-| net_width_m           | get_net_width_m() -> float           |                                                      |
-| net_height_m          | get_net_height_m() -> float          |                                                      |
+| net_width_m           | get_net_width_m() -> float           | get_net_width_m_maybe() -> Optional[float]           |
+| net_height_m          | get_net_height_m() -> float          | get_net_height_m_maybe() -> Optional[float]          |
 | area_swept_ha         | get_area_swept_ha() -> float         |                                                      |
 | duration_hr           | get_duration_hr() -> float           |                                                      |
 | tsn                   | get_tsn() -> int                     | get_tsn_maybe() -> Optional[int]                     |
