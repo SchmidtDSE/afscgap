@@ -96,7 +96,9 @@ def query(
             Pass None if no filter should be applied. Defaults to None.
         srvy: Filter on the short name of the survey in which this observation
             was made. Pass None if no filter should be applied. Defaults to
-            None.
+            None. Note that common values include: NBS (N Bearing Sea), EBS (SE
+            Bearing Sea), BSS (Bearing Sea Slope), GOA (Gulf of Alaska), and
+            AI (Aleutian Islands).
         survey: Filter on long form description of the survey in which the
             observation was made. Pass None if no filter should be applied.
             Defaults to None.

@@ -32,4 +32,5 @@ build-backend = "hatchling.build"
 exclude = [
   ".github",
   "afscgap/test",
+  "notebooks"
 ]
