@@ -33,7 +33,7 @@ Please remember that this is a broad and public community.
 <br>
 
 ## Potential violations
-Violations of the code of conduct may be unintentional and we hope that respectful / kind conversation in the public space can resolve conflict. The goal is always to move forward in the community without exlcusion. However, if that is not possible due to repeated violations or severe incidents, the maintainers of this repo may take actions up to and including explusion from the community. Please reach out to dse@berkeley.edu if you have concerns. 
+Violations of the code of conduct may be unintentional and we hope that respectful / kind conversation in the public space can resolve conflict. The goal is always to move forward in the community without exclusion. However, if that is not possible due to repeated violations or severe incidents, the maintainers of this repo may take actions up to and including expulsion from the community. Please reach out to dse@berkeley.edu if you have concerns. 
 
 <br>
 

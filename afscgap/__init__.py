@@ -15,21 +15,33 @@ Center (AFSC) as part of the National Oceanic and Atmospheric Administration
 (NOAA Fisheries). Note that this is a community-provided library and is not
 officially endorsed by NOAA.
 
-(c) 2023 The Eric and Wendy Schmidt Center for Data Science and the Environment
-at UC Berkeley.
+(c) 2023 Regents of University of California / The Eric and Wendy Schmidt Center
+for Data Science and the Environment at UC Berkeley.
 
 This file is part of afscgap released under the BSD 3-Clause License. See
 LICENSE.txt.
 """
 import typing
+import warnings
 
 import afscgap.client
+import afscgap.inference
 import afscgap.model
 
-STR_OR_DICT = typing.Union[str, dict]
-FLOAT_PARAM = typing.Optional[typing.Union[float, dict]]
-INT_PARAM = typing.Optional[typing.Union[int, dict]]
-STR_PARAM = typing.Optional[STR_OR_DICT]
+from afscgap.util import FLOAT_PARAM
+from afscgap.util import INT_PARAM
+from afscgap.util import STR_PARAM
+
+from afscgap.util import OPT_INT
+from afscgap.util import OPT_STR
+from afscgap.util import OPT_REQUESTOR
+
+WARN_FUNCTION = typing.Optional[typing.Callable[[str], None]]
+
+LARGE_WARNING = ' '.join([
+    'Your query may return a very large amount of records.',
+    'Be sure to interact with results in a memory efficient way.'
+])
 
 
 def query(
@@ -68,11 +80,15 @@ def query(
     duration_hr: FLOAT_PARAM = None,
     tsn: INT_PARAM = None,
     ak_survey_id: INT_PARAM = None,
-    limit: afscgap.client.OPT_INT = None,
-    start_offset: afscgap.client.OPT_INT = None,
-    base_url: afscgap.client.OPT_STR = None,
-    requestor: afscgap.client.OPT_REQUESTOR = None,
-    filter_incomplete: bool = False) -> afscgap.client.Cursor:
+    limit: OPT_INT = None,
+    start_offset: OPT_INT = None,
+    base_url: OPT_STR = None,
+    requestor: OPT_REQUESTOR = None,
+    filter_incomplete: bool = False,
+    presence_only: bool = True,
+    suppress_large_warning: bool = False,
+    hauls_url: OPT_STR = None,
+    warn_function: WARN_FUNCTION = None) -> afscgap.cursor.Cursor:
     """Execute a query against the AFSC GAP API.
 
     Args:
@@ -80,7 +96,9 @@ def query(
             Pass None if no filter should be applied. Defaults to None.
         srvy: Filter on the short name of the survey in which this observation
             was made. Pass None if no filter should be applied. Defaults to
-            None.
+            None. Note that common values include: NBS (N Bearing Sea), EBS (SE
+            Bearing Sea), BSS (Bearing Sea Slope), GOA (Gulf of Alaska), and
+            AI (Aleutian Islands).
         survey: Filter on long form description of the survey in which the
             observation was made. Pass None if no filter should be applied.
             Defaults to None.
@@ -181,12 +199,23 @@ def query(
             the results, putting them in the invalid records queue. If false,
             they are included and their is_complete() will return false.
             Defaults to false.
+        presence_only: Flag indicating if abscence / zero catch data should be
+            inferred. If false, will run abscence data inference. If true, will
+            return presence only data as returned by the NOAA API service.
+            Defaults to true.
+        suppress_large_warning: Indicate if the library should warn when an
+            operation may consume a large amount of memory. If true, the warning
+            will not be emitted. Defaults to true.
+        hauls_url: The URL at which the flat file with hauls metadata can be
+            found or None if a default should be used. Defaults to None.
+        warn_function: Function to call with a message describing warnings
+            encountered. If None, will use warnings.warn. Defaults to None.
 
     Returns:
         Cursor to manage HTTP requests and query results.
     """
 
-    all_dict = {
+    all_dict_raw = {
         'year': year,
         'srvy': srvy,
         'survey': survey,
@@ -197,7 +226,7 @@ def query(
         'station': station,
         'vessel_name': vessel_name,
         'vessel_id': vessel_id,
-        'date_time': convert_from_iso8601(date_time),
+        'date_time': date_time,
         'latitude_dd': latitude_dd,
         'longitude_dd': longitude_dd,
         'species_code': species_code,
@@ -224,43 +253,29 @@ def query(
         'ak_survey_id': ak_survey_id
     }
 
-    query_url = afscgap.client.get_query_url(all_dict, base=base_url)
-    return afscgap.client.Cursor(
-        query_url,
+    api_cursor = afscgap.client.build_api_cursor(
+        all_dict_raw,
         limit=limit,
         start_offset=start_offset,
+        filter_incomplete=filter_incomplete,
         requestor=requestor,
-        filter_incomplete=filter_incomplete
+        base_url=base_url
     )
 
+    if presence_only:
+        return api_cursor
 
-def convert_from_iso8601(target: STR_PARAM) -> STR_PARAM:
-    """Convert strings from ISO 8601 format to API format.
+    decorated_cursor = afscgap.inference.build_inference_cursor(
+        all_dict_raw,
+        api_cursor,
+        requestor=requestor,
+        hauls_url=hauls_url
+    )
 
-    Args:
-        target: The string or dictionary in which to perform the
-            transformations.
+    if not suppress_large_warning:
+        if not warn_function:
+            warn_function = lambda x: warnings.warn(x)
 
-    Returns:
-        If given an ISO 8601 string, will convert from ISO 8601 to the API
-        datetime string format. Similarly, if given a dictionary, all values
-        matching an ISO 8601 string will be converted to the API datetime string
-        format. If given None, returns None.
-    """
-    if target is None:
-        return None
-    elif isinstance(target, str):
-        return afscgap.model.convert_from_iso8601(target)
-    elif isinstance(target, dict):
-        items = target.items()
-        output_dict = {}
+        warn_function(LARGE_WARNING)
 
-        for key, value in items:
-            if isinstance(value, str):
-                output_dict[key] = afscgap.model.convert_from_iso8601(value)
-            else:
-                output_dict[key] = value
-
-        return output_dict
-    else:
-        return target
+    return decorated_cursor

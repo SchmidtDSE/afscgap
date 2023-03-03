@@ -1,4 +1,4 @@
-Copyright 2023 [The Eric and Wendy Schmidt Center for Data Science and the Environment at UC Berkeley](https://dse.berkeley.edu/)
+Copyright 2023 (c) 2023 Regents of University of California / [The Eric and Wendy Schmidt Center for Data Science and the Environment at UC Berkeley](https://dse.berkeley.edu/)
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 

@@ -1,39 +1,69 @@
-"""
-Convienence functions for testing afscgap.
-
-(c) 2023 The Eric and Wendy Schmidt Center for Data Science and the Environment
-at UC Berkeley.
-
-This file is part of afscgap released under the BSD 3-Clause License. See
-LICENSE.txt.
-"""
-import json
-import os
-import pathlib
 import unittest
+import unittest.mock
 
-# pylint: disable=C0115, C0116
-
-
-def load_test_data(filename: str) -> dict:
-    parent_dir = pathlib.Path(__file__).parent.absolute()
-    data_dir = os.path.join(parent_dir, 'data')
-    full_path = os.path.join(data_dir, filename)
-
-    with open(full_path) as f:
-        loaded_data = json.load(f)
-
-    return loaded_data
+import afscgap.util
 
 
-def make_result(filename: str):
-    new_mock = unittest.mock.MagicMock()
-    new_mock.status_code = 200
+class UtilTests(unittest.TestCase):
 
-    loaded_data = load_test_data(filename)
+    def test_check_result_ok(self):
+        response = unittest.mock.MagicMock()
+        response.status_code = 200
+        afscgap.util.check_result(response)
+        self.assertTrue(True)
 
-    new_mock.json = unittest.mock.MagicMock(
-        return_value=loaded_data
-    )
+    def test_check_result_not_ok(self):
+        with self.assertRaises(RuntimeError):
+            response = unittest.mock.MagicMock()
+            response.status_code = 400
+            afscgap.util.check_result(response)
 
-    return new_mock
+    def test_convert_to_iso8601_success(self):
+        result = afscgap.util.convert_to_iso8601('07/16/2021 11:30:22')
+        self.assertEqual(result, '2021-07-16T11:30:22')
+
+    def test_convert_to_iso8601_fail(self):
+        result = afscgap.util.convert_to_iso8601('test')
+        self.assertEqual(result, 'test')
+
+    def test_iso8601_regex_not_found(self):
+        self.assertIsNone(
+            afscgap.util.ISO_8601_REGEX.match('07/16/2021 11:30:22')
+        )
+
+    def test_iso8601_regex_found(self):
+        self.assertIsNotNone(
+            afscgap.util.ISO_8601_REGEX.match('2021-07-16T11:30:22')
+        )
+
+    def test_convert_from_iso8601_match_string(self):
+        result = afscgap.util.convert_from_iso8601_str('2021-07-16T11:30:22')
+        self.assertEquals(result, '07/16/2021 11:30:22')
+
+    def test_convert_from_iso8601_match_string_with_tz(self):
+        result = afscgap.util.convert_from_iso8601_str('2021-07-16T11:30:22Z')
+        self.assertEquals(result, '07/16/2021 11:30:22')
+
+    def test_convert_from_iso8601_match_dict(self):
+        test_dict = {
+            'a': '2021-07-16T11:30:22',
+            'b': 'test2',
+            'c': 3
+        }
+        result = afscgap.util.convert_from_iso8601(test_dict)
+        self.assertEquals(result['a'], '07/16/2021 11:30:22')
+        self.assertEquals(result['b'], 'test2')
+        self.assertEquals(result['c'], 3)
+
+    def test_convert_from_iso8601_match_none(self):
+        result = afscgap.util.convert_from_iso8601(3)
+        self.assertEquals(result, 3)
+
+    def test_is_iso8601_success(self):
+        self.assertTrue(afscgap.util.is_iso8601('2021-07-16T11:30:22'))
+
+    def test_is_iso8601_fail(self):
+        self.assertFalse(afscgap.util.is_iso8601('07/16/2021 11:30:22'))
+
+    def test_build_requestor(self):
+        self.assertIsNotNone(afscgap.util.build_requestor())

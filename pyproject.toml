@@ -27,3 +27,10 @@ dev = ["build", "nose2", "mypy", "pyflakes", "pycodestyle", "types-requests", "p
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.hatch.build]
+exclude = [
+  ".github",
+  "afscgap/test",
+  "notebooks"
+]
