@@ -759,7 +759,7 @@ class ZeroCatchHaulDecorator(afscgap.model.Record):
         """
         return self._haul.get_net_height_m_maybe()
 
-    def get_net_width_m(self) -> OPT_FLOAT:
+    def get_net_width_m(self) -> float:
         """Get the field labeled as net_width_m in the API.
 
         Returns:
@@ -767,7 +767,7 @@ class ZeroCatchHaulDecorator(afscgap.model.Record):
         """
         return self._haul.get_net_width_m()
 
-    def get_net_height_m(self) -> OPT_FLOAT:
+    def get_net_height_m(self) -> float:
         """Get the field labeled as net_height_m in the API.
 
         Returns:

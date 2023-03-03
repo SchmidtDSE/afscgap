@@ -727,7 +727,7 @@ class ApiRecord(afscgap.model.Record):
         """
         return self._net_height_m
 
-    def get_net_width_m(self) -> OPT_FLOAT:
+    def get_net_width_m(self) -> float:
         """Get the field labeled as net_width_m in the API.
 
         Returns:
@@ -735,7 +735,7 @@ class ApiRecord(afscgap.model.Record):
         """
         return afscgap.model.assert_float_present(self._net_width_m)
 
-    def get_net_height_m(self) -> OPT_FLOAT:
+    def get_net_height_m(self) -> float:
         """Get the field labeled as net_height_m in the API.
 
         Returns:
