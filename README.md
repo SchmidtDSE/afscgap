@@ -36,9 +36,9 @@ These various elements together may increase the barrier for working with these 
 #### Goals
 This low-dependency tool set provides the following:
 
- - **API access**: A type-annoated and documented Python interface to the official API service with ability to query with automated pagination, providing results in various formats compatible with different Python usage modalities (Pandas, pure-Python, etc). It adapts the HTTP-based API used by the agency with Python type hints for easy query and interface. 
- - **Contextual documentation**: Python docstrings annotate the data structures provided by the API to help users navigate the various fields avilable, offering contextual documentation when supported by Python IDEs.
- - **Abscence inference**: Tools to infer absence or "zero catch" data as required for certain analysis and aggregation using a [supplemental hauls flat file dataset](https://pyafscgap.org/community/hauls.csv). Note that this flat file is provided by and hosted for this library's community after being created from [non-API public AFSC GAP data](https://www.fisheries.noaa.gov/foss/f?p=215%3A28).
+ - **API access**: A type-annotated and documented Python interface to the official API service with ability to query with automated pagination, providing results in various formats compatible with different Python usage modalities (Pandas, pure-Python, etc). It adapts the HTTP-based API used by the agency with Python type hints for easy query and interface. 
+ - **Contextual documentation**: Python docstrings annotate the data structures provided by the API to help users navigate the various fields available, offering contextual documentation when supported by Python IDEs.
+ - **Absence inference**: Tools to infer absence or "zero catch" data as required for certain analysis and aggregation using a [supplemental hauls flat file dataset](https://pyafscgap.org/community/hauls.csv). Note that this flat file is provided by and hosted for this library's community after being created from [non-API public AFSC GAP data](https://www.fisheries.noaa.gov/foss/f?p=215%3A28).
  - **Query generation**: This library converts more common Python standard types to types usable by the API service and emulated in Python when needed, reducing the need to interact directly with [ORDS syntax](https://www.oracle.com/database/technologies/appdev/rest.html).
 
 Though not intended to be general, this project also provides an example for working with [Oracle REST Data Services (ORDS)](https://www.oracle.com/database/technologies/appdev/rest.html) APIs in Python.
@@ -106,7 +106,7 @@ See [data structure section](#data-structure). Using an iterator will have the l
 <br>
 
 #### Enable absence data
-One of the major limitations of the official API is that it only provides presence data. However, this library can optionally infer absence or "zero catch" records using a separate static file produced by NOAA AFSC GAP. The [algorithm and details for abscense inference](#absence-vs-presence-data) is further discussed below.
+One of the major limitations of the official API is that it only provides presence data. However, this library can optionally infer absence or "zero catch" records using a separate static file produced by NOAA AFSC GAP. The [algorithm and details for absence inference](#absence-vs-presence-data) is further discussed below.
 
 Absence data / "zero catch" records inference can be turned on by setting `presence_only` to false in `query`. To demonstrate, this example finds total area swept and total weight for Gadus macrocephalus from the Aleutian Islands in 2021:
 
@@ -192,7 +192,7 @@ Note that Pandas is not required to use this library.
 <br>
 
 #### Advanced filtering
-You can provide range queries which translate to ORDS or Python emaulated filters. For example, the following requests before and including 2019:
+You can provide range queries which translate to ORDS or Python emulated filters. For example, the following requests before and including 2019:
 
 ```
 results = afscgap.query(
@@ -437,11 +437,11 @@ weight_by_area_tuples = map(
 weight_by_area_by_geohash = dict(weight_by_area_tuples)
 ```
 
-For more details see the [Python functional programming guide](https://docs.python.org/3/howto/functional.html). All that said, for some queries, use of Pandas may lead to very heavy memory usage.
+For more details see the [Python functional programming guide](https://docs.python.org/3/howto/functional.html). All that said, for some queries, the use of Pandas may lead to very heavy memory usage.
 
 <br>
 
-#### Abscence inference algorithm
+#### Absence inference algorithm
 Though it is not possible to resolve this issue using the AFSC GAP API service alone, this library can infer those missing records using a separate static flat file provided by NOAA and the following algorithm:
 
 
@@ -452,7 +452,7 @@ Though it is not possible to resolve this issue using the AFSC GAP API service a
  - For each species observed in the API returned results, check if that species had a record for each haul reported in the flat file.
  - For any hauls without the species record, yield an 0 catch record from the iterator for that query.
 
-This proceedure is disabled by default. However, it can be enabled through the `presence_only` keyword in `query` like so: `asfcgap.query(presence_only=False)`.
+This procedure is disabled by default. However, it can be enabled through the `presence_only` keyword in `query` like so: `asfcgap.query(presence_only=False)`.
 
 <br>
 
@@ -536,7 +536,7 @@ Thanks for your support! Pull requests and issues very welcome.
 <br>
 
 #### Contribution guidelines
-We invite contributions via [our project Github](https://github.com/SchmidtDSE/afscgap). Please the [CONTRIBUTING.md](https://github.com/SchmidtDSE/afscgap/blob/main/CONTRIBUTING.md) file for more information.
+We invite contributions via [our project Github](https://github.com/SchmidtDSE/afscgap). Please read the [CONTRIBUTING.md](https://github.com/SchmidtDSE/afscgap/blob/main/CONTRIBUTING.md) file for more information.
 
 <br>
 

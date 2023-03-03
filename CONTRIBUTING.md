@@ -33,7 +33,7 @@ There are reasonable differences of opinion in the community about the ideal imp
  - Object attributes should be private and immutable whenever possible.
  - Object immutable attributes should be prefixed by a single underscore available via getters.
  - We wish to operate with as few dependencies as possible. At this stage, we want to limit that to only the requests library as described in the [README](https://github.com/SchmidtDSE/afscgap/blob/main/README.md).
- - We expect growth in functionality but, to maintain simplicity for end uers, we request that developers perfer [composition over inheritance](https://betterprogramming.pub/prefer-composition-over-inheritance-1602d5149ea1) in the form of [decoration over inheritance](https://dzone.com/articles/is-inheritance-dead) to allow for easy addition of transparent behavior.
+ - We expect growth in functionality but, to maintain simplicity for end users, we request that developers prefer [composition over inheritance](https://betterprogramming.pub/prefer-composition-over-inheritance-1602d5149ea1) in the form of [decoration over inheritance](https://dzone.com/articles/is-inheritance-dead) to allow for easy addition of transparent behavior.
  - The release to pypi should be free of major static files even if a flat file, contributed application, etc are part of the project.
 
 We encourage folks in our community to open issues if they wish to discuss these design choices further but, at this time, we may not merge pull requests that do not conform to these choices.
@@ -41,11 +41,11 @@ We encourage folks in our community to open issues if they wish to discuss these
 <br>
 
 ## Scope
-Data structures have been used that could allow for threaded request but our current objective is to build a solid contribution as a single threaded non-async library. Please reach out if you are intersted in building an async version of the library but it is not currently the focus of project.
+Data structures have been used that could allow for threaded request, but our current objective is to build a solid contribution as a single threaded non-async library. Please reach out if you are interested in building an async version of the library, but it is not currently the focus of project.
 
 <br>
 
-## Proceedure
+## Procedure
 By contributing, you attest that you are legally permitted to provide code to the project and agree to release that code under the [project's license](https://github.com/SchmidtDSE/afscgap/blob/main/LICENSE.md). To make a contribution, please:
 
  - If one is not already open, [open an issue](https://github.com/SchmidtDSE/afscgap/issues).
