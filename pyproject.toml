@@ -24,7 +24,7 @@ afscgap = ["py.typed"]
 
 [project.urls]
 homepage = "https://pyafscgap.org"
-documentation = "hhttps://schmidtdse.github.io/afscgap/afscgap.html"
+documentation = "https://pyafscgap.org/devdocs/afscgap.html"
 source = "https://github.com/SchmidtDSE/afscgap"
 tracker = "https://github.com/SchmidtDSE/afscgap/issues"
 
