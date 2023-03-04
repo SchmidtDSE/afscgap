@@ -5,8 +5,12 @@ name: docs
 
 on:
   push:
+    workflows: 
+      - afscgap
     branches:
       - main
+    types: 
+      - completed
 
 permissions:
   contents: read
