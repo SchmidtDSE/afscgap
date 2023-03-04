@@ -156,3 +156,10 @@ html {
         max-height: 250px;
     }
 }
+
+
+@media screen and (min-width: 2700px) {
+    header .hero {
+        display: none;
+    }
+}
