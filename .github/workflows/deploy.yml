@@ -1,3 +1,5 @@
+name: Pypi Deploy
+
 on:
   workflow_run:
     workflows: 
