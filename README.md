@@ -8,7 +8,19 @@ Python tool chain for working with the public bottom trawl surveys data from the
 ![docs](https://github.com/SchmidtDSE/afscgap/actions/workflows/docs.yml/badge.svg?branch=main)
 [![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
-See [webpage](https://schmidtdse.github.io/afscgap/afscgap.html) and [project Github](https://github.com/SchmidtDSE/afscgap).
+See [webpage](https://pyafscgap.org) and [project Github](https://github.com/SchmidtDSE/afscgap).
+
+<br>
+<br>
+
+## Installation
+This open source library is available for install via Pypi / Pip:
+
+```
+$ pip install afscgap
+```
+
+Note that its only dependency is [requests](https://docs.python-requests.org/en/latest/index.html) and [Pandas / numpy are not expected but supported](#pandas).
 
 <br>
 <br>
@@ -46,18 +58,6 @@ Though not intended to be general, this project also provides an example for wor
 <br>
 <br>
 
-## Installation
-This open source library is available for install via Pypi / Pip:
-
-```
-$ pip install afscgap
-```
-
-Note that its only dependency is [requests](https://docs.python-requests.org/en/latest/index.html) and Pandas / numpy are not expected.
-
-<br>
-<br>
-
 ## Usage
 This library provides access to the public API endpoints with optional zero catch ("absence") record inference. It offers keyword arguments for query filtering that match the column names described in the official [metadata repository](https://github.com/afsc-gap-products/metadata). Records returned by the service are parsed into plain old Python objects.
 
@@ -81,7 +81,7 @@ temperatures = [record.get_bottom_temperature_c() for record in results]
 print(statistics.median(temperatures))
 ```
 
-Note that `afscgap.query` returns a [Cursor](https://schmidtdse.github.io/afscgap/cursor.html#Cursor). One can iterate over this `Cursor` to access [Record](https://schmidtdse.github.io/afscgap/model.html#Record) objects. You can do this with list comprehensions, maps, etc or with a good old for loop like in this example which gets a histogram of haul temperatures:
+Note that `afscgap.query` returns a [Cursor](https://pyafscgap.org/devdocs/afscgap/cursor.html#Cursor). One can iterate over this `Cursor` to access [Record]https://pyafscgap.org/devdocs/afscgap/model.html#Record) objects. You can do this with list comprehensions, maps, etc or with a good old for loop like in this example which gets a histogram of haul temperatures:
 
 ```
 count_by_temperature_c = {}
@@ -286,7 +286,7 @@ Note that records are only requested once during iteration and only after the pr
 <br>
 
 ## Data structure
-The schema drives the getters and filters available on in the library. Note that data structures are defined in the [model submodule](https://schmidtdse.github.io/afscgap/model.html) but client code generally only needs to interact with [Record](https://schmidtdse.github.io/afscgap/model.html#Record) objects.
+The schema drives the getters and filters available on in the library. Note that data structures are defined in the [model submodule](https://pyafscgap.org/devdocs/afscgap/model.html) but client code generally only needs to interact with [Record](https://pyafscgap.org/devdocs/afscgap/model.html#Record) objects.
 
 <br>
 

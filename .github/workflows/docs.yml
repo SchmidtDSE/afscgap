@@ -21,20 +21,20 @@ jobs:
         with:
           python-version: '3.11'
       - run: pip install -e .[dev]
-      - run: pdoc --docformat google ./afscgap -o docs/
-      - uses: actions/upload-pages-artifact@v1
-        with:
-          path: docs/
+      - run: pdoc --docformat google ./afscgap -o website/devdocs/
 
   deploy:
+    environment: deployweb
     needs: build
     runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - id: deployment
-        uses: actions/deploy-pages@v1
+      - name: Upload static
+        id: uploadStatic
+        uses: Creepios/sftp-action@v1.0.3
+        with:
+          host: ${{ secrets.SFTPHOST }}
+          port: 22
+          username: ${{ secrets.SFTPUSER }}
+          password: ${{ secrets.SFTPPASSWORD }}
+          localPath: './website'
+          remotePath: './pyafscgap.org/public'
