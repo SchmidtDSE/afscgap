@@ -3,7 +3,7 @@ name: Pypi Deploy
 on:
   workflow_run:
     workflows: 
-      - afscgap
+      - build
     branches:
       - main
     types: 

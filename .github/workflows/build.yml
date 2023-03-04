@@ -1,4 +1,4 @@
-name: afscgap
+name: Build
 on: [push]
 
 jobs:
