@@ -4,7 +4,7 @@
 name: docs
 
 on:
-  push:
+  workflow_run:
     workflows: 
       - afscgap
     branches:
