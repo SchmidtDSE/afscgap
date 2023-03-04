@@ -22,10 +22,16 @@ footer {
 footer .notice {
     color: #707070;
     font-size: 13px;
+    margin-top: 40px;
+    margin-bottom: 20px;
 }
 
 footer .notice a:visited, footer .notice a:link {
     color: #707070;
+}
+
+footer .notice a:hover, footer .notice a:active {
+    color: #303030;
 }
 
 header h1 {

@@ -13,6 +13,18 @@ See [webpage](https://pyafscgap.org) and [project Github](https://github.com/Sch
 <br>
 <br>
 
+## Installation
+This open source library is available for install via Pypi / Pip:
+
+```
+$ pip install afscgap
+```
+
+Note that its only dependency is [requests](https://docs.python-requests.org/en/latest/index.html) and [Pandas / numpy are not expected but supported](#pandas).
+
+<br>
+<br>
+
 ## Purpose
 Unofficial Python tool set for interacting with [bottom trawl surveys](https://www.fisheries.noaa.gov/alaska/commercial-fishing/alaska-groundfish-bottom-trawl-survey-data) from the [Ground Fish Assessment Program (GAP)](https://www.fisheries.noaa.gov/contact/groundfish-assessment-program). It offers:
 
@@ -42,18 +54,6 @@ This low-dependency tool set provides the following:
  - **Query generation**: This library converts more common Python standard types to types usable by the API service and emulated in Python when needed, reducing the need to interact directly with [ORDS syntax](https://www.oracle.com/database/technologies/appdev/rest.html).
 
 Though not intended to be general, this project also provides an example for working with [Oracle REST Data Services (ORDS)](https://www.oracle.com/database/technologies/appdev/rest.html) APIs in Python.
-
-<br>
-<br>
-
-## Installation
-This open source library is available for install via Pypi / Pip:
-
-```
-$ pip install afscgap
-```
-
-Note that its only dependency is [requests](https://docs.python-requests.org/en/latest/index.html) and Pandas / numpy are not expected.
 
 <br>
 <br>
