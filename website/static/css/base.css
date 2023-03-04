@@ -1,0 +1,158 @@
+@font-face {
+    font-family: Goudy;
+    src: url(/static/font/goudy_bookletter_1911-webfont.woff);
+}
+
+a:visited, a:link {
+    color: black;
+}
+
+a:hover, a:active {
+    color: #505050;
+}
+
+body {
+    margin: 20px;
+}
+
+footer {
+    margin-top: 100px;
+}
+
+footer .notice {
+    color: #707070;
+    font-size: 13px;
+}
+
+footer .notice a:visited, footer .notice a:link {
+    color: #707070;
+}
+
+header h1 {
+    font-size: 35px;
+}
+
+header h1 img {
+    height: 37px;
+}
+
+header .hero {
+    max-height: 150px;
+    z-index: 1;
+    position: relative;
+}
+
+header .hero img {
+    width: 100%;
+    padding-bottom: 5px;
+}
+
+header .inner {
+    background-color: rgba(255, 255, 255, 0.85);
+    position: relative;
+    z-index: 2;
+    padding-bottom: 100px;
+    border-top: 1px solid #E0E0E0;
+}
+
+html {
+    font-family: Goudy;
+    font-size: 18px;
+}
+
+.tools .tool {
+    text-align: center;
+    border: 1px solid #D7D7D7;
+    border-radius: 3px;
+}
+
+.tools .tool .button-holder {
+    padding: 7px;
+}
+
+.tools .tool .button-holder a {
+    padding: 5px;
+    background-color: black;
+    color: white;
+    border-radius: 5px;
+}
+
+.tools .tool .button-holder a:visited, .tools .tool .button-holder a:link {
+    text-decoration: none;
+}
+
+.tools .tool .button-holder a:hover, .tools .tool .button-holder a:active {
+    background-color: #505050;
+}
+
+.tools .tool .description {
+    padding: 5px;
+    font-size: 14px;
+    margin-top: 12px;
+    margin-bottom: 12px;
+}
+
+.tools .tool .title {
+    background-color: #D7D7D7;
+    padding: 3px;
+    margin-bottom: 12px;
+}
+
+@media screen and (max-width: 800px) {
+    footer {
+        margin-top: 30px;
+    }
+
+    header .inner {
+        padding-bottom: 30px;
+    }
+
+    .tools .tool .image img {
+        width: 20%;
+    }
+
+    .tools .tool {
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+}
+
+@media screen and (min-width: 800px) {
+    .tools {
+        display: grid;
+        column-gap: 20px;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .tools .tool .image img {
+        width: 80%;
+    }
+}
+
+@media screen and (min-width: 900px) {
+    .tools {
+        column-gap: 30px;
+    }
+
+    .tools .tool .image img {
+        width: 50%;
+    }
+}
+
+@media screen and (min-width: 1500px) {
+    .tools {
+        column-gap: 30px;
+    }
+
+    .tools .tool .image img {
+        width: 30%;
+    }
+
+    header .inner {
+        padding-bottom: 150px;
+    }
+
+    header .hero {
+        max-height: 250px;
+    }
+}

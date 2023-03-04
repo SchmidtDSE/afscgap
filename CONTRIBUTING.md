@@ -1,5 +1,5 @@
 # Contributing
-Thank you for your time! This quick doc will help you get started in the `afscgap` project.
+Thank you for your time! This quick doc will help you get started in the `afscgap` project. Looking for a place to get started? See the [bugs tracker](https://github.com/SchmidtDSE/afscgap/issues) to report an issue, ask a question, or look for something that needs help.
 
 <br>
 
