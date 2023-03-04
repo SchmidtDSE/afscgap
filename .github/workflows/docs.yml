@@ -36,4 +36,4 @@ jobs:
           username: ${{ secrets.SFTPUSER }}
           password: ${{ secrets.SFTPPASSWORD }}
           localPath: './website'
-          remotePath: './pyafscgap.org/public'
+          remotePath: './pyafscgap.org'
