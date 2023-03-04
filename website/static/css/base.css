@@ -164,6 +164,13 @@ html {
 
 @media screen and (min-width: 2000px) {
     header .hero {
+        max-height: 350px;
+    }
+}
+
+
+@media screen and (min-width: 2600px) {
+    header .hero {
         display: none;
     }
 }
