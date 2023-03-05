@@ -27,6 +27,7 @@ homepage = "https://pyafscgap.org"
 documentation = "https://pyafscgap.org/devdocs/afscgap.html"
 source = "https://github.com/SchmidtDSE/afscgap"
 tracker = "https://github.com/SchmidtDSE/afscgap/issues"
+changelog = "https://github.com/SchmidtDSE/afscgap#version-history"
 
 [project.optional-dependencies]
 dev = ["build", "nose2", "mypy", "pyflakes", "pycodestyle", "types-requests", "pdoc", "twine"]
