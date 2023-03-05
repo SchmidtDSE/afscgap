@@ -1,3 +1,5 @@
+# Docker file for MyBinder / running example notebooks.
+#
 # Thanks https://github.com/binder-examples/minimal-dockerfile
 # Used under the unlimited license.
 
