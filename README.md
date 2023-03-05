@@ -582,6 +582,8 @@ Thank you to all of these projects for their contribution.
 ## Version history
 Annotated version history:
 
+ - `0.0.5`: Changes to documentation.
+ - `0.0.4`: Negative / zero catch inference.
  - `0.0.3`: Minor updates in documentation.
- - `0.0.2`: Re-license under BSD.
+ - `0.0.2`: License under BSD.
  - `0.0.1`: Initial release.
