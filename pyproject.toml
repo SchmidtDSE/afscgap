@@ -1,6 +1,6 @@
 [project]
 name = "afscgap"
-version = "0.0.4"
+version = "0.0.5"
 authors = [
   { name="A Samuel Pottinger", email="sam.pottinger@berkeley.edu" },
 ]
@@ -23,11 +23,11 @@ dependencies = ["requests ~= 2.28.2"]
 afscgap = ["py.typed"]
 
 [project.urls]
-homepage = "https://pyafscgap.org"
-documentation = "https://pyafscgap.org/devdocs/afscgap.html"
-source = "https://github.com/SchmidtDSE/afscgap"
-tracker = "https://github.com/SchmidtDSE/afscgap/issues"
-changelog = "https://github.com/SchmidtDSE/afscgap#version-history"
+"Homepage" = "https://pyafscgap.org"
+"Documentation" = "https://pyafscgap.org/devdocs/afscgap.html"
+"Source" = "https://github.com/SchmidtDSE/afscgap"
+"Issue Tracker" = "https://github.com/SchmidtDSE/afscgap/issues"
+"Changelog" = "https://github.com/SchmidtDSE/afscgap#version-history"
 
 [project.optional-dependencies]
 dev = ["build", "nose2", "mypy", "pyflakes", "pycodestyle", "types-requests", "pdoc", "twine"]
