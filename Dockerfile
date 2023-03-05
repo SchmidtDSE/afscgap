@@ -8,9 +8,7 @@ RUN apt-get install -y python3-pip
 RUN apt-get install -y python-is-python3
 
 # install the notebook package
-RUN pip install --no-cache --upgrade pip && \
-    pip install --no-cache notebook
-    pip install --no-cache jupyterlab
+RUN pip install --no-cache --upgrade pip
 
 # create user with a home directory
 ARG NB_USER
