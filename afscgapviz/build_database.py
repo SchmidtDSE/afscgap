@@ -13,7 +13,10 @@ This file is part of afscgap released under the BSD 3-Clause License. See
 LICENSE.txt.
 """
 import contextlib
+import os
+import pathlib
 import re
+import sqlite3
 import sys
 import typing
 
@@ -23,7 +26,7 @@ import geolib.geohash
 import requests
 import toolz.itertoolz
 
-import model
+import afscgapviz.model
 
 INVALID_GEOHASH_STR = 'Expected geohash size to be an integer between 1 - 12.'
 USAGE_BASE_NUM_ARGS = 1
@@ -39,8 +42,8 @@ YEAR_PATTERN = re.compile('(?P<start>\\d{4})-(?P<end>\\d{4})')
 YEAR_RANGE_STR = 'Year range should be like 2000-2023.'
 
 HAULS = typing.List[afscgap.model.Haul]
-OPT_SIMPLIFIED_RECORD = typing.Optional[model.SimplifiedRecord]
-SIMPLIFIED_RECORDS = typing.Iterable[model.SimplifiedRecord]
+OPT_SIMPLIFIED_RECORD = typing.Optional[afscgapviz.model.SimplifiedRecord]
+SIMPLIFIED_RECORDS = typing.Iterable[afscgapviz.model.SimplifiedRecord]
 
 
 def try_parse_int(target: str) -> typing.Optional[int]:
@@ -132,8 +135,8 @@ def get_year(year: int, geohash_size: int, hauls: HAULS) -> SIMPLIFIED_RECORDS:
 
 def get_sql(script_name: str) -> str:
     parent_dir = pathlib.Path(__file__).parent.absolute()
-    data_dir = os.path.join(parent_dir, 'data')
-    full_path = os.path.join(data_dir, filename)
+    data_dir = os.path.join(parent_dir, 'sql')
+    full_path = os.path.join(data_dir, script_name + '.sql')
     
     with open(full_path) as f:
         contents = f.read()
@@ -146,7 +149,7 @@ def create_table(cursor: sqlite3.Cursor):
     cursor.execute(sql)
 
 
-def record_to_tuple(target: model.SimplifiedRecord) -> typing.Tuple:
+def record_to_tuple(target: afscgapviz.model.SimplifiedRecord) -> typing.Tuple:
     return (
         target.get_year(),
         target.get_survey(),
@@ -205,7 +208,7 @@ def create_download_main(args):
         geohash_size = int(args[2])
         assert geohash_size >= 1
         assert geohash_size <= 12
-    except ValueError, AssertionError:
+    except (ValueError, AssertionError):
         print(INVALID_GEOHASH_STR)
         return
     
@@ -237,3 +240,7 @@ def main():
         return
 
     commands[command](sys.argv[2:])
+
+
+if __name__ == '__main__':
+    main()
