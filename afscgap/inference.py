@@ -94,7 +94,7 @@ def build_inference_cursor(params: dict, inner_cursor: afscgap.cursor.Cursor,
             requestor=requestor,
             hauls_url=hauls_url
         )
-    
+
     return NegativeInferenceCursorDecorator(inner_cursor, hauls_data)
 
 
