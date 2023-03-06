@@ -7,6 +7,7 @@ for Data Science and the Environment at UC Berkeley.
 This file is part of afscgap released under the BSD 3-Clause License. See
 LICENSE.txt.
 """
+import csv
 import unittest
 
 import afscgap.test.test_tools
@@ -138,3 +139,20 @@ class EntryPointInferenceTests(unittest.TestCase):
             warn_function=warn_function
         )
         warn_function.assert_not_called()
+
+    def test_prefetch(self):
+        hauls_path = afscgap.test.test_tools.get_test_file_path('hauls.csv')
+        with open(hauls_path) as f:
+            rows = csv.DictReader(f)
+            hauls = [afscgap.inference.parse_haul(row) for row in rows]
+
+        warn_function = unittest.mock.MagicMock()
+        result = afscgap.query(
+            year=2021,
+            requestor=self._mock_requestor,
+            presence_only=False,
+            suppress_large_warning=True,
+            warn_function=warn_function,
+            hauls_prefetch=hauls
+        )
+        self._mock_requestor.assert_not_called()

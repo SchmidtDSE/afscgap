@@ -1,10 +1,10 @@
 [project]
 name = "afscgap"
-version = "0.0.5"
+version = "0.0.6"
 authors = [
   { name="A Samuel Pottinger", email="sam.pottinger@berkeley.edu" },
 ]
-description = "Microlibrary for interacting with the public bottom trawl surveys data from the NOAA AFSC GAP API."
+description = "Tools for interacting with the public bottom trawl surveys data from the NOAA AFSC GAP."
 readme = "README.md"
 requires-python = ">=3.7"
 classifiers = [
@@ -40,5 +40,7 @@ build-backend = "hatchling.build"
 exclude = [
   ".github",
   "afscgap/test",
-  "notebooks"
+  "notebooks",
+  "Dockerfile",
+  "website"
 ]

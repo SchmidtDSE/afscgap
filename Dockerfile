@@ -1,5 +1,7 @@
 # Docker file for MyBinder / running example notebooks.
 #
+# Last tested with afscgap 0.0.6
+#
 # Thanks https://github.com/binder-examples/minimal-dockerfile
 # Used under the unlimited license.
 
