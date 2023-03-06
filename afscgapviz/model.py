@@ -27,22 +27,22 @@ class SimplifiedRecord:
 
     def get_common_name(self) -> str:
         return self._common_name
-    
+
     def get_geohash(self) -> str:
         return self._geohash
-    
+
     def get_surface_temperature(self) -> float:
         return self._surface_temperature
-    
+
     def get_bottom_temperature(self) -> float:
         return self._bottom_temperature
-    
+
     def get_weight(self) -> float:
         return self._weight
-    
+
     def get_count(self) -> float:
         return self._count
-    
+
     def get_area_swept(self) -> float:
         return self._area_swept
 
@@ -68,18 +68,18 @@ class SimplifiedRecord:
 
     def combine(self, other: 'SimplifiedRecord') -> 'SimplifiedRecord':
         assert self.get_key() == other.get_key()
-        
+
         self_count = self.get_num_records_aggregated()
         other_count = other.get_num_records_aggregated()
-        
+
         surface_temp = self.get_surface_temperature() * self_count
         surface_temp += other.get_surface_temperature() * other_count
         surface_temp = surface_temp / (self_count + other_count)
-        
+
         bottom_temp = self.get_bottom_temperature() * self_count
         bottom_temp += other.get_bottom_temperature() * other_count
         bottom_temp = bottom_temp / (self_count + other_count)
-        
+
         return SimplifiedRecord(
             self._year,
             self._survey,

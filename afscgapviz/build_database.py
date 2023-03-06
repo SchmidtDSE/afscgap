@@ -72,19 +72,19 @@ def simplify_record(target: afscgap.model.Record,
     latitude = target.get_latitude_dd()
     longitude = target.get_longitude_dd()
     geohash = geolib.geohash.encode(latitude, longitude, geohash_size)
-    
+
     surface_temperature_c_maybe = target.get_surface_temperature_c_maybe()
     if surface_temperature_c_maybe is None:
         return None
-    
+
     bottom_temperature_c_maybe = target.get_bottom_temperature_c_maybe()
     if bottom_temperature_c_maybe is None:
         return None
-    
+
     weight_kg_maybe = target.get_weight_kg_maybe()
     if weight_kg_maybe is None:
         return None
-    
+
     count_maybe = target.get_count_maybe()
     if count_maybe is None:
         return None
@@ -144,7 +144,7 @@ def get_sql(script_name: str) -> str:
     parent_dir = pathlib.Path(__file__).parent.absolute()
     data_dir = os.path.join(parent_dir, 'sql')
     full_path = os.path.join(data_dir, script_name + '.sql')
-    
+
     with open(full_path) as f:
         contents = f.read()
 
@@ -219,7 +219,7 @@ def download_main(args):
     except (ValueError, AssertionError):
         print(INVALID_GEOHASH_STR)
         return
-    
+
     years = range(start_year, end_year + 1)
 
     # Thanks https://stackoverflow.com/questions/19522505
@@ -229,9 +229,10 @@ def download_main(args):
 
                 with con as cur:
                     download_and_persist_year(survey, year, cur, geohash_size)
-                
+
                 print('Completed %d for %s.' % (year, survey))
                 time.sleep(SLEEP_TIME)
+
 
 def main():
     if len(sys.argv) < USAGE_BASE_NUM_ARGS + 1:
@@ -245,7 +246,7 @@ def main():
         USAGE_DOWNLOAD_COMMAND: download_main
     }
 
-    if not command in commands:
+    if command not in commands:
         print(USAGE_BASE_STR + USAGE_COMMANDS_STR)
         return
 
