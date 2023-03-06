@@ -18,19 +18,26 @@ import pathlib
 import re
 import sqlite3
 import sys
+import time
 import typing
 
 import afscgap
 import afscgap.model
 import geolib.geohash  # type: ignore
-import requests
 import toolz.itertoolz  # type: ignore
 
 import afscgapviz.model
 
 INVALID_GEOHASH_STR = 'Expected geohash size to be an integer between 1 - 12.'
+SLEEP_TIME = 5
+SURVEYS = [
+    'NBS',
+    'EBS',
+    'BSS',
+    'GOA'
+]
 USAGE_BASE_NUM_ARGS = 1
-USAGE_BASE_STR = 'python build_database.py'
+USAGE_BASE_STR = 'python build_database.py '
 USAGE_COMMANDS_STR = '[create_db | download]'
 USAGE_CREATE_DB_COMMAND = 'create_db'
 USAGE_CREATE_DB_NUM_ARGS = 1
@@ -41,7 +48,6 @@ USAGE_DOWNLOAD_STR = 'download [year range] [sqlite file] [geohash size]'
 YEAR_PATTERN = re.compile('(?P<start>\\d{4})-(?P<end>\\d{4})')
 YEAR_RANGE_STR = 'Year range should be like 2000-2023.'
 
-HAULS = typing.List[afscgap.model.Haul]
 OPT_SIMPLIFIED_RECORD = typing.Optional[afscgapviz.model.SimplifiedRecord]
 SIMPLIFIED_RECORDS = typing.Iterable[afscgapviz.model.SimplifiedRecord]
 
@@ -106,11 +112,12 @@ def combine_record(a: dict, b: dict) -> dict:
     }
 
 
-def get_year(year: int, geohash_size: int, hauls: HAULS) -> SIMPLIFIED_RECORDS:
+def get_year(survey: str, year: int, geohash_size: int) -> SIMPLIFIED_RECORDS:
     results = afscgap.query(
+        srvy=survey,
         year=year,
         presence_only=False,
-        hauls_prefetch=hauls
+        scientific_name='Gadus macrocephalus'
     )
 
     simplified_records_maybe = map(
@@ -131,7 +138,7 @@ def get_year(year: int, geohash_size: int, hauls: HAULS) -> SIMPLIFIED_RECORDS:
         keyed_records
     )
 
-    return records_by_geohash.values()
+    return map(lambda x: x['record'], records_by_geohash.values())
 
 
 def get_sql(script_name: str) -> str:
@@ -166,9 +173,9 @@ def record_to_tuple(target: afscgapviz.model.SimplifiedRecord) -> typing.Tuple:
     )
 
 
-def download_and_persist_year(year: int, cursor: sqlite3.Cursor,
-    geohash_size: int, hauls: HAULS):
-    records = get_year(year, geohash_size, hauls)
+def download_and_persist_year(survey: str, year: int, cursor: sqlite3.Cursor,
+    geohash_size: int):
+    records = get_year(survey, year, geohash_size)
 
     persist_sql = get_sql('insert_record')
     records_tuples = map(record_to_tuple, records)
@@ -187,10 +194,11 @@ def create_db_main(args):
     # Thanks https://stackoverflow.com/questions/19522505
     with contextlib.closing(sqlite3.connect(filepath)) as con:
         with con as cur:
-            con.execute(sql)
+            for sub_sql in sql.split(';'):
+                cur.execute(sub_sql)
 
 
-def create_download_main(args):
+def download_main(args):
     if len(args) != USAGE_DOWNLOAD_NUM_ARGS:
         print(USAGE_BASE_STR + USAGE_DOWNLOAD_STR)
         return
@@ -218,14 +226,16 @@ def create_download_main(args):
     # Thanks https://stackoverflow.com/questions/19522505
     with contextlib.closing(sqlite3.connect(filepath)) as con:
         for year in years:
+            for survey in SURVEYS:
 
-            with con as cur:
-                download_and_persist_year(year, cur, geohash_size, hauls)
-            
-            print('Completed %d.' % year)
+                with con as cur:
+                    download_and_persist_year(survey, year, cur, geohash_size)
+                
+                print('Completed %d for %s.' % (year, survey))
+                time.sleep(SLEEP_TIME)
 
 def main():
-    if len(sys.argv) < USAGE_BASE_NUM_ARGS:
+    if len(sys.argv) < USAGE_BASE_NUM_ARGS + 1:
         print(USAGE_BASE_STR + USAGE_COMMANDS_STR)
         return
 
