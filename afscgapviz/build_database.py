@@ -22,9 +22,9 @@ import typing
 
 import afscgap
 import afscgap.model
-import geolib.geohash
+import geolib.geohash  # type: ignore
 import requests
-import toolz.itertoolz
+import toolz.itertoolz  # type: ignore
 
 import afscgapviz.model
 
@@ -53,7 +53,7 @@ def try_parse_int(target: str) -> typing.Optional[int]:
         return None
 
 
-def try_parse_range(target: str) -> typing.Optional[typing.Tuple[int]]:
+def try_parse_range(target: str) -> typing.Optional[typing.Tuple[int, int]]:
     match = YEAR_PATTERN.match(target)
     if match is None:
         return None
@@ -83,8 +83,9 @@ def simplify_record(target: afscgap.model.Record,
     if count_maybe is None:
         return None
 
-    return SimplifiedRecord(
-        target.get_year(),
+    return afscgapviz.model.SimplifiedRecord(
+        round(target.get_year()),
+        target.get_srvy(),
         target.get_scientific_name(),
         target.get_common_name(),
         geohash,
@@ -92,7 +93,7 @@ def simplify_record(target: afscgap.model.Record,
         bottom_temperature_c_maybe,
         weight_kg_maybe,
         count_maybe,
-        target.area_swept_ha(),
+        target.get_area_swept_ha(),
         1
     )
 
@@ -121,7 +122,7 @@ def get_year(year: int, geohash_size: int, hauls: HAULS) -> SIMPLIFIED_RECORDS:
         simplified_records_maybe
     )
     keyed_records = map(
-        lambda x: {'key': x.get_key(), 'record': x},
+        lambda x: {'key': x.get_key(), 'record': x},  # type: ignore
         simplified_records
     )
     records_by_geohash = toolz.reduceby(
