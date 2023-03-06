@@ -42,5 +42,6 @@ exclude = [
   "afscgap/test",
   "notebooks",
   "Dockerfile",
-  "website"
+  "website",
+  "app"
 ]
