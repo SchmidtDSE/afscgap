@@ -469,6 +469,32 @@ The goal of `Cursor.get_page` is to pull results from a page returned for a quer
 Note that the library will emulate filtering in Python so that haul records are filtered just as presence records are filtered by the API service. This works for "basic" and "advanced" filtering. However, at time of writing, "manual filtering" as described below using ORDS syntax is not supported when `presence_data=False`. Also, by default, a warning will be emitted when using this feature to help new users be aware of potential memory issues. This can be suppressed by including `suppress_large_warning=True` in the call to query.
 
 <br>
+
+#### Cached hauls
+If desired, a cached set of hauls data can be used instead. It must be a a list of [Haul objects](https://pyafscgap.org/devdocs/afscgap/model.html#Haul) and can be passed like so:
+
+```
+import csv
+
+import afscgap
+import afscgap.inference
+
+with open('hauls.csv') as f:
+    rows = csv.DictReader(f)
+    hauls = [afscgap.inference.parse_haul(row) for row in rows]
+
+results = afscgap.query(
+    year=2021,
+    srvy='GOA',
+    scientific_name='Gadus macrocephalus',
+    presence_only=False,
+    hauls_prefetch=hauls
+)
+```
+
+This can be helpful when executing a lot of queries and the bandwidth to download the [hauls metadata file](https://pyafscgap.org/community/hauls.csv) multiple times may not be desireable. 
+
+<br>
 <br>
 
 ## Data quality and completeness
@@ -574,10 +600,7 @@ At this time, the only open source dependency used by this microlibrary is [Requ
  - [pycodestyle](https://pycodestyle.pycqa.org/en/latest/) under the [Expat License](https://github.com/PyCQA/pycodestyle/blob/main/LICENSE) from Johann C. Rocholl, Florent Xicluna, and Ian Lee.
  - [pyflakes](https://github.com/PyCQA/pyflakes) under the [MIT License](https://github.com/PyCQA/pyflakes/blob/main/LICENSE) from Divmod, Florent Xicluna, and other contributors.
 
-Thank you to all of these projects for their contribution. Finally, note that the website uses assets from [The Noun Project](thenounproject.com/) under the NounPro plan. If used outside of https://pyafscgap.org, they may be subject to a different license. These are also available under the following:
-
- - 
- - 
+Thank you to all of these projects for their contribution. Finally, note that the website uses assets from [The Noun Project](thenounproject.com/) under the NounPro plan. If used outside of https://pyafscgap.org, they may be subject to a [different license](https://thenounproject.com/pricing/#icons).
 
 <br>
 <br>
