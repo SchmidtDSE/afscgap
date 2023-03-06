@@ -19,6 +19,10 @@ footer {
     margin-top: 50px;
 }
 
+footer .downloads {
+    margin-top: 40px;
+}
+
 footer .notice {
     color: #707070;
     font-size: 13px;
