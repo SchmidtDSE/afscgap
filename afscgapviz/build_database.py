@@ -116,8 +116,7 @@ def get_year(survey: str, year: int, geohash_size: int) -> SIMPLIFIED_RECORDS:
     results = afscgap.query(
         srvy=survey,
         year=year,
-        presence_only=False,
-        scientific_name='Gadus macrocephalus'
+        presence_only=False
     )
 
     simplified_records_maybe = map(
