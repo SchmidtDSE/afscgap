@@ -29,6 +29,7 @@ DEFAULT_HAULS_URL = 'https://pyafscgap.org/community/hauls.csv'
 SPECIES_DICT = typing.Dict[str, afscgap.model.SpeciesRecord]
 
 HAUL_LIST = typing.List[afscgap.model.Haul]
+OPT_HAUL_LIST = typing.Optional[HAUL_LIST]
 HAUL_FILTERABLE_FIELDS = [
     'year',
     'srvy',
@@ -57,7 +58,8 @@ PARAMS_CHECKER = typing.Callable[[afscgap.model.Haul], bool]
 
 
 def build_inference_cursor(params: dict, inner_cursor: afscgap.cursor.Cursor,
-    requestor: OPT_REQUESTOR = None, hauls_url: afscgap.client.OPT_STR = None):
+    requestor: OPT_REQUESTOR = None, hauls_url: afscgap.client.OPT_STR = None,
+    hauls_prefetch: OPT_HAUL_LIST = None):
     """Build a cursor which infers zero catch records.
 
     Args:
@@ -69,6 +71,8 @@ def build_inference_cursor(params: dict, inner_cursor: afscgap.cursor.Cursor,
             to requests.get.
         hauls_url: The URL at which the Hauls file can be found or None to use
             a default. Defaults to None.
+        hauls_prefetch: List of hauls data to use. If None, will request from
+            hauls_url. If not None, will use this instead.
 
     Returns:
         Cursor which 1) first iterates over the inner_cursor and then
@@ -82,11 +86,15 @@ def build_inference_cursor(params: dict, inner_cursor: afscgap.cursor.Cursor,
             params_safe['date_time']
         )
 
-    hauls_data = get_hauls_data(
-        params_safe,
-        requestor=requestor,
-        hauls_url=hauls_url
-    )
+    if hauls_prefetch is not None:
+        hauls_data = hauls_prefetch
+    else:
+        hauls_data = get_hauls_data(
+            params_safe,
+            requestor=requestor,
+            hauls_url=hauls_url
+        )
+    
     return NegativeInferenceCursorDecorator(inner_cursor, hauls_data)
 
 

@@ -574,7 +574,10 @@ At this time, the only open source dependency used by this microlibrary is [Requ
  - [pycodestyle](https://pycodestyle.pycqa.org/en/latest/) under the [Expat License](https://github.com/PyCQA/pycodestyle/blob/main/LICENSE) from Johann C. Rocholl, Florent Xicluna, and Ian Lee.
  - [pyflakes](https://github.com/PyCQA/pyflakes) under the [MIT License](https://github.com/PyCQA/pyflakes/blob/main/LICENSE) from Divmod, Florent Xicluna, and other contributors.
 
-Thank you to all of these projects for their contribution.
+Thank you to all of these projects for their contribution. Finally, note that the website uses assets from [The Noun Project](thenounproject.com/) under the NounPro plan. If used outside of https://pyafscgap.org, they may be subject to a different license. These are also available under the following:
+
+ - 
+ - 
 
 <br>
 <br>
@@ -582,6 +585,7 @@ Thank you to all of these projects for their contribution.
 ## Version history
 Annotated version history:
 
+ - `0.0.6`: Performance and size improvements.
  - `0.0.5`: Changes to documentation.
  - `0.0.4`: Negative / zero catch inference.
  - `0.0.3`: Minor updates in documentation.

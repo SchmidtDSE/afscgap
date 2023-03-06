@@ -36,6 +36,8 @@ from afscgap.util import OPT_INT
 from afscgap.util import OPT_STR
 from afscgap.util import OPT_REQUESTOR
 
+from afscgap.inference import OPT_HAUL_LIST
+
 WARN_FUNCTION = typing.Optional[typing.Callable[[str], None]]
 
 LARGE_WARNING = ' '.join([
@@ -88,7 +90,8 @@ def query(
     presence_only: bool = True,
     suppress_large_warning: bool = False,
     hauls_url: OPT_STR = None,
-    warn_function: WARN_FUNCTION = None) -> afscgap.cursor.Cursor:
+    warn_function: WARN_FUNCTION = None,
+    hauls_prefetch: OPT_HAUL_LIST = None) -> afscgap.cursor.Cursor:
     """Execute a query against the AFSC GAP API.
 
     Args:
@@ -210,6 +213,10 @@ def query(
             found or None if a default should be used. Defaults to None.
         warn_function: Function to call with a message describing warnings
             encountered. If None, will use warnings.warn. Defaults to None.
+        hauls_prefetch: If using presence_only=True, this is ignored. Otherwise,
+            if None, will instruct the library to download hauls metadata. If
+            not None, will use this as the hauls list for zero catch record
+            inference.
 
     Returns:
         Cursor to manage HTTP requests and query results.
@@ -269,7 +276,8 @@ def query(
         all_dict_raw,
         api_cursor,
         requestor=requestor,
-        hauls_url=hauls_url
+        hauls_url=hauls_url,
+        hauls_prefetch=hauls_prefetch
     )
 
     if not suppress_large_warning:
