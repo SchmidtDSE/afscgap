@@ -471,7 +471,7 @@ Note that the library will emulate filtering in Python so that haul records are 
 <br>
 
 #### Cached hauls
-If desired, a cached set of hauls data can be used instead. It must be a a list of [Haul objects](https://pyafscgap.org/devdocs/afscgap/model.html#Haul) and can be passed like so:
+If desired, a cached set of hauls data can be used instead. It must be a list of [Haul objects](https://pyafscgap.org/devdocs/afscgap/model.html#Haul) and can be passed like so:
 
 ```
 import csv
