@@ -137,7 +137,7 @@ def build_app(app: flask.Flask, db_str: str, db_uri: bool) -> flask.Flask:
         """
         survey = flask.request.args['survey']
         year = flask.request.args['year']
-        
+
         species = flask.request.args.get('species', None)
         common_name = flask.request.args.get('commonName', None)
 
@@ -166,7 +166,7 @@ def build_app(app: flask.Flask, db_str: str, db_uri: bool) -> flask.Flask:
                 results_obj = map(parse_record, results)
                 results_dict = map(record_to_dict, results_obj)
                 writer.writerows(results_dict)
-        
+
         output = flask.make_response(output_io.getvalue())
         output.headers['Content-Disposition'] = 'attachment; filename=geo.csv'
         output.headers['Content-type'] = 'text/csv'
