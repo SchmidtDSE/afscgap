@@ -8,8 +8,6 @@ This file is part of afscgap released under the BSD 3-Clause License. See
 import contextlib
 import csv
 import io
-import os
-import pathlib
 import sqlite3
 import typing
 
