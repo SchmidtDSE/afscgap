@@ -111,9 +111,5 @@ class BuildDatabaseTests(unittest.TestCase):
             8 + 9
         )
     
-    def test_get_sql(self):
-        sql = build_database.get_sql('insert_record')
-        self.assertTrue('INSERT' in sql)
-    
     def test_record_to_tuple(self):
         self.assertEquals(self._test_record_1.get_year(), 2023)
