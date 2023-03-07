@@ -59,7 +59,7 @@ def try_parse_int(target: str) -> typing.Optional[int]:
 
     Args:
         target: The string value provided by the user.
-    
+
     Returns:
         The string provided by the user as an int or None if it could not be
         parsed.
@@ -75,7 +75,7 @@ def try_parse_range(target: str) -> typing.Optional[typing.Tuple[int, int]]:
 
     Args:
         target: String from the CLI which describes a range of years.
-    
+
     Returns:
         Tuple with the start year and end year or None if it could not be
         parsed.
@@ -95,7 +95,7 @@ def simplify_record(target: afscgap.model.Record,
         target: The Record to be summarized.
         geohash_size: The length (number of characters) for the geohash to be
             generated for target.
-    
+
     Returns:
         Record with information needed for the web application.
     """
