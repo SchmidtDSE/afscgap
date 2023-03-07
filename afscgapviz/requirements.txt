@@ -1,0 +1,4 @@
+afscgap ~= 0.0.6
+Flask ~= 2.2.3
+geolib ~= 1.0.7
+toolz ~= 0.12.0

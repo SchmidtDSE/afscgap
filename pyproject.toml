@@ -30,7 +30,16 @@ afscgap = ["py.typed"]
 "Changelog" = "https://github.com/SchmidtDSE/afscgap#version-history"
 
 [project.optional-dependencies]
-dev = ["build", "nose2", "mypy", "pyflakes", "pycodestyle", "types-requests", "pdoc", "twine"]
+dev = [
+  "build",
+  "nose2",
+  "mypy",
+  "pyflakes",
+  "pycodestyle",
+  "pdoc",
+  "twine",
+  "types-requests"
+]
 
 [build-system]
 requires = ["hatchling"]
@@ -42,5 +51,6 @@ exclude = [
   "afscgap/test",
   "notebooks",
   "Dockerfile",
-  "website"
+  "website",
+  "app"
 ]
