@@ -32,13 +32,11 @@ afscgap = ["py.typed"]
 [project.optional-dependencies]
 dev = [
   "build",
-  "geolib",
   "nose2",
   "mypy",
   "pyflakes",
   "pycodestyle",
   "pdoc",
-  "toolz",
   "twine",
   "types-requests"
 ]
