@@ -70,29 +70,29 @@ html {
     font-size: 18px;
 }
 
-.tools .tool {
-    text-align: center;
-    border: 1px solid #D7D7D7;
-    border-radius: 3px;
-}
-
-.tools .tool .button-holder {
+.button-holder {
     padding: 7px;
 }
 
-.tools .tool .button-holder a {
+.button-holder a {
     padding: 5px;
     background-color: black;
     color: white;
     border-radius: 5px;
 }
 
-.tools .tool .button-holder a:visited, .tools .tool .button-holder a:link {
+.button-holder a:visited, .button-holder a:link {
     text-decoration: none;
 }
 
-.tools .tool .button-holder a:hover, .tools .tool .button-holder a:active {
+.button-holder a:hover, .button-holder a:active {
     background-color: #505050;
+}
+
+.tools .tool {
+    text-align: center;
+    border: 1px solid #D7D7D7;
+    border-radius: 3px;
 }
 
 .tools .tool .description {
@@ -106,6 +106,23 @@ html {
     background-color: #D7D7D7;
     padding: 3px;
     margin-bottom: 12px;
+}
+
+#skip-link-hodler {
+    height: 0;
+}
+
+#skip-link {
+    top: -30px;
+    left: 0;
+    position: absolute;
+}
+
+#skip-link:focus {
+    top: 10px;
+    background: #E0E0E0;
+    padding: 3px;
+    z-index: 3;
 }
 
 @media screen and (max-width: 800px) {
