@@ -27,6 +27,7 @@ import geolib.geohash  # type: ignore
 import toolz.itertoolz  # type: ignore
 
 import model
+import util
 
 INVALID_GEOHASH_STR = 'Expected geohash size to be an integer between 1 - 12.'
 SLEEP_TIME = 5

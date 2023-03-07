@@ -140,3 +140,5 @@ def build_app(app: flask.Flask, db_str: str, db_uri: bool) -> flask.Flask:
         output.headers['Content-type'] = 'text/csv'
 
         return output
+
+    return app

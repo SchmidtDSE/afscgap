@@ -14,7 +14,7 @@ import model
 
 
 class AfscgapVizTests(unittest.TestCase):
-    
+
     def test_parse_record(self):
         result = afscgapviz.parse_record((
             2023,
@@ -30,7 +30,7 @@ class AfscgapVizTests(unittest.TestCase):
             8
         ))
         self.assertEquals(result.get_year(), 2023)
-    
+
     def test_record_to_dict(self):
         record = model.SimplifiedRecord(
             2023,
