@@ -6,6 +6,8 @@ library and, instead, is part of the deployment pipeline for a web application
 used for geohash based visualization. For continued development, this is
 considered to be client code of the afscgap library.
 
+See build_database.sh for example.
+
 (c) 2023 Regents of University of California / The Eric and Wendy Schmidt Center
 for Data Science and the Environment at UC Berkeley.
 
@@ -53,6 +55,15 @@ SIMPLIFIED_RECORDS = typing.Iterable[afscgapviz.model.SimplifiedRecord]
 
 
 def try_parse_int(target: str) -> typing.Optional[int]:
+    """Try parsing an integer provided by the user on the command line.
+
+    Args:
+        target: The string value provided by the user.
+    
+    Returns:
+        The string provided by the user as an int or None if it could not be
+        parsed.
+    """
     try:
         return int(target)
     except ValueError:
@@ -60,6 +71,15 @@ def try_parse_int(target: str) -> typing.Optional[int]:
 
 
 def try_parse_range(target: str) -> typing.Optional[typing.Tuple[int, int]]:
+    """Try parsing a string describing a range of years provided by the user.
+
+    Args:
+        target: String from the CLI which describes a range of years.
+    
+    Returns:
+        Tuple with the start year and end year or None if it could not be
+        parsed.
+    """
     match = YEAR_PATTERN.match(target)
     if match is None:
         return None
@@ -69,6 +89,16 @@ def try_parse_range(target: str) -> typing.Optional[typing.Tuple[int, int]]:
 
 def simplify_record(target: afscgap.model.Record,
     geohash_size: int) -> OPT_SIMPLIFIED_RECORD:
+    """Generate a smaller record with relevant information and geohash.
+
+    Args:
+        target: The Record to be summarized.
+        geohash_size: The length (number of characters) for the geohash to be
+            generated for target.
+    
+    Returns:
+        Record with information needed for the web application.
+    """
     latitude = target.get_latitude_dd()
     longitude = target.get_longitude_dd()
     geohash = geolib.geohash.encode(latitude, longitude, geohash_size)
@@ -105,6 +135,29 @@ def simplify_record(target: afscgap.model.Record,
 
 
 def combine_record(a: dict, b: dict) -> dict:
+    """Combine two SimplifiedRecords with their keys.
+
+    Combine two SimplifiedRecords with their keys when those two records come
+    in the form of {"key": x.get_key(), "record": x} where x is a
+    SimplifiedRecord. This is done to support toolz-based reduce by key.
+
+    Args:
+        a: The first record to be combined. Expected to be a dictionary with
+            keys including "key" and "record" where the value of "key"
+            identifies the metadata of "record" and the value of "record"
+            is a SimplifiedRecord.
+        b: The second record to be combined. Expected to be a dictionary with
+            keys including "key" and "record" where the value of "key"
+            identifies the metadata of "record" and the value of "record"
+            is a SimplifiedRecord.
+
+    Raises:
+        AssertionError: Raised if the keys for a and b do not match.
+
+    Returns:
+        New dictionary of form {"key": key from a and b, "record": a combined
+        with b}.
+    """
     assert a['key'] == b['key']
     return {
         'key': a['key'],
@@ -113,6 +166,19 @@ def combine_record(a: dict, b: dict) -> dict:
 
 
 def get_year(survey: str, year: int, geohash_size: int) -> SIMPLIFIED_RECORDS:
+    """Get simplified records from a year for a survey.
+
+    Get simplified records from a year for a survey while using zero catch
+    record inference.
+
+    Args:
+        survey: The short name for the survey of interest (like GOA).
+        year: The year to be downloaded like 2023.
+        geohash_size: The number of characters to include in the geohash.
+
+    Returns:
+        Iterable over SimplifiedRecords generated / downloaded.
+    """
     results = afscgap.query(
         srvy=survey,
         year=year,
@@ -141,6 +207,15 @@ def get_year(survey: str, year: int, geohash_size: int) -> SIMPLIFIED_RECORDS:
 
 
 def get_sql(script_name: str) -> str:
+    """Get the contents of a SQL file at afscgapviz/sql.
+
+    Args:
+        script_name: The name of the sql file like "create_table"
+
+    Returns:
+        The string contents of the file requested like the contents of
+        afscgapviz/sql/create_table.sql.
+    """
     parent_dir = pathlib.Path(__file__).parent.absolute()
     data_dir = os.path.join(parent_dir, 'sql')
     full_path = os.path.join(data_dir, script_name + '.sql')
@@ -151,12 +226,16 @@ def get_sql(script_name: str) -> str:
     return contents
 
 
-def create_table(cursor: sqlite3.Cursor):
-    sql = get_sql('create_table')
-    cursor.execute(sql)
-
-
 def record_to_tuple(target: afscgapviz.model.SimplifiedRecord) -> typing.Tuple:
+    """Convert a SimplifiedRecord to a tuple for db persistence.
+
+    Args:
+        target: The record to be converted.
+
+    Returns:
+        Tuple representation that can be used with
+        afscgap/viz/insert_record.sql.
+    """
     return (
         target.get_year(),
         target.get_survey(),
@@ -174,6 +253,16 @@ def record_to_tuple(target: afscgapviz.model.SimplifiedRecord) -> typing.Tuple:
 
 def download_and_persist_year(survey: str, year: int, cursor: sqlite3.Cursor,
     geohash_size: int):
+    """Download the data for a year within a survey and write to sqlite db.
+
+    Args:
+        survey: The short form name of the survey for which data should be
+            downloaded like "GOA".
+        year: The year that should be downloaded like 2023.
+        cursor: The Cursor for the sqlite database into which the database
+            should be persisted.
+        geohash_size: The number of characters to include in the geohash.
+    """
     records = get_year(survey, year, geohash_size)
 
     persist_sql = get_sql('insert_record')
@@ -183,6 +272,12 @@ def download_and_persist_year(survey: str, year: int, cursor: sqlite3.Cursor,
 
 
 def create_db_main(args):
+    """Main entry point for creating the database.
+
+    Args:
+        args: Indexable collection of string arguments provided by the CLI
+            specific to this command.
+    """
     if len(args) != USAGE_CREATE_DB_NUM_ARGS:
         print(USAGE_BASE_STR + USAGE_CREATE_DB_STR)
         return
@@ -198,6 +293,12 @@ def create_db_main(args):
 
 
 def download_main(args):
+    """Main entry point for downloading data to the database.
+
+    Args:
+        args: Indexable collection of string arguments provided by the CLI
+            specific to this command.
+    """
     if len(args) != USAGE_DOWNLOAD_NUM_ARGS:
         print(USAGE_BASE_STR + USAGE_DOWNLOAD_STR)
         return
@@ -235,6 +336,7 @@ def download_main(args):
 
 
 def main():
+    """Main overall entry point for this command line utility."""
     if len(sys.argv) < USAGE_BASE_NUM_ARGS + 1:
         print(USAGE_BASE_STR + USAGE_COMMANDS_STR)
         return
