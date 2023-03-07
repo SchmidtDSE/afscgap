@@ -1,4 +1,4 @@
-INSERT INTO simplified_records (
+INSERT INTO records (
     year,
     survey,
     species,

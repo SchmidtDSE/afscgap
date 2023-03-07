@@ -9,13 +9,13 @@ LICENSE.txt.
 """
 import unittest
 
-import afscgapviz.model
+import model
 
 
 class ModelTests(unittest.TestCase):
 
     def setUp(self):
-        self._test_record_1 = afscgapviz.model.SimplifiedRecord(
+        self._test_record_1 = model.SimplifiedRecord(
             2023,
             'GOA',
             'scientific',
@@ -29,7 +29,7 @@ class ModelTests(unittest.TestCase):
             8
         )
 
-        self._test_record_2 = afscgapviz.model.SimplifiedRecord(
+        self._test_record_2 = model.SimplifiedRecord(
             2023,
             'GOA',
             'scientific',
@@ -43,7 +43,7 @@ class ModelTests(unittest.TestCase):
             9
         )
 
-        self._test_record_3 = afscgapviz.model.SimplifiedRecord(
+        self._test_record_3 = model.SimplifiedRecord(
             2022,
             'GOA',
             'scientific',

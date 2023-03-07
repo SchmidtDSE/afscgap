@@ -28,7 +28,7 @@ import afscgap.model
 import geolib.geohash  # type: ignore
 import toolz.itertoolz  # type: ignore
 
-import afscgapviz.model
+import model
 
 INVALID_GEOHASH_STR = 'Expected geohash size to be an integer between 1 - 12.'
 SLEEP_TIME = 5
@@ -50,8 +50,8 @@ USAGE_DOWNLOAD_STR = 'download [year range] [sqlite file] [geohash size]'
 YEAR_PATTERN = re.compile('(?P<start>\\d{4})-(?P<end>\\d{4})')
 YEAR_RANGE_STR = 'Year range should be like 2000-2023.'
 
-OPT_SIMPLIFIED_RECORD = typing.Optional[afscgapviz.model.SimplifiedRecord]
-SIMPLIFIED_RECORDS = typing.Iterable[afscgapviz.model.SimplifiedRecord]
+OPT_SIMPLIFIED_RECORD = typing.Optional[model.SimplifiedRecord]
+SIMPLIFIED_RECORDS = typing.Iterable[model.SimplifiedRecord]
 
 
 def try_parse_int(target: str) -> typing.Optional[int]:
@@ -119,7 +119,7 @@ def simplify_record(target: afscgap.model.Record,
     if count_maybe is None:
         return None
 
-    return afscgapviz.model.SimplifiedRecord(
+    return model.SimplifiedRecord(
         round(target.get_year()),
         target.get_srvy(),
         target.get_scientific_name(),
@@ -226,7 +226,7 @@ def get_sql(script_name: str) -> str:
     return contents
 
 
-def record_to_tuple(target: afscgapviz.model.SimplifiedRecord) -> typing.Tuple:
+def record_to_tuple(target: model.SimplifiedRecord) -> typing.Tuple:
     """Convert a SimplifiedRecord to a tuple for db persistence.
 
     Args:

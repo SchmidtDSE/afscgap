@@ -1,4 +1,4 @@
-CREATE TABLE simplified_records (
+CREATE TABLE records (
     year INTEGER,
     survey TEXT,
     species TEXT,
@@ -12,14 +12,14 @@ CREATE TABLE simplified_records (
     num_records_aggregated INTEGER
 );
 
-CREATE INDEX simplified_records_year_geohash_species ON simplified_records (
+CREATE INDEX simplified_records_year_survey_species ON records (
     year,
-    geohash,
+    survey,
     species
 );
 
-CREATE INDEX simplified_records_year_geohash_common ON simplified_records (
+CREATE INDEX simplified_records_year_survey_common ON records (
     year,
-    geohash,
+    survey,
     common_name
 );

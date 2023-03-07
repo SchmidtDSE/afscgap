@@ -9,14 +9,14 @@ LICENSE.txt.
 """
 import unittest
 
-import afscgapviz.build_database
-import afscgapviz.model
+import build_database
+import model
 
 
 class BuildDatabaseTests(unittest.TestCase):
 
     def setUp(self):
-        self._test_record_1 = afscgapviz.model.SimplifiedRecord(
+        self._test_record_1 = model.SimplifiedRecord(
             2023,
             'GOA',
             'scientific',
@@ -30,7 +30,7 @@ class BuildDatabaseTests(unittest.TestCase):
             8
         )
 
-        self._test_record_2 = afscgapviz.model.SimplifiedRecord(
+        self._test_record_2 = model.SimplifiedRecord(
             2023,
             'GOA',
             'scientific',
@@ -54,19 +54,19 @@ class BuildDatabaseTests(unittest.TestCase):
             'record': self._test_record_2
         }
 
-        self._combine_result = afscgapviz.build_database.combine_record(a, b)
+        self._combine_result = build_database.combine_record(a, b)
     
     def test_try_parse_int_fail(self):
-        self.assertIsNone(afscgapviz.build_database.try_parse_int('a'))
+        self.assertIsNone(build_database.try_parse_int('a'))
 
     def test_try_parse_int_success(self):
-        self.assertEqual(afscgapviz.build_database.try_parse_int('1'), 1)
+        self.assertEqual(build_database.try_parse_int('1'), 1)
     
     def test_try_parse_range_fail(self):
-        self.assertIsNone(afscgapviz.build_database.try_parse_range('abc'))
+        self.assertIsNone(build_database.try_parse_range('abc'))
 
     def test_try_parse_range_success(self):
-        result = afscgapviz.build_database.try_parse_range('2020-2023')
+        result = build_database.try_parse_range('2020-2023')
         self.assertEqual(result[0], 2020)
         self.assertEqual(result[1], 2023)
     
@@ -112,7 +112,7 @@ class BuildDatabaseTests(unittest.TestCase):
         )
     
     def test_get_sql(self):
-        sql = afscgapviz.build_database.get_sql('insert_record')
+        sql = build_database.get_sql('insert_record')
         self.assertTrue('INSERT' in sql)
     
     def test_record_to_tuple(self):

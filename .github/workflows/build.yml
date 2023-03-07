@@ -2,7 +2,7 @@ name: Build
 on: [push]
 
 jobs:
-  build:
+  buildlib:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -16,8 +16,10 @@ jobs:
         run: pip install -e .[dev]
       - name: Install afscgap
         run: pip install .
-      - name: Unit tests
+      - name: Unit tests main
         run: nose2
+      - name: Unit test app
+        run: nose2 --start-dir=afscgapviz
       - name: Check types
         run: mypy **/*.py
       - name: Check errors
