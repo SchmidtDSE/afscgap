@@ -27,7 +27,7 @@ import geolib.geohash  # type: ignore
 import toolz.itertoolz  # type: ignore
 
 import model
-import util
+import sql_util
 
 INVALID_GEOHASH_STR = 'Expected geohash size to be an integer between 1 - 12.'
 SLEEP_TIME = 5
@@ -245,7 +245,7 @@ def download_and_persist_year(survey: str, year: int, cursor: sqlite3.Cursor,
     """
     records = get_year(survey, year, geohash_size)
 
-    persist_sql = util.get_sql('insert_record')
+    persist_sql = sql_util.get_sql('insert_record')
     records_tuples = map(record_to_tuple, records)
 
     cursor.executemany(persist_sql, records_tuples)
@@ -263,7 +263,7 @@ def create_db_main(args):
         return
 
     filepath = args[0]
-    sql = util.get_sql('create_table')
+    sql = sql_util.get_sql('create_hauls')
 
     # Thanks https://stackoverflow.com/questions/19522505
     with contextlib.closing(sqlite3.connect(filepath)) as con:

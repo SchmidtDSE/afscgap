@@ -1,5 +1,5 @@
 """
-Tests for functions which support afscgapviz app directly.
+Tests for data support functions.
 
 (c) 2023 Regents of University of California / The Eric and Wendy Schmidt Center
 for Data Science and the Environment at UC Berkeley.
@@ -9,14 +9,14 @@ LICENSE.txt.
 """
 import unittest
 
-import afscgapviz
+import data_util
 import model
 
 
-class AfscgapVizTests(unittest.TestCase):
+class DataUtilTests(unittest.TestCase):
 
     def test_parse_record(self):
-        result = afscgapviz.parse_record((
+        result = data_util.parse_record((
             2023,
             'GOA',
             'scientific',
@@ -45,5 +45,5 @@ class AfscgapVizTests(unittest.TestCase):
             7,
             8
         )
-        record_dict = afscgapviz.record_to_dict(record)
+        record_dict = data_util.record_to_dict(record)
         self.assertEquals(record_dict['year'], 2023)

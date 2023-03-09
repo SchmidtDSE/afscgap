@@ -10,6 +10,7 @@ for Data Science and the Environment at UC Berkeley.
 This file is part of afscgap released under the BSD 3-Clause License. See
 LICENSE.txt.
 """
+import typing
 
 
 class SimplifiedRecord:
@@ -226,3 +227,25 @@ class SimplifiedRecord:
             self.get_area_swept() + other.get_area_swept(),
             self_count + other_count
         )
+
+
+class SurveyAvailability:
+
+    def __init__(self, survey: str, years: typing.List[int],
+        species: typing.List[str], common_names: typing.List[str]):
+        self._survey = survey
+        self._years = years
+        self._species = species
+        self._common_names = common_names
+    
+    def get_survey(self) -> str:
+        return self._survey
+    
+    def get_years(self) -> typing.List[int]:
+        return self._years
+    
+    def get_species(self) -> typing.List[str]:
+        return self._species
+    
+    def get_common_names(self) -> typing.List[str]:
+        return self._common_names

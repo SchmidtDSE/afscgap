@@ -6,7 +6,7 @@
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="stylesheet" type="text/css" href="/static/css/viz.css">
-        <title>AFSC GAP Viz</title>
+        <title>AFSC GAP Comparison Tool</title>
         <meta name="description" content="Open source visualization for bottom trawl surveys data from the NOAA Alaska Fisheries Science Center Groundfish Assessment Program (NOAA AFSC GAP)" />
         <meta property="og:title" content="NOAA AFSC GAP Visualization" />
         <meta property="og:url" content="https://app.pyafscgap.org" />
@@ -22,41 +22,45 @@
         <div><a id="skip-link" href="#main">Skip to main content</a></div>
         <header>
             <div class="inner">
-                <h1>AFSC GAP Visualization</h1>
+                <h1>AAFSC GAP Comparison Tool</h1>
                 <div id="intro">
-                    Community contributed visualization of bottom trawl surveys data from the NOAA Alaska Fisheries Science Center Groundfish Assessment Program (<a target="_blank" href="https://www.fisheries.noaa.gov/contact/groundfish-assessment-program">NOAA AFSC GAP</a>) as part of <a href="https://pyafscgap.org/">AFSC GAP for Python</a>.
+                    Community contributed visualization of bottom trawl surveys data from the NOAA Alaska Fisheries Science Center Groundfish Assessment Program (<a target="_blank" href="https://www.fisheries.noaa.gov/contact/groundfish-assessment-program">NOAA AFSC GAP</a>) as part of <a href="https://pyafscgap.org/">AFSC GAP for Python</a> that enables fast comparisons between species, years, and areas.
+                </div>
+                <div class="button-holder">
+                    <a href="https://pyafscgap.org">Go to Project Homepage >></a>
                 </div>
             </div>
         </header>
         <section id="main">
-            {% for display in displays %}
-            <div class="display">
-                <select class="species-type">
-                    <option value="common" {% if display["speciesType"] == "common" %}selected{% endif %}>Common name</option>
-                    <option value="scientific">Scientific name</option>
-                </select>
-                <select class="scientific-name-select">
-                    {% for name in species %}
-                    <option value="{{ name }}" {% if display["scintificName"] == name %}selected{% endif %}>{{ name }}</option>
-                    {% endfor %}
-                </select>
-                <select class="common-name-select">
-                    {% for name in common_names %}
-                    <option value="{{ name }}" {% if display["commonName"] == name %}selected{% endif %}>{{ name }}</option>
-                    {% endfor %}
-                </select>
-                <select class="area-select">
-                    <option value="AI" {% if display["area"] == "AI" %}selected{% endif %}>Aleutian Islands</option>
-                    <option value="BSS" {% if display["area"] == "BSS" %}selected{% endif %}>Bearing Sea Slope</option>
-                    <option value="GOA" {% if display["area"] == "GOA" %}selected{% endif %}>Gulf of Alaska</option>
-                    <option value="NBS" {% if display["area"] == "NBS" %}selected{% endif %}>North Bearing Sea</option>
-                    <option value="EBS" {% if display["area"] == "EBS" %}selected{% endif %}>South East Bearing Sea</option>
-                </select>
-                <select class="year-select">
-                    {% for year in display["years"] %}
-                    <option value="{{ year }}" {% if year == display["year"] %}selected{% endif %}>{{ year }}</option>
-                    {% endfor %}
-                </select>
+            <div class="displays">
+                {% for display in displays %}
+                <div class="display" id="display-{{ loop.index }}">
+                    <div class="dataset-selector">
+                        <select class="area-select">
+                            <option value="AI" {% if display['area'] == 'AI' %}selected{% endif %}>Aleutian Islands</option>
+                            <option value="BSS" {% if display['area'] == 'BSS' %}selected{% endif %}>Bearing Sea Slope</option>
+                            <option value="GOA" {% if display['area'] == 'GOA' %}selected{% endif %}>Gulf of Alaska</option>
+                            <option value="NBS" {% if display['area'] == 'NBS' %}selected{% endif %}>North Bearing Sea</option>
+                            <option value="EBS" {% if display['area'] == 'EBS' %}selected{% endif %}>South East Bearing Sea</option>
+                        </select>
+                        <select class="species-type-select">
+                            <option value="common" {% if display['speciesType'] == 'common' %}selected{% endif %}>Common names</option>
+                            <option value="scientific">Scientific name</option>
+                        </select>
+                    </div>
+                    <div class="survey-loading loading panel">
+                        <img src="/static/img/loading.svg" alt="loading indicator"> Loading...
+                    </div>
+                    <div class="survey-specific-fields panel">
+                        <div class="species-selects">
+                            {{ get_species_select_content(display) | safe }}
+                        </div>
+                    </div>
+                    <div class="refresh-button-panel panel">
+                        <div class="button-holder">
+                            <a href="#">Update Map</a>
+                        </div>
+                    </div>
             </div>
             {% endfor %}
         </section>
@@ -65,3 +69,10 @@
         </footer>
     </body>
 </html>
+
+<script type="text/javascript" src="/static/js/afscgapviz.js"></script>
+<script type="text/javascript" src="/static/js/display.js"></script>
+<script type="text/javascript" src="/static/js/species.js"></script>
+<script type="text/javascript">
+    new VizPresenter();
+</script>

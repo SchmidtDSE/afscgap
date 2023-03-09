@@ -16,7 +16,127 @@ body {
     color: white;
 }
 
+footer {
+    margin-top: 50px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+header {
+    padding-bottom: 20px;
+    border-bottom: 1px solid white;
+}
+
 html {
     font-family: Goudy;
     font-size: 18px;
+}
+
+#skip-link-hodler {
+    height: 0;
+}
+
+#skip-link {
+    top: -30px;
+    left: 0;
+    position: absolute;
+}
+
+#skip-link:focus {
+    top: 10px;
+    background: #E0E0E0;
+    padding: 3px;
+    z-index: 3;
+}
+
+.button-holder {
+    padding: 7px;
+}
+
+.button-holder a {
+    padding: 5px;
+    background-color: #F0F0F0;
+    color: black;
+    border-radius: 5px;
+}
+
+.button-holder a:visited, .button-holder a:link {
+    text-decoration: none;
+}
+
+.button-holder a:hover, .button-holder a:active {
+    background-color: white;
+}
+
+.display .dataset-selector {
+    text-align: center;
+    padding-bottom: 5px;
+    border-bottom: 1px dotted white;
+}
+
+.display .dataset-selector select {
+    width: 40%;
+}
+
+.display .refresh-button-panel {
+    text-align: center;
+}
+
+.display .species select {
+    width: 100%;
+}
+
+.display .species .color-display {
+    width: 14px;
+    height: 14px;
+    border-color: 1px solid black;
+    display: inline-block;
+    margin: 2px;
+    border-radius: 1px;
+}
+
+.display .panel {
+    padding-bottom: 10px;
+    padding-top: 10px;
+    border-bottom: 1px dotted #C0C0C0;
+}
+
+.display .species .color-display.color-1 {
+    background-color: white;
+}
+
+.display .species .color-display.color-2 {
+    background-color: #b2df8a;
+}
+
+.loading {
+    text-align: center;
+    display: none;
+    border-bottom: 1px dotted white;
+}
+
+.loading img {
+    height: 18px;
+}
+
+#intro {
+    padding-bottom: 20px;
+}
+
+#main {
+    margin-top: 70px;
+}
+
+@media screen and (min-width: 800px) {
+    .displays {
+        display: grid;
+        column-gap: 40px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .display .species-selects {
+        display: grid;
+        column-gap: 10px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
 }

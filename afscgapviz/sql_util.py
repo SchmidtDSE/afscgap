@@ -1,4 +1,4 @@
-"""Utility functions for the afscgap web based visualization.
+"""SQL utility functions for the afscgap web based visualization.
 
 (c) 2023 Regents of University of California / The Eric and Wendy Schmidt Center
 for Data Science and the Environment at UC Berkeley.
@@ -14,11 +14,11 @@ def get_sql(script_name: str) -> str:
     """Get the contents of a SQL file at afscgapviz/sql.
 
     Args:
-        script_name: The name of the sql file like "create_table"
+        script_name: The name of the sql file like "create_hauls"
 
     Returns:
         The string contents of the file requested like the contents of
-        afscgapviz/sql/create_table.sql.
+        afscgapviz/sql/create_hauls.sql.
     """
     parent_dir = pathlib.Path(__file__).parent.absolute()
     data_dir = os.path.join(parent_dir, 'sql')
