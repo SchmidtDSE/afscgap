@@ -1,0 +1,22 @@
+@font-face {
+    font-family: Goudy;
+    src: url(/static/font/goudy_bookletter_1911-webfont.woff);
+}
+
+a {
+    color: #E0E0E0;
+}
+
+a:hover {
+    color: white;
+}
+
+body {
+    background-color: #505050;
+    color: white;
+}
+
+html {
+    font-family: Goudy;
+    font-size: 18px;
+}

@@ -122,7 +122,7 @@ def build_app(app: flask.Flask, db_str: str, db_uri: bool) -> flask.Flask:
         Returns:
             Rendered HTML template.
         """
-        return 'Under construction.'
+        return flask.render_template('viz.html')
 
     @app.route('/geohashes.csv')
     def download_geohashes():
@@ -179,4 +179,4 @@ def build_app(app: flask.Flask, db_str: str, db_uri: bool) -> flask.Flask:
 if __name__ == '__main__':
     app = flask.Flask(__name__)
     build_app(app, 'geohashes.db', True)
-    app.run()
+    app.run(debug=True)

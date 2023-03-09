@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<html lang="en">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" type="text/css" href="/static/css/viz.css">
+        <title>AFSC GAP Viz</title>
+        <meta name="description" content="Open source visualization for bottom trawl surveys data from the NOAA Alaska Fisheries Science Center Groundfish Assessment Program (NOAA AFSC GAP)" />
+        <meta property="og:title" content="NOAA AFSC GAP Visualization" />
+        <meta property="og:url" content="https://app.pyafscgap.org" />
+        <meta property="og:image" content="https://pyafscgap.org/static/img/hero.png" />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:site" content="@SamSpotsTime" />
+        <meta name="twitter:title" content="NOAA AFSC GAP Visualization" />
+        <meta name="twitter:description" content="Open source visualization for bottom trawl surveys data from the NOAA Alaska Fisheries Science Center Groundfish Assessment Program (NOAA AFSC GAP)" />
+        <meta name="twitter:image" content="https://pyafscgap.org/static/img/hero.png" />
+    </head>
+
+    <body>
+        <div><a id="skip-link" href="#main">Skip to main content</a></div>
+        <header>
+            <div class="inner">
+                <h1>AFSC GAP Visualization</h1>
+                <div id="intro">
+                    Community contributed visualization of bottom trawl surveys data from the NOAA Alaska Fisheries Science Center Groundfish Assessment Program (<a target="_blank" href="https://www.fisheries.noaa.gov/contact/groundfish-assessment-program">NOAA AFSC GAP</a>) as part of <a href="https://pyafscgap.org/">AFSC GAP for Python</a>.
+                </div>
+            </div>
+        </header>
+        <section id="main">
+            <div class="display">
+                <select class="species-type">
+                    <option value="common" selected>Common name</option>
+                    <option value="scientific">Scientific name</option>
+                </select>
+                <select class="scientific-name-select">
+                    {% for name in species %}
+                    <option value="{{ name }}">{{ name }}</option>
+                    {% endfor %}
+                </select>
+                <select class="common-name-select">
+                    {% for name in common_names %}
+                    <option value="{{ name }} (common name)">{{ name }}</option>
+                    {% endfor %}
+                </select>
+                <select class="year-select">
+                    {% for year in years %}
+                    <option value="year">{{ year }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="display">
+                <select class="scientific-name-select">
+                    {% for name in species %}
+                    <option value="{{ name }}">{{ name }}</option>
+                    {% endfor %}
+                </select>
+                <select class="common-name-select">
+                    {% for name in common_names %}
+                    <option value="{{ name }} (common name)">{{ name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </section>
+        <footer>
+            <a href="https://pyafscgap.org/terms.html">Notices, licenses, privacy >></a> / <a href="https://pyafscgap.org/sitemap.html">Sitemap >></a></p>
+        </footer>
+    </body>
+</html>
