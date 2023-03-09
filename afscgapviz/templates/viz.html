@@ -29,39 +29,36 @@
             </div>
         </header>
         <section id="main">
+            {% for display in displays %}
             <div class="display">
                 <select class="species-type">
-                    <option value="common" selected>Common name</option>
+                    <option value="common" {% if display["speciesType"] == "common" %}selected{% endif %}>Common name</option>
                     <option value="scientific">Scientific name</option>
                 </select>
                 <select class="scientific-name-select">
                     {% for name in species %}
-                    <option value="{{ name }}">{{ name }}</option>
+                    <option value="{{ name }}" {% if display["scintificName"] == name %}selected{% endif %}>{{ name }}</option>
                     {% endfor %}
                 </select>
                 <select class="common-name-select">
                     {% for name in common_names %}
-                    <option value="{{ name }} (common name)">{{ name }}</option>
+                    <option value="{{ name }}" {% if display["commonName"] == name %}selected{% endif %}>{{ name }}</option>
                     {% endfor %}
+                </select>
+                <select class="area-select">
+                    <option value="AI" {% if display["area"] == "AI" %}selected{% endif %}>Aleutian Islands</option>
+                    <option value="BSS" {% if display["area"] == "BSS" %}selected{% endif %}>Bearing Sea Slope</option>
+                    <option value="GOA" {% if display["area"] == "GOA" %}selected{% endif %}>Gulf of Alaska</option>
+                    <option value="NBS" {% if display["area"] == "NBS" %}selected{% endif %}>North Bearing Sea</option>
+                    <option value="EBS" {% if display["area"] == "EBS" %}selected{% endif %}>South East Bearing Sea</option>
                 </select>
                 <select class="year-select">
-                    {% for year in years %}
-                    <option value="year">{{ year }}</option>
+                    {% for year in display["years"] %}
+                    <option value="{{ year }}" {% if year == display["year"] %}selected{% endif %}>{{ year }}</option>
                     {% endfor %}
                 </select>
             </div>
-            <div class="display">
-                <select class="scientific-name-select">
-                    {% for name in species %}
-                    <option value="{{ name }}">{{ name }}</option>
-                    {% endfor %}
-                </select>
-                <select class="common-name-select">
-                    {% for name in common_names %}
-                    <option value="{{ name }} (common name)">{{ name }}</option>
-                    {% endfor %}
-                </select>
-            </div>
+            {% endfor %}
         </section>
         <footer>
             <a href="https://pyafscgap.org/terms.html">Notices, licenses, privacy >></a> / <a href="https://pyafscgap.org/sitemap.html">Sitemap >></a></p>
