@@ -22,7 +22,7 @@
         <div><a id="skip-link" href="#main">Skip to main content</a></div>
         <header>
             <div class="inner">
-                <h1>AAFSC GAP Comparison Tool</h1>
+                <h1>AFSC GAP Comparison Tool</h1>
                 <div id="intro">
                     Community contributed visualization of bottom trawl surveys data from the NOAA Alaska Fisheries Science Center Groundfish Assessment Program (<a target="_blank" href="https://www.fisheries.noaa.gov/contact/groundfish-assessment-program">NOAA AFSC GAP</a>) as part of <a href="https://pyafscgap.org/">AFSC GAP for Python</a> that enables fast comparisons between species, years, and areas.
                 </div>
@@ -61,13 +61,15 @@
                             {{ get_species_select_content(display) | safe }}
                         </div>
                     </div>
-                    <div class="refresh-button-panel panel">
-                        <div class="button-holder">
-                            <a href="#">Update Map</a>
+                    <div class="viz-panel panel final" id="viz-panel-{{ loop.index }}">
+                        <div class="map-loading loading">
+                            <img src="/static/img/loading.svg" alt="loading indicator"> Loading...
                         </div>
+                        <svg class="viz" id="viz-{{ loop.index }}"></svg>
                     </div>
+                </div>
+                {% endfor %}
             </div>
-            {% endfor %}
         </section>
         <footer>
             <a href="https://pyafscgap.org/terms.html">Notices, licenses, privacy >></a> / <a href="https://pyafscgap.org/sitemap.html">Sitemap >></a></p>
@@ -75,8 +77,12 @@
     </body>
 </html>
 
+<script type="text/javascript" src="/static/js_third_party/d3.min.js"></script>
+<script type="text/javascript" src="/static/js_third_party/papaparse.min.js"></script>
+
 <script type="text/javascript" src="/static/js/afscgapviz.js"></script>
 <script type="text/javascript" src="/static/js/display.js"></script>
+<script type="text/javascript" src="/static/js/mapviz.js"></script>
 <script type="text/javascript" src="/static/js/species.js"></script>
 <script type="text/javascript">
     new VizPresenter();

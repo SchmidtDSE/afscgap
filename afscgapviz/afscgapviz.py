@@ -19,6 +19,7 @@ import sql_util
 import survey_util
 
 
+NAMES_DICT = typing.List[typing.Dict[str, str]]
 OUTPUT_COLS = [
     'year',
     'survey',
@@ -38,10 +39,16 @@ OUTPUT_COLS = [
 ]
 
 
+def sort_names_by_lower(target: typing.List[str]) -> NAMES_DICT:
+    output = [{"original": x, "lower": x.lower()} for x in target]
+    output.sort(key=lambda x: x["lower"])
+    return [x["original"] for x in output]
+
+
 def get_default_displays(connection: sqlite3.Connection) -> typing.List[dict]:
     availability = survey_util.get_survey_availability('GOA', connection)
-    species = availability.get_species()
-    common_names = availability.get_common_names()
+    species = sort_names_by_lower(availability.get_species())
+    common_names = sort_names_by_lower(availability.get_common_names())
     years = availability.get_years()
     return [
         {

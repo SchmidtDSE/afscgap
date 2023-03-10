@@ -67,5 +67,5 @@ def record_to_dict(target: model.SimplifiedRecord) -> typing.Dict:
         'latLow': bounds[0][0],
         'lngLow': bounds[0][1],
         'latHigh': bounds[1][0],
-        'lngHigh': bounds[1][1],
+        'lngHigh': bounds[1][1]
     }

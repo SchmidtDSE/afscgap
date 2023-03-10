@@ -5,7 +5,9 @@
     </div>
     <div>
         <select class="scientific-name-select name-select">
+            {% if loop.index > 1 %}
             <option value="None" {% if selection['scientificName'] == "None" %}selected{% endif %}>None</option>
+            {% endif %}
             {% for name in display['species'] %}
             <option value="{{ name }}" {% if selection['scientificName'] == name %}selected{% endif %}>{{ name }}</option>
             {% endfor %}
@@ -13,7 +15,9 @@
     </div>
     <div>
         <select class="common-name-select name-select">
+            {% if loop.index > 1 %}
             <option value="None" {% if selection['commonName'] == "None" %}selected{% endif %}>None</option>
+            {% endif %}
             {% for name in display['commonNames'] %}
             <option value="{{ name }}" {% if selection['commonName'] == name %}selected{% endif %}>{{ name }}</option>
             {% endfor %}

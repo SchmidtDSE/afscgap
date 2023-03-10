@@ -78,6 +78,12 @@ html {
     width: 30%;
 }
 
+.display .panel {
+    padding-bottom: 10px;
+    padding-top: 10px;
+    border-bottom: 1px dotted #C0C0C0;
+}
+
 .display .refresh-button-panel {
     text-align: center;
 }
@@ -95,18 +101,47 @@ html {
     border-radius: 1px;
 }
 
-.display .panel {
-    padding-bottom: 10px;
-    padding-top: 10px;
-    border-bottom: 1px dotted #C0C0C0;
-}
-
 .display .species .color-display.color-1 {
     background-color: white;
 }
 
 .display .species .color-display.color-2 {
     background-color: #b2df8a;
+}
+
+.display .viz {
+    width: 100%;
+    min-width: 650px;
+}
+
+.display .viz .fish.fish-1 {
+    fill: rgba(255, 255, 255, 0.5);
+    paint-order: stroke fill;
+    stroke-width: 1;
+    stroke: #FFFFFF;
+}
+
+.display .viz .fish.fish-2 {
+    fill: rgba(178, 223, 138, 0.5);
+    paint-order: stroke fill;
+    stroke-width: 1;
+    stroke: #FFFFFF;
+}
+
+.display .viz .land {
+    fill: none;
+    paint-order: stroke fill;
+    stroke-width: 1.8;
+    stroke: #222;
+}
+
+.display .viz .water {
+    stroke-width: 0;
+    opacity: 0.5;
+}
+
+.display .viz-panel {
+    overflow-x: auto;
 }
 
 .loading {
@@ -127,7 +162,7 @@ html {
     margin-top: 70px;
 }
 
-@media screen and (min-width: 1000px) {
+@media screen and (min-width: 1100px) {
     .displays {
         display: grid;
         column-gap: 40px;

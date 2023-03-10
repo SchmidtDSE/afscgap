@@ -27,7 +27,7 @@ class SpeciesSelection {
 
 class SpeciesSelector {
 
-    constructor(element, useSciName) {
+    constructor(element, useSciName, onChange) {
         const self = this;
 
         self._element = element;
@@ -35,13 +35,14 @@ class SpeciesSelector {
 
         self._refreshVisibility();
         self._registerCallbacks();
+        self._onChange = onChange;
     }
 
     getSelection() {
         const self = this;
 
-        const selector = self._getNameSelector();
-        const name = self._getName(selector);
+        const query = self._getNameQuery();
+        const name = self._getName(query);
 
         const year = parseInt(
             self._element.querySelector(".year-select").value
@@ -65,8 +66,8 @@ class SpeciesSelector {
             self._show(".common-name-select");
         }
 
-        const selector = self._getNameSelector();
-        const name = self._getName(selector);
+        const query = self._getNameQuery();
+        const name = self._getName(query);
         const nameSet = name !== "None";
 
         if (nameSet) {
@@ -79,30 +80,36 @@ class SpeciesSelector {
     _registerCallbacks() {
         const self = this;
 
-        const selector = self._getNameSelector();
-        self._element.querySelector(selector).addEventListener("change", () => {
+        const query = self._getNameQuery();
+        self._element.querySelector(query).addEventListener("change", () => {
             self._refreshVisibility();
+            self._onChange();
+        });
+
+        const yearDropdown = self._element.querySelector(".year-select");
+        yearDropdown.addEventListener("change", () => {
+            self._onChange();
         });
     }
 
-    _getName(selector) {
+    _getName(query) {
         const self = this;
 
-        const element = self._element.querySelector(selector);
+        const element = self._element.querySelector(query);
         return element.value;
     }
 
-    _show(selector) {
+    _show(query) {
         const self = this;
-        self._element.querySelector(selector).style.display = "block";
+        self._element.querySelector(query).style.display = "block";
     }
 
-    _hide(selector) {
+    _hide(query) {
         const self = this;
-        self._element.querySelector(selector).style.display = "none";
+        self._element.querySelector(query).style.display = "none";
     }
 
-    _getNameSelector() {
+    _getNameQuery() {
         const self = this;
 
         const selectorPiece = self._useSciName ? "scientific" : "common";

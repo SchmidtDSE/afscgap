@@ -1,3 +1,37 @@
+class DisplaySelection {
+
+    constructor(survey, temperatureMode, speciesSelection1, speciesSelection2) {
+        const self = this;
+        self._survey = survey;
+        self._temperatureMode = temperatureMode;
+        self._speciesSelection1 = speciesSelection1;
+        self._speciesSelection2 = speciesSelection2;
+    }
+    
+    
+    getSurvey() {
+        const self = this;
+        return self._survey;
+    }
+    
+    getTemperatureMode() {
+        const self = this;
+        return self._temperatureMode;
+    }
+    
+    getSpeciesSelection1() {
+        const self = this;
+        return self._speciesSelection1;
+    }
+    
+    getSpeciesSelection2() {
+        const self = this;
+        return self._speciesSelection2;
+    }
+
+}
+
+
 class Display {
 
     constructor(element) {
@@ -6,7 +40,26 @@ class Display {
         self._element = element;
 
         self._buildSpeciesDisplays();
+        self._rebuildMap();
         self._registerCallbacks();
+    }
+
+    getSelection() {
+        const self = this;
+        
+        const survey = self._element.querySelector(".area-select").value;
+        const temperatureMode = self._element.querySelector(
+            ".temperature-select"
+        ).value;
+        const speciesSelection1 = self._speciesDisplayFirst.getSelection();
+        const speciesSelection2 = self._speciesDisplaySecond.getSelection();
+
+        return new DisplaySelection(
+            survey,
+            temperatureMode,
+            speciesSelection1,
+            speciesSelection2
+        );
     }
 
     _buildSpeciesDisplays() {
@@ -19,30 +72,36 @@ class Display {
 
         self._speciesDisplayFirst = new SpeciesSelector(
             self._element.querySelector(".species-1"),
-            useSciName
+            useSciName,
+            () => self._onSelectionChange()
         );
         self._speciesDisplaySecond = new SpeciesSelector(
             self._element.querySelector(".species-2"),
-            useSciName
+            useSciName,
+            () => self._onSelectionChange()
         );
     }
 
     _registerCallbacks() {
         const self = this;
 
-        const callback = () => self._onChange();
-
         self._element.querySelector(".species-type-select").addEventListener(
             "change",
-            callback
+            () => self._onDatasetChange()
         );
         self._element.querySelector(".area-select").addEventListener(
             "change",
-            callback
+            () => self._onDatasetChange()
         );
+
+        let timeout; 
+        addEventListener("resize", () => {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => self._rebuildMap(), 500);
+        });
     }
 
-    _onChange() {
+    _onDatasetChange() {
         const self = this;
 
         self._changeSurveyLoading(true);
@@ -55,13 +114,36 @@ class Display {
                     ".species-selects"
                 );
                 speciesSelects.innerHTML = text;
-                
+
                 self._buildSpeciesDisplays();
                 self._changeSurveyLoading(false);
+                self._onSelectionChange();
             });
         };
 
         setTimeout(makeRequest, 500);
+    }
+
+    _onSelectionChange() {
+        const self = this;
+
+        self._mapViz.updateSelection(self.getSelection());
+    }
+
+    _rebuildMap() {
+        const self = this;
+
+        const vizElement = self._element.querySelector(".viz");
+        const expectedHeight = Math.round(
+            vizElement.getBoundingClientRect().width * 0.4
+        );
+        
+        vizElement.style.height = expectedHeight + "px";
+
+        self._mapViz = new MapViz(
+            self._element.querySelector(".viz-panel"),
+            self.getSelection()
+        );
     }
 
     _generateSurveyPanelUrl() {
