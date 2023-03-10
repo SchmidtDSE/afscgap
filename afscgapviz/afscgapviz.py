@@ -62,7 +62,8 @@ def get_default_displays(connection: sqlite3.Connection) -> typing.List[dict]:
             'area': 'GOA',
             'species': species,
             'commonNames': common_names,
-            'years': years
+            'years': years,
+            "temperature": "disabled"
         },
         {
             "selections": [
@@ -82,7 +83,8 @@ def get_default_displays(connection: sqlite3.Connection) -> typing.List[dict]:
             'area': 'GOA',
             'species': species,
             'commonNames': common_names,
-            'years': years
+            'years': years,
+            "temperature": "disabled"
         }
     ]
 

@@ -47,6 +47,11 @@
                             <option value="common" {% if display['speciesType'] == 'common' %}selected{% endif %}>Common names</option>
                             <option value="scientific">Scientific name</option>
                         </select>
+                        <select class="temperature-select">
+                            <option value="disabled" {% if display['temperature'] == 'disabled' %}selected{% endif %}>No temperatures</option>
+                            <option value="surface" {% if display['temperature'] == 'surface' %}selected{% endif %}>Surface temperatures</option>
+                            <option value="bottom" {% if display['temperature'] == 'bottom' %}selected{% endif %}>Bottom temperatures</option>
+                        </select>
                     </div>
                     <div class="survey-loading loading panel">
                         <img src="/static/img/loading.svg" alt="loading indicator"> Loading...

@@ -75,7 +75,7 @@ html {
 }
 
 .display .dataset-selector select {
-    width: 40%;
+    width: 30%;
 }
 
 .display .refresh-button-panel {
@@ -127,7 +127,7 @@ html {
     margin-top: 70px;
 }
 
-@media screen and (min-width: 800px) {
+@media screen and (min-width: 1000px) {
     .displays {
         display: grid;
         column-gap: 40px;
