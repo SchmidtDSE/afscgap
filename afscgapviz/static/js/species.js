@@ -22,6 +22,15 @@ class SpeciesSelection {
         return self._year;
     }
 
+    getKey() {
+        const self = this;
+        return [
+            self._name,
+            self._isSciName ? "y" : "n",
+            self._year + ""
+        ].join("/");
+    }
+
 }
 
 

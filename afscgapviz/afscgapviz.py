@@ -8,6 +8,7 @@ This file is part of afscgap released under the BSD 3-Clause License. See
 import contextlib
 import csv
 import io
+import json
 import sqlite3
 import typing
 
@@ -212,6 +213,35 @@ def build_app(app: flask.Flask, db_str: str, db_uri: bool) -> flask.Flask:
         output.headers['Content-type'] = 'text/csv'
 
         return output
+
+    @app.route('/summarizeCpue.json')
+    def summarize_cpue():
+        survey = flask.request.args['survey']
+        year = flask.request.args['year']
+
+        species = flask.request.args.get('species', None)
+        common_name = flask.request.args.get('commonName', None)
+
+        if species is not None:
+            species_filter = ('species', species)
+        elif common_name is not None:
+            species_filter = ('common_name', common_name)
+        else:
+            return 'Whoops! Please specify commonName or species.', 400
+
+        base_sql = sql_util.get_sql('summarize')
+        query_sql = base_sql % (species_filter[0])
+
+        with contextlib.closing(sqlite3.connect(db_str, uri=db_uri)) as con:
+            with con as cur:
+                results = list(cur.execute(
+                    query_sql,
+                    (year, survey, species_filter[1])
+                ))
+
+                max_value = results[0][0]
+
+        return json.dumps({'max': max_value})
 
     return app
 

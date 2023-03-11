@@ -29,15 +29,28 @@ class DisplaySelection {
         return self._speciesSelection2;
     }
 
+    getKey() {
+        const self = this;
+        return [
+            self._survey,
+            self._temperatureMode,
+            self._speciesSelection1.getKey(),
+            self._speciesSelection2.getKey()
+        ].join("/");
+    }
+
 }
 
 
 class Display {
 
-    constructor(element) {
+    constructor(element, commonScale, onDatasetChange, onSelectionChange) {
         const self = this;
 
         self._element = element;
+        self._commonScale = commonScale;
+        self._onDatasetChange = onDatasetChange;
+        self._onSelectionChange = onSelectionChange;
 
         self._buildSpeciesDisplays();
         self._rebuildMap();
@@ -101,7 +114,7 @@ class Display {
         });
     }
 
-    _onDatasetChange() {
+    refreshDataset() {
         const self = this;
 
         self._changeSurveyLoading(true);
@@ -124,7 +137,7 @@ class Display {
         setTimeout(makeRequest, 500);
     }
 
-    _onSelectionChange() {
+    refreshSelection() {
         const self = this;
 
         self._mapViz.updateSelection(self.getSelection());
@@ -142,7 +155,8 @@ class Display {
 
         self._mapViz = new MapViz(
             self._element.querySelector(".viz-panel"),
-            self.getSelection()
+            self.getSelection(),
+            self._commonScale
         );
     }
 

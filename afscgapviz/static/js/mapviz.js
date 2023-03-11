@@ -28,8 +28,6 @@ const TEMPERATURE_COLORS = [
     '#0570b0',
     '#034e7b'
 ];
-const MAX_CPUE = 23300;
-const MAX_AREA = 3000;
 
 
 class MapDatum {
@@ -105,7 +103,7 @@ class MapDatum {
 
 class MapViz {
 
-    constructor(element, displaySelection) {
+    constructor(element, displaySelection, commonScale) {
         const self = this;
 
         self._element = element;
@@ -113,6 +111,8 @@ class MapViz {
 
         const svgElement = self._element.querySelector(".viz");
         self._selection = d3.select("#" + svgElement.id);
+
+        self._commonScale = commonScale;
 
         self._requestBuild();
     }
@@ -143,8 +143,11 @@ class MapViz {
     _redraw() {
         const self = this;
 
-        const redrawInner = () => {
+        const getScaleAndRedraw = () => {
+            self._commonScale.getScale().then(redrawInner);
+        };
 
+        const redrawInner = (radiusScale) => {
             const waterLayer = self._selection.select(".water");
             const landLayer = self._selection.select(".land");
             const fishLayer2 = self._selection.select(".fish-2");
@@ -162,15 +165,15 @@ class MapViz {
                 .then(self._makeFutureDataRequest(survey, selection1))
                 .then(self._makeFutureInterpretPoints(projection, temperatureMode))
                 .then(self._makeFutureRenderWater(waterLayer, projection))
-                .then(self._makeFutureRenderFish(fishLayer1, projection))
+                .then(self._makeFutureRenderFish(fishLayer1, projection, radiusScale))
                 .then(self._makeFutureDataRequest(survey, selection2))
                 .then(self._makeFutureInterpretPoints(projection, temperatureMode))
-                .then(self._makeFutureRenderFish(fishLayer2, projection))
+                .then(self._makeFutureRenderFish(fishLayer2, projection, radiusScale))
                 .then(() => self._hideLoading());
         }
 
         self._showLoading();
-        setTimeout(redrawInner, 500);
+        setTimeout(getScaleAndRedraw, 500);
     }
 
     _showLoading() {
@@ -295,7 +298,7 @@ class MapViz {
         };
     }
 
-    _makeFutureRenderFish(layer, projection) {
+    _makeFutureRenderFish(layer, projection, radiusScale) {
         return (dataset) => {
             return new Promise((resolve, reject) => {
                 const bound = layer.selectAll(".fish-marker")
@@ -308,12 +311,6 @@ class MapViz {
                     .attr("cx", (datum) => datum.getCenterX())
                     .attr("cy", (datum) => datum.getCenterY())
                     .classed("fish-marker", true);
-
-                const areaScale = d3.scaleLinear()
-                    .domain([0, MAX_CPUE])
-                    .range([0, MAX_AREA]);
-
-                const radiusScale = (x) => Math.sqrt(areaScale(x));
 
                 const markers = layer.selectAll(".fish-marker")
                 markers.transition()
