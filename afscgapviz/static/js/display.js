@@ -106,6 +106,10 @@ class Display {
             "change",
             () => self._onDatasetChange()
         );
+        self._element.querySelector(".temperature-select").addEventListener(
+            "change",
+            () => self._onDatasetChange()
+        );
 
         let timeout; 
         addEventListener("resize", () => {
