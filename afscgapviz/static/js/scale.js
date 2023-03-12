@@ -218,7 +218,10 @@ class CommonScale {
 
                 const negativeWaterScale = d3.scaleQuantize()
                     .domain([
-                        combined.getMinTemperatureDelta(),
+                        Math.min(
+                            combined.getMinTemperatureDelta(),
+                            -combined.getMaxTemperatureDelta()
+                        ),
                         0
                     ])
                     .range(NEGATIVE_TEMP_COLORS);
@@ -226,7 +229,10 @@ class CommonScale {
                 const positiveWaterScale = d3.scaleQuantize()
                     .domain([
                         0,
-                        combined.getMaxTemperatureDelta()
+                        Math.max(
+                            -combined.getMinTemperatureDelta(),
+                            combined.getMaxTemperatureDelta()
+                        )
                     ])
                     .range(POSITIVE_TEMP_COLORS);
 
@@ -326,7 +332,6 @@ class CommonScale {
         
         return new Promise((resolve, reject) => {
             Promise.all(promises).then((results) => {
-                console.log(noComparison, results[0]["temperature"]);
                 const summaries = results.map((x) => new Summary(
                     x["cpue"]["min"],
                     x["cpue"]["max"],
