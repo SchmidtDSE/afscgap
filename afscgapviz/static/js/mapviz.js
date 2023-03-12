@@ -127,6 +127,8 @@ class MapViz {
 
         self._selection.html("");
         const waterLayer = self._selection.append("g").classed("water", true);
+        const negativeLayer = self._selection.append("g")
+            .classed("negative-markers", true);
         const landLayer = self._selection.append("g").classed("land", true);
         const fishLayer1 = self._selection.append("g")
             .classed("fish", true)
@@ -158,6 +160,7 @@ class MapViz {
             const waterScale = scales.getWaterScale(useComparison);
 
             const waterLayer = self._selection.select(".water");
+            const negativeLayer = self._selection.select(".negative-markers");
             const landLayer = self._selection.select(".land");
             const fishLayer2 = self._selection.select(".fish-2");
             const fishLayer1 = self._selection.select(".fish-1");
@@ -184,7 +187,7 @@ class MapViz {
                 .then(self._makeFutureRenderLand(landLayer, projection))
                 .then(temperatureRequestor)
                 .then(self._makeFutureInterpretPoints(projection, temperatureMode))
-                .then(self._makeFutureRenderWater(waterLayer, projection, waterScale))
+                .then(self._makeFutureRenderWater(waterLayer, negativeLayer, projection, waterScale))
                 .then(cachedFirstRequestor)
                 .then(self._makeFutureInterpretPoints(projection, temperatureMode))
                 .then(self._makeFutureRenderFish(fishLayer1, projection, radiusScale))
@@ -310,7 +313,7 @@ class MapViz {
         };
     }
 
-    _makeFutureRenderWater(waterLayer, projection, waterScale) {
+    _makeFutureRenderWater(waterLayer, negativeLayer, projection, waterScale) {
         const self = this;
 
         return (dataset) => {
@@ -328,22 +331,11 @@ class MapViz {
 
                 const rects = waterLayer.selectAll(".grid");
 
-                const getOffset = (datum) => {
-                    const temperature = datum.getTemperature();
-                    return temperature < 0 ? 1 : 0;
-                };
-
                 rects.transition()
-                    .attr("x", (datum) => datum.getX() + getOffset(datum))
-                    .attr("y", (datum) => datum.getY() + getOffset(datum))
-                    .attr(
-                        "width",
-                        (datum) => datum.getWidth() - getOffset(datum)
-                    )
-                    .attr(
-                        "height",
-                        (datum) => datum.getHeight() - getOffset(datum)
-                    )
+                    .attr("x", (datum) => datum.getX())
+                    .attr("y", (datum) => datum.getY())
+                    .attr("width", (datum) => datum.getWidth())
+                    .attr("height", (datum) => datum.getHeight())
                     .attr("fill", (datum) => {
                         const temperature = datum.getTemperature();
                         if (temperature === null) {
@@ -356,6 +348,21 @@ class MapViz {
                         const temperature = datum.getTemperature();
                         return temperature < 0 ? 1 : 0;
                     });
+
+                negativeLayer.html("");
+                const negativeMarkers = negativeLayer.selectAll(".grid")
+                    .data(
+                        dataset.filter((x) => x.getTemperature() < 0),
+                        (x) => x.getGeohash()
+                    )
+                    .enter()
+                    .append("rect")
+                    .classed("grid", true)
+                    .attr("x", (datum) => datum.getX() + 2)
+                    .attr("y", (datum) => datum.getY() + 2)
+                    .attr("width", (datum) => datum.getWidth() - 4)
+                    .attr("height", (datum) => datum.getHeight() - 4)
+                    .attr("stroke-dasharray", "1,1");
 
                 resolve(dataset);
             });
@@ -385,7 +392,7 @@ class MapViz {
                     .attr("cx", (datum) => datum.getCenterX())
                     .attr("cy", (datum) => datum.getCenterY())
                     .attr("rx", (datum) => radiusScale(datum.getCpue()))
-                    .attr("ry", (datum) => radiusScale(datum.getCpue()));;
+                    .attr("ry", (datum) => radiusScale(datum.getCpue()));
 
                 resolve(dataset);
             });
@@ -420,12 +427,12 @@ class MapViz {
                     return;
                 }
 
-                const allTempDisabled = self._commonScale.getTempDisabled();
+                const isDense = self._commonScale.getIsDense();
                 const url = generateDownloadDataUrl(
                     survey,
                     speciesSelection,
                     secondSelection,
-                    allTempDisabled ? 5 : 4
+                    isDense ? 4 : 5
                 );
 
                 Papa.parse(url, {

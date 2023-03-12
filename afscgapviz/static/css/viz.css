@@ -139,13 +139,15 @@ html {
     stroke: #222;
 }
 
+.display .viz .negative-markers .grid {
+    stroke: black;
+    fill: rgba(0, 0, 0, 0);
+    stroke-width: 0.5;
+}
+
 .display .viz .water {
     stroke-width: 0;
     opacity: 0.5;
-}
-
-.display .viz .water .grid {
-    stroke: black;
 }
 
 .display .viz-panel {

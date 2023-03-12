@@ -1,5 +1,5 @@
-const MAX_AREA_NO_TEMP = 150;
-const MAX_AREA_TEMP = 200;
+const MAX_AREA_SPARSE = 150;
+const MAX_AREA_DENSE = 200;
 
 const NEGATIVE_TEMP_COLORS = [
     '#de2d26',
@@ -174,20 +174,35 @@ class CommonScale {
         });
     }
 
-    getTempDisabled() {
+    getIsDense() {
         const self = this;
 
         const getters = self._getGetters();
         const selections = getters.map((x) => x());
 
-        const numWithTempEnabled = selections
-            .filter((x) => x.getTemperatureMode() !== "disabled")
-            .map((x) => 1)
-            .reduce((a, b) => a + b, 0);
+        const getTempEnabled = () => {
+            const numWithTempEnabled = selections
+                .filter((x) => x.getTemperatureMode() !== "disabled")
+                .map((x) => 1)
+                .reduce((a, b) => a + b, 0);
 
-        const tempDisabled = numWithTempEnabled == 0;
+            const tempDisabled = numWithTempEnabled == 0;
 
-        return tempDisabled;
+            return !tempDisabled;
+        };
+
+        const getComparing = () => {
+            const numComparing = selections
+                .filter((x) => x.getSpeciesSelection2().getName() !== "None")
+                .map((x) => 1)
+                .reduce((a, b) => a + b, 0);
+
+            const isComparing = numComparing > 0;
+
+            return isComparing;
+        };
+        
+        return getTempEnabled() || getComparing();
     }
 
     _getScaleNoCache() {
@@ -200,8 +215,8 @@ class CommonScale {
             Promise.all(promises).then((values) => {
                 const combined = values.reduce((a, b) => a.combine(b));
 
-                const tempDisabled = self.getTempDisabled();
-                const maxArea = tempDisabled ? MAX_AREA_NO_TEMP : MAX_AREA_TEMP;
+                const isDense = self.getIsDense();
+                const maxArea = isDense ? MAX_AREA_DENSE : MAX_AREA_SPARSE;
 
                 const areaScale = d3.scaleLinear()
                     .domain([0, combined.getMaxCpue()])
@@ -284,7 +299,7 @@ class CommonScale {
                     "survey=" + survey,
                     "year=" + speciesSelection.getYear(),
                     "temperature=" + displaySelection.getTemperatureMode(),
-                    "geohashSize=" + (self.getTempDisabled() ? 5 : 4)
+                    "geohashSize=" + (self.getIsDense() ? 4 : 5)
                 ];
 
                 if (speciesSelection.getIsSciName()) {
@@ -306,7 +321,7 @@ class CommonScale {
                 "year=" + speciesSelections[0].getYear(),
                 "otherYear=" + speciesSelections[1].getYear(),
                 "temperature=" + displaySelection.getTemperatureMode(),
-                "geohashSize=" + (self.getTempDisabled() ? 5 : 4),
+                "geohashSize=" + (self.getIsDense() ? 4 : 5),
                 "comparison=y"
             ];
 
