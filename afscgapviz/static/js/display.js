@@ -55,7 +55,7 @@ class Display {
         self._buildSpeciesDisplays();
         self._rebuildMap();
         self._registerCallbacks();
-        self._updateDownloadLink();
+        self._updateDownloadLinks();
     }
 
     getSelection() {
@@ -88,7 +88,7 @@ class Display {
             self._element.querySelector(".species-1"),
             useSciName,
             () => {
-                self._updateDownloadLink();
+                self._updateDownloadLinks();
                 self._onSelectionChange();
             }
         );
@@ -96,7 +96,7 @@ class Display {
             self._element.querySelector(".species-2"),
             useSciName,
             () => {
-                self._updateDownloadLink();
+                self._updateDownloadLinks();
                 self._onSelectionChange();
             }
         );
@@ -108,21 +108,21 @@ class Display {
         self._element.querySelector(".species-type-select").addEventListener(
             "change",
             () => {
-                self._updateDownloadLink();
+                self._updateDownloadLinks();
                 self._onDatasetChange();
             }
         );
         self._element.querySelector(".area-select").addEventListener(
             "change",
             () => {
-                self._updateDownloadLink();
+                self._updateDownloadLinks();
                 self._onDatasetChange();
             }
         );
         self._element.querySelector(".temperature-select").addEventListener(
             "change",
             () => {
-                self._updateDownloadLink();
+                self._updateDownloadLinks();
                 self._onDatasetChange();
             }
         );
@@ -163,25 +163,42 @@ class Display {
         self._mapViz.updateSelection(self.getSelection());
     }
 
-    _updateDownloadLink() {
+    _updateDownloadLinks() {
         const self = this;
 
         const selection = self.getSelection();
-        const newUrl = generateDownloadDataUrl(
-            selection.getSurvey(),
-            selection.getSpeciesSelection1(),
-            selection.getSpeciesSelection2(),
-            5
-        );
 
-        const downloadUrl = self._element.querySelector('.download-link');
-        downloadUrl.href = newUrl;
+        const updateDownloadDataButton = (selection) => {
+            const newUrl = generateDownloadDataUrl(
+                selection.getSurvey(),
+                selection.getSpeciesSelection1(),
+                selection.getSpeciesSelection2(),
+                5
+            );
 
-        if (selection.getSpeciesSelection2().getName() === "None") {
-            downloadUrl.innerHTML = "Download Data";
-        } else {
-            downloadUrl.innerHTML = "Download Comparison";
+            const downloadUrl = self._element.querySelector('.download-link');
+            downloadUrl.href = newUrl;
+
+            if (selection.getSpeciesSelection2().getName() === "None") {
+                downloadUrl.innerHTML = "Download Data";
+            } else {
+                downloadUrl.innerHTML = "Download Comparison";
+            }
+        };
+
+        const updatePythonButton = (selection) => {
+            const newUrl = generatePythonUrl(
+                selection.getSurvey(),
+                selection.getSpeciesSelection1(),
+                selection.getSpeciesSelection2()
+            );
+
+            const downloadUrl = self._element.querySelector('.python-link');
+            downloadUrl.href = newUrl;
         }
+
+        updateDownloadDataButton(selection);
+        updatePythonButton(selection);
     }
 
     _rebuildMap() {

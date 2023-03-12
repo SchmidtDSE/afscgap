@@ -495,36 +495,3 @@ class MapViz {
     }
 
 }
-
-
-function generateDownloadDataUrl(survey, speciesSelection, secondSelection,
-    geohashSize) {
-    const params = [
-        "survey=" + survey,
-        "year=" + speciesSelection.getYear(),
-        "geohashSize=" + geohashSize
-    ];
-
-    if (speciesSelection.getIsSciName()) {
-        params.push("species=" + speciesSelection.getName());
-    } else {
-        params.push("commonName=" + speciesSelection.getName());
-    }
-
-    if (secondSelection !== undefined) {
-        params.push("comparison=y");
-        params.push("otherYear=" + secondSelection.getYear());
-
-        const secondName = secondSelection.getName();
-        if (secondSelection.getIsSciName()) {
-            params.push("otherSpecies=" + secondName);
-        } else {
-            params.push("otherCommonName=" + secondName);
-        }
-    }
-
-    const queryString = params.join("&");
-    const url = "/geohashes.csv?" + queryString;
-
-    return url;
-}

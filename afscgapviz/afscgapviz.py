@@ -246,6 +246,41 @@ def build_app(app: flask.Flask, db_str: str, db_uri: bool) -> flask.Flask:
 
         return output
 
+    @app.route('/example.py')
+    def download_python_example():
+        is_comparison = flask.request.args.get('comparison', 'n') == 'y'
+
+        survey = flask.request.args['survey']
+        year = flask.request.args['year']
+
+        species = flask.request.args.get('species', None)
+        common_name = flask.request.args.get('commonName', None)
+
+        if is_comparison:
+            other_year = flask.request.args['otherYear']
+            other_species = flask.request.args.get('otherSpecies', None)
+            other_common_name = flask.request.args.get('otherCommonName', None)
+        else:
+            other_year = None
+            other_species = None
+            other_common_name = None
+
+        output = flask.make_response(flask.render_template(
+            'example.py',
+            survey=survey,
+            year=year,
+            species=species,
+            common_name=common_name,
+            is_comparison=is_comparison,
+            other_year=other_year,
+            other_species=other_species,
+            other_common_name=other_common_name
+        ))
+        output.headers['Content-Disposition'] = 'attachment; filename=query.py'
+        output.headers['Content-type'] = 'text/python'
+
+        return output
+
     @app.route('/summarize.json')
     def summarize_cpue():
         survey = flask.request.args['survey']
