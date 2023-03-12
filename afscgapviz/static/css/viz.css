@@ -125,7 +125,7 @@ html {
     fill: rgba(178, 223, 138, 0.5);
     paint-order: stroke fill;
     stroke-width: 1;
-    stroke: #FFFFFF;
+    stroke:#333;
 }
 
 .display .viz .land {

@@ -18,17 +18,6 @@ const ROTATIONS = {
 
 const BASE_WIDTH = 932;
 
-const TEMPERATURE_RANGE = [0, 18];
-const TEMPERATURE_COLORS = [
-    '#f1eef6',
-    '#d0d1e6',
-    '#a6bddb',
-    '#74a9cf',
-    '#3690c0',
-    '#0570b0',
-    '#034e7b'
-];
-
 
 class MapDatum {
 
@@ -130,12 +119,12 @@ class MapViz {
         self._selection.html("");
         const waterLayer = self._selection.append("g").classed("water", true);
         const landLayer = self._selection.append("g").classed("land", true);
-        const fishLayer2 = self._selection.append("g")
-            .classed("fish", true)
-            .classed("fish-2", true);
         const fishLayer1 = self._selection.append("g")
             .classed("fish", true)
             .classed("fish-1", true);
+        const fishLayer2 = self._selection.append("g")
+            .classed("fish", true)
+            .classed("fish-2", true);
 
         self._redraw();
     }
@@ -144,10 +133,21 @@ class MapViz {
         const self = this;
 
         const getScaleAndRedraw = () => {
-            self._commonScale.getScale().then(redrawInner);
+            self._commonScale.getScales().then(redrawInner);
         };
 
-        const redrawInner = (radiusScale) => {
+        const redrawInner = (scales) => {
+            const selection1 = self._displaySelection.getSpeciesSelection1();
+            const selection2 = self._displaySelection.getSpeciesSelection2();
+            
+            const temperatureMode = self._displaySelection.getTemperatureMode();
+            const isTempDisabled = temperatureMode === "disabled";
+            const secondIsNone = selection2.getName() === "None"
+            const useComparison = !isTempDisabled && !secondIsNone;
+
+            const radiusScale = scales.getRadiusScale();
+            const waterScale = scales.getWaterScale(useComparison);
+
             const waterLayer = self._selection.select(".water");
             const landLayer = self._selection.select(".land");
             const fishLayer2 = self._selection.select(".fish-2");
@@ -156,15 +156,28 @@ class MapViz {
             const survey = self._displaySelection.getSurvey();
             const projection = self._buildProjection(survey);
 
-            const temperatureMode = self._displaySelection.getTemperatureMode();
-            const selection1 = self._displaySelection.getSpeciesSelection1();
-            const selection2 = self._displaySelection.getSpeciesSelection2();
+            const cachedFirstRequestor = self._makeCachedRequestor(
+                self._makeFutureDataRequest(survey, selection1)
+            );
+
+            let temperatureRequestor = null;;
+            if (useComparison) {
+                temperatureRequestor = self._makeFutureDataRequest(
+                    survey,
+                    selection1,
+                    selection2
+                );
+            } else {
+                temperatureRequestor = cachedFirstRequestor;
+            }
 
             self._requestLand()
                 .then(self._makeFutureRenderLand(landLayer, projection))
-                .then(self._makeFutureDataRequest(survey, selection1))
+                .then(temperatureRequestor)
                 .then(self._makeFutureInterpretPoints(projection, temperatureMode))
-                .then(self._makeFutureRenderWater(waterLayer, projection))
+                .then(self._makeFutureRenderWater(waterLayer, projection, waterScale))
+                .then(cachedFirstRequestor)
+                .then(self._makeFutureInterpretPoints(projection, temperatureMode))
                 .then(self._makeFutureRenderFish(fishLayer1, projection, radiusScale))
                 .then(self._makeFutureDataRequest(survey, selection2))
                 .then(self._makeFutureInterpretPoints(projection, temperatureMode))
@@ -174,6 +187,24 @@ class MapViz {
 
         self._showLoading();
         setTimeout(getScaleAndRedraw, 500);
+    }
+
+    _makeCachedRequestor(innerRequestor) {
+        const self = this;
+        var cachedValue = null;
+        return () => {
+            return new Promise((resolve, reject) => {
+                if (cachedValue !== null) {
+                    resolve(cachedValue);
+                    return;
+                }
+
+                innerRequestor().then((result) => {
+                    cachedValue = result;
+                    resolve(cachedValue);
+                })
+            });
+        };
     }
 
     _showLoading() {
@@ -258,7 +289,7 @@ class MapViz {
         };
     }
 
-    _makeFutureRenderWater(waterLayer, projection) {
+    _makeFutureRenderWater(waterLayer, projection, waterScale) {
         const self = this;
 
         return (dataset) => {
@@ -273,10 +304,6 @@ class MapViz {
                     .classed("grid", true)
                     .attr("x", (datum) => datum.getX())
                     .attr("y", (datum) => datum.getY());
-
-                const waterScale = d3.scaleQuantize()
-                    .domain(TEMPERATURE_RANGE)
-                    .range(TEMPERATURE_COLORS);
 
                 const rects = waterLayer.selectAll(".grid");
                 rects.transition()
@@ -342,7 +369,7 @@ class MapViz {
         return projection;
     }
 
-    _makeFutureDataRequest(survey, speciesSelection) {
+    _makeFutureDataRequest(survey, speciesSelection, secondSelection) {
         const self = this;
 
         return () => {
@@ -352,15 +379,30 @@ class MapViz {
                     return;
                 }
 
+                const allTempDisabled = self._commonScale.getTempDisabled();
+
                 const params = [
                     "survey=" + survey,
-                    "year=" + speciesSelection.getYear()
+                    "year=" + speciesSelection.getYear(),
+                    "geohashSize=" + (allTempDisabled ? 5 : 4)
                 ];
 
                 if (speciesSelection.getIsSciName()) {
                     params.push("species=" + speciesSelection.getName());
                 } else {
                     params.push("commonName=" + speciesSelection.getName());
+                }
+
+                if (secondSelection !== undefined) {
+                    params.push("comparison=y");
+                    params.push("otherYear=" + secondSelection.getYear());
+
+                    const secondName = secondSelection.getName();
+                    if (secondSelection.getIsSciName()) {
+                        params.push("otherSpecies=" + secondName);
+                    } else {
+                        params.push("otherCommonName=" + secondName);
+                    }
                 }
 
                 const queryString = params.join("&");

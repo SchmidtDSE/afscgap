@@ -148,13 +148,13 @@ def build_app(app: flask.Flask, db_str: str, db_uri: bool) -> flask.Flask:
                     'speciesType': 'common',
                     'scientificName': flask.request.args.get("name1", "None"),
                     'commonName': flask.request.args.get("name1", "None"),
-                    'year': flask.request.args.get("year1", "None")
+                    'year': int(flask.request.args.get("year1", "None"))
                 },
                 {
                     'speciesType': 'common',
                     'scientificName': flask.request.args.get("name2", "None"),
                     'commonName': flask.request.args.get("name2", "None"),
-                    'year': flask.request.args.get("year2", "None")
+                    'year': int(flask.request.args.get("year2", "None"))
                 }
             ],
             'area': area,
@@ -176,11 +176,14 @@ def build_app(app: flask.Flask, db_str: str, db_uri: bool) -> flask.Flask:
         Returns:
             CSV file with the query results.
         """
+        is_comparison = flask.request.args.get('comparison', 'n') == 'y'
+
         survey = flask.request.args['survey']
         year = flask.request.args['year']
 
         species = flask.request.args.get('species', None)
         common_name = flask.request.args.get('commonName', None)
+        geohash_size = int(flask.request.args.get('geohashSize', 4))
 
         if species is not None:
             species_filter = ('species', species)
@@ -189,8 +192,37 @@ def build_app(app: flask.Flask, db_str: str, db_uri: bool) -> flask.Flask:
         else:
             return 'Whoops! Please specify commonName or species.', 400
 
-        base_sql = sql_util.get_sql('query')
-        query_sql = base_sql % (species_filter[0])
+        if is_comparison:
+            other_year = flask.request.args['otherYear']
+            other_species = flask.request.args.get('otherSpecies', None)
+            other_common_name = flask.request.args.get('otherCommonName', None)
+
+            if species is not None:
+                other_species_filter = ('species', other_species)
+            elif common_name is not None:
+                other_species_filter = ('common_name', other_common_name)
+            else:
+                return 'Whoops! Please specify commonName or species.', 400
+
+            base_sql = sql_util.get_sql('delta')
+            query_sql = base_sql % (
+                geohash_size,
+                species_filter[0],
+                geohash_size,
+                other_species_filter[0]
+            )
+            query_args = (
+                year,
+                survey,
+                species_filter[1],
+                other_year,
+                survey,
+                other_species_filter[1]
+            )
+        else:
+            base_sql = sql_util.get_sql('query')
+            query_sql = base_sql % (geohash_size, species_filter[0])
+            query_args = (year, survey, species_filter[1])
 
         output_io = io.StringIO()
         writer = csv.DictWriter(output_io, fieldnames=OUTPUT_COLS)
@@ -201,7 +233,7 @@ def build_app(app: flask.Flask, db_str: str, db_uri: bool) -> flask.Flask:
             with con as cur:
                 results = cur.execute(
                     query_sql,
-                    (year, survey, species_filter[1])
+                    query_args
                 )
 
                 results_obj = map(data_util.parse_record, results)
@@ -214,13 +246,15 @@ def build_app(app: flask.Flask, db_str: str, db_uri: bool) -> flask.Flask:
 
         return output
 
-    @app.route('/summarizeCpue.json')
+    @app.route('/summarize.json')
     def summarize_cpue():
         survey = flask.request.args['survey']
-        year = flask.request.args['year']
+        year = int(flask.request.args['year'])
+        temperature_mode = flask.request.args['temperature']
 
         species = flask.request.args.get('species', None)
         common_name = flask.request.args.get('commonName', None)
+        geohash_size = int(flask.request.args.get('geohashSize', 4))
 
         if species is not None:
             species_filter = ('species', species)
@@ -229,19 +263,66 @@ def build_app(app: flask.Flask, db_str: str, db_uri: bool) -> flask.Flask:
         else:
             return 'Whoops! Please specify commonName or species.', 400
 
-        base_sql = sql_util.get_sql('summarize')
-        query_sql = base_sql % (species_filter[0])
+        if temperature_mode == 'surface':
+            temperature_field = 'surface_temperature'
+        else:
+            temperature_field = 'bottom_temperature'
+
+        is_comparison = flask.request.args.get('comparison', 'n') == 'y'
+        if is_comparison:
+            other_year = int(flask.request.args['otherYear'])
+            other_species = flask.request.args.get('otherSpecies', None)
+            other_common_name = flask.request.args.get('otherCommonName', None)
+
+            if species is not None:
+                other_species_filter = ('species', other_species)
+            elif common_name is not None:
+                other_species_filter = ('common_name', other_common_name)
+            else:
+                return 'Whoops! Please specify commonName or species.', 400
+
+            base_sql = sql_util.get_sql('summarize_compare')
+            query_sql = base_sql % (
+                temperature_field,
+                geohash_size,
+                species_filter[0],
+                temperature_field,
+                geohash_size,
+                other_species_filter[0]
+            )
+            query_args = (
+                year,
+                survey,
+                species_filter[1],
+                other_year,
+                survey,
+                other_species_filter[1]
+            )
+        else:
+            base_sql = sql_util.get_sql('summarize')
+            query_sql = base_sql % (
+                temperature_field,
+                species_filter[0],
+                geohash_size
+            )
+            query_args = (year, survey, species_filter[1])
 
         with contextlib.closing(sqlite3.connect(db_str, uri=db_uri)) as con:
             with con as cur:
                 results = list(cur.execute(
                     query_sql,
-                    (year, survey, species_filter[1])
+                    query_args
                 ))
 
-                max_value = results[0][0]
+                result = results[0]
+                result_float = [float(x) for x in result]
 
-        return json.dumps({'max': max_value})
+                (min_cpue, max_cpue, min_temp, max_temp) = result_float
+
+        return json.dumps({
+            'cpue': {'min': min_cpue, 'max': max_cpue},
+            'temperature': {'min': min_temp, 'max': max_temp}
+        })
 
     return app
 
