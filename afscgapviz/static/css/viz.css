@@ -152,6 +152,13 @@ html {
     overflow-x: auto;
 }
 
+.display .viz-panel .no-data-message {
+    background-color: rgba(20, 20, 20, 0.2);
+    text-align: center;
+    padding: 5px;
+    display: none;
+}
+
 .loading {
     text-align: center;
     display: none;

@@ -315,9 +315,16 @@ def build_app(app: flask.Flask, db_str: str, db_uri: bool) -> flask.Flask:
                 ))
 
                 result = results[0]
-                result_float = [float(x) for x in result]
 
-                (min_cpue, max_cpue, min_temp, max_temp) = result_float
+                if result[0] is None:
+                    min_cpue = 0
+                    max_cpue = 0
+                    min_temp = 0
+                    max_temp = 0
+                else:
+                    result_float = [float(x) for x in result]
+
+                    (min_cpue, max_cpue, min_temp, max_temp) = result_float
 
         return json.dumps({
             'cpue': {'min': min_cpue, 'max': max_cpue},

@@ -3,17 +3,26 @@ var cachedGeojson = null;
 
 const CENTERS = {
     "AI": [-170.2, 52.2],
-    "GOA": [-153.26, 57]
+    "BSS": [-178, 58],
+    "EBS": [-178, 58.5],
+    "GOA": [-153.26, 57],
+    "NBS": [-177, 63]
 };
 
 const SCALES = {
     "AI": 1500,
-    "GOA": 900
+    "BSS": 1100,
+    "EBS": 950,
+    "GOA": 900,
+    "NBS": 1200
 };
 
 const ROTATIONS = {
     "AI": [1,0],
-    "GOA": [-1, -0.3]
+    "BSS": [-1, -0.3],
+    "EBS": [-1, -0.3],
+    "GOA": [-1, -0.3],
+    "NBS": [-1, -0.3]
 }
 
 const BASE_WIDTH = 932;
@@ -182,11 +191,23 @@ class MapViz {
                 .then(self._makeFutureDataRequest(survey, selection2))
                 .then(self._makeFutureInterpretPoints(projection, temperatureMode))
                 .then(self._makeFutureRenderFish(fishLayer2, projection, radiusScale))
-                .then(() => self._hideLoading());
+                .then(() => self._hideLoading())
+                .then(() => self._checkNoData())
         }
 
         self._showLoading();
         setTimeout(getScaleAndRedraw, 500);
+    }
+
+    _checkNoData() {
+        const self = this;
+
+        const message = self._element.querySelector(".no-data-message");
+        if (self._selection.selectAll(".fish-marker").empty()) {
+            message.style.display = "block";
+        } else {
+            message.style.display = "none";
+        }
     }
 
     _makeCachedRequestor(innerRequestor) {
@@ -344,8 +365,12 @@ class MapViz {
     _makeFutureRenderFish(layer, projection, radiusScale) {
         return (dataset) => {
             return new Promise((resolve, reject) => {
+                const datasetAllowed = dataset.filter(
+                    (x) => !isNaN(x.getCenterX())
+                );
+
                 const bound = layer.selectAll(".fish-marker")
-                    .data(dataset, (x) => x.getGeohash());
+                    .data(datasetAllowed, (x) => x.getGeohash());
 
                 bound.exit().remove();
 
