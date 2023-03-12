@@ -61,11 +61,16 @@
                             {{ get_species_select_content(display) | safe }}
                         </div>
                     </div>
-                    <div class="viz-panel panel final" id="viz-panel-{{ loop.index }}">
+                    <div class="viz-panel panel" id="viz-panel-{{ loop.index }}">
                         <div class="map-loading loading">
                             <img src="/static/img/loading.svg" alt="loading indicator"> Loading...
                         </div>
                         <svg class="viz" id="viz-{{ loop.index }}"></svg>
+                    </div>
+                    <div class="download-panel panel">
+                        <div class="button-holder">
+                            <a href="#" class="download-link" target="_blank">Download Data</a>
+                        </div>
                     </div>
                 </div>
                 {% endfor %}

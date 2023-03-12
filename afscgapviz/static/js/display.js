@@ -55,6 +55,7 @@ class Display {
         self._buildSpeciesDisplays();
         self._rebuildMap();
         self._registerCallbacks();
+        self._updateDownloadLink();
     }
 
     getSelection() {
@@ -86,12 +87,18 @@ class Display {
         self._speciesDisplayFirst = new SpeciesSelector(
             self._element.querySelector(".species-1"),
             useSciName,
-            () => self._onSelectionChange()
+            () => {
+                self._updateDownloadLink();
+                self._onSelectionChange();
+            }
         );
         self._speciesDisplaySecond = new SpeciesSelector(
             self._element.querySelector(".species-2"),
             useSciName,
-            () => self._onSelectionChange()
+            () => {
+                self._updateDownloadLink();
+                self._onSelectionChange();
+            }
         );
     }
 
@@ -100,15 +107,24 @@ class Display {
 
         self._element.querySelector(".species-type-select").addEventListener(
             "change",
-            () => self._onDatasetChange()
+            () => {
+                self._updateDownloadLink();
+                self._onDatasetChange();
+            }
         );
         self._element.querySelector(".area-select").addEventListener(
             "change",
-            () => self._onDatasetChange()
+            () => {
+                self._updateDownloadLink();
+                self._onDatasetChange();
+            }
         );
         self._element.querySelector(".temperature-select").addEventListener(
             "change",
-            () => self._onDatasetChange()
+            () => {
+                self._updateDownloadLink();
+                self._onDatasetChange();
+            }
         );
 
         let timeout; 
@@ -145,6 +161,27 @@ class Display {
         const self = this;
 
         self._mapViz.updateSelection(self.getSelection());
+    }
+
+    _updateDownloadLink() {
+        const self = this;
+
+        const selection = self.getSelection();
+        const newUrl = generateDownloadDataUrl(
+            selection.getSurvey(),
+            selection.getSpeciesSelection1(),
+            selection.getSpeciesSelection2(),
+            5
+        );
+
+        const downloadUrl = self._element.querySelector('.download-link');
+        downloadUrl.href = newUrl;
+
+        if (selection.getSpeciesSelection2().getName() === "None") {
+            downloadUrl.innerHTML = "Download Data";
+        } else {
+            downloadUrl.innerHTML = "Download Comparison";
+        }
     }
 
     _rebuildMap() {

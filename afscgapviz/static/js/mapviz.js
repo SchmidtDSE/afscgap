@@ -306,18 +306,34 @@ class MapViz {
                     .attr("y", (datum) => datum.getY());
 
                 const rects = waterLayer.selectAll(".grid");
+
+                const getOffset = (datum) => {
+                    const temperature = datum.getTemperature();
+                    return temperature < 0 ? 1 : 0;
+                };
+
                 rects.transition()
-                    .attr("x", (datum) => datum.getX())
-                    .attr("y", (datum) => datum.getY())
-                    .attr("width", (datum) => datum.getWidth())
-                    .attr("height", (datum) => datum.getHeight())
-                    .attr("fill",(datum) => {
+                    .attr("x", (datum) => datum.getX() + getOffset(datum))
+                    .attr("y", (datum) => datum.getY() + getOffset(datum))
+                    .attr(
+                        "width",
+                        (datum) => datum.getWidth() - getOffset(datum)
+                    )
+                    .attr(
+                        "height",
+                        (datum) => datum.getHeight() - getOffset(datum)
+                    )
+                    .attr("fill", (datum) => {
                         const temperature = datum.getTemperature();
                         if (temperature === null) {
                             return "#0570b0";
                         } else {
                             return waterScale(temperature);
                         }
+                    })
+                    .attr("stroke-width", (datum) => {
+                        const temperature = datum.getTemperature();
+                        return temperature < 0 ? 1 : 0;
                     });
 
                 resolve(dataset);
@@ -380,33 +396,12 @@ class MapViz {
                 }
 
                 const allTempDisabled = self._commonScale.getTempDisabled();
-
-                const params = [
-                    "survey=" + survey,
-                    "year=" + speciesSelection.getYear(),
-                    "geohashSize=" + (allTempDisabled ? 5 : 4)
-                ];
-
-                if (speciesSelection.getIsSciName()) {
-                    params.push("species=" + speciesSelection.getName());
-                } else {
-                    params.push("commonName=" + speciesSelection.getName());
-                }
-
-                if (secondSelection !== undefined) {
-                    params.push("comparison=y");
-                    params.push("otherYear=" + secondSelection.getYear());
-
-                    const secondName = secondSelection.getName();
-                    if (secondSelection.getIsSciName()) {
-                        params.push("otherSpecies=" + secondName);
-                    } else {
-                        params.push("otherCommonName=" + secondName);
-                    }
-                }
-
-                const queryString = params.join("&");
-                const url = "/geohashes.csv?" + queryString;
+                const url = generateDownloadDataUrl(
+                    survey,
+                    speciesSelection,
+                    secondSelection,
+                    allTempDisabled ? 5 : 4
+                );
 
                 Papa.parse(url, {
                     header: true,
@@ -419,4 +414,37 @@ class MapViz {
         };
     }
 
+}
+
+
+function generateDownloadDataUrl(survey, speciesSelection, secondSelection,
+    geohashSize) {
+    const params = [
+        "survey=" + survey,
+        "year=" + speciesSelection.getYear(),
+        "geohashSize=" + geohashSize
+    ];
+
+    if (speciesSelection.getIsSciName()) {
+        params.push("species=" + speciesSelection.getName());
+    } else {
+        params.push("commonName=" + speciesSelection.getName());
+    }
+
+    if (secondSelection !== undefined) {
+        params.push("comparison=y");
+        params.push("otherYear=" + secondSelection.getYear());
+
+        const secondName = secondSelection.getName();
+        if (secondSelection.getIsSciName()) {
+            params.push("otherSpecies=" + secondName);
+        } else {
+            params.push("otherCommonName=" + secondName);
+        }
+    }
+
+    const queryString = params.join("&");
+    const url = "/geohashes.csv?" + queryString;
+
+    return url;
 }

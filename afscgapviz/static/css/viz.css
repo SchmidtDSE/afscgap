@@ -55,7 +55,7 @@ html {
 
 .button-holder a {
     padding: 5px;
-    background-color: #F0F0F0;
+    background-color: #E0E0E0;
     color: black;
     border-radius: 5px;
 }
@@ -76,6 +76,10 @@ html {
 
 .display .dataset-selector select {
     width: 30%;
+}
+
+.display .download-panel {
+    text-align: center;
 }
 
 .display .panel {
@@ -125,7 +129,7 @@ html {
     fill: rgba(178, 223, 138, 0.5);
     paint-order: stroke fill;
     stroke-width: 1;
-    stroke:#333;
+    stroke: #333;
 }
 
 .display .viz .land {
@@ -138,6 +142,10 @@ html {
 .display .viz .water {
     stroke-width: 0;
     opacity: 0.5;
+}
+
+.display .viz .water .grid {
+    stroke: black;
 }
 
 .display .viz-panel {
