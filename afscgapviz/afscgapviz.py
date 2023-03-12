@@ -15,12 +15,10 @@ import typing
 import flask
 
 import data_util
-import model
 import sql_util
 import survey_util
 
 
-NAMES_DICT = typing.List[typing.Dict[str, str]]
 OUTPUT_COLS = [
     'year',
     'survey',
@@ -40,7 +38,7 @@ OUTPUT_COLS = [
 ]
 
 
-def sort_names_by_lower(target: typing.List[str]) -> NAMES_DICT:
+def sort_names_by_lower(target: typing.List[str]) -> typing.List[str]:
     output = [{"original": x, "lower": x.lower()} for x in target]
     output.sort(key=lambda x: x["lower"])
     return [x["original"] for x in output]
@@ -141,7 +139,7 @@ def build_app(app: flask.Flask, db_str: str, db_uri: bool) -> flask.Flask:
 
         if len(species) == 0 or len(common_names) == 0 or len(years) == 0:
             return 'Not found.', 404
-        
+
         display = {
             "selections": [
                 {
@@ -162,7 +160,7 @@ def build_app(app: flask.Flask, db_str: str, db_uri: bool) -> flask.Flask:
             'commonNames': common_names,
             'years': years
         }
-        
+
         return get_species_select_content(display)
 
     @app.route('/geohashes.csv')

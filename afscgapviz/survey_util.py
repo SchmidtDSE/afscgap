@@ -23,7 +23,7 @@ def get_survey_availability(survey: str,
     common_names = get_list(survey, 'get_common_names', connection)
 
     years = [int(x) for x in years_str]
-    
+
     return model.SurveyAvailability(
         survey,
         years,

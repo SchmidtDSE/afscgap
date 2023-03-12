@@ -237,15 +237,15 @@ class SurveyAvailability:
         self._years = years
         self._species = species
         self._common_names = common_names
-    
+
     def get_survey(self) -> str:
         return self._survey
-    
+
     def get_years(self) -> typing.List[int]:
         return self._years
-    
+
     def get_species(self) -> typing.List[str]:
         return self._species
-    
+
     def get_common_names(self) -> typing.List[str]:
         return self._common_names
