@@ -139,7 +139,7 @@ class MapViz {
         const redrawInner = (scales) => {
             const selection1 = self._displaySelection.getSpeciesSelection1();
             const selection2 = self._displaySelection.getSpeciesSelection2();
-            
+
             const temperatureMode = self._displaySelection.getTemperatureMode();
             const isTempDisabled = temperatureMode === "disabled";
             const secondIsNone = selection2.getName() === "None"
@@ -226,13 +226,13 @@ class MapViz {
             return new Promise((resolve, reject) => {
                 const interpreted = dataset.map((target) => {
                     const lowPoint = projection([
-                        parseFloat(target['lngLow']),
-                        parseFloat(target['latLow'])
+                        parseFloat(target['lngLowDegrees']),
+                        parseFloat(target['latLowDegrees'])
                     ]);
 
                     const highPoint = projection([
-                        parseFloat(target['lngHigh']),
-                        parseFloat(target['latHigh'])
+                        parseFloat(target['lngHighDegrees']),
+                        parseFloat(target['latHighDegrees'])
                     ]);
 
                     const x = lowPoint[0];
@@ -240,13 +240,13 @@ class MapViz {
                     const width = highPoint[0] - lowPoint[0];
                     const height = lowPoint[1] - highPoint[1];
 
-                    const weight = parseFloat(target["weight"]);
-                    const area = parseFloat(target["areaSwept"])
+                    const weight = parseFloat(target["weightKg"]);
+                    const area = parseFloat(target["areaSweptHectares"])
                     const cpue = weight / area;
 
                     const temperature = {
-                        "bottom": target["bottomTemperature"],
-                        "surface": target["surfaceTemperature"],
+                        "bottom": target["bottomTemperatureC"],
+                        "surface": target["surfaceTemperatureC"],
                         "disabled": null
                     }[temperatureMode];
 

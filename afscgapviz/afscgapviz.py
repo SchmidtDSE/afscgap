@@ -27,16 +27,16 @@ OUTPUT_COLS = [
     'species',
     'commonName',
     'geohash',
-    'surfaceTemperature',
-    'bottomTemperature',
-    'weight',
+    'surfaceTemperatureC',
+    'bottomTemperatureC',
+    'weightKg',
     'count',
-    'areaSwept',
+    'areaSweptHectares',
     'numRecordsAggregated',
-    'latLow',
-    'lngLow',
-    'latHigh',
-    'lngHigh'
+    'latLowDegrees',
+    'lngLowDegrees',
+    'latHighDegrees',
+    'lngHighDegrees'
 ]
 
 

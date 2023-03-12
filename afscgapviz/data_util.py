@@ -58,14 +58,14 @@ def record_to_dict(target: model.SimplifiedRecord) -> typing.Dict:
         'species': target.get_species(),
         'commonName': target.get_common_name(),
         'geohash': target.get_geohash(),
-        'surfaceTemperature': target.get_surface_temperature(),
-        'bottomTemperature': target.get_bottom_temperature(),
-        'weight': target.get_weight(),
+        'surfaceTemperatureC': target.get_surface_temperature(),
+        'bottomTemperatureC': target.get_bottom_temperature(),
+        'weightKg': target.get_weight(),
         'count': target.get_count(),
-        'areaSwept': target.get_area_swept(),
+        'areaSweptHectares': target.get_area_swept(),
         'numRecordsAggregated': target.get_num_records_aggregated(),
-        'latLow': bounds[0][0],
-        'lngLow': bounds[0][1],
-        'latHigh': bounds[1][0],
-        'lngHigh': bounds[1][1]
+        'latLowDegrees': bounds[0][0],
+        'lngLowDegrees': bounds[0][1],
+        'latHighDegrees': bounds[1][0],
+        'lngHighDegrees': bounds[1][1]
     }
