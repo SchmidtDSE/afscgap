@@ -195,22 +195,64 @@ class MapViz {
                 .then(self._makeFutureInterpretPoints(projection, temperatureMode))
                 .then(self._makeFutureRenderFish(fishLayer2, projection, radiusScale))
                 .then(() => self._hideLoading())
-                .then(() => self._checkNoData())
+                .then(() => self._updateTitles());
         }
 
         self._showLoading();
         setTimeout(getScaleAndRedraw, 500);
     }
 
-    _checkNoData() {
+    _updateTitles() {
         const self = this;
 
-        const message = self._element.querySelector(".no-data-message");
-        if (self._selection.selectAll(".fish-marker").empty()) {
-            message.style.display = "block";
-        } else {
-            message.style.display = "none";
+        const hasData = !self._selection.selectAll(".fish-marker").empty();
+
+        const updateNoData = (hasData) => {
+            const target = self._element.querySelector(".no-data-message");
+            target.style.display = hasData ? "none": "block";
+        };
+
+        const getSpeciesDescription = (species) => {
+            const year = "(" + species.getYear() + ")";
+            const message = species.getName() + " " + year;
+            return message;
         }
+
+        const updateTitle = (hasData) => {
+            const target = self._element.querySelector(".graph-description");
+            const prefix = self._displaySelection.getSurvey() + ": ";
+            
+            const firstSpecies = self._displaySelection.getSpeciesSelection1();
+            const firstMessage = getSpeciesDescription(firstSpecies);
+
+            const secondSpecies = self._displaySelection.getSpeciesSelection2();
+            const secondMessage = getSpeciesDescription(secondSpecies);
+
+            const isComparing = secondSpecies.getName() !== "None";
+
+            const speciesMessages = [firstMessage];
+            if (isComparing) {
+                speciesMessages.push(secondMessage);
+            }
+            const speciesMessage = speciesMessages.join(" vs ");
+
+            const temperatureMode = self._displaySelection.getTemperatureMode();
+            var temperatureSuffix = ".";
+            if (temperatureMode !== "disabled") {
+                temperatureSuffix = [
+                    " with",
+                    (isComparing ? "change in " : "") + temperatureMode,
+                    "temperatures."
+                ].join(" ");
+            }
+
+            const fullMessage = prefix + speciesMessage + temperatureSuffix;
+            target.textContent = fullMessage;
+            target.style.display = hasData ? "block": "none";
+        };
+
+        updateNoData(hasData);
+        updateTitle(hasData);
     }
 
     _makeCachedRequestor(innerRequestor) {
@@ -316,54 +358,60 @@ class MapViz {
     _makeFutureRenderWater(waterLayer, negativeLayer, projection, waterScale) {
         const self = this;
 
+        const buildWaterTiles = (dataset) => {
+            const bound = waterLayer.selectAll(".grid")
+                .data(dataset, (x) => x.getGeohash());
+
+            bound.exit().remove();
+
+            const newRects = bound.enter()
+                .append("rect")
+                .classed("grid", true)
+                .attr("x", (datum) => datum.getX())
+                .attr("y", (datum) => datum.getY());
+
+            const rects = waterLayer.selectAll(".grid");
+
+            rects.transition()
+                .attr("x", (datum) => datum.getX())
+                .attr("y", (datum) => datum.getY())
+                .attr("width", (datum) => datum.getWidth())
+                .attr("height", (datum) => datum.getHeight())
+                .attr("fill", (datum) => {
+                    const temperature = datum.getTemperature();
+                    if (temperature === null) {
+                        return "#0570b0";
+                    } else {
+                        return waterScale(temperature);
+                    }
+                })
+                .attr("stroke-width", (datum) => {
+                    const temperature = datum.getTemperature();
+                    return temperature < 0 ? 1 : 0;
+                });
+        };
+
+        const buildNegativeIndicators = (dataset) => {
+            negativeLayer.html("");
+            const negativeMarkers = negativeLayer.selectAll(".grid")
+                .data(
+                    dataset.filter((x) => x.getTemperature() < 0),
+                    (x) => x.getGeohash()
+                )
+                .enter()
+                .append("rect")
+                .classed("grid", true)
+                .attr("x", (datum) => datum.getX() + 2)
+                .attr("y", (datum) => datum.getY() + 2)
+                .attr("width", (datum) => datum.getWidth() - 4)
+                .attr("height", (datum) => datum.getHeight() - 4)
+                .attr("stroke-dasharray", "1,1");
+        };
+
         return (dataset) => {
             return new Promise((resolve, reject) => {
-                const bound = waterLayer.selectAll(".grid")
-                    .data(dataset, (x) => x.getGeohash());
-
-                bound.exit().remove();
-
-                const newRects = bound.enter()
-                    .append("rect")
-                    .classed("grid", true)
-                    .attr("x", (datum) => datum.getX())
-                    .attr("y", (datum) => datum.getY());
-
-                const rects = waterLayer.selectAll(".grid");
-
-                rects.transition()
-                    .attr("x", (datum) => datum.getX())
-                    .attr("y", (datum) => datum.getY())
-                    .attr("width", (datum) => datum.getWidth())
-                    .attr("height", (datum) => datum.getHeight())
-                    .attr("fill", (datum) => {
-                        const temperature = datum.getTemperature();
-                        if (temperature === null) {
-                            return "#0570b0";
-                        } else {
-                            return waterScale(temperature);
-                        }
-                    })
-                    .attr("stroke-width", (datum) => {
-                        const temperature = datum.getTemperature();
-                        return temperature < 0 ? 1 : 0;
-                    });
-
-                negativeLayer.html("");
-                const negativeMarkers = negativeLayer.selectAll(".grid")
-                    .data(
-                        dataset.filter((x) => x.getTemperature() < 0),
-                        (x) => x.getGeohash()
-                    )
-                    .enter()
-                    .append("rect")
-                    .classed("grid", true)
-                    .attr("x", (datum) => datum.getX() + 2)
-                    .attr("y", (datum) => datum.getY() + 2)
-                    .attr("width", (datum) => datum.getWidth() - 4)
-                    .attr("height", (datum) => datum.getHeight() - 4)
-                    .attr("stroke-dasharray", "1,1");
-
+                buildWaterTiles(dataset);
+                buildNegativeIndicators(dataset);
                 resolve(dataset);
             });
         };
