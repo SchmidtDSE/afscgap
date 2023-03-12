@@ -36,18 +36,18 @@
                 {% for display in displays %}
                 <div class="display" id="display-{{ loop.index }}">
                     <div class="dataset-selector">
-                        <select class="area-select">
+                        <select class="area-select" autocomplete="off">
                             <option value="AI" {% if display['area'] == 'AI' %}selected{% endif %}>Aleutian Islands</option>
                             <option value="BSS" {% if display['area'] == 'BSS' %}selected{% endif %}>Bearing Sea Slope</option>
                             <option value="GOA" {% if display['area'] == 'GOA' %}selected{% endif %}>Gulf of Alaska</option>
                             <option value="NBS" {% if display['area'] == 'NBS' %}selected{% endif %}>North Bearing Sea</option>
                             <option value="EBS" {% if display['area'] == 'EBS' %}selected{% endif %}>South East Bearing Sea</option>
                         </select>
-                        <select class="species-type-select">
+                        <select class="species-type-select" autocomplete="off">
                             <option value="common" {% if display['speciesType'] == 'common' %}selected{% endif %}>Common names</option>
                             <option value="scientific">Scientific name</option>
                         </select>
-                        <select class="temperature-select">
+                        <select class="temperature-select" autocomplete="off">
                             <option value="disabled" {% if display['temperature'] == 'disabled' %}selected{% endif %}>No temperatures</option>
                             <option value="surface" {% if display['temperature'] == 'surface' %}selected{% endif %}>Surface temperatures</option>
                             <option value="bottom" {% if display['temperature'] == 'bottom' %}selected{% endif %}>Bottom temperatures</option>
@@ -67,6 +67,7 @@
                         </div>
                         <div class="no-data-message">No matching data found</div>
                         <svg class="viz" id="viz-{{ loop.index }}"></svg>
+                        <div class="graph-description"></div>
                     </div>
                     <div class="download-panel panel">
                         <div class="button-holder">
