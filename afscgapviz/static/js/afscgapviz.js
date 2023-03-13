@@ -22,6 +22,14 @@ class VizPresenter {
             () => self._refreshAllDatasets(),
             () => self._refreshAllSelections()
         );
+
+        document.getElementById("share-link").addEventListener(
+            "click",
+            (event) => {
+                event.preventDefault();
+                navigator.clipboard.writeText(window.location.href);
+                alert("Copied sharable URL to clipboard.");
+            });
     }
 
     _refreshAllDatasets() {
