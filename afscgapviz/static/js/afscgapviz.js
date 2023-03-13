@@ -3,6 +3,12 @@ class VizPresenter {
     constructor() {
         const self = this;
 
+        self._displaysLoaded = 0;
+
+        document.getElementById("displays").style.opacity = 0;
+        document.getElementById("intro-loading").style.display = "block";
+        document.getElementById("intro-links").style.display = "none";
+
         self._commonScale = new CommonScale(() => {
             return [
                 () => self._display1.getSelection(),
@@ -14,13 +20,15 @@ class VizPresenter {
             document.getElementById("display-1"),
             self._commonScale,
             () => self._refreshAllDatasets(),
-            () => self._refreshAllSelections()
+            () => self._refreshAllSelections(),
+            () => self._checkToStartIntro()
         );
         self._display2 = new Display(
             document.getElementById("display-2"),
             self._commonScale,
             () => self._refreshAllDatasets(),
-            () => self._refreshAllSelections()
+            () => self._refreshAllSelections(),
+            () => self._checkToStartIntro()
         );
 
         document.getElementById("share-link").addEventListener(
@@ -37,7 +45,7 @@ class VizPresenter {
 
         self._display1.refreshDataset();
         self._display2.refreshDataset();
-        self._updateDeeplink()
+        self._updateDeeplink();
     }
 
     _refreshAllSelections() {
@@ -45,7 +53,7 @@ class VizPresenter {
 
         self._display1.refreshSelection();
         self._display2.refreshSelection();
-        self._updateDeeplink()
+        self._updateDeeplink();
     }
 
     _updateDeeplink() {
@@ -92,6 +100,33 @@ class VizPresenter {
             "AFSCGAP Viz",
             "/?state="+payloadJson
         );
+    }
+
+    _startIntro() {
+        const self = this;
+
+        d3.select("#displays").transition().style("opacity", 1);
+
+        console.log(window.location.href);
+        if (window.location.href.indexOf("?state") == -1) {
+            document.getElementById("intro-links").style.display = "block";
+            self._intro = new Intro();
+        } else {
+            self._intro = null;
+            document.getElementById("tutorial-panel").style.display = "none";
+        }
+    }
+
+    _checkToStartIntro() {
+        const self = this;
+
+        self._displaysLoaded++;
+
+        if (self._displaysLoaded > 2) {
+            return;
+        } else if (self._displaysLoaded == 2) {
+            self._startIntro();
+        }
     }
 
 }

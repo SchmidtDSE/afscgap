@@ -44,13 +44,15 @@ class DisplaySelection {
 
 class Display {
 
-    constructor(element, commonScale, onDatasetChange, onSelectionChange) {
+    constructor(element, commonScale, onDatasetChange, onSelectionChange,
+        onRender) {
         const self = this;
 
         self._element = element;
         self._commonScale = commonScale;
         self._onDatasetChange = onDatasetChange;
         self._onSelectionChange = onSelectionChange;
+        self._onRender = onRender;
 
         self._buildSpeciesDisplays();
         self._rebuildMap();
@@ -214,7 +216,8 @@ class Display {
         self._mapViz = new MapViz(
             self._element.querySelector(".viz-panel"),
             self.getSelection(),
-            self._commonScale
+            self._commonScale,
+            self._onRender
         );
     }
 

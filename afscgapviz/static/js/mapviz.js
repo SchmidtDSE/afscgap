@@ -101,11 +101,12 @@ class MapDatum {
 
 class MapViz {
 
-    constructor(element, displaySelection, commonScale) {
+    constructor(element, displaySelection, commonScale, onRender) {
         const self = this;
 
         self._element = element;
         self._displaySelection = displaySelection;
+        self._onRender = onRender;
 
         const svgElement = self._element.querySelector(".viz");
         self._selection = d3.select("#" + svgElement.id);
@@ -197,7 +198,8 @@ class MapViz {
                 .then(self._makeFutureInterpretPoints(projection, temperatureMode))
                 .then(self._makeFutureRenderFish(fishLayer2, projection, radiusScale))
                 .then(() => self._hideLoading())
-                .then(() => self._updateTitles());
+                .then(() => self._updateTitles())
+                .then(() => self._onRender());
         }
 
         self._showLoading();

@@ -145,7 +145,7 @@ html {
     stroke-width: 0.5;
 }
 
-.display .viz .water {
+.display .viz .water .grid {
     stroke-width: 0;
     opacity: 0.5;
 }
@@ -159,7 +159,6 @@ html {
     background-color: rgba(20, 20, 20, 0.2);
     text-align: center;
     padding: 5px;
-    display: none;
     margin-top: 5px;
 }
 
@@ -213,7 +212,30 @@ html {
 }
 
 #main {
-    margin-top: 70px;
+    margin-top: 50px;
+}
+
+#tutorial-panel {
+    background-color: rgba(20, 20, 20, 0.2);
+    padding: 5px;
+    margin-bottom: 30px;
+}
+
+#tutorial-panel #intro-links {
+    text-align: center;
+    border-top: 1px dotted white;
+    padding: 10px;
+    margin-top: 8px;
+    opacity: 0;
+}
+
+#tutorial-panel #intro-links a {
+    padding: 5px;
+}
+
+#tutorial-panel #intro-text {
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 @media screen and (min-width: 1100px) {
