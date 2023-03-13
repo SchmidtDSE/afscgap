@@ -380,9 +380,9 @@ class MapViz {
 
         const updatePresenceText = (target) => {
             if (isComparing) {
-                target.html("Hauls in both surveys.");
+                target.html("Area in both surveys.");
             } else {
-                target.html("Hauls taken in area.");
+                target.html("Area surveyed.");
             }
         };
 
