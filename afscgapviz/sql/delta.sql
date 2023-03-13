@@ -1,8 +1,8 @@
 SELECT
     second.year - first.year AS year,
     first.survey AS survey,
-    second.species || "-" || first.species AS species,
-    second.common_name || "-" || first.common_name AS common_name,
+    second.species || '-' || first.species AS species,
+    second.common_name || '-' || first.common_name AS common_name,
     first.geohash AS geohash,
     second.surface_temperature - first.surface_temperature AS surface_temperature,
     second.bottom_temperature - first.bottom_temperature AS bottom_temperature,

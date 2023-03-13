@@ -4,5 +4,5 @@ FROM
     availability
 WHERE
     survey = ?
-    AND species != "None"
+    AND species != 'None'
 ORDER BY species

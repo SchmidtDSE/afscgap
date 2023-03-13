@@ -117,7 +117,9 @@ def get_species_select_content(display: typing.Dict) -> str:
     )
 
 
-def build_app(app: flask.Flask, db_str: str, db_uri: bool) -> flask.Flask:
+def build_app(app: flask.Flask, db_str: typing.Optional[str] = None,
+    db_uri: typing.Optional[bool] = None,
+    conn_generator_builder=None) -> flask.Flask:
     """Register endpoints for the visualization application.
 
     Args:
@@ -128,6 +130,16 @@ def build_app(app: flask.Flask, db_str: str, db_uri: bool) -> flask.Flask:
     Returns:
         The same app after endpoint registration.
     """
+    if not db_str:
+        db_str = 'geohashes.db'
+
+    if not db_uri:
+        db_uri = False
+
+    if conn_generator_builder:
+        conn_generator = conn_generator_builder()
+    else:
+        conn_generator = lambda: sqlite3.connect(db_str, uri=db_uri)
 
     @app.route('/')
     def render_page():
@@ -140,7 +152,7 @@ def build_app(app: flask.Flask, db_str: str, db_uri: bool) -> flask.Flask:
         if state:
             state = json.loads(state)
 
-        with contextlib.closing(sqlite3.connect(db_str, uri=db_uri)) as con:
+        with contextlib.closing(conn_generator()) as con:
             return flask.render_template(
                 'viz.html',
                 displays=get_display_info(con, state)['state'],
@@ -149,7 +161,7 @@ def build_app(app: flask.Flask, db_str: str, db_uri: bool) -> flask.Flask:
 
     @app.route('/speciesSelector/<area>.html')
     def render_species_selector(area: str):
-        with contextlib.closing(sqlite3.connect(db_str, uri=db_uri)) as con:
+        with contextlib.closing(conn_generator()) as con:
             availability = survey_util.get_survey_availability(area, con)
 
         species = availability.get_species()
@@ -246,7 +258,7 @@ def build_app(app: flask.Flask, db_str: str, db_uri: bool) -> flask.Flask:
         writer.writeheader()
 
         # Thanks https://stackoverflow.com/questions/19522505
-        with contextlib.closing(sqlite3.connect(db_str, uri=db_uri)) as con:
+        with contextlib.closing(conn_generator()) as con:
             with con as cur:
                 results = cur.execute(
                     query_sql,
@@ -359,7 +371,7 @@ def build_app(app: flask.Flask, db_str: str, db_uri: bool) -> flask.Flask:
             )
             query_args = (year, survey, species_filter[1])
 
-        with contextlib.closing(sqlite3.connect(db_str, uri=db_uri)) as con:
+        with contextlib.closing(conn_generator()) as con:
             with con as cur:
                 results = list(cur.execute(
                     query_sql,
