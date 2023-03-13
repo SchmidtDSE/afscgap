@@ -66,17 +66,33 @@
                             <img src="/static/img/loading.svg" alt="loading indicator"> Loading...
                         </div>
                         <div class="no-data-message">No matching data found</div>
-                        <svg class="viz" id="viz-{{ loop.index }}"></svg>
+                        <div class="viz-holder">
+                            <svg class="viz" id="viz-{{ loop.index }}"></svg>
+                        </div>
                         <div class="graph-description"></div>
                         <div class="legend">
-                            <div>
+                            <div class="radius-legend-holder">
                                 <div class="legend-title">Radius</div>
                                 <table class="radius-legend">
                                 </table>
                             </div>
-                            <div>
+                            <div class="grid-legend-holder">
                                 <div class="legend-title">Grid Color</div>
                                 <table class="grid-legend">
+                                </table>
+                            </div>
+                            <div class="grid-diverging-legend-holder">
+                                <div class="legend-title">Grid Color</div>
+                                <table class="grid-diverging-legend">
+                                </table>
+                            </div>
+                            <div class="grid-indicator-holder">
+                                <div class="legend-title">Grid Indicator</div>
+                                <table>
+                                    <tr>
+                                        <td><span class="presence-indicator"></span></td>
+                                        <td class="presence-description">Haul taken in area.</td>
+                                    </tr>
                                 </table>
                             </div>
                         </div>

@@ -25,7 +25,7 @@ const ROTATIONS = {
     "NBS": [-1, -0.3]
 }
 
-const BASE_WIDTH = 932;
+const PRESENCE_INDICATOR_COLOR = "#0570b0";
 
 
 class MapDatum {
@@ -239,11 +239,24 @@ class MapViz {
             const speciesMessage = speciesMessages.join(" vs ");
 
             const temperatureMode = self._displaySelection.getTemperatureMode();
-            var temperatureSuffix = ".";
+            let temperatureSuffix = ".";
             if (temperatureMode !== "disabled") {
+                let tempDescription = "";
+                if (isComparing) {
+                    tempDescription = [
+                        "change in",
+                        temperatureMode,
+                        "(" + secondSpecies.getYear(),
+                        "-",
+                        firstSpecies.getYear() + ")"
+                    ].join(" ");
+                } else {
+                    tempDescription = temperatureMode;
+                }
+
                 temperatureSuffix = [
                     " with",
-                    (isComparing ? "change in " : "") + temperatureMode,
+                    tempDescription,
                     "temperatures."
                 ].join(" ");
             }
@@ -288,6 +301,11 @@ class MapViz {
     _updateLegend(scales) {
         const self = this;
 
+        const secondSelection = self._displaySelection .getSpeciesSelection2();
+        const isComparing = secondSelection.getName() !== "None";
+        const temperatureMode = self._displaySelection .getTemperatureMode();
+        const temperatureDisplayed = temperatureMode !== "disabled";
+
         const legendSelect = d3.select("#" + self._element.id)
             .select(".legend");
 
@@ -295,6 +313,8 @@ class MapViz {
             const maxCpue = scales.getSummary().getMaxCpue();
             const step = Math.round(maxCpue / 4);
             const values = [0, 1, 2, 3, 4].map((x) => x * step);
+
+            tableSelect.html("");
             
             const rows = tableSelect.selectAll("tr")
                 .data(values)
@@ -317,15 +337,15 @@ class MapViz {
             rows.append("td").html((x) => x + " kg / hectare");
         };
 
-        const buildGridLegend = (tableSelect) => {
-            const summary = scales.getSummary();
-            const minTemperature = summary.getMinTemperature();
-            const maxTemperature = summary.getMaxTemperature();
+        const buildGridLegend = (tableSelect, minTemperature, maxTemperature,
+            waterScale) => {
             const spread = maxTemperature - minTemperature;
-            const step = Math.round(spread / 3);
-            const values = [0, 1, 2, 3].map(
+            const step = Math.round(spread / 3 * 10) / 10;
+            const values = spread == 0 ? [0] : [0, 1, 2, 3].map(
                 (x) => x * step + minTemperature
             );
+
+            tableSelect.html("");
             
             const rows = tableSelect.selectAll("tr")
                 .data(values)
@@ -336,7 +356,6 @@ class MapViz {
                 .attr("width", 30)
                 .attr("height", 30)
 
-            const waterScale = scales.getWaterScale();
             svgs.append("rect")
                 .classed("grid", true)
                 .attr("x", 5)
@@ -346,12 +365,72 @@ class MapViz {
                 .attr("fill", (x) => waterScale(x))
                 .attr("opacity", 0.5);
 
-            rows.append("td").html((x) => x + " C");
+            svgs.append("rect")
+                .attr("x", 7)
+                .attr("y", 7)
+                .attr("width", 16)
+                .attr("height", 16)
+                .attr("fill", "rgba(0, 0, 0, 0)")
+                .attr("stroke-dasharray", "1,1")
+                .attr("stroke", "black")
+                .attr("stroke-width", (x) => x < 0 ? 1: 0);
+
+            rows.append("td").html((x) => (Math.round(x * 10) / 10) + " C");
         };
 
-        console.log(legendSelect.select(".radius-legend"));
+        const updatePresenceText = (target) => {
+            if (isComparing) {
+                target.html("Hauls in both surveys.");
+            } else {
+                target.html("Hauls taken in area.");
+            }
+        };
+
+        const updateVisibility = () => {
+            let showGridLegend = false;
+            let showDivergingLegend = false;
+            let showIndicator = false;
+
+            if (temperatureDisplayed) {
+                if (isComparing) {
+                    showDivergingLegend = true;
+                } else {
+                    showGridLegend = true;
+                }
+            } else {
+                showIndicator = true;
+            }
+
+            legendSelect.select(".grid-legend-holder").style(
+                "display",
+                showGridLegend ? "block" : "none"
+            );
+            legendSelect.select(".grid-diverging-legend-holder").style(
+                "display",
+                showDivergingLegend ? "block" : "none"
+            );
+            legendSelect.select(".grid-indicator-holder").style(
+                "display",
+                showIndicator ? "block" : "none"
+            );
+        };
+
+        const summary = scales.getSummary();
         buildRadiusLegend(legendSelect.select(".radius-legend"));
-        buildGridLegend(legendSelect.select(".grid-legend"));
+        buildGridLegend(
+            legendSelect.select(".grid-legend"),
+            summary.getMinTemperature(),
+            summary.getMaxTemperature(),
+            scales.getWaterScale(false)
+        );
+        buildGridLegend(
+            legendSelect.select(".grid-diverging-legend"),
+            summary.getMinTemperatureDelta(),
+            summary.getMaxTemperatureDelta(),
+            scales.getWaterScale(true)
+        );
+        updatePresenceText(legendSelect.select(".presence-description"));
+        updateVisibility();
     }
 
     _requestLand() {
@@ -451,7 +530,7 @@ class MapViz {
                 .attr("fill", (datum) => {
                     const temperature = datum.getTemperature();
                     if (temperature === null) {
-                        return "#0570b0";
+                        return PRESENCE_INDICATOR_COLOR;
                     } else {
                         return waterScale(temperature);
                     }

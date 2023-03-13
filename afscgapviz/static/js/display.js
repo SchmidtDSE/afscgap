@@ -206,7 +206,7 @@ class Display {
 
         const vizElement = self._element.querySelector(".viz");
         const expectedHeight = Math.round(
-            vizElement.getBoundingClientRect().width * 0.4
+            vizElement.getBoundingClientRect().width * 0.55
         );
         
         vizElement.style.height = expectedHeight + "px";

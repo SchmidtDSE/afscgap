@@ -1,6 +1,6 @@
 @font-face {
-    font-family: Goudy;
-    src: url(/static/font/goudy_bookletter_1911-webfont.woff);
+    font-family: Fanwood;
+    src: url(/static/font/fanwood_text-webfont.woff);
 }
 
 a {
@@ -28,7 +28,7 @@ header {
 }
 
 html {
-    font-family: Goudy;
+    font-family: Fanwood;
     font-size: 18px;
 }
 
@@ -150,7 +150,7 @@ html {
     opacity: 0.5;
 }
 
-.display .viz-panel {
+.display .viz-panel .viz-holder {
     overflow-x: auto;
 }
 
@@ -181,6 +181,14 @@ html {
 
 .display .viz-panel .legend .legend-title {
     font-size: 18px;
+}
+
+.display .viz-panel .legend .presence-indicator {
+    margin: 5px;
+    width: 20px;
+    height: 20px;
+    background-color: #0570b0;
+    display: inline-block;
 }
 
 .display .viz-panel .no-data-message {
