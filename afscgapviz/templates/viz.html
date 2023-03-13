@@ -45,7 +45,7 @@
                         </select>
                         <select class="species-type-select" autocomplete="off">
                             <option value="common" {% if display['speciesType'] == 'common' %}selected{% endif %}>Common names</option>
-                            <option value="scientific">Scientific name</option>
+                            <option value="scientific" {% if display['speciesType'] == 'scientific' %}selected{% endif %}>Scientific name</option>
                         </select>
                         <select class="temperature-select" autocomplete="off">
                             <option value="disabled" {% if display['temperature'] == 'disabled' %}selected{% endif %}>No temperatures</option>

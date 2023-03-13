@@ -44,55 +44,70 @@ def sort_names_by_lower(target: typing.List[str]) -> typing.List[str]:
     return [x["original"] for x in output]
 
 
-def get_default_displays(connection: sqlite3.Connection) -> typing.List[dict]:
-    availability = survey_util.get_survey_availability('GOA', connection)
-    species = sort_names_by_lower(availability.get_species())
-    common_names = sort_names_by_lower(availability.get_common_names())
-    years = availability.get_years()
-    return [
-        {
-            "selections": [
-                {
-                    'speciesType': 'common',
-                    'scientificName': 'Gadus macrocephalus',
-                    'commonName': 'Pacific cod',
-                    'year': 2013
-                },
-                {
-                    'speciesType': 'common',
-                    'scientificName': 'None',
-                    'commonName': 'None',
-                    'year': 2013
-                }
-            ],
-            'area': 'GOA',
-            'species': species,
-            'commonNames': common_names,
-            'years': years,
-            "temperature": "disabled"
-        },
-        {
-            "selections": [
-                {
-                    'speciesType': 'common',
-                    'scientificName': 'Gadus macrocephalus',
-                    'commonName': 'Pacific cod',
-                    'year': 2021
-                },
-                {
-                    'speciesType': 'common',
-                    'scientificName': 'None',
-                    'commonName': 'None',
-                    'year': 2021
-                }
-            ],
-            'area': 'GOA',
-            'species': species,
-            'commonNames': common_names,
-            'years': years,
-            "temperature": "disabled"
-        }
-    ]
+def get_display_info(connection: sqlite3.Connection,
+    state: typing.Optional[typing.Dict] = None) -> typing.List[dict]:
+
+    if state is None:
+        state = {'state': [
+            {
+                'selections': [
+                    {
+                        'speciesType': 'common',
+                        'scientificName': 'Gadus macrocephalus',
+                        'commonName': 'Pacific cod',
+                        'year': 2013
+                    },
+                    {
+                        'speciesType': 'common',
+                        'scientificName': 'None',
+                        'commonName': 'None',
+                        'year': 2013
+                    }
+                ],
+                'area': 'GOA',
+                'temperature': 'disabled'
+            },
+            {
+                "selections": [
+                    {
+                        'speciesType': 'common',
+                        'scientificName': 'Gadus macrocephalus',
+                        'commonName': 'Pacific cod',
+                        'year': 2021
+                    },
+                    {
+                        'speciesType': 'common',
+                        'scientificName': 'None',
+                        'commonName': 'None',
+                        'year': 2021
+                    }
+                ],
+                'area': 'GOA',
+                'temperature': 'disabled'
+            }
+        ]}
+
+    cached_results: typing.Dict[str, model.SurveyAvailability] = {}
+    def get_cached(survey: str):
+        if survey not in cached_results:
+            cached_results[survey] = survey_util.get_survey_availability(
+                survey,
+                connection
+            )
+
+        return cached_results[survey]
+
+    for record in state['state']:
+        availability = get_cached(record['area'])
+        species = sort_names_by_lower(availability.get_species())
+        common_names = sort_names_by_lower(availability.get_common_names())
+        years = availability.get_years()
+
+        record['species'] = species
+        record['commonNames'] = common_names
+        record['years'] = years
+
+    return state
 
 
 def get_species_select_content(display: typing.Dict) -> str:
@@ -121,10 +136,14 @@ def build_app(app: flask.Flask, db_str: str, db_uri: bool) -> flask.Flask:
         Returns:
             Rendered HTML template.
         """
+        state = flask.request.args.get('state', None)
+        if state:
+            state = json.loads(state)
+
         with contextlib.closing(sqlite3.connect(db_str, uri=db_uri)) as con:
             return flask.render_template(
                 'viz.html',
-                displays=get_default_displays(con),
+                displays=get_display_info(con, state)['state'],
                 get_species_select_content=get_species_select_content
             )
 
