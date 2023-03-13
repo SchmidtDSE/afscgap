@@ -163,6 +163,26 @@ html {
     margin-top: 5px;
 }
 
+.display .viz-panel .legend {
+    display: grid;
+    column-gap: 10px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-top: 10px;
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+.display .viz-panel .legend .fish-marker {
+    fill: rgba(250, 250, 250, 0.2);
+    paint-order: stroke fill;
+    stroke-width: 1;
+    stroke: black;
+}
+
+.display .viz-panel .legend .legend-title {
+    font-size: 18px;
+}
+
 .display .viz-panel .no-data-message {
     background-color: rgba(20, 20, 20, 0.2);
     text-align: center;

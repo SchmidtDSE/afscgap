@@ -183,6 +183,8 @@ class MapViz {
                 temperatureRequestor = cachedFirstRequestor;
             }
 
+            self._updateLegend(scales);
+
             self._requestLand()
                 .then(self._makeFutureRenderLand(landLayer, projection))
                 .then(temperatureRequestor)
@@ -281,6 +283,75 @@ class MapViz {
     _hideLoading() {
         const self = this;
         self._element.querySelector(".map-loading").style.display = "none";
+    }
+
+    _updateLegend(scales) {
+        const self = this;
+
+        const legendSelect = d3.select("#" + self._element.id)
+            .select(".legend");
+
+        const buildRadiusLegend = (tableSelect) => {
+            const maxCpue = scales.getSummary().getMaxCpue();
+            const step = Math.round(maxCpue / 4);
+            const values = [0, 1, 2, 3, 4].map((x) => x * step);
+            
+            const rows = tableSelect.selectAll("tr")
+                .data(values)
+                .enter()
+                .append("tr");
+
+            const svgs = rows.append("td").append("svg")
+                .attr("width", 30)
+                .attr("height", 30)
+
+            const radiusScale = scales.getRadiusScale();
+            svgs.append("ellipse")
+                .classed("fish-marker", true)
+                .classed("fish-1", true)
+                .attr("cx", 15)
+                .attr("cy", 15)
+                .attr("rx", (x) => radiusScale(x))
+                .attr("ry", (x) => radiusScale(x));
+
+            rows.append("td").html((x) => x + " kg / hectare");
+        };
+
+        const buildGridLegend = (tableSelect) => {
+            const summary = scales.getSummary();
+            const minTemperature = summary.getMinTemperature();
+            const maxTemperature = summary.getMaxTemperature();
+            const spread = maxTemperature - minTemperature;
+            const step = Math.round(spread / 3);
+            const values = [0, 1, 2, 3].map(
+                (x) => x * step + minTemperature
+            );
+            
+            const rows = tableSelect.selectAll("tr")
+                .data(values)
+                .enter()
+                .append("tr");
+
+            const svgs = rows.append("td").append("svg")
+                .attr("width", 30)
+                .attr("height", 30)
+
+            const waterScale = scales.getWaterScale();
+            svgs.append("rect")
+                .classed("grid", true)
+                .attr("x", 5)
+                .attr("y", 5)
+                .attr("width", 20)
+                .attr("height", 20)
+                .attr("fill", (x) => waterScale(x))
+                .attr("opacity", 0.5);
+
+            rows.append("td").html((x) => x + " C");
+        };
+
+        console.log(legendSelect.select(".radius-legend"));
+        buildRadiusLegend(legendSelect.select(".radius-legend"));
+        buildGridLegend(legendSelect.select(".grid-legend"));
     }
 
     _requestLand() {

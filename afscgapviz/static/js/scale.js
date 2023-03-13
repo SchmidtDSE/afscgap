@@ -14,13 +14,12 @@ const POSITIVE_TEMP_COLORS = [
 ];
 
 const SINGLE_TEMP_COLORS = [
-    '#f1eef6',
-    '#d0d1e6',
-    '#a6bddb',
-    '#74a9cf',
-    '#3690c0',
     '#0570b0',
-    '#034e7b'
+    '#3690c0',
+    '#74a9cf',
+    '#a6bddb',
+    '#d0d1e6',
+    '#f1eef6'
 ];
 
 
@@ -117,11 +116,17 @@ class Summary {
 
 class Scales {
 
-    constructor(radiusScale, waterScale, waterDivergingScale) {
+    constructor(summary, radiusScale, waterScale, waterDivergingScale) {
         const self = this;
+        self._summary = summary;
         self._radiusScale = radiusScale;
         self._waterScale = waterScale;
         self._waterDivergingScale = waterDivergingScale;
+    }
+
+    getSummary() {
+        const self = this;
+        return self._summary;
     }
 
     getRadiusScale() {
@@ -260,6 +265,7 @@ class CommonScale {
                 };
 
                 resolve(new Scales(
+                    combined,
                     radiusScale,
                     waterScale,
                     waterDivergingScale
