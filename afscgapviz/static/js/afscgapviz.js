@@ -12,12 +12,15 @@ class VizPresenter {
         document.getElementById("intro-loading").style.display = "block";
         document.getElementById("intro-links").style.display = "none";
 
-        self._commonScale = new CommonScale(() => {
-            return [
-                () => self._display1.getSelection(),
-                () => self._display2.getSelection()
-            ];
-        });
+        self._commonScale = new CommonScale(
+            () => {
+                return [
+                    () => self._display1.getSelection(),
+                    () => self._display2.getSelection()
+                ];
+            },
+            () => self._getDynamicScaling()
+        );
 
         self._display1 = new Display(
             1,
@@ -49,6 +52,18 @@ class VizPresenter {
             });
 
         window.addEventListener("resize", () => { self._resized = true; });
+
+        document.getElementById("dynamic-scales-check").addEventListener(
+            "change",
+            () => self._refreshAllDatasets()
+        );
+    }
+
+    _getDynamicScaling() {
+        const self = this;
+
+        const checkbox = document.getElementById("dynamic-scales-check");
+        return checkbox.checked;
     }
 
     _refreshAllDatasets() {
@@ -122,13 +137,13 @@ class VizPresenter {
 
         d3.select("#displays").transition().style("opacity", 1);
 
-        console.log(window.location.href);
         if (window.location.href.indexOf("?state") == -1) {
             document.getElementById("intro-links").style.display = "block";
             self._intro = new Intro();
         } else {
             self._intro = null;
             document.getElementById("tutorial-panel").style.display = "none";
+            document.getElementById("dynamic-scales-options").style.opacity = 1;
         }
     }
 

@@ -131,6 +131,15 @@
                 </div>
                 {% endfor %}
             </div>
+            <div class="dynamic-scales-options" id="dynamic-scales-options">
+                <div><input type="checkbox" id="dynamic-scales-check" checked> Dynamic scaling</div>
+                <details class="small">
+                    <summary>More info about dynamic scaling.</summary>
+                    <div>
+                        The same scales are always used on the two displays but, by default, the circle size and color scales are recalculated using the min and max values for the currently active filters in the visualization. In other words, the colors and circle sizes are scaled for the data currently visualized to show contrast and not for the min / max of all data available. If you don't want this behavior, a fixed set of min and max values can be used for the scale for all visualizations by unchecking the "dynamic scaling" option (0 - 1000 kg / hectare CPUE, -2 to 14 C temperature, -5 to 5 C temperature delta). In general, dynamic scaling is recommended.
+                    </div>
+                </details>
+            </div>
         </section>
         <footer>
             <a href="https://pyafscgap.org/terms.html">Notices, licenses, privacy >></a> / <a href="https://pyafscgap.org/sitemap.html">Sitemap >></a></p>

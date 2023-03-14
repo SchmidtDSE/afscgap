@@ -167,6 +167,10 @@ class MapViz {
         };
 
         const findGeohash = (dataset) => {
+            if (dataset === null) {
+                return null;
+            }
+            
             const matching = dataset.filter(
                 (x) => x.getGeohash() === geohash
             );

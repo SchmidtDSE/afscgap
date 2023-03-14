@@ -149,10 +149,11 @@ class Scales {
 
 class CommonScale {
 
-    constructor(getGetters) {
+    constructor(getGetters, getDynamicScaling) {
         const self = this;
 
         self._getGetters = getGetters;
+        self._getDynamicScaling = getDynamicScaling;
         self._cached = null;
         self._cachedKey = null;
     }
@@ -162,7 +163,7 @@ class CommonScale {
 
         const newKey = self._getGetters().map(
             (x) => x().getKey()
-        ).join("/");
+        ).join("/") + "/" + self._getDynamicScaling();
 
         if (self._cachedKey === newKey) {
             return new Promise((resolve, reject) => {
@@ -214,13 +215,32 @@ class CommonScale {
         const self = this;
 
         return new Promise((resolve, reject) => {
-            const promises = self._getGetters().map(
-                (x) => self._getSummary(x)
-            );
+            let promises = null;
+
+            if (self._getDynamicScaling()) {
+                promises = self._getGetters().map(
+                    (x) => self._getSummary(x)
+                );
+            } else {
+                promises = [
+                    new Promise((resolve, reject) => {
+                        const summary = new Summary(
+                            0,
+                            1000,
+                            -2,
+                            14,
+                            -5,
+                            5
+                        );
+                        resolve(summary);
+                    })
+                ];
+            }
+
             Promise.all(promises).then((values) => {
                 const combined = values.reduce((a, b) => a.combine(b));
 
-                const isDense = self.getIsDense();
+                const isDense = self.getIsDense() || self._getDynamicScaling();
                 const maxArea = isDense ? MAX_AREA_DENSE : MAX_AREA_SPARSE;
 
                 const areaScale = d3.scaleLinear()

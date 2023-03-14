@@ -205,6 +205,30 @@ html {
     display: none;
 }
 
+.dynamic-scales-options {
+    text-align: center;
+    margin-top: 50px;
+    margin-bottom: 50px;
+    opacity: 0;
+    padding: 20px;
+    width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid #303030;
+    color: #E0E0E0;
+}
+
+.dynamic-scales-options .small {
+    font-size: 15px;
+}
+
+.dynamic-scales-options .small div {
+    border-top: 1px dotted #303030;
+    margin-top: 5px;
+    padding-top: 5px;
+    text-align: left;
+}
+
 .loading {
     text-align: center;
     display: none;
