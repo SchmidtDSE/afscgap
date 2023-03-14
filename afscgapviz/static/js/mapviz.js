@@ -453,10 +453,13 @@ class MapViz {
                         parseFloat(target['latHighDegrees'])
                     ]);
 
-                    const x = lowPoint[0];
-                    const y = lowPoint[1];
-                    const width = highPoint[0] - lowPoint[0];
-                    const height = lowPoint[1] - highPoint[1];
+                    const nativeWidth = highPoint[0] - lowPoint[0];
+                    const offset = nativeWidth > 10;
+
+                    const x = lowPoint[0] + (offset ? 1 : 0);
+                    const y = lowPoint[1] + (offset ? 1 : 0);
+                    const width = highPoint[0] - lowPoint[0] - (offset ? 2 : 0);
+                    const height = lowPoint[1] - highPoint[1] - (offset ? 3 : 0);
 
                     const weight = parseFloat(target["weightKg"]);
                     const area = parseFloat(target["areaSweptHectares"])
