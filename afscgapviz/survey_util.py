@@ -9,7 +9,7 @@ def get_list(survey: str, filename: str,
     connection: sqlite3.Connection) -> typing.List[str]:
     sql = sql_util.get_sql(filename)
 
-    cursor = connection:
+    cursor = connection.cursor()
     results_iter = cursor.execute(sql, (survey,))
     results = [str(x[0]) for x in results_iter]
     cursor.close()
