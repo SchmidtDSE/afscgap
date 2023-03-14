@@ -117,6 +117,10 @@ class MapViz {
         self._onGeohashEnter = onGeohashEnter;
         self._onGeohashLeave = onGeohashLeave;
 
+        self._cachedTempDataset = null;
+        self._cachedFirstDataset = null;
+        self._cachedSecondDataset = null;
+
         self._requestBuild();
     }
 
@@ -130,7 +134,104 @@ class MapViz {
     selectGeohash(geohash) {
         const self = this;
 
-        console.log(geohash);
+        const graphDescriptionInner = self._element.querySelector(
+            ".graph-description-inner"
+        );
+        const positionDisplay = self._element.querySelector(
+            ".position-hover-display"
+        );
+        const temperatureDisplay = self._element.querySelector(
+            ".temperature-hover-display"
+        );
+        const species1Display = self._element.querySelector(
+            ".species-1-hover-display"
+        );
+        const species2Display = self._element.querySelector(
+            ".species-2-hover-display"
+        );
+
+        if (geohash === null) {
+            positionDisplay.innerHTML = "";
+            temperatureDisplay.innerHTML = "";
+            species1Display.innerHTML = "";
+            species2Display.innerHTML = "";
+            graphDescriptionInner.style.display = "block";
+            self._selection.selectAll(".hover-target").style("opacity", 0);
+            return;
+        }
+
+        graphDescriptionInner.style.display = "none";
+
+        const displayGeohash = () => {
+            positionDisplay.innerHTML = "Geohash: " + geohash;
+        };
+
+        const findGeohash = (dataset) => {
+            const matching = dataset.filter(
+                (x) => x.getGeohash() === geohash
+            );
+            
+            if (matching.length == 0) {
+                return null;
+            }
+
+            return matching[0];
+        };
+        
+        const displayTemperature = () => {
+            const matchingRecord = findGeohash(self._cachedTempDataset);
+
+            if (matchingRecord === null) {
+                return;
+            }
+
+            const temperature = matchingRecord.getTemperature();
+            const roundedTemp = Math.round(temperature * 10) / 10;
+            const message = "Temperature: " + roundedTemp + " C";
+            temperatureDisplay.innerHTML = message;
+        };
+
+        const displaySpecies = (dataset, element, speciesSelection) => {
+            const matchingRecord = findGeohash(dataset);
+
+            if (speciesSelection.getName() === "None") {
+                return;
+            }
+
+            const speciesDescription = [
+                speciesSelection.getName(),
+                "(" + speciesSelection.getYear() + ")"
+            ].join(" ");
+
+            if (matchingRecord === null) {
+                element.innerHTML = speciesDescription + ": Not Surveyed";
+                return;
+            }
+
+            const cpue = matchingRecord.getCpue();
+            const roundedCpue = Math.round(cpue * 100) / 100;
+            const cpueStr = roundedCpue + " kg/hectare";
+            const message = speciesDescription + ": " + cpueStr;
+            element.innerHTML = message;
+        };
+
+        displayGeohash();
+        if (self._displaySelection.getTemperatureMode() !== "disabled") {
+            displayTemperature();
+        }
+        displaySpecies(
+            self._cachedFirstDataset,
+            species1Display,
+            self._displaySelection.getSpeciesSelection1()
+        );
+        displaySpecies(
+            self._cachedSecondDataset,
+            species2Display,
+            self._displaySelection.getSpeciesSelection2()
+        );
+
+        self._selection.selectAll(".hover-target")
+            .style("opacity", (x) => x.getGeohash() === geohash ? 1 : 0);
     }
 
     _requestBuild() {
@@ -204,12 +305,15 @@ class MapViz {
                 .then(self._makeFutureInterpretPoints(projection, temperatureMode))
                 .then(self._makeFutureRenderWater(waterLayer, negativeLayer, projection, waterScale))
                 .then(self._makeFutureAddHoverTargets(hoverLayer, projection))
+                .then((dataset) => { self._cachedTempDataset = dataset; })
                 .then(cachedFirstRequestor)
                 .then(self._makeFutureInterpretPoints(projection, temperatureMode))
                 .then(self._makeFutureRenderFish(fishLayer1, projection, radiusScale))
+                .then((dataset) => { self._cachedFirstDataset = dataset; })
                 .then(self._makeFutureDataRequest(survey, selection2))
                 .then(self._makeFutureInterpretPoints(projection, temperatureMode))
                 .then(self._makeFutureRenderFish(fishLayer2, projection, radiusScale))
+                .then((dataset) => { self._cachedSecondDataset = dataset; })
                 .then(() => self._hideLoading())
                 .then(() => self._updateTitles())
                 .then(() => self._onRender());
@@ -236,7 +340,9 @@ class MapViz {
         }
 
         const updateTitle = (hasData) => {
-            const target = self._element.querySelector(".graph-description");
+            const target = self._element.querySelector(
+                ".graph-description-inner"
+            );
             const prefix = self._displaySelection.getSurvey() + ": ";
             
             const firstSpecies = self._displaySelection.getSpeciesSelection1();
@@ -454,51 +560,49 @@ class MapViz {
 
     _makeFutureInterpretPoints(projection, temperatureMode) {
         return (dataset) => {
-            return new Promise((resolve, reject) => {
-                const interpreted = dataset.map((target) => {
-                    const lowPoint = projection([
-                        parseFloat(target['lngLowDegrees']),
-                        parseFloat(target['latLowDegrees'])
-                    ]);
+            const interpreted = dataset.map((target) => {
+                const lowPoint = projection([
+                    parseFloat(target['lngLowDegrees']),
+                    parseFloat(target['latLowDegrees'])
+                ]);
 
-                    const highPoint = projection([
-                        parseFloat(target['lngHighDegrees']),
-                        parseFloat(target['latHighDegrees'])
-                    ]);
+                const highPoint = projection([
+                    parseFloat(target['lngHighDegrees']),
+                    parseFloat(target['latHighDegrees'])
+                ]);
 
-                    const nativeWidth = highPoint[0] - lowPoint[0];
-                    const offset = nativeWidth > 10;
+                const nativeWidth = highPoint[0] - lowPoint[0];
+                const offset = nativeWidth > 10;
 
-                    const x = lowPoint[0] + (offset ? 1 : 0);
-                    const y = lowPoint[1] + (offset ? 1 : 0);
-                    const width = highPoint[0] - lowPoint[0] - (offset ? 2 : 0);
-                    const height = lowPoint[1] - highPoint[1] - (offset ? 3 : 0);
+                const x = lowPoint[0] + (offset ? 1 : 0);
+                const y = lowPoint[1] + (offset ? 1 : 0);
+                const width = highPoint[0] - lowPoint[0] - (offset ? 2 : 0);
+                const height = lowPoint[1] - highPoint[1] - (offset ? 3 : 0);
 
-                    const weight = parseFloat(target["weightKg"]);
-                    const area = parseFloat(target["areaSweptHectares"])
-                    const cpue = weight / area;
+                const weight = parseFloat(target["weightKg"]);
+                const area = parseFloat(target["areaSweptHectares"])
+                const cpue = weight / area;
 
-                    const temperature = {
-                        "bottom": target["bottomTemperatureC"],
-                        "surface": target["surfaceTemperatureC"],
-                        "disabled": null
-                    }[temperatureMode];
+                const temperature = {
+                    "bottom": target["bottomTemperatureC"],
+                    "surface": target["surfaceTemperatureC"],
+                    "disabled": null
+                }[temperatureMode];
 
-                    const geohash = target["geohash"];
+                const geohash = target["geohash"];
 
-                    return new MapDatum(
-                        geohash,
-                        x,
-                        y,
-                        width,
-                        height,
-                        temperature,
-                        cpue
-                    );
-                });
-
-                resolve(interpreted);
+                return new MapDatum(
+                    geohash,
+                    x,
+                    y,
+                    width,
+                    height,
+                    temperature,
+                    cpue
+                );
             });
+
+            return interpreted;
         };
     }
 
@@ -506,20 +610,18 @@ class MapViz {
         const self = this;
 
         return (geojson) => {
-            return new Promise((resolve, reject) => {
-                const generator = d3.geoPath().projection(projection);
-                
-                landLayer.html("");
+            const generator = d3.geoPath().projection(projection);
+            
+            landLayer.html("");
 
-                const path = landLayer.selectAll("path")
-                    .data(geojson.features)
-                    .enter()
-                    .append("path");
+            const path = landLayer.selectAll("path")
+                .data(geojson.features)
+                .enter()
+                .append("path");
 
-                path.attr("d", generator);
+            path.attr("d", generator);
 
-                resolve(geojson);
-            });
+            return geojson;
         };
     }
 
@@ -577,17 +679,15 @@ class MapViz {
         };
 
         return (dataset) => {
-            return new Promise((resolve, reject) => {
-                buildWaterTiles(dataset);
-                buildNegativeIndicators(dataset);
-                resolve(dataset);
-            });
+            buildWaterTiles(dataset);
+            buildNegativeIndicators(dataset);
+            return dataset;
         };
     }
 
     _makeFutureAddHoverTargets(hoverLayer, projection) {
         const self = this;
-        
+
         const builTiles = (dataset) => {
             hoverLayer.html("");
             hoverLayer.selectAll(".grid")
@@ -595,6 +695,7 @@ class MapViz {
                 .enter()
                 .append("rect")
                 .classed("grid", true)
+                .classed("hover-target", true)
                 .attr("x", (datum) => datum.getX())
                 .attr("y", (datum) => datum.getY())
                 .attr("width", (datum) => datum.getWidth())
@@ -608,40 +709,36 @@ class MapViz {
         };
 
         return (dataset) => {
-            return new Promise((resolve, reject) => {
-                builTiles(dataset);
-                resolve(dataset);
-            });
+            builTiles(dataset);
+            return dataset;
         };
     }
 
     _makeFutureRenderFish(layer, projection, radiusScale) {
         return (dataset) => {
-            return new Promise((resolve, reject) => {
-                const datasetAllowed = dataset.filter(
-                    (x) => !isNaN(x.getCenterX())
-                );
+            const datasetAllowed = dataset.filter(
+                (x) => !isNaN(x.getCenterX())
+            );
 
-                const bound = layer.selectAll(".fish-marker")
-                    .data(datasetAllowed, (x) => x.getGeohash());
+            const bound = layer.selectAll(".fish-marker")
+                .data(datasetAllowed, (x) => x.getGeohash());
 
-                bound.exit().remove();
+            bound.exit().remove();
 
-                bound.enter()
-                    .append("ellipse")
-                    .attr("cx", (datum) => datum.getCenterX())
-                    .attr("cy", (datum) => datum.getCenterY())
-                    .classed("fish-marker", true);
+            bound.enter()
+                .append("ellipse")
+                .attr("cx", (datum) => datum.getCenterX())
+                .attr("cy", (datum) => datum.getCenterY())
+                .classed("fish-marker", true);
 
-                const markers = layer.selectAll(".fish-marker")
-                markers.transition()
-                    .attr("cx", (datum) => datum.getCenterX())
-                    .attr("cy", (datum) => datum.getCenterY())
-                    .attr("rx", (datum) => radiusScale(datum.getCpue()))
-                    .attr("ry", (datum) => radiusScale(datum.getCpue()));
+            const markers = layer.selectAll(".fish-marker")
+            markers.transition()
+                .attr("cx", (datum) => datum.getCenterX())
+                .attr("cy", (datum) => datum.getCenterY())
+                .attr("rx", (datum) => radiusScale(datum.getCpue()))
+                .attr("ry", (datum) => radiusScale(datum.getCpue()));
 
-                resolve(dataset);
-            });
+            return dataset;
         };
     }
 
