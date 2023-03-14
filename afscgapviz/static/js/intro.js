@@ -5,7 +5,7 @@ const STEP_TEXTS = [
     "Contrast this with the cod numbers from 2021 and note that the catches have gotten smaller, espeically around Kodiak Island in the middle. For many \"hauls\" in the same area, surveys caught fewer cod in 2021 compared to 2013.",
     "It turns out that stocks decreased so much that <a href='https://www.npr.org/2019/12/08/785634169/alaska-cod-fishery-closes-and-industry-braces-for-ripple-effect' target='_blank'>the federal cod fishery closed in 2020</a>. What happened here?",
     "I have a hunch. Let's look at \"The Blob\" warming event which took place 2013-2016. Try changing the date on the second display from 2021 to 2015 to see what was happing mid-event.",
-    "Comparing 2013 to 2015, signs of increased pressure start to show up even before the warming event finished. That in mind, I wonder how temperatures changed geographically.",
+    "Comparing 2013, signs of increased pressure start to show up even in 2015. That in mind, I wonder how temperatures changed geographically.",
     "Specifically, let's look at temperature readings taken at the bottom by selecting \"Bottom temperatures\" below.",
     "Now, let's do the same on the other display. Go ahead and select bottom temperatures again in the other dropdown. How did they change between years?",
     "It looks like there may have been some warming in the Gulf of Alaska. I wonder if this was region-wide.",
