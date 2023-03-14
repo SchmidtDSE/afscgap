@@ -6,6 +6,7 @@ class VizPresenter {
         self._displaysLoaded = 0;
         self._resized = false;
         self._intro = null;
+        self._selectedGeohash = null;
 
         document.getElementById("displays").style.opacity = 0;
         document.getElementById("intro-loading").style.display = "block";
@@ -24,7 +25,9 @@ class VizPresenter {
             self._commonScale,
             () => self._refreshAllDatasets(),
             () => self._refreshAllSelections(),
-            () => self._checkToStartIntro()
+            () => self._checkToStartIntro(),
+            (geohash) => self._onGeohashEnter(geohash),
+            (geohash) => self._onGeohashLeave(geohash)
         );
         self._display2 = new Display(
             2,
@@ -32,7 +35,9 @@ class VizPresenter {
             self._commonScale,
             () => self._refreshAllDatasets(),
             () => self._refreshAllSelections(),
-            () => self._checkToStartIntro()
+            () => self._checkToStartIntro(),
+            (geohash) => self._onGeohashEnter(geohash),
+            (geohash) => self._onGeohashLeave(geohash)
         );
 
         document.getElementById("share-link").addEventListener(
@@ -143,6 +148,25 @@ class VizPresenter {
             self._intro.forceSync();
             self._resized = false;
         }
+    }
+
+    _onGeohashEnter(geohash) {
+        const self = this;
+        self._selectGeohash(geohash);
+    }
+
+    _onGeohashLeave(geohash) {
+        const self = this;
+        if (geohash === self._selectedGeohash) {
+            self._selectGeohash(null);
+        }
+    }
+
+    _selectGeohash(geohash) {
+        const self = this;
+        self._selectedGeohash = geohash;
+        self._display1.selectGeohash(geohash);
+        self._display2.selectGeohash(geohash);
     }
 
 }

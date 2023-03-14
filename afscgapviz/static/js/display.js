@@ -45,7 +45,7 @@ class DisplaySelection {
 class Display {
 
     constructor(number, element, commonScale, onDatasetChange,
-        onSelectionChange, onRender) {
+        onSelectionChange, onRender, onGeohashEnter, onGeohashLeave) {
         const self = this;
 
         self._number = number;
@@ -54,6 +54,9 @@ class Display {
         self._onDatasetChange = onDatasetChange;
         self._onSelectionChange = onSelectionChange;
         self._onRender = onRender;
+        self._onGeohashEnter = onGeohashEnter;
+        self._onGeohashLeave = onGeohashLeave;
+        self._mapViz = null;
 
         self._buildSpeciesDisplays();
         self._rebuildMap();
@@ -77,6 +80,16 @@ class Display {
             speciesSelection1,
             speciesSelection2
         );
+    }
+
+    selectGeohash(geohash) {
+        const self = this;
+        
+        if (self._mapViz === null) {
+            return;
+        }
+
+        self._mapViz.selectGeohash(geohash);
     }
 
     _buildSpeciesDisplays() {
@@ -228,7 +241,9 @@ class Display {
             self._element.querySelector(".viz-panel"),
             self.getSelection(),
             self._commonScale,
-            self._onRender
+            self._onRender,
+            self._onGeohashEnter,
+            self._onGeohashLeave
         );
     }
 

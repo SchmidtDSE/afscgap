@@ -132,6 +132,14 @@ html {
     stroke: #333;
 }
 
+.display .viz .hover .grid {
+    fill: rgba(0, 0, 0, 0);
+    stroke-width: 1.2;
+    opacity: 0;
+    stroke: white;
+    paint-order: stroke fill;
+}
+
 .display .viz .land {
     fill: none;
     paint-order: stroke fill;

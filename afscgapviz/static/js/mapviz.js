@@ -101,7 +101,8 @@ class MapDatum {
 
 class MapViz {
 
-    constructor(element, displaySelection, commonScale, onRender) {
+    constructor(element, displaySelection, commonScale, onRender,
+        onGeohashEnter, onGeohashLeave) {
         const self = this;
 
         self._element = element;
@@ -113,6 +114,9 @@ class MapViz {
 
         self._commonScale = commonScale;
 
+        self._onGeohashEnter = onGeohashEnter;
+        self._onGeohashLeave = onGeohashLeave;
+
         self._requestBuild();
     }
 
@@ -121,6 +125,12 @@ class MapViz {
 
         self._displaySelection = displaySelection;
         self._redraw();
+    }
+
+    selectGeohash(geohash) {
+        const self = this;
+
+        console.log(geohash);
     }
 
     _requestBuild() {
@@ -137,6 +147,7 @@ class MapViz {
         const fishLayer2 = self._selection.append("g")
             .classed("fish", true)
             .classed("fish-2", true);
+        const hoverLayer = self._selection.append("g").classed("hover", true);
 
         self._redraw();
     }
@@ -161,6 +172,7 @@ class MapViz {
             const waterScale = scales.getWaterScale(useComparison);
 
             const waterLayer = self._selection.select(".water");
+            const hoverLayer = self._selection.select(".hover");
             const negativeLayer = self._selection.select(".negative-markers");
             const landLayer = self._selection.select(".land");
             const fishLayer2 = self._selection.select(".fish-2");
@@ -191,6 +203,7 @@ class MapViz {
                 .then(temperatureRequestor)
                 .then(self._makeFutureInterpretPoints(projection, temperatureMode))
                 .then(self._makeFutureRenderWater(waterLayer, negativeLayer, projection, waterScale))
+                .then(self._makeFutureAddHoverTargets(hoverLayer, projection))
                 .then(cachedFirstRequestor)
                 .then(self._makeFutureInterpretPoints(projection, temperatureMode))
                 .then(self._makeFutureRenderFish(fishLayer1, projection, radiusScale))
@@ -515,7 +528,7 @@ class MapViz {
 
         const buildWaterTiles = (dataset) => {
             const bound = waterLayer.selectAll(".grid")
-                .data(dataset, (x) => x.getGeohash());
+                .data(dataset, (datum) => datum.getGeohash());
 
             bound.exit().remove();
 
@@ -550,8 +563,8 @@ class MapViz {
             negativeLayer.html("");
             const negativeMarkers = negativeLayer.selectAll(".grid")
                 .data(
-                    dataset.filter((x) => x.getTemperature() < 0),
-                    (x) => x.getGeohash()
+                    dataset.filter((datum) => datum.getTemperature() < 0),
+                    (datum) => datum.getGeohash()
                 )
                 .enter()
                 .append("rect")
@@ -567,6 +580,36 @@ class MapViz {
             return new Promise((resolve, reject) => {
                 buildWaterTiles(dataset);
                 buildNegativeIndicators(dataset);
+                resolve(dataset);
+            });
+        };
+    }
+
+    _makeFutureAddHoverTargets(hoverLayer, projection) {
+        const self = this;
+        
+        const builTiles = (dataset) => {
+            hoverLayer.html("");
+            hoverLayer.selectAll(".grid")
+                .data(dataset, (datum) => datum.getGeohash())
+                .enter()
+                .append("rect")
+                .classed("grid", true)
+                .attr("x", (datum) => datum.getX())
+                .attr("y", (datum) => datum.getY())
+                .attr("width", (datum) => datum.getWidth())
+                .attr("height", (datum) => datum.getHeight())
+                .on("mouseover", (event, datum) => {
+                    self._onGeohashEnter(datum.getGeohash());
+                })
+                .on("mouseout", (event, datum) => {
+                    self._onGeohashLeave(datum.getGeohash());
+                });
+        };
+
+        return (dataset) => {
+            return new Promise((resolve, reject) => {
+                builTiles(dataset);
                 resolve(dataset);
             });
         };
