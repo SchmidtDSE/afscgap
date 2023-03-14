@@ -4,6 +4,8 @@ class VizPresenter {
         const self = this;
 
         self._displaysLoaded = 0;
+        self._resized = false;
+        self._intro = null;
 
         document.getElementById("displays").style.opacity = 0;
         document.getElementById("intro-loading").style.display = "block";
@@ -40,6 +42,8 @@ class VizPresenter {
                 navigator.clipboard.writeText(window.location.href);
                 alert("Copied sharable URL to clipboard.");
             });
+
+        window.addEventListener("resize", () => { self._resized = true; });
     }
 
     _refreshAllDatasets() {
@@ -127,11 +131,17 @@ class VizPresenter {
         const self = this;
 
         self._displaysLoaded++;
-
-        if (self._displaysLoaded > 2) {
-            return;
-        } else if (self._displaysLoaded == 2) {
+        const shouldInitIntro = self._displaysLoaded == 2;
+        if (shouldInitIntro) {
             self._startIntro();
+            return;
+        }
+
+        const bothLoaded = self._displaysLoaded % 2 == 0;
+        const introDone = self._intro === null || self._intro.isDone();
+        if (self._resized && bothLoaded && !introDone) {
+            self._intro.forceSync();
+            self._resized = false;
         }
     }
 

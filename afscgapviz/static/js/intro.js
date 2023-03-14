@@ -13,14 +13,13 @@ const STEP_TEXTS = [
     "Specifically, go ahead and select 2015 in the Gulf of Alaska and 2014 in the Aleutian Islands (Pacific cod in both). Note that a survey does not happen in every region every year.",
     "The temperatures in some areas of the Gulf of Alaska appear to have been higher at the time of haul compared to the Aleutian Islands.",
     "To better see this, let's overlay the data. On the Gulf of Alaska display, let's put Pacific cod 2013 as Scatter 1 and Pacific cod 2015 as Scatter 2. Then, let's do 2014 and 2016 in the Aleutian Islands.",
-    "With these temperature changes displayed, how much did temperature change in each region? How did the catch change in areas of warming? <a href='https://cdnsciencepub.com/doi/full/10.1139/cjfas-2019-0238'>Research suggests that warming matters quite a lot in a region but it's a complex phenomenon impacting spawning habitat</a>. The Gulf of Alaska with widespread warming may have been under more pressure than the Aleutian Islands.",
+    "With these temperature changes displayed, how much did temperature change in each region? How did the catch change in areas of warming?",
+    "For Pacific cod, <a href='https://cdnsciencepub.com/doi/full/10.1139/cjfas-2019-0238'>research suggests that warming matters quite a lot in a region but it's a complex phenomenon impacting spawning habitat</a>. The Gulf of Alaska with widespread warming may have been under more pressure than the Aleutian Islands.",
     "This is a lot of info on Pacific cod. How about walleye pollock? Did that species see something similar happen? Go ahead and explore that species below.",
     "That's it for the intro! Want to learn more about this? See our <a target='_blank' href='https://mybinder.org/v2/gh/SchmidtDSE/afscgap/main?urlpath=/tree/index.ipynb'>example notebook</a>."
 ];
 
-let allowSpecies2 = true;
-let disableResizeRefresh = false;
-let disableDeepLink = false;
+const PRESERVE_BOUNDS = ["#display-2"];
 
 
 class Intro {
@@ -30,9 +29,6 @@ class Intro {
         self._step = 0;
 
         self._registerCallbacks();
-
-        document.getElementById("intro-text").innerHTML = STEP_TEXTS[0];
-        d3.select("#intro-links").transition().style("opacity", 1);
 
         self._stepActions = [
             [],
@@ -51,23 +47,54 @@ class Intro {
             [".species-2"],
             [".download-panel"],
             [],
+            [],
             []
         ];
+
+        allowSpecies2 = false;
+        disableDeepLink = true;
+
+        self.forceSync();
+    }
+
+    isDone() {
+        const self = this;
+        return self._step == STEP_TEXTS.length - 1;
+    }
+
+    forceSync() {
+        const self = this;
+
+        document.getElementById("intro-text").innerHTML = STEP_TEXTS[
+            self._step
+        ];
+        d3.select("#intro-links").transition().style("opacity", 1);
 
         self._stepActions.forEach((actions) => {
             actions.forEach((action) => {
                 d3.selectAll(action).attr("originalDisplay", function() {
                     return this.style.display;
                 });
-                d3.selectAll(action).style("display", "none");
+
+                if (PRESERVE_BOUNDS.indexOf(action) == -1) {
+                    d3.selectAll(action).style("display", "none");
+                }
+
                 d3.selectAll(action).style("opacity", "0");
             });
         });
 
+        for (let i = 0; i <= self._step; i++) {
+            self._stepActions[i].forEach((action, i) => {
+                d3.selectAll(action).style("display", function() {
+                    return this.originalDisplay;
+                });
+                d3.selectAll(action).transition()
+                    .style("opacity", 1);
+            });
+        }
+
         self._updateLinkVisibility();
-        allowSpecies2 = false;
-        disableResizeRefresh = true;
-        disableDeepLink = true;
     }
 
     _registerCallbacks() {
@@ -102,7 +129,6 @@ class Intro {
 
         document.getElementById("tutorial-panel").style.display = "none";
         allowSpecies2 = true;
-        disableResizeRefresh = false;
         disableDeepLink = false;
     }
 
@@ -133,10 +159,9 @@ class Intro {
 
         if (self._stepActions[self._step].indexOf(".species-2") != -1) {
             allowSpecies2 = true;
-            disableResizeRefresh = false;
         }
 
-        if (self._step == STEP_TEXTS.length - 1) {
+        if (self.isDone()) {
             disableDeepLink = false;
         }
 
@@ -158,7 +183,7 @@ class Intro {
             hide("back-link-holder");
             show("next-link-holder");
             show("skip-intro-link-holder");
-        } else if (self._step == STEP_TEXTS.length - 1) {
+        } else if (self.isDone()) {
             show("back-link-holder");
             hide("next-link-holder");
             hide("skip-intro-link-holder");

@@ -2,15 +2,15 @@ const MAX_AREA_SPARSE = 150;
 const MAX_AREA_DENSE = 200;
 
 const NEGATIVE_TEMP_COLORS = [
-    '#fb6a4a',
-    '#fcae91',
-    '#fee5d9'
+    '#d6604d',
+    '#f4a582',
+    '#fddbc7'
 ];
 
 const POSITIVE_TEMP_COLORS = [
-    '#eff3ff',
-    '#bdd7e7',
-    '#6baed6'
+    '#d1e5f0',
+    '#92c5de',
+    '#4393c3'
 ];
 
 const SINGLE_TEMP_COLORS = [
