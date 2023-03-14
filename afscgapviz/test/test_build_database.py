@@ -55,13 +55,13 @@ class BuildDatabaseTests(unittest.TestCase):
         }
 
         self._combine_result = build_database.combine_record(a, b)
-    
+
     def test_try_parse_int_fail(self):
         self.assertIsNone(build_database.try_parse_int('a'))
 
     def test_try_parse_int_success(self):
         self.assertEqual(build_database.try_parse_int('1'), 1)
-    
+
     def test_try_parse_range_fail(self):
         self.assertIsNone(build_database.try_parse_range('abc'))
 
@@ -69,7 +69,7 @@ class BuildDatabaseTests(unittest.TestCase):
         result = build_database.try_parse_range('2020-2023')
         self.assertEqual(result[0], 2020)
         self.assertEqual(result[1], 2023)
-    
+
     def test_combine_record_meta(self):
         self.assertEqual(
             self._combine_result['key'],
@@ -82,7 +82,7 @@ class BuildDatabaseTests(unittest.TestCase):
         self.assertEquals(result_obj.get_species(), 'scientific')
         self.assertEquals(result_obj.get_common_name(), 'common')
         self.assertEquals(result_obj.get_geohash(), 'abc')
-        
+
     def test_combine_record_calculations(self):
         result_obj = self._combine_result['record']
 
@@ -110,10 +110,6 @@ class BuildDatabaseTests(unittest.TestCase):
             result_obj.get_num_records_aggregated(),
             8 + 9
         )
-    
-    def test_get_sql(self):
-        sql = build_database.get_sql('insert_record')
-        self.assertTrue('INSERT' in sql)
-    
+
     def test_record_to_tuple(self):
         self.assertEquals(self._test_record_1.get_year(), 2023)

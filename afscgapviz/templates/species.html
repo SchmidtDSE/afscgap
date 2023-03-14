@@ -1,0 +1,34 @@
+{% for selection in display['selections'] %}
+<div class="species species-{{ loop.index }}" id="display{{ display_index }}-species-{{ loop.index }}" >
+    <div>
+        <span class="color-display color-{{ loop.index }}"></span> Scatter {{ loop.index }}
+    </div>
+    <div>
+        <select class="scientific-name-select name-select" autocomplete="off">
+            {% if loop.index > 1 %}
+            <option value="None" {% if selection['scientificName'] == "None" %}selected{% endif %}>None</option>
+            {% endif %}
+            {% for name in display['species'] %}
+            <option value="{{ name }}" {% if selection['scientificName'] == name %}selected{% endif %}>{{ name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div>
+        <select class="common-name-select name-select" autocomplete="off">
+            {% if loop.index > 1 %}
+            <option value="None" {% if selection['commonName'] == "None" %}selected{% endif %}>None</option>
+            {% endif %}
+            {% for name in display['commonNames'] %}
+            <option value="{{ name }}" {% if selection['commonName'] == name %}selected{% endif %}>{{ name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div>
+        <select class="year-select" autocomplete="off">
+            {% for year in display['years'] %}
+            <option value="{{ year }}" {% if selection['year'] == year %}selected{% endif %}>{{ year }}</option>
+            {% endfor %}
+        </select>
+    </div>
+</div>
+{% endfor %}
