@@ -17,6 +17,7 @@ class VizPresenter {
         });
 
         self._display1 = new Display(
+            1,
             document.getElementById("display-1"),
             self._commonScale,
             () => self._refreshAllDatasets(),
@@ -24,6 +25,7 @@ class VizPresenter {
             () => self._checkToStartIntro()
         );
         self._display2 = new Display(
+            2,
             document.getElementById("display-2"),
             self._commonScale,
             () => self._refreshAllDatasets(),
@@ -58,6 +60,10 @@ class VizPresenter {
 
     _updateDeeplink() {
         const self = this;
+
+        if (disableDeepLink) {
+            return;
+        }
 
         const buildSpeciesPayload = (selection) => {
             const isSciName = selection.getIsSciName();

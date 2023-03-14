@@ -3,10 +3,10 @@ var cachedGeojson = null;
 
 const CENTERS = {
     "AI": [-170.2, 52.2],
-    "BSS": [-178, 58],
-    "EBS": [-178, 58.5],
+    "BSS": [-175.5, 57],
+    "EBS": [-177, 58.5],
     "GOA": [-153.26, 57],
-    "NBS": [-177, 63]
+    "NBS": [-176, 63]
 };
 
 const SCALES = {

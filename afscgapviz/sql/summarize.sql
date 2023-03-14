@@ -17,3 +17,4 @@ FROM
         GROUP BY
             substr(geohash, 0, %d)
     ) subset
+    

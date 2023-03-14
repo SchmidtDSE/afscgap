@@ -1,5 +1,5 @@
 {% for selection in display['selections'] %}
-<div class="species species-{{ loop.index }}">
+<div class="species species-{{ loop.index }}" id="display{{ display_index }}-species-{{ loop.index }}" >
     <div>
         <span class="color-display color-{{ loop.index }}"></span> Scatter {{ loop.index }}
     </div>

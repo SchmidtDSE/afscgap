@@ -110,10 +110,11 @@ def get_display_info(connection: sqlite3.Connection,
     return state
 
 
-def get_species_select_content(display: typing.Dict) -> str:
+def get_species_select_content(display: typing.Dict, index: int) -> str:
     return flask.render_template(
         'species.html',
-        display=display
+        display=display,
+        display_index=index
     )
 
 
@@ -192,7 +193,9 @@ def build_app(app: flask.Flask, db_str: typing.Optional[str] = None,
             'years': years
         }
 
-        return get_species_select_content(display)
+        display_index = int(flask.request.args.get('index', 0))
+
+        return get_species_select_content(display, display_index)
 
     @app.route('/geohashes.csv')
     def download_geohashes():

@@ -1,17 +1,25 @@
 const STEP_TEXTS = [
-    "Hello! This visualization explores data from NOAA (AFSC GAP) in and around Alaska.",
+    "Hello! This visualization explores data from the NOAA AFSC GAP surveys in and around Alaska. A guided intro is available (click Next >>) or click Skip Intro if you are a returning user.",
     "This is a map of the Gulf of Alaska and these squares show areas where a survey has been taken to determine which fish are present.",
-    "For example, these are catch reports for the economically important Pacific cod species. This is in terms of density or, in other words, weight of cod caught during a survey relative to area surveyed.",
-    "Contrast this with the cod numbers from 2021 and note that the catches have gotten smaller, espeically around Kodiak Island in the middle.",
-    "What happened here? Well, consider The Blob warming event which took place in 2015. Try changing the date on the second display from 2021 to 2015.",
-    "Even mid-event, signs of decreased catch starting to show up. Now, let's take a look at the warming. Select bottom temperatures in both displays. How did they change between years?",
-    "It looksl ike there may have been some warming in the Gulf of Alaska what about the Aleutian Islands? Did the same temperatures appear there? Try putting 2015 Gulf of Alaska data in one display and 2015 Aleutian Islands data in the other.",
-    "To better see this, let's overlay the data. On one display, let's put 2013 as Scatter 1 vs 2015 as Scatter 2 for Pacific cod in the Gulf of Alaksa.",
-    "Then, let's do the same in the Aleutian Islands in the other dislpay. Make sure bottom temperature is displayed on both to see how temperatures changed in the region.",
-    "With these temperature changes displayed, how did the catch change in areas of warming? Unfortunately, climate change may make this more common.",
+    "For example, these are haul reports for the economically important Pacific cod species. This is in terms of \"catch per unit effort\" or, in other words, weight of cod caught during a survey relative to area surveyed in kilograms per hectare.",
+    "Contrast this with the cod numbers from 2021 and note that the catches have gotten smaller, espeically around Kodiak Island in the middle. For many \"hauls\" in the same area, surveys caught fewer cod in 2021 compared to 2013.",
+    "It turns out that stocks decreased so much that <a href='https://www.npr.org/2019/12/08/785634169/alaska-cod-fishery-closes-and-industry-braces-for-ripple-effect' target='_blank'>the federal cod fishery closed in 2020</a>. What happened here?",
+    "I have a hunch. Let's look at \"The Blob\" warming event which took place 2013-2016. Try changing the date on the second display from 2021 to 2015 to see what was happing mid-event.",
+    "Comparing 2013 to 2015, signs of decreased catch start to show up even before the warming event finished. That in mind, I wonder how temperatures changed geographically.",
+    "Specifically, let's look at temperature readings taken at the bottom by selecting \"Bottom temperatures\" below.",
+    "Now, let's do the same on the other display. Go ahead and select bottom temperatures again in the other dropdown. How did they change between years?",
+    "It looks like there may have been some warming in the Gulf of Alaska. I wonder if this was region-wide.",
+    "What about the Aleutian Islands? Did the same temperatures appear there? Try putting 2015 Gulf of Alaska data in one display and 2014 Aleutian Islands data in the other.",
+    "The temperatures in some areas of the Gulf of Alaska appear to have been higher at the time of haul compared to the Aleutian Islands.",
+    "To better see this, let's overlay the data. On the Gulf of Alaska display, let's put Pacific cod 2013 as Scatter 1 and Pacific cod 2015 as Scatter 2. Then, let's do 2014 and 2016 in the Aleutian Islands.",
+    "With these temperature changes displayed, how much did temperature change in each region? How did the catch change in areas of warming? Unfortunately, climate change may make this more common.",
     "This is a lot of info on Pacific cod. How about walleye pollock? Did that species see something similar happen? Go ahead and explore that species below.",
     "That's it for the intro! Want to learn more about this? See our <a target='_blank' href='https://mybinder.org/v2/gh/SchmidtDSE/afscgap/main?urlpath=/tree/index.ipynb'>example notebook</a>."
 ];
+
+let allowSpecies2 = true;
+let disableResizeRefresh = false;
+let disableDeepLink = false;
 
 
 class Intro {
@@ -30,9 +38,14 @@ class Intro {
             ["#display-1", ".land", ".water"],
             [".fish", ".radius-legend-holder", ".graph-description"],
             ["#display-2"],
-            [".species-1"],
-            [".temperature-select"],
+            [],
+            ["#display2-species-1"],
+            ["#display1-species-1"],
+            [".temperature-select-1"],
+            [".temperature-select-2"],
+            [],
             [".area-select", ".species-type-select"],
+            [],
             [".species-2"],
             [".download-panel"],
             [],
@@ -50,6 +63,9 @@ class Intro {
         });
 
         self._updateLinkVisibility();
+        allowSpecies2 = false;
+        disableResizeRefresh = true;
+        disableDeepLink = true;
     }
 
     _registerCallbacks() {
@@ -83,6 +99,9 @@ class Intro {
         });
 
         document.getElementById("tutorial-panel").style.display = "none";
+        allowSpecies2 = true;
+        disableResizeRefresh = false;
+        disableDeepLink = false;
     }
 
     _backStep() {
@@ -110,6 +129,15 @@ class Intro {
         const newText = STEP_TEXTS[self._step];
         document.getElementById("intro-text").innerHTML = newText;
 
+        if (self._stepActions[self._step].indexOf(".species-2") != -1) {
+            allowSpecies2 = true;
+            disableResizeRefresh = false;
+        }
+
+        if (self._step == STEP_TEXTS.length - 1) {
+            disableDeepLink = false;
+        }
+
         self._updateLinkVisibility();
     }
 
@@ -130,11 +158,11 @@ class Intro {
             show("skip-intro-link-holder");
         } else if (self._step == STEP_TEXTS.length - 1) {
             show("back-link-holder");
-            show("next-link-holder");
+            hide("next-link-holder");
             hide("skip-intro-link-holder");
         } else {
             show("back-link-holder");
-            hide("next-link-holder");
+            show("next-link-holder");
             hide("skip-intro-link-holder");
         }
     }

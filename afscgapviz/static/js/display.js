@@ -44,10 +44,11 @@ class DisplaySelection {
 
 class Display {
 
-    constructor(element, commonScale, onDatasetChange, onSelectionChange,
-        onRender) {
+    constructor(number, element, commonScale, onDatasetChange,
+        onSelectionChange, onRender) {
         const self = this;
 
+        self._number = number;
         self._element = element;
         self._commonScale = commonScale;
         self._onDatasetChange = onDatasetChange;
@@ -131,6 +132,10 @@ class Display {
 
         let timeout; 
         addEventListener("resize", () => {
+            if (disableResizeRefresh) {
+                return;
+            }
+
             clearTimeout(timeout);
             timeout = setTimeout(() => self._rebuildMap(), 500);
         });
@@ -149,6 +154,12 @@ class Display {
                     ".species-selects"
                 );
                 speciesSelects.innerHTML = text;
+
+                if (!allowSpecies2) {
+                    const species2 = self._element.querySelector(".species-2");
+                    species2.style.display = "none";
+                    species2.style.opacity = 0;
+                }
 
                 self._buildSpeciesDisplays();
                 self._changeSurveyLoading(false);
@@ -225,7 +236,7 @@ class Display {
         const self = this;
 
         const area = self._element.querySelector(".area-select").value;
-        const url = '/speciesSelector/' + area + '.html';
+        const url = '/speciesSelector/' + area + '.html?index=' + self._number;
 
         const speciesSelection1 = self._speciesDisplayFirst.getSelection();
         const species1Query = [
@@ -239,7 +250,7 @@ class Display {
             "year2=" + speciesSelection2.getYear()
         ].join("&");
 
-        return url + "?" + species1Query + "&" + species2Query;
+        return url + "&" + species1Query + "&" + species2Query;
     }
 
     _changeSurveyLoading(stillLoading) {

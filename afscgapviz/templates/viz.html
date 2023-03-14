@@ -40,7 +40,7 @@
                     </div>
                 </div>
                 <div id="intro-links">
-                    <span id="next-link-holder">
+                    <span id="skip-intro-link-holder">
                         <a href="#tutorial-panel" id="skip-intro-link">Skip Intro >></a> //
                     </span>
                     <span id="back-link-holder">
@@ -66,7 +66,7 @@
                             <option value="common" {% if display['speciesType'] == 'common' %}selected{% endif %}>Common names</option>
                             <option value="scientific" {% if display['speciesType'] == 'scientific' %}selected{% endif %}>Scientific name</option>
                         </select>
-                        <select class="temperature-select" autocomplete="off">
+                        <select class="temperature-select temperature-select-{{ loop.index }}" autocomplete="off">
                             <option value="disabled" {% if display['temperature'] == 'disabled' %}selected{% endif %}>No temperatures</option>
                             <option value="surface" {% if display['temperature'] == 'surface' %}selected{% endif %}>Surface temperatures</option>
                             <option value="bottom" {% if display['temperature'] == 'bottom' %}selected{% endif %}>Bottom temperatures</option>
@@ -77,7 +77,7 @@
                     </div>
                     <div class="survey-specific-fields panel">
                         <div class="species-selects">
-                            {{ get_species_select_content(display) | safe }}
+                            {{ get_species_select_content(display, loop.index) | safe }}
                         </div>
                     </div>
                     <div class="viz-panel panel" id="viz-panel-{{ loop.index }}">
