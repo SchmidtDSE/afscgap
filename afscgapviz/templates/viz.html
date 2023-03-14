@@ -5,7 +5,7 @@
 <html lang="en">
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="stylesheet" type="text/css" href="/static/css/viz.css?v=202303141">
+        <link rel="stylesheet" type="text/css" href="/static/css/viz.css?v=202303142">
         <title>AFSC GAP Comparison Tool</title>
         <meta name="description" content="Open source visualization for bottom trawl surveys data from the NOAA Alaska Fisheries Science Center Groundfish Assessment Program (NOAA AFSC GAP)" />
         <meta property="og:title" content="NOAA AFSC GAP Visualization" />
@@ -27,8 +27,8 @@
                     Community contributed visualization of bottom trawl surveys data from the NOAA Alaska Fisheries Science Center Groundfish Assessment Program (<a target="_blank" href="https://www.fisheries.noaa.gov/contact/groundfish-assessment-program">NOAA AFSC GAP</a>) as part of <a href="https://pyafscgap.org/">AFSC GAP for Python</a>. This tool enables fast comparisons between species, years, and areas. Though you do not need to be a developer to use this application, it also offers links to download data as CSV and to generate Python code for programmers to continue their explorations outside this tool.
                 </div>
                 <div class="button-holder">
-                    <a href="#main" id="share-link">Share your visualization</a>
-                    <a href="https://pyafscgap.org">Go to Project Homepage >></a>
+                    <a href="#main" id="share-link">Share</a>
+                    <a href="https://pyafscgap.org" target="_blank">Pyafscgap Homepage >></a>
                 </div>
             </div>
         </header>
@@ -97,17 +97,17 @@
                         </div>
                         <div class="legend">
                             <div class="grid-legend-holder">
-                                <div class="legend-title">Grid Color</div>
+                                <div class="legend-title">Temperature</div>
                                 <table class="grid-legend">
                                 </table>
                             </div>
                             <div class="grid-diverging-legend-holder">
-                                <div class="legend-title">Grid Color</div>
+                                <div class="legend-title">Change in Temperature</div>
                                 <table class="grid-diverging-legend">
                                 </table>
                             </div>
                             <div class="grid-indicator-holder">
-                                <div class="legend-title">Grid Indicator</div>
+                                <div class="legend-title">Hauls</div>
                                 <table>
                                     <tr>
                                         <td><span class="presence-indicator"></span></td>
@@ -116,7 +116,7 @@
                                 </table>
                             </div>
                             <div class="radius-legend-holder">
-                                <div class="legend-title">Radius</div>
+                                <div class="legend-title">Catch</div>
                                 <table class="radius-legend">
                                 </table>
                             </div>
@@ -141,14 +141,14 @@
 <script type="text/javascript" src="/static/js_third_party/d3.min.js"></script>
 <script type="text/javascript" src="/static/js_third_party/papaparse.min.js"></script>
 
-<script type="text/javascript" src="/static/js/afscgapviz.js?v=202303141"></script>
-<script type="text/javascript" src="/static/js/display.js?v=202303141"></script>
-<script type="text/javascript" src="/static/js/intro.js?v=202303144"></script>
-<script type="text/javascript" src="/static/js/mapviz.js?v=202303141"></script>
-<script type="text/javascript" src="/static/js/scale.js?v=202303142"></script>
-<script type="text/javascript" src="/static/js/species.js?v=202303141"></script>
-<script type="text/javascript" src="/static/js/state.js?v=202303141"></script>
-<script type="text/javascript" src="/static/js/url.js?v=202303141"></script>
+<script type="text/javascript" src="/static/js/afscgapviz.js?v=202303142"></script>
+<script type="text/javascript" src="/static/js/display.js?v=202303142"></script>
+<script type="text/javascript" src="/static/js/intro.js?v=202303145"></script>
+<script type="text/javascript" src="/static/js/mapviz.js?v=202303142"></script>
+<script type="text/javascript" src="/static/js/scale.js?v=202303143"></script>
+<script type="text/javascript" src="/static/js/species.js?v=202303142"></script>
+<script type="text/javascript" src="/static/js/state.js?v=202303142"></script>
+<script type="text/javascript" src="/static/js/url.js?v=202303142"></script>
 <script type="text/javascript">
     new VizPresenter();
 </script>

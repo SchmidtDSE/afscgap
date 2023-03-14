@@ -1,18 +1,19 @@
 const STEP_TEXTS = [
     "Hello! This visualization explores data from the NOAA AFSC GAP surveys in and around Alaska. A guided intro is available (click Next >>) or click Skip Intro if you are a returning user.",
+    "We will walk through an example problem together: what happened to the cod stocks in Alaska?",
     "This is a map of the Gulf of Alaska and these squares show areas where a survey has been taken to determine which fish are present.",
     "For example, these are haul reports for the economically important Pacific cod species. This is in terms of \"catch per unit effort\" or, in other words, weight of cod caught during a survey relative to area surveyed in kilograms per hectare.",
     "Contrast this with the cod numbers from 2021 and note that the catches have gotten smaller, espeically around Kodiak Island in the middle. For many \"hauls\" in the same area, surveys caught fewer cod in 2021 compared to 2013.",
-    "It turns out that stocks decreased so much that <a href='https://www.npr.org/2019/12/08/785634169/alaska-cod-fishery-closes-and-industry-braces-for-ripple-effect' target='_blank'>the federal cod fishery closed in 2020</a>. What happened here?",
-    "I have a hunch. Let's look at \"The Blob\" warming event which took place 2013-2016. Try changing the date on the second display from 2021 to 2015 to see what was happing mid-event.",
+    "It turns out that stocks decreased so much that <a href='https://www.npr.org/2019/12/08/785634169/alaska-cod-fishery-closes-and-industry-braces-for-ripple-effect' target='_blank'>the federal cod fishery closed in 2020</a>. What happened here? Let's find out! Click \"Next\" below.",
+    "I have a hunch. Let's look at \"The Blob\" warming event which took place 2013-2016. Let's stick with Pacific cod for now but try changing the date on the second display from 2021 to 2015 to see what was happing mid-event.",
     "Comparing 2013, signs of increased pressure start to show up even in 2015. That in mind, I wonder how temperatures changed geographically.",
-    "Specifically, let's look at temperature readings taken at the bottom by selecting \"Bottom temperatures\" below.",
-    "Now, let's do the same on the other display. Go ahead and select bottom temperatures again in the other dropdown. How did they change between years?",
+    "Specifically, let's look at temperature readings taken at the bottom by selecting \"Bottom temperatures\" for the first display below. We will add it to the other display in a moment.",
+    "Now, let's do the same on the other display. Go ahead and select bottom temperatures again in the other dropdown. How did they change between years? Note that, by default, the scale min and max are recalculated as you change your selections. Be sure to check the legend below.",
     "It looks like there may have been some warming in the Gulf of Alaska. I wonder if this was region-wide.",
-    "What about the Aleutian Islands? Did the same temperatures appear there? Try putting Gulf of Alaska data in one display and Aleutian Islands data in the other.",
+    "What about the Aleutian Islands? Did the same temperatures appear there? Try putting Gulf of Alaska data in one display and Aleutian Islands data in the other. Again, let's stick with Pacific cod for now.",
     "Specifically, go ahead and select 2015 in the Gulf of Alaska and 2014 in the Aleutian Islands (Pacific cod in both). Note that a survey does not happen in every region every year.",
     "The temperatures in some areas of the Gulf of Alaska appear to have been higher at the time of haul compared to the Aleutian Islands.",
-    "To better see this, let's overlay the data. On the Gulf of Alaska display, let's put Pacific cod 2013 as Scatter 1 and Pacific cod 2015 as Scatter 2. Then, let's do 2014 and 2016 in the Aleutian Islands.",
+    "To better see this, let's overlay the data. On the Gulf of Alaska display, let's put Pacific cod 2013 as Scatter 1 and Pacific cod 2015 as Scatter 2. Then, let's do 2014 and 2016 in the Aleutian Islands. Note that the year selector will appear after selecting a species.",
     "With these temperature changes displayed, how much did temperature change in each region? How did the catch change in areas of warming?",
     "For Pacific cod, <a href='https://cdnsciencepub.com/doi/full/10.1139/cjfas-2019-0238'>research suggests that warming matters quite a lot in a region but it's a complex phenomenon impacting spawning habitat</a>. The Gulf of Alaska with widespread warming may have been under more pressure than the Aleutian Islands.",
     "This is a lot of info on Pacific cod. How about walleye pollock? Did that species see something similar happen? Go ahead and explore that species below.",
@@ -32,7 +33,8 @@ class Intro {
 
         self._stepActions = [
             [],
-            ["#display-1", ".land", ".water"],
+            [],
+            ["#display-1", ".viz", ".land", ".water"],
             [".fish", ".radius-legend-holder", ".graph-description"],
             ["#display-2"],
             [],
@@ -151,11 +153,22 @@ class Intro {
                 return this.originalDisplay;
             });
             d3.selectAll(action).transition()
-                .delay(i * 500 + 500)
+                .delay(i * 200 + 700)
                 .style("opacity", 1);
         });
+
+        d3.select("#intro-links")
+            .style("display", "none")
+            .style("opacity", 0);
+
+        setTimeout(() => {
+            d3.select("#intro-links").style("display", "block");
+            d3.select("#intro-links").transition().style("opacity", 1);
+        }, 200);
+
         const newText = STEP_TEXTS[self._step];
-        document.getElementById("intro-text").innerHTML = newText;
+        d3.select("#intro-text").html(newText).style("opacity", 0);
+        d3.select("#intro-text").transition().style("opacity", 1);
 
         if (self._stepActions[self._step].indexOf(".species-2") != -1) {
             allowSpecies2 = true;

@@ -185,9 +185,12 @@ class MapViz {
                 return;
             }
 
+            const secondSelect = self._displaySelection.getSpeciesSelection2();
+            const isComparing = secondSelect.getName() !== "None";
+            const prefix = isComparing ? "Change in temperature: " : "Temperature: ";
             const temperature = matchingRecord.getTemperature();
             const roundedTemp = Math.round(temperature * 10) / 10;
-            const message = "Temperature: " + roundedTemp + " C";
+            const message = prefix + roundedTemp + " C";
             temperatureDisplay.innerHTML = message;
         };
 
