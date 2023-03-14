@@ -301,7 +301,7 @@ def build_app(app: flask.Flask, db_str: typing.Optional[str] = None,
             other_common_name = None
 
         output = flask.make_response(flask.render_template(
-            'example.py',
+            'example.py_html',
             survey=survey,
             year=year,
             species=species,
