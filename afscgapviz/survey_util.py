@@ -10,7 +10,8 @@ def get_list(survey: str, filename: str,
     sql = sql_util.get_sql(filename)
 
     cursor = connection.cursor()
-    results_iter = cursor.execute(sql, (survey,)).fetchall()
+    cursor.execute(sql, (survey,))
+    results_iter = cursor.fetchall()
     results = [str(x[0]) for x in results_iter]
     cursor.close()
 

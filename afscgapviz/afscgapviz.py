@@ -270,13 +270,14 @@ def build_app(app: flask.Flask, db_str: typing.Optional[str] = None,
         writer = csv.DictWriter(output_io, fieldnames=OUTPUT_COLS)
         writer.writeheader()
 
-        with conn_generator() as con:
-            cur = con.cursor()
-            results = cur.execute(
+        with conn_generator() as connection:
+            cursor = connection.cursor()
+            cursor.execute(
                 query_sql,
                 query_args
-            ).fetchall()
-            cur.close()
+            )
+            results = cursor.fetchall()
+            cursor.close()
 
         results_obj = map(data_util.parse_record, results)
         results_dict = map(data_util.record_to_dict, results_obj)
@@ -384,13 +385,14 @@ def build_app(app: flask.Flask, db_str: typing.Optional[str] = None,
             )
             query_args = (year, survey, species_filter[1])
 
-        with conn_generator() as con:
-            cur = con.cursor()
-            results = cur.execute(
+        with conn_generator() as connection:
+            cursor = connection.cursor()
+            cursor.execute(
                 query_sql,
                 query_args
-            ).fetchall()
-            cur.close()
+            )
+            results = cursor.fetchall()
+            cursor.close()
 
         result = results[0]
 
