@@ -15,6 +15,7 @@ import typing
 import flask
 
 import data_util
+import model
 import sql_util
 import survey_util
 
@@ -45,7 +46,7 @@ def sort_names_by_lower(target: typing.List[str]) -> typing.List[str]:
 
 
 def get_display_info(connection: sqlite3.Connection,
-    state: typing.Optional[typing.Dict] = None) -> typing.List[dict]:
+    state: typing.Optional[typing.Dict] = None) -> dict:
 
     if state is None:
         state = {'state': [
@@ -88,6 +89,7 @@ def get_display_info(connection: sqlite3.Connection,
         ]}
 
     cached_results: typing.Dict[str, model.SurveyAvailability] = {}
+
     def get_cached(survey: str):
         if survey not in cached_results:
             cached_results[survey] = survey_util.get_survey_availability(
