@@ -9,7 +9,7 @@ const STEP_TEXTS = [
     "Comparing 2013, signs of increased pressure start to show up even in 2015. That in mind, I wonder how temperatures changed geographically.",
     "Specifically, let's look at temperature readings taken at the bottom by selecting \"Bottom temperatures\" for the first display below. We will add it to the other display in a moment.",
     "Now, let's do the same on the other display. Go ahead and select bottom temperatures again in the other dropdown. How did they change between years?",
-    "Anyway, it looks like there may have been some warming in the Gulf of Alaska. I wonder if this was region-wide?",
+    "It looks like there may have been some warming in the Gulf of Alaska. I wonder if this was region-wide?",
     "What about the Aleutian Islands? Did the same temperatures appear there? Try putting Gulf of Alaska data in one display and Aleutian Islands data in the other. Again, let's stick with Pacific cod for now.",
     "Specifically, go ahead and select 2015 in the Gulf of Alaska and 2014 in the Aleutian Islands (Pacific cod in both). Note that a survey does not happen in every region every year.",
     "The temperatures in some areas of the Gulf of Alaska appear to have been higher at the time of haul compared to the Aleutian Islands.",
