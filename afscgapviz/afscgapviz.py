@@ -139,10 +139,18 @@ def build_app(app: flask.Flask, db_str: typing.Optional[str] = None,
     if not db_uri:
         db_uri = False
 
+    @contextlib.contextmanager
+    def make_sqlite_connection():
+        connection = sqlite3.connect(db_str, uri=db_uri)
+        try:
+            yield connection
+        finally:
+            connection.close()
+
     if conn_generator_builder:
         conn_generator = conn_generator_builder()
     else:
-        conn_generator = lambda: sqlite3.connect(db_str, uri=db_uri)
+        conn_generator = make_sqlite_connection
 
     @app.route('/')
     def render_page():
@@ -155,7 +163,7 @@ def build_app(app: flask.Flask, db_str: typing.Optional[str] = None,
         if state:
             state = json.loads(state)
 
-        with contextlib.closing(conn_generator()) as con:
+        with conn_generator() as con:
             return flask.render_template(
                 'viz.html',
                 displays=get_display_info(con, state)['state'],
@@ -164,7 +172,7 @@ def build_app(app: flask.Flask, db_str: typing.Optional[str] = None,
 
     @app.route('/speciesSelector/<area>.html')
     def render_species_selector(area: str):
-        with contextlib.closing(conn_generator()) as con:
+        with conn_generator() as con:
             availability = survey_util.get_survey_availability(area, con)
 
         species = availability.get_species()
@@ -262,8 +270,7 @@ def build_app(app: flask.Flask, db_str: typing.Optional[str] = None,
         writer = csv.DictWriter(output_io, fieldnames=OUTPUT_COLS)
         writer.writeheader()
 
-        # Thanks https://stackoverflow.com/questions/19522505
-        with contextlib.closing(conn_generator()) as con:
+        with conn_generator() as con:
             cur = con.cursor()
             results = cur.execute(
                 query_sql,
@@ -377,7 +384,7 @@ def build_app(app: flask.Flask, db_str: typing.Optional[str] = None,
             )
             query_args = (year, survey, species_filter[1])
 
-        with contextlib.closing(conn_generator()) as con:
+        with conn_generator() as con:
             cur = con.cursor()
             results = list(cur.execute(
                 query_sql,
