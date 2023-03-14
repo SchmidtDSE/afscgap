@@ -4,5 +4,5 @@ FROM
     availability
 WHERE
     survey = ?
-    AND year != "None"
+    AND year != 'None'
 ORDER BY year

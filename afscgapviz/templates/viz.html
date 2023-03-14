@@ -33,7 +33,25 @@
             </div>
         </header>
         <section id="main">
-            <div class="displays">
+            <div id="tutorial-panel">
+                <div id="intro-text">
+                    <div class="loading" id="intro-loading">
+                        <img src="/static/img/loading.svg" alt="loading indicator"> Loading...
+                    </div>
+                </div>
+                <div id="intro-links">
+                    <span id="skip-intro-link-holder">
+                        <a href="#tutorial-panel" id="skip-intro-link">Skip Intro >></a> //
+                    </span>
+                    <span id="back-link-holder">
+                        <a href="#tutorial-panel" id="back-link"><< Back</a> //
+                    </span>
+                    <span id="next-link-holder">
+                        <a href="#tutorial-panel" id="next-link">Next >></a>
+                    </span>
+                </div>
+            </div>
+            <div class="displays" id="displays">
                 {% for display in displays %}
                 <div class="display" id="display-{{ loop.index }}">
                     <div class="dataset-selector">
@@ -48,7 +66,7 @@
                             <option value="common" {% if display['speciesType'] == 'common' %}selected{% endif %}>Common names</option>
                             <option value="scientific" {% if display['speciesType'] == 'scientific' %}selected{% endif %}>Scientific name</option>
                         </select>
-                        <select class="temperature-select" autocomplete="off">
+                        <select class="temperature-select temperature-select-{{ loop.index }}" autocomplete="off">
                             <option value="disabled" {% if display['temperature'] == 'disabled' %}selected{% endif %}>No temperatures</option>
                             <option value="surface" {% if display['temperature'] == 'surface' %}selected{% endif %}>Surface temperatures</option>
                             <option value="bottom" {% if display['temperature'] == 'bottom' %}selected{% endif %}>Bottom temperatures</option>
@@ -59,7 +77,7 @@
                     </div>
                     <div class="survey-specific-fields panel">
                         <div class="species-selects">
-                            {{ get_species_select_content(display) | safe }}
+                            {{ get_species_select_content(display, loop.index) | safe }}
                         </div>
                     </div>
                     <div class="viz-panel panel" id="viz-panel-{{ loop.index }}">
@@ -72,11 +90,6 @@
                         </div>
                         <div class="graph-description"></div>
                         <div class="legend">
-                            <div class="radius-legend-holder">
-                                <div class="legend-title">Radius</div>
-                                <table class="radius-legend">
-                                </table>
-                            </div>
                             <div class="grid-legend-holder">
                                 <div class="legend-title">Grid Color</div>
                                 <table class="grid-legend">
@@ -94,6 +107,11 @@
                                         <td><span class="presence-indicator"></span></td>
                                         <td class="presence-description">Haul taken in area.</td>
                                     </tr>
+                                </table>
+                            </div>
+                            <div class="radius-legend-holder">
+                                <div class="legend-title">Radius</div>
+                                <table class="radius-legend">
                                 </table>
                             </div>
                         </div>
@@ -119,6 +137,7 @@
 
 <script type="text/javascript" src="/static/js/afscgapviz.js"></script>
 <script type="text/javascript" src="/static/js/display.js"></script>
+<script type="text/javascript" src="/static/js/intro.js"></script>
 <script type="text/javascript" src="/static/js/mapviz.js"></script>
 <script type="text/javascript" src="/static/js/scale.js"></script>
 <script type="text/javascript" src="/static/js/species.js"></script>

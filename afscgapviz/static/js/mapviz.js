@@ -3,10 +3,10 @@ var cachedGeojson = null;
 
 const CENTERS = {
     "AI": [-170.2, 52.2],
-    "BSS": [-178, 58],
-    "EBS": [-178, 58.5],
+    "BSS": [-175.5, 57],
+    "EBS": [-177, 58.5],
     "GOA": [-153.26, 57],
-    "NBS": [-177, 63]
+    "NBS": [-176, 63]
 };
 
 const SCALES = {
@@ -101,11 +101,12 @@ class MapDatum {
 
 class MapViz {
 
-    constructor(element, displaySelection, commonScale) {
+    constructor(element, displaySelection, commonScale, onRender) {
         const self = this;
 
         self._element = element;
         self._displaySelection = displaySelection;
+        self._onRender = onRender;
 
         const svgElement = self._element.querySelector(".viz");
         self._selection = d3.select("#" + svgElement.id);
@@ -197,7 +198,8 @@ class MapViz {
                 .then(self._makeFutureInterpretPoints(projection, temperatureMode))
                 .then(self._makeFutureRenderFish(fishLayer2, projection, radiusScale))
                 .then(() => self._hideLoading())
-                .then(() => self._updateTitles());
+                .then(() => self._updateTitles())
+                .then(() => self._onRender());
         }
 
         self._showLoading();
@@ -451,10 +453,13 @@ class MapViz {
                         parseFloat(target['latHighDegrees'])
                     ]);
 
-                    const x = lowPoint[0];
-                    const y = lowPoint[1];
-                    const width = highPoint[0] - lowPoint[0];
-                    const height = lowPoint[1] - highPoint[1];
+                    const nativeWidth = highPoint[0] - lowPoint[0];
+                    const offset = nativeWidth > 10;
+
+                    const x = lowPoint[0] + (offset ? 1 : 0);
+                    const y = lowPoint[1] + (offset ? 1 : 0);
+                    const width = highPoint[0] - lowPoint[0] - (offset ? 2 : 0);
+                    const height = lowPoint[1] - highPoint[1] - (offset ? 3 : 0);
 
                     const weight = parseFloat(target["weightKg"]);
                     const area = parseFloat(target["areaSweptHectares"])
