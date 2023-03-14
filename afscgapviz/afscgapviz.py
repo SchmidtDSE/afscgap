@@ -275,12 +275,12 @@ def build_app(app: flask.Flask, db_str: typing.Optional[str] = None,
             results = cur.execute(
                 query_sql,
                 query_args
-            )
-
-            results_obj = map(data_util.parse_record, results)
-            results_dict = map(data_util.record_to_dict, results_obj)
-            writer.writerows(results_dict)
+            ).fetchall()
             cur.close()
+
+        results_obj = map(data_util.parse_record, results)
+        results_dict = map(data_util.record_to_dict, results_obj)
+        writer.writerows(results_dict)
 
         output = flask.make_response(output_io.getvalue())
         output.headers['Content-Disposition'] = 'attachment; filename=geo.csv'
@@ -386,23 +386,23 @@ def build_app(app: flask.Flask, db_str: typing.Optional[str] = None,
 
         with conn_generator() as con:
             cur = con.cursor()
-            results = list(cur.execute(
+            results = cur.execute(
                 query_sql,
                 query_args
-            ))
+            ).fetchall()
             cur.close()
 
-            result = results[0]
+        result = results[0]
 
-            if result[0] is None:
-                min_cpue = 0
-                max_cpue = 0
-                min_temp = 0
-                max_temp = 0
-            else:
-                result_float = [float(x) for x in result]
+        if result[0] is None:
+            min_cpue = 0
+            max_cpue = 0
+            min_temp = 0
+            max_temp = 0
+        else:
+            result_float = [float(x) for x in result]
 
-                (min_cpue, max_cpue, min_temp, max_temp) = result_float
+            (min_cpue, max_cpue, min_temp, max_temp) = result_float
 
         return json.dumps({
             'cpue': {'min': min_cpue, 'max': max_cpue},
