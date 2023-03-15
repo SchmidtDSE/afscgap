@@ -4,6 +4,7 @@
 for Data Science and the Environment at UC Berkeley.
 
 This file is part of afscgap released under the BSD 3-Clause License. See
+LICENSE.txt.
 """
 import contextlib
 import csv
@@ -40,14 +41,31 @@ OUTPUT_COLS = [
 
 
 def sort_names_by_lower(target: typing.List[str]) -> typing.List[str]:
-    output = [{"original": x, "lower": x.lower()} for x in target]
-    output.sort(key=lambda x: x["lower"])
-    return [x["original"] for x in output]
+    """Sort a set of strings ignoring case in ascending order.
+
+    Args:
+        target: The collection of strings to sort.
+
+    Returns:
+        A copy of target sorted.
+    """
+    return sorted(target, key=lambda x: lower(x))
 
 
 def get_display_info(connection: sqlite3.Connection,
     state: typing.Optional[typing.Dict] = None) -> dict:
+    """Get information required to render species selection controls.
 
+    Args:
+        connection: A DB API 2.0 compliant connection.
+        state: The state (initial selection of dataset filter vaules) provided
+            by the client for which supplemental information is required or None
+            if the client did not provide an initial selection in which case
+            a default will be provided.
+
+    Returns:
+        A state dictionary with supplemental information required for the UI.
+    """
     if state is None:
         state = {'state': [
             {
@@ -90,7 +108,19 @@ def get_display_info(connection: sqlite3.Connection,
 
     cached_results: typing.Dict[str, model.SurveyAvailability] = {}
 
-    def get_cached(survey: str):
+    def get_cached(survey: str) -> model.SurveyAvailability:
+        """Get availability information for a survey.
+
+        Get a survey value if it has already been requested or request it if it
+        is not yet cached.
+
+        Args:
+            survey: The name of the survey for which availability information
+                is required. Example is GOA.
+
+        Returns:
+            Information on data availability within a survey.
+        """
         if survey not in cached_results:
             cached_results[survey] = survey_util.get_survey_availability(
                 survey,
@@ -113,6 +143,20 @@ def get_display_info(connection: sqlite3.Connection,
 
 
 def get_species_select_content(display: typing.Dict, index: int) -> str:
+    """Utility function to server-side render the UI for species selection.
+
+    Utility function to server-side render the UI for species selection which
+    is useful due to the number of database calls required to produce it.
+
+    Args:
+        display: Information about the display state for which the selection
+            component is being rendered. See get_display_info.
+        index: The index of the selection UI within the page for pre-populating
+            the elements IDs.
+
+    Returns:
+        Rendered template as a string.
+    """
     return flask.render_template(
         'species.html',
         display=display,
@@ -129,6 +173,13 @@ def build_app(app: flask.Flask, db_str: typing.Optional[str] = None,
         app: The application in which to register the endpoints.
         sqlite_str: Path to the sqlite database on which to make queries.
         sqlite_uri: Flag indicating if sqlite_str should be read as a URI.
+        conn_generator_builder: Function which builds a function that takes
+            no arguments. It must yield a DB API 2.0 compliant connection
+            into a context that is "released" when the context ends. See
+            make_sqlite_connection for an example. Some clients may choose
+            to close connection on "release" while others may choose to use
+            a connection pool depending on the underlying data store. If not
+            provided or None, defaults to make_sqlite_connection.
 
     Returns:
         The same app after endpoint registration.
@@ -141,6 +192,14 @@ def build_app(app: flask.Flask, db_str: typing.Optional[str] = None,
 
     @contextlib.contextmanager
     def make_sqlite_connection():
+        """Wrap a sqlite connection with close on leaving context.
+
+        If client code did not provide a conn_generator_builder, this default
+        opens a sqlite connection that is closed on context end.
+
+        Yeilds:
+            Connection which is closed on context end.
+        """
         connection = sqlite3.connect(db_str, uri=db_uri)
         try:
             yield connection
@@ -172,6 +231,17 @@ def build_app(app: flask.Flask, db_str: typing.Optional[str] = None,
 
     @app.route('/speciesSelector/<area>.html')
     def render_species_selector(area: str):
+        """Server-side render the speices selector UI.
+
+        Due to the large number of database calls involved, server-side render
+        the species selection component for a display.
+
+        Args:
+            area: The name of the area (like GOA for Gulf of Alaska).
+
+        Returns:
+            Pre-rendered species selection selector UI.
+        """
         with conn_generator() as con:
             availability = survey_util.get_survey_availability(area, con)
 
@@ -291,6 +361,14 @@ def build_app(app: flask.Flask, db_str: typing.Optional[str] = None,
 
     @app.route('/example.py')
     def download_python_example():
+        """Generate a Python example.
+
+        Geneate a Python example for requesting data currently displayed in the
+        visualization.
+
+        Returns:
+            Python code file with 1 - 2 example queries against NOAA AFSC GAP.
+        """
         is_comparison = flask.request.args.get('comparison', 'n') == 'y'
 
         survey = flask.request.args['survey']
@@ -326,6 +404,17 @@ def build_app(app: flask.Flask, db_str: typing.Optional[str] = None,
 
     @app.route('/summarize.json')
     def summarize_cpue():
+        """Summarize the minimum and maximum values in a data subset.
+
+        Summarize the minimum and maximum values in a data subset which is
+        required to properly generate scales for the visualization. This is
+        done server side in order to offload some computation to the database
+        engine.
+
+        Returns:
+            JSON encoded document with min and max temperatures and catch per
+            unit area.        
+        """
         survey = flask.request.args['survey']
         year = int(flask.request.args['year'])
         temperature_mode = flask.request.args['temperature']

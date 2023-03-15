@@ -230,22 +230,61 @@ class SimplifiedRecord:
 
 
 class SurveyAvailability:
+    """Structure summarizing data available for a specific survey.
+
+    Structure summarizing data available for a specific survey within the
+    broader AFSC GAP dataset.
+    """
 
     def __init__(self, survey: str, years: typing.List[int],
         species: typing.List[str], common_names: typing.List[str]):
+        """Create a new availability summary.
+
+        Args:
+            survey: The name of the survey for which availability is summarized.
+                This should be like "GOA" for example.
+            years: List of years for which data are available within this
+                survey.
+            species: List of scientific names found for any year for the given
+                survey. Example is Gadus macrocephalus.
+            common_names: List of "common names" found for any year for the
+                given survey. Example is Pacific cod.
+        """
         self._survey = survey
         self._years = years
         self._species = species
         self._common_names = common_names
 
     def get_survey(self) -> str:
+        """Get the name of the survey summarized.
+
+        Returns:
+            Short survey name like GOA.
+        """
         return self._survey
 
     def get_years(self) -> typing.List[int]:
+        """Get the years for which this survey's data are available.
+
+        Returns:
+            List of years for which data are available within this survey.
+        """
         return self._years
 
     def get_species(self) -> typing.List[str]:
+        """Get the scientific names found in this survey.
+
+        Returns:
+            List of scientific names found for any year for the given survey.
+            Example is Gadus macrocephalus.
+        """
         return self._species
 
     def get_common_names(self) -> typing.List[str]:
+        """Get the common names found in this survey.
+
+        Returns:
+            List of "common names" found for any year for the given survey.
+            Example is Pacific cod.
+        """
         return self._common_names

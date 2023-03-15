@@ -1,3 +1,14 @@
+"""Convienence functions for working with web app data models.
+
+Utilities for parsing and converting web app data records between different
+data representations.
+
+(c) 2023 Regents of University of California / The Eric and Wendy Schmidt Center
+for Data Science and the Environment at UC Berkeley.
+
+This file is part of afscgap released under the BSD 3-Clause License. See
+LICENSE.txt.
+"""
 import typing
 
 import geolib.geohash  # type: ignore
