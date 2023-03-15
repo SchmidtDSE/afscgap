@@ -49,7 +49,7 @@ def sort_names_by_lower(target: typing.List[str]) -> typing.List[str]:
     Returns:
         A copy of target sorted.
     """
-    return sorted(target, key=lambda x: lower(x))
+    return sorted(target, key=lambda x: x.lower())
 
 
 def get_display_info(connection: sqlite3.Connection,
