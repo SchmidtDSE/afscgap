@@ -89,7 +89,7 @@ class VizPresenter {
      * 
      * @return {boolean} True if the scales should change between dataset
      *      subsets and false if a set of global static scales should be used
-     * instead.
+     *      instead.
      */
     _getDynamicScaling() {
         const self = this;
@@ -152,7 +152,7 @@ class VizPresenter {
          * 
          * @param {SpeciesSelection} selection The selection to be converted to
          *      a state object.
-         * @returns {Object} Newly built state sub-object.
+         * @return {Object} Newly built state sub-object.
          */
         const buildSpeciesPayload = (selection) => {
             const isSciName = selection.getIsSciName();
@@ -172,7 +172,7 @@ class VizPresenter {
          * 
          * @param {DisplaySelection} selection The display-wide selections to
          *      be converted to a state sub-object.
-         * @returns {Object} Newly built state sub-object.
+         * @return {Object} Newly built state sub-object.
          */
         const buildSelectionPayload = (selection) => {
             const species1 = selection.getSpeciesSelection1();

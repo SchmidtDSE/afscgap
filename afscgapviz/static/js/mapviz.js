@@ -358,7 +358,7 @@ class MapViz {
             const secondSpecies = self._displaySelection.getSpeciesSelection2();
             const secondMessage = getSpeciesDescription(secondSpecies);
 
-            const isComparing = secondSpecies.getName() !== "None";
+            const isComparing = secondSpecies.getIsActive();
 
             const speciesMessages = [firstMessage];
             if (isComparing) {
@@ -430,7 +430,7 @@ class MapViz {
         const self = this;
 
         const secondSelection = self._displaySelection .getSpeciesSelection2();
-        const isComparing = secondSelection.getName() !== "None";
+        const isComparing = secondSelection.getIsActive();
         const temperatureDisplayed = self._displaySelection.getTemperatureEnabled();
 
         const legendSelect = d3.select("#" + self._element.id)
@@ -771,7 +771,7 @@ class MapViz {
 
         return () => {
             return new Promise((resolve, reject) => {
-                if (speciesSelection.getName() === "None") {
+                if (!speciesSelection.getIsActive()) {
                     resolve([]);
                     return;
                 }
