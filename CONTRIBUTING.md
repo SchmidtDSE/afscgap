@@ -9,7 +9,7 @@ Thank you for your contribution. We appreciate the community's help in any capac
 <br>
 
 ## Coding guidelines
-In order to ensure the conceptual integrity and readability of our code, we have a few guidelines:
+In order to ensure the conceptual integrity and readability of our code, we have a few guidelines for Python code under the `afscgap` library itself:
 
  - Please try to follow the conventions laid out by the project in existing code. In cases of ambiguity, please refer to the [Google Python Style Guide](https://google.github.io/styleguide/pyguide.html) where possible.
  - Tests are encouraged and we aim for 80% coverage where feasible.
@@ -21,7 +21,9 @@ In order to ensure the conceptual integrity and readability of our code, we have
  - Imports should be in alphabetical order in groups of standard library, third-party, and then first party.
  - Imports in the form `from ... import ...` are discouraged except for type hints. They should appear in a logical grouping after other imports.
 
-Do not worry if you aren't sure that you met all of our the guidelines! We encourage pull requests and are happy to work through any necessary outstanding tasks with you.
+The `afscgap` library itself requires a very high rigor. For other sections including `afscgapviz`, please ensure that documentation (docstrings, jsdoc, or markdown) is included (again with an 80% target) and, for non-notebook code, Python type hints are included. Testing is encouraged where feasible but an explicit target is not set as it may not be practical for some artifacts like notebooks. That said, note that CI / CD systems run checks in some directories outside the `afscgap` library itself that should be passing for all PRs.
+
+Of course, **do not worry if you aren't sure that you met all of our the guidelines!** We encourage pull requests and are happy to work through any necessary outstanding tasks with you.
 
 <br>
 
