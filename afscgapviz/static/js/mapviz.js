@@ -1,5 +1,5 @@
 /**
- * Logic for rendering the map component of the visualization.
+ * Logic for rendering the map and supporting components of the visualization.
  * 
  * @license BSD 3 Clause
  * @author Regents of University of California / The Eric and Wendy Schmidt
@@ -177,8 +177,27 @@ class MapDatum {
 }
 
 
+/**
+ * Presenter for the map visualization and its supporting data displays.
+ */
 class MapViz {
 
+    /**
+     * Create a new map visualization presenter.
+     * 
+     * @param {HTMLElement} element The visualization panel to be controlled
+     *      by this presenter.
+     * @param {DisplaySelection} displaySelection The current or starting set of
+     *      user selections / filters defining the dataset of interest.
+     * @param {CommonScale} commonScale The scale builder to use in drawing
+     *      this visualization's glyphs.
+     * @param {function} onRender Function to call after the map component is
+     *      rendered.
+     * @param {function} onGeohashEnter Function to call when the user selects
+     *      a geohash.
+     * @param {function} onGeohashLeave Function to call when the user
+     *      un-selects a geohash.
+     */
     constructor(element, displaySelection, commonScale, onRender,
         onGeohashEnter, onGeohashLeave) {
         const self = this;
@@ -202,6 +221,12 @@ class MapViz {
         self._requestBuild();
     }
 
+    /**
+     * Transition this visualization to a new dataset subset.
+     * 
+     * @param {DisplaySelection} displaySelection New dataset of interest
+     *      definition.
+     */
     updateSelection(displaySelection) {
         const self = this;
 
@@ -209,6 +234,11 @@ class MapViz {
         self._redraw();
     }
 
+    /**
+     * Highlight and provide additional information on a specific geohash.
+     * 
+     * @param {stirng} geohash The string geohash to highlight.
+     */
     selectGeohash(geohash) {
         const self = this;
 
@@ -240,10 +270,21 @@ class MapViz {
 
         graphDescriptionInner.style.display = "none";
 
+        /**
+         * Display the name of the geohash highlighted.
+         */
         const displayGeohash = () => {
             positionDisplay.innerHTML = "Geohash: " + geohash;
         };
 
+        /**
+         * Within the given dataset find the geohash of interest (as provided)
+         * by the enclosing variable space.
+         * 
+         * @param {Array} dataset The dataset of MapDatums to filter.
+         * @return {?MapDatum} The first MapDatum corresponding to the geohash
+         *      found or null if no data avilable on the geohash of interest.
+         */
         const findGeohash = (dataset) => {
             if (dataset === null) {
                 return null;
@@ -260,6 +301,9 @@ class MapViz {
             return matching[0];
         };
         
+        /**
+         * Display information about the geohash's temperature.
+         */
         const displayTemperature = () => {
             const matchingRecord = findGeohash(self._cachedTempDataset);
 
@@ -276,6 +320,20 @@ class MapViz {
             temperatureDisplay.innerHTML = message;
         };
 
+        /**
+         * Display information about a species at the geohash of interest.
+         * 
+         * Display information about a species at the geohash of interest which
+         * comes from the containing scope.
+         * 
+         * @param {Array} dataset The collection of MapDatums available for the
+         *      species of interest.
+         * @param {HTMLElement} element The element on which this information
+         *      should be displayed.
+         * @param {SpeciesSelection} speciesSelection The species / year for
+         *      which this information is being provided and that corresopnds
+         *      to the given dataset.
+         */
         const displaySpecies = (dataset, element, speciesSelection) => {
             const matchingRecord = findGeohash(dataset);
 
@@ -319,6 +377,9 @@ class MapViz {
             .style("opacity", (x) => x.getGeohash() === geohash ? 1 : 0);
     }
 
+    /**
+     * Rebuild the map layers.
+     */
     _requestBuild() {
         const self = this;
 
@@ -338,19 +399,30 @@ class MapViz {
         self._redraw();
     }
 
+    /**
+     * Build and/or transition all map layers to display the currently selected
+     * dataset.
+     */
     _redraw() {
         const self = this;
 
+        /**
+         * Request updated scales from the CommonScale and draw the map.
+         */
         const getScaleAndRedraw = () => {
             self._commonScale.getScales().then(redrawInner);
         };
 
+        /**
+         * Redraw / transition all map elements.
+         */
         const redrawInner = (scales) => {
-            const selection1 = self._displaySelection.getSpeciesSelection1();
-            const selection2 = self._displaySelection.getSpeciesSelection2();
+            const dispSelect = self._displaySelection;
+            const selection1 = dispSelect.getSpeciesSelection1();
+            const selection2 = dispSelect.getSpeciesSelection2();
 
-            const temperatureMode = self._displaySelection.getTemperatureMode();
-            const isTempDisabled = !self._displaySelection.getTemperatureEnabled();
+            const temperatureMode = dispSelect.getTemperatureMode();
+            const isTempDisabled = !dispSelect.getTemperatureEnabled();
             const secondDisabled = !selection2.getIsActive();
             const useComparison = !isTempDisabled && !secondDisabled;
 
@@ -364,7 +436,7 @@ class MapViz {
             const fishLayer2 = self._selection.select(".fish-2");
             const fishLayer1 = self._selection.select(".fish-1");
 
-            const survey = self._displaySelection.getSurvey();
+            const survey = dispSelect.getSurvey();
             const projection = self._buildProjection(survey);
 
             const cachedFirstRequestor = self._makeCachedRequestor(
@@ -387,17 +459,39 @@ class MapViz {
             self._requestLand()
                 .then(self._makeFutureRenderLand(landLayer, projection))
                 .then(temperatureRequestor)
-                .then(self._makeFutureInterpretPoints(projection, temperatureMode))
-                .then(self._makeFutureRenderWater(waterLayer, negativeLayer, projection, waterScale))
+                .then(self._makeFutureInterpretPoints(
+                    projection,
+                    temperatureMode
+                ))
+                .then(self._makeFutureRenderWater(
+                    waterLayer,
+                    negativeLayer,
+                    projection,
+                    waterScale
+                ))
                 .then(self._makeFutureAddHoverTargets(hoverLayer, projection))
                 .then((dataset) => { self._cachedTempDataset = dataset; })
                 .then(cachedFirstRequestor)
-                .then(self._makeFutureInterpretPoints(projection, temperatureMode))
-                .then(self._makeFutureRenderFish(fishLayer1, projection, radiusScale))
+                .then(self._makeFutureInterpretPoints(
+                    projection,
+                    temperatureMode
+                ))
+                .then(self._makeFutureRenderFish(
+                    fishLayer1,
+                    projection,
+                    radiusScale
+                ))
                 .then((dataset) => { self._cachedFirstDataset = dataset; })
                 .then(self._makeFutureDataRequest(survey, selection2))
-                .then(self._makeFutureInterpretPoints(projection, temperatureMode))
-                .then(self._makeFutureRenderFish(fishLayer2, projection, radiusScale))
+                .then(self._makeFutureInterpretPoints(
+                    projection,
+                    temperatureMode
+                ))
+                .then(self._makeFutureRenderFish(
+                    fishLayer2,
+                    projection,
+                    radiusScale
+                ))
                 .then((dataset) => { self._cachedSecondDataset = dataset; })
                 .then(() => self._hideLoading())
                 .then(() => self._updateTitles())
@@ -408,22 +502,40 @@ class MapViz {
         setTimeout(getScaleAndRedraw, 500);
     }
 
+    /**
+     * Update the chart description and titles shown to the user.
+     */
     _updateTitles() {
         const self = this;
 
         const hasData = !self._selection.selectAll(".fish-marker").empty();
 
+        /**
+         * Indicate that no matching data were found.
+         */
         const updateNoData = (hasData) => {
             const target = self._element.querySelector(".no-data-message");
             target.style.display = hasData ? "none": "block";
         };
 
+        /**
+         * Create a string describing a species / year selection.
+         * 
+         * @param {SpeciesSelection} species The selection to summarize.
+         * @return {string} Description of the selection.
+         */
         const getSpeciesDescription = (species) => {
             const year = "(" + species.getYear() + ")";
             const message = species.getName() + " " + year;
             return message;
         }
 
+        /**
+         * Update the title describing the chart shown to the user.
+         * 
+         * @param hasData {boolean} True if matching data for the current
+         *      selection were found and false otherwise.
+         */
         const updateTitle = (hasData) => {
             const target = self._element.querySelector(
                 ".graph-description-inner"
@@ -476,9 +588,18 @@ class MapViz {
         updateTitle(hasData);
     }
 
+    /**
+     * Create a closure over a stateful cache for a future data request.
+     * 
+     * Create a closure over a stateful cache for a future data reques such that
+     * repeat requests for data use the cached value and only the first request
+     * actually generates HTTP activity.
+     * 
+     * @param {function} innerRequestor The future to cache.
+     */
     _makeCachedRequestor(innerRequestor) {
         const self = this;
-        var cachedValue = null;
+        let cachedValue = null;
         return () => {
             return new Promise((resolve, reject) => {
                 if (cachedValue !== null) {
@@ -494,26 +615,44 @@ class MapViz {
         };
     }
 
+    /**
+     * Show a loading spinner on the visualization map to the user.
+     */
     _showLoading() {
         const self = this;
         self._element.querySelector(".map-loading").style.display = "block";
     }
 
+    /**
+     * Hide the loading spinner on the visualization map to the user.
+     */
     _hideLoading() {
         const self = this;
         self._element.querySelector(".map-loading").style.display = "none";
     }
 
+    /**
+     * Update the legends displayed below the map SVG element.
+     * 
+     * @param {Scales} scales The scales for which a legend should be built.
+     */
     _updateLegend(scales) {
         const self = this;
 
-        const secondSelection = self._displaySelection .getSpeciesSelection2();
+        const dispSelect = self._displaySelection;
+        const secondSelection = self.dispSelect .getSpeciesSelection2();
         const isComparing = secondSelection.getIsActive();
-        const temperatureDisplayed = self._displaySelection.getTemperatureEnabled();
+        const temperatureDisplayed = self.dispSelect.getTemperatureEnabled();
 
         const legendSelect = d3.select("#" + self._element.id)
             .select(".legend");
 
+        /**
+         * Build a legend describing the fish marker size.
+         * 
+         * @param {d3.select} tableSelect Selection over the table in which the
+         *      data should be rendered.
+         */
         const buildRadiusLegend = (tableSelect) => {
             const maxCpue = scales.getSummary().getMaxCpue();
             const step = Math.round(maxCpue / 4);
@@ -542,6 +681,17 @@ class MapViz {
             rows.append("td").html((x) => x + " kg / hectare");
         };
 
+        /**
+         * Build a legend describing the grid colors used.
+         * 
+         * @param {d3.select} tableSelect Selection over the table in which the
+         *      the grid colors legend should be rendered.
+         * @param {number} minTemperature The minimum temperature in celcius
+         *      that the scale supports.
+         * @param {number} maxTemperature The maximum temperature in celcius
+         *      that the scale supports.
+         * @param {function} waterScale The scale to be used.
+         */
         const buildGridLegend = (tableSelect, minTemperature, maxTemperature,
             waterScale) => {
             const spread = maxTemperature - minTemperature;
@@ -583,6 +733,12 @@ class MapViz {
             rows.append("td").html((x) => (Math.round(x * 10) / 10) + " C");
         };
 
+        /**
+         * Update text for the legend showing if a haul was taken.
+         * 
+         * Update text for the legend showing if a haul was taken either in a
+         * single dataset or in two datasets being compared.
+         */
         const updatePresenceText = (target) => {
             if (isComparing) {
                 target.html("Area in both surveys.");
@@ -591,6 +747,10 @@ class MapViz {
             }
         };
 
+        /**
+         * Update the visibility of legends to only display those relevant to
+         * the currently requested visualization.
+         */
         const updateVisibility = () => {
             let showGridLegend = false;
             let showDivergingLegend = false;
@@ -638,10 +798,26 @@ class MapViz {
         updateVisibility();
     }
 
+    /**
+     * Request the geojson defining the land layer.
+     * 
+     * @return {Promise} Promise resolving to the parsed geojson.
+     */
     _requestLand() {
         return fetch('/static/geojson/clipped.geojson').then((x) => x.json());
     }
 
+    /**
+     * Interpret raw data as MapDatums.
+     * 
+     * @param {d3.projection} projection The projection to use in displaying the
+     *      data.
+     * @param {string} temperatureMode The type of temperature ("surface" or
+     *      "bottom") to be displayed or "disabled" if no temperature should be
+     *      displayed.
+     * @return {function} Function which takes in a dataset to interpret and
+     *      returns that interpreted dataset as an array of MapDatums.
+     */
     _makeFutureInterpretPoints(projection, temperatureMode) {
         return (dataset) => {
             const interpreted = dataset.map((target) => {
@@ -690,6 +866,16 @@ class MapViz {
         };
     }
 
+    /**
+     * Make a future to render the land (shoreline) base layer.
+     * 
+     * @param {d3.select} landLayer Selection over the layer in which the land
+     *      should be drawn.
+     * @param {d3.projection} projection The map projection to use in drawing
+     *      this layer.
+     * @return {function} Function taking parsed geojson and displaying the
+     *      results in landLayer using projection.
+     */
     _makeFutureRenderLand(landLayer, projection) {
         const self = this;
 
@@ -709,9 +895,32 @@ class MapViz {
         };
     }
 
+    /**
+     * Build a future for rendering water (temperature / geohash dataset
+     * presence) data.
+     * 
+     * @param {d3.select} waterLayer The layer into which these glyphs should be
+     *      drawn.
+     * @param {d3.select} negativeLayer The layer into which negative markers
+     *      should be drawn. These are markers indicating that there is a
+     *      "negative" value like a below zero temperature or decrease in
+     *      temperature.
+     * @param {d3.projection} projection The map projection in which these
+     *      glyphs should be drawn.
+     * @param {function} waterScale Scale taking in a temperature value and
+     *      returning a color.
+     * @return {function} Function taking a dataset to be rendered into
+     *      waterLayer and negativeLayer using projection and waterScale.
+     */
     _makeFutureRenderWater(waterLayer, negativeLayer, projection, waterScale) {
         const self = this;
 
+        /**
+         * Create the tiles indicating areas where there are haul or what
+         * temperatures were seen at that region.
+         * 
+         * @param {Array} dataset Collection of MapDatums to be rendered.
+         */
         const buildWaterTiles = (dataset) => {
             const bound = waterLayer.selectAll(".grid")
                 .data(dataset, (datum) => datum.getGeohash());
@@ -745,6 +954,12 @@ class MapViz {
                 });
         };
 
+        /**
+         * Create the tiles indicating areas where there was a negative value
+         * such as a below zero C temperature or a temperature decrease.
+         * 
+         * @param {Array} dataset Collection of MapDatums to be rendered.
+         */
         const buildNegativeIndicators = (dataset) => {
             negativeLayer.html("");
             const negativeMarkers = negativeLayer.selectAll(".grid")
@@ -769,9 +984,22 @@ class MapViz {
         };
     }
 
+    /**
+     * Create a future for building hover targets to select geohashes.
+     * 
+     * @param {d3.select} hoverLayer The map layer into which the hover targets
+     *      should be rendered.
+     * @param {d3.projection} projection The projection to use when rendering
+     *      into hoverLayer.
+     * @return {function} Function taking in a dataset for which hover targets
+     *      should be built and which renders into hoverLayer using projection.
+     */
     _makeFutureAddHoverTargets(hoverLayer, projection) {
         const self = this;
 
+        /**
+         * Build the hover targets as transparent rects.
+         */
         const builTiles = (dataset) => {
             hoverLayer.html("");
             hoverLayer.selectAll(".grid")
@@ -798,6 +1026,16 @@ class MapViz {
         };
     }
 
+    /**
+     * Make a future which renders fish (CPUE) markers.
+     * 
+     * @param {d3.select} layer The layer into which the CPUE markers should be
+     *      rendered.
+     * @param {d3.projection} projection The projection to use when rendering
+     *      markers into layer.
+     * @param {function} radiusScale Function which takes in CPUE and outputs
+     *      radius.
+     */
     _makeFutureRenderFish(layer, projection, radiusScale) {
         return (dataset) => {
             const datasetAllowed = dataset.filter(
@@ -826,6 +1064,13 @@ class MapViz {
         };
     }
 
+    /**
+     * Build a projection (d3.geoMercator) to use to display these data.
+     * 
+     * @param {string} survey The name of the survey for which a projection
+     *      needs to be built like GOA.
+     * @return {d3.projection} The projection.
+     */
     _buildProjection(survey) {
         const self = this;
 
@@ -844,6 +1089,16 @@ class MapViz {
         return projection;
     }
 
+    /**
+     * Make a future which, when called, requests geohash level data.
+     * 
+     * @param {string} survey The name of the survey for which data are being
+     *      requested like GOA.
+     * @param {SpeciesSelection} speciesSelection The year / species to be
+     *      displayed in this map.
+     * @param {?SpeciesSelection} secondSelection Information the second species
+     *      to overlay in this map if any.
+     */
     _makeFutureDataRequest(survey, speciesSelection, secondSelection) {
         const self = this;
 
