@@ -1,6 +1,12 @@
-var cachedGeojson = null;
+/**
+ * Logic for rendering the map component of the visualization.
+ * 
+ * @license BSD 3 Clause
+ * @author Regents of University of California / The Eric and Wendy Schmidt
+ *      Center for Data Science and the Environment at UC Berkeley.
+ */
 
-
+// Geographic centers for the different regions to be used in the projection.
 const CENTERS = {
     "AI": [-170.2, 52.2],
     "BSS": [-175.5, 57],
@@ -9,6 +15,8 @@ const CENTERS = {
     "NBS": [-176, 63]
 };
 
+// Recommended scaling factor for different regions to be used in the
+// projection.
 const SCALES = {
     "AI": 1500,
     "BSS": 1100,
@@ -17,6 +25,7 @@ const SCALES = {
     "NBS": 1200
 };
 
+// Recommended rotations for the different regions to be used in the projection.
 const ROTATIONS = {
     "AI": [1,0],
     "BSS": [-1, -0.3],
@@ -25,11 +34,31 @@ const ROTATIONS = {
     "NBS": [-1, -0.3]
 }
 
+// Color to use for the square indicating that a haul took place but no
+// temperature information to show.
 const PRESENCE_INDICATOR_COLOR = "#0570b0";
 
 
+/**
+ * Representation of a single geohash for a single survey / species / year.
+ */
 class MapDatum {
 
+    /**
+     * Create new information about a geohash.
+     * 
+     * @param {string} geohash The geohash as a string.
+     * @param {number} x The x coordinate in visualization pixel space.
+     * @param {number} y The y coordinate in visualization pixel space.
+     * @param {number} width The width of the geohash in visualization pixel
+     *      space.
+     * @param {number} height The height of the geohash in visualization pixel
+     *      space.
+     * @param {number} temperature The temperature in celcius reported for this
+     *      geohash given the user's selections.
+     * @param {number} cpue The catch per unit effort reported for this geohash
+     *      given the user's selections.
+     */
     constructor(geohash, x, y, width, height, temperature, cpue) {
         const self = this;
 
@@ -42,54 +71,103 @@ class MapDatum {
         self._cpue = cpue;
     }
 
+    /**
+     * Get the geohash string associated with this region.
+     * 
+     * @return {string} The geohash as a string.
+     */
     getGeohash() {
         const self = this;
 
         return self._geohash;
     }
 
+    /**
+     * Get the horizontal pixel coordinate of this region.
+     * 
+     * @return {number} The x coordinate in visualization pixel space.
+     */
     getX() {
         const self = this;
 
         return self._x;
     }
 
+    /**
+     * Get the vertical pixel coordinate of this region.
+     * 
+     * @return {number} The y coordinate in visualization pixel space.
+     */
     getY() {
         const self = this;
 
         return self._y;
     }
 
+    /**
+     * Get the horizontal center pixel coordinate for this region.
+     * 
+     * @return {number} Get the horiztonal pixel coordinate from which fish
+     *      markers should be drawn.
+     */
     getCenterX() {
         const self = this;
 
         return self.getX() + self.getWidth() / 2;
     }
 
+    /**
+     * Get the vertical center pixel coordinate for this region.
+     * 
+     * @return {number} Get the vertical pixel coordinate from which fish
+     *      markers should be drawn.
+     */
     getCenterY() {
         const self = this;
 
         return self.getY() + self.getHeight() / 2;
     }
 
+    /**
+     * Get the horizontal size of this region in pixels.
+     * 
+     * @return {number} The width of the geohash in visualization pixel space.
+     */
     getWidth() {
         const self = this;
 
         return self._width;
     }
 
+    /**
+     * Get the vertical size of this region in pixels.
+     * 
+     * @return {number} The height of the geohash in visualization pixel space.
+     */
     getHeight() {
         const self = this;
 
         return self._height;
     }
 
+    /**
+     * Get the temperature or temperture change seen in this region.
+     * 
+     * @return {number} The temperature in celcius reported for this geohash
+     *      given the user's selections.
+     */
     getTemperature() {
         const self = this;
 
         return self._temperature;
     }
 
+    /**
+     * Get the kg / hectare reported for the speices of interest in this region.
+     * 
+     * @return {number} The catch per unit effort reported for this geohash
+     *      given the user's selections.
+     */
     getCpue() {
         const self = this;
 
