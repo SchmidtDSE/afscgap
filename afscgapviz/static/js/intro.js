@@ -1,3 +1,12 @@
+/**
+ * Logic for running the intro tutorial for the visualization tool.
+ * 
+ * @license BSD 3 Clause
+ * @author Regents of University of California / The Eric and Wendy Schmidt
+ *      Center for Data Science and the Environment at UC Berkeley.
+ */
+
+// Actual HTML to display the user for each step of the introduction.
 const STEP_TEXTS = [
     "Hello! This visualization explores data from the NOAA AFSC GAP surveys in and around Alaska. A guided intro is available (click Next >>) or click Skip Intro if you are a returning user.",
     "We will walk through an example problem together: what happened during the <a target='_blank' href='https://www.npr.org/2019/12/08/785634169/alaska-cod-fishery-closes-and-industry-braces-for-ripple-effect'>dramatic decline in cod stocks in Alaska</a>? Of course, this demo offers just one (over-simplified) view of this complex situation but I'll link to <a target='_blank' href='https://onlinelibrary.wiley.com/doi/abs/10.1111/fog.12422'>related literature</a> with more details when relevant.",
@@ -22,11 +31,21 @@ const STEP_TEXTS = [
     "That's it for the intro! Want to learn more about this? See our <a target='_blank' href='https://mybinder.org/v2/gh/SchmidtDSE/afscgap/main?urlpath=/tree/index.ipynb'>example notebook</a>."
 ];
 
+// List of elements that should not have display set to none
 const PRESERVE_BOUNDS = ["#display-1", "#display-2", ".viz"];
 
 
+/**
+ * Presenter for the tutorial sequence.
+ * 
+ * Presenter which runs the introduction / tutorial sequence of the
+ * visualization tool.
+ */
 class Intro {
 
+    /**
+     * Create a new intro presenter and start the intro sequence.
+     */
     constructor() {
         const self = this;
         self._step = 0;
@@ -63,11 +82,26 @@ class Intro {
         self.forceSync();
     }
 
+    /**
+     * Determine if the user has completed the intro sequence.
+     * 
+     * @return {boolean} True if the user has completed or skipped the intro
+     *      sequence / tutorial.
+     */
     isDone() {
         const self = this;
         return self._step == STEP_TEXTS.length - 1;
     }
 
+    /**
+     * Instruct the presenter to replay to the current step.
+     * 
+     * Instruct the presenter to replay to the current step, adjusting element
+     * visibility if needed. This is required if elements change on the page
+     * for some reason like resize for usability. This will have the intro
+     * presenter "restart" and instantly "re-run" up to the current intro
+     * sequence step.
+     */
     forceSync() {
         const self = this;
 
@@ -103,6 +137,9 @@ class Intro {
         self._updateLinkVisibility();
     }
 
+    /**
+     * Register internal event callbacks for the intro.
+     */
     _registerCallbacks() {
         const self = this;
         document.getElementById("skip-intro-link").addEventListener(
@@ -121,6 +158,9 @@ class Intro {
         );
     }
 
+    /**
+     * Instruct this presenter to skip to the end of the tutorial.
+     */
     _skipIntro() {
         const self = this;
 
@@ -136,8 +176,12 @@ class Intro {
         document.getElementById("tutorial-panel").style.display = "none";
         allowSpecies2 = true;
         disableDeepLink = false;
+        self._step = STEP_TEXTS.length - 1;
     }
 
+    /**
+     * Move the tutorial sequence back one step.
+     */
     _backStep() {
         const self = this;
         self._step--;
@@ -147,6 +191,9 @@ class Intro {
         self._updateLinkVisibility();
     }
 
+    /**
+     * Move the tutorial sequence to the next step.
+     */
     _nextStep() {
         const self = this;
         self._step++;
@@ -182,6 +229,9 @@ class Intro {
         self._updateLinkVisibility();
     }
 
+    /**
+     * Instruct this presenter to display the current step's text.
+     */
     _displayMessage() {
         const self = this;
         let newText = STEP_TEXTS[self._step];
@@ -195,6 +245,10 @@ class Intro {
         d3.select("#intro-text").transition().style("opacity", 1);
     }
 
+    /**
+     * Change which of the nav buttons (skip, next, back) are shown based on the
+     * current step.
+     */
     _updateLinkVisibility() {
         const self = this;
 
