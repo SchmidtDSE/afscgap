@@ -1,5 +1,33 @@
+/**
+ * Logic for running a "display" which is a visualization and its controls.
+ * 
+ * Logic for running a "display" which is a visualization and its controls where
+ * there are two displays on the page by default.
+ * 
+ * @license BSD 3 Clause
+ * @author Regents of University of California / The Eric and Wendy Schmidt
+ *      Center for Data Science and the Environment at UC Berkeley.
+ */
+
+/**
+ * Object summarizing a user's configuration for a display.
+ */
 class DisplaySelection {
 
+    /**
+     * Create a new summary of a user's display configuration.
+     * 
+     * @param {string} survey The name of the survey selected by the user like
+     *      "GOA" for Gulf of Alaska.
+     * @param {string} temperatureMode The type of tepmerature the user wants
+     *      displayed on the page or "disabled" if no temperature should be
+     *      shown.
+     * @param {SpeciesSelection} speciesSelection1 The first species selected
+     *      by the user to be shown. This is expected to have isActive() is
+     *      true.
+     * @param {SpeciesSelection} speciesSelection2 The second species selected
+     *      by the user to be shown which may not be active.
+     */
     constructor(survey, temperatureMode, speciesSelection1, speciesSelection2) {
         const self = this;
         self._survey = survey;
@@ -7,7 +35,6 @@ class DisplaySelection {
         self._speciesSelection1 = speciesSelection1;
         self._speciesSelection2 = speciesSelection2;
     }
-    
     
     getSurvey() {
         const self = this;
@@ -27,6 +54,11 @@ class DisplaySelection {
     getSpeciesSelection2() {
         const self = this;
         return self._speciesSelection2;
+    }
+
+    getTemperatureEnabled() {
+        const self = this;
+        return self._temperatureMode !== "disabled";
     }
 
     getKey() {
@@ -205,7 +237,7 @@ class Display {
             const downloadUrl = self._element.querySelector('.download-link');
             downloadUrl.href = newUrl;
 
-            if (selection.getSpeciesSelection2().getName() === "None") {
+            if (selection.getSpeciesSelection2().getIsActive()) {
                 downloadUrl.innerHTML = "Download Data";
             } else {
                 downloadUrl.innerHTML = "Download Comparison";

@@ -31,6 +31,11 @@ class SpeciesSelection {
         ].join("/");
     }
 
+    getIsActive() {
+        const self = this;
+        return self._name !== "None";
+    }
+
 }
 
 

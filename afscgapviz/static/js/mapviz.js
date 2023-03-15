@@ -190,7 +190,7 @@ class MapViz {
             }
 
             const secondSelect = self._displaySelection.getSpeciesSelection2();
-            const isComparing = secondSelect.getName() !== "None";
+            const isComparing = secondSelect.getIsActive();
             const prefix = isComparing ? "Change in temperature: " : "Temperature: ";
             const temperature = matchingRecord.getTemperature();
             const roundedTemp = Math.round(temperature * 10) / 10;
@@ -201,7 +201,7 @@ class MapViz {
         const displaySpecies = (dataset, element, speciesSelection) => {
             const matchingRecord = findGeohash(dataset);
 
-            if (speciesSelection.getName() === "None") {
+            if (!speciesSelection.getIsActive()) {
                 return;
             }
 
@@ -223,7 +223,7 @@ class MapViz {
         };
 
         displayGeohash();
-        if (self._displaySelection.getTemperatureMode() !== "disabled") {
+        if (self._displaySelection.getTemperatureEnabled()) {
             displayTemperature();
         }
         displaySpecies(
@@ -272,9 +272,9 @@ class MapViz {
             const selection2 = self._displaySelection.getSpeciesSelection2();
 
             const temperatureMode = self._displaySelection.getTemperatureMode();
-            const isTempDisabled = temperatureMode === "disabled";
-            const secondIsNone = selection2.getName() === "None"
-            const useComparison = !isTempDisabled && !secondIsNone;
+            const isTempDisabled = !self._displaySelection.getTemperatureEnabled();
+            const secondDisabled = !selection2.getIsActive();
+            const useComparison = !isTempDisabled && !secondDisabled;
 
             const radiusScale = scales.getRadiusScale();
             const waterScale = scales.getWaterScale(useComparison);
@@ -368,7 +368,7 @@ class MapViz {
 
             const temperatureMode = self._displaySelection.getTemperatureMode();
             let temperatureSuffix = ".";
-            if (temperatureMode !== "disabled") {
+            if (self._displaySelection.getTemperatureEnabled()) {
                 let tempDescription = "";
                 if (isComparing) {
                     tempDescription = [
@@ -431,8 +431,7 @@ class MapViz {
 
         const secondSelection = self._displaySelection .getSpeciesSelection2();
         const isComparing = secondSelection.getName() !== "None";
-        const temperatureMode = self._displaySelection .getTemperatureMode();
-        const temperatureDisplayed = temperatureMode !== "disabled";
+        const temperatureDisplayed = self._displaySelection.getTemperatureEnabled();
 
         const legendSelect = d3.select("#" + self._element.id)
             .select(".legend");

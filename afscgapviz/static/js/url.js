@@ -17,7 +17,7 @@ function generateDownloadDataUrl(survey, speciesSelection, secondSelection,
         params.push("commonName=" + speciesSelection.getName());
     }
 
-    if (secondSelection !== undefined && secondSelection.getName() !== "None") {
+    if (secondSelection !== undefined && secondSelection.getIsActive()) {
         params.push("comparison=y");
         params.push("otherYear=" + secondSelection.getYear());
 
@@ -48,7 +48,7 @@ function generatePythonUrl(survey, speciesSelection, secondSelection) {
         params.push("commonName=" + speciesSelection.getName());
     }
 
-    if (secondSelection !== undefined && secondSelection.getName() !== "None") {
+    if (secondSelection !== undefined && secondSelection.getIsActive()) {
         params.push("comparison=y");
         params.push("otherYear=" + secondSelection.getYear());
 

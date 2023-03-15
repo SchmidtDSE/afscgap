@@ -188,7 +188,7 @@ class CommonScale {
 
         const getTempEnabled = () => {
             const numWithTempEnabled = selections
-                .filter((x) => x.getTemperatureMode() !== "disabled")
+                .filter((x) => x.getTemperatureEnabled())
                 .map((x) => 1)
                 .reduce((a, b) => a + b, 0);
 
@@ -199,7 +199,7 @@ class CommonScale {
 
         const getComparing = () => {
             const numComparing = selections
-                .filter((x) => x.getSpeciesSelection2().getName() !== "None")
+                .filter((x) => x.getSpeciesSelection2().getIsActive())
                 .map((x) => 1)
                 .reduce((a, b) => a + b, 0);
 
@@ -306,13 +306,12 @@ class CommonScale {
 
         let promises = null;
 
-        const temperatureMode = displaySelection.getTemperatureMode();
-        const temperatureDisabled = temperatureMode === "disabled";
-        const secondIsNone = speciesSelections[1].getName() === "None";
-        const noComparison = temperatureDisabled || secondIsNone;
+        const temperatureDisabled = !displaySelection.getTemperatureEnabled();
+        const secondInactive = !speciesSelections[1].getIsActive();
+        const noComparison = temperatureDisabled || secondInactive;
         if (noComparison) {
             promises = speciesSelections.map((speciesSelection) => {
-                if (speciesSelection.getName() === "None") {
+                if (!speciesSelection.getIsActive()) {
                     return new Promise((resolve, reject) => resolve({
                         "cpue": {"min": null, "max": null},
                         "temperature": {"min": null, "max": null}
