@@ -405,24 +405,16 @@ class Display {
      * case due to a number of database interactions required.
      */
     _generateSurveyPanelUrl() {
-        const self = this;
-
         const area = self._element.querySelector(".area-select").value;
-        const url = '/speciesSelector/' + area + '.html?index=' + self._number;
-
         const speciesSelection1 = self._speciesDisplayFirst.getSelection();
-        const species1Query = [
-            "name1=" + speciesSelection1.getName(),
-            "year1=" + speciesSelection1.getYear()
-        ].join("&");
-
         const speciesSelection2 = self._speciesDisplaySecond.getSelection();
-        const species2Query = [
-            "name2=" + speciesSelection2.getName(),
-            "year2=" + speciesSelection2.getYear()
-        ].join("&");
 
-        return url + "&" + species1Query + "&" + species2Query;
+        return generateSurveyPanelUrl(
+            area,
+            self._number,
+            speciesSelection1,
+            speciesSelection2
+        );
     }
 
     /**
