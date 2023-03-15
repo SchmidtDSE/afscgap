@@ -1,18 +1,35 @@
+/**
+ * Logic for coordianting scales across visualization components.
+ * 
+ * Logic which allows the visualization to use the same scales like for color
+ * and radius across different displays.
+ * 
+ * @license BSD 3 Clause
+ * @author Regents of University of California / The Eric and Wendy Schmidt
+ *      Center for Data Science and the Environment at UC Berkeley.
+ */
+
+// The maximum circle area when the map is not too crowded.
 const MAX_AREA_SPARSE = 150;
+
+// The maximum circle area when the map is crowded.
 const MAX_AREA_DENSE = 200;
 
+// Colors from ColorBrewer for an increase in temperature.
 const POSITIVE_TEMP_COLORS = [
     '#fddbc7',
     '#f4a582',
     '#d6604d'
 ];
 
+// Colors from ColorBrewer for a decrease in temperature.
 const NEGATIVE_TEMP_COLORS = [
     '#4393c3',
     '#92c5de',
     '#d1e5f0'
 ];
 
+// Colors from ColorBrewer for a linear scale of temperature.
 const SINGLE_TEMP_COLORS = [
     '#0570b0',
     '#3690c0',
@@ -23,8 +40,33 @@ const SINGLE_TEMP_COLORS = [
 ];
 
 
+/**
+ * Summary statistics needed for building scales.
+ * 
+ * Record describing select summary statistics for the user's currently selected
+ * data as required for building appropriate scales. This enables the dynamic
+ * scales feature which adjusts min and max values as the dataset changes.
+ */
 class Summary {
 
+    /**
+     * Create a new summary of a dataset or a dataset subset.
+     * 
+     * @param {number} minCpue The smallest observed catch per unit effort in
+     *      the dataset subset (in kg / hectare).
+     * @param {number} minCpue The largest observed catch per unit effort in the
+     *      dataset subset (in kg / hectare).
+     * @param {?number} minTemperature The smallest observed temperature in the
+     *      dataset subset (in C) or null if no temperatures reported.
+     * @param {?number} maxTemperature The largest observed temperature in the
+     *      dataset subset (in C) or null if no temperatures reported.
+     * @param {?number} minTemperatureDelta The smallest change in temperature
+     *      observed in the dataset subset (in C) or null if no temperature
+     *      changes reported.
+     * @param {?number} maxTemperatureDelta The largest change in temperature
+     *      observed in the dataset subset (in C) or null if no temperature
+     *      changes reported.
+     */
     constructor(minCpue, maxCpue, minTemperature, maxTemperature,
         minTemperatureDelta, maxTemperatureDelta) {
         const self = this;
@@ -36,36 +78,79 @@ class Summary {
         self._maxTemperatureDelta = maxTemperatureDelta;
     }
 
+    /**
+     * Get the minimum CPUE observed.
+     * 
+     * @return {number} The smallest observed catch per unit effort in the
+     *      dataset subset (in kg / hectare).
+     */
     getMinCpue() {
         const self = this;
         return self._minCpue;
     }
     
+    /**
+     * Get the maximum CPUE observed.
+     * 
+     * @return {number} The largest observed catch per unit effort in the
+     *      dataset subset (in kg / hectare).
+     */
     getMaxCpue() {
         const self = this;
         return self._maxCpue;
     }
     
+    /**
+     * Get the minimum temperature observed in the dataset.
+     * 
+     * @return {?number} The smallest observed temperature in the dataset subset
+     *      (in C) or null if no temperatures reported.
+     */
     getMinTemperature() {
         const self = this;
         return self._minTemperature;
     }
     
+    /**
+     * Get the maximum temperature observed in the dataset.
+     * 
+     * @return {?number} The largest observed temperature in the dataset subset
+     *      (in C) or null if no temperatures reported.
+     */
     getMaxTemperature() {
         const self = this;
         return self._maxTemperature;
     }
 
+    /**
+     * Get the minimum change in temperature observed in the dataset.
+     * 
+     * @return {?number} The smallest change in temperature observed in the
+     *      dataset subset (in C) or null if no temperature changes reported.
+     */
     getMinTemperatureDelta() {
         const self = this;
         return self._minTemperatureDelta;
     }
     
+    /**
+     * Get the maximum change in temperature observed in the dataset.
+     * 
+     * @return {?number} The largest change in temperature observed in the
+     *      dataset subset (in C) or null if no temperature changes reported.
+     */
     getMaxTemperatureDelta() {
         const self = this;
         return self._maxTemperatureDelta;
     }
 
+    /**
+     * Combine this summary with another, aggregating their statistics.
+     * 
+     * @param {Summary} other The other summary to be combined with this one.
+     * @return {Summary} Newly created summary that represents the aggregation
+     *      of other and this.
+     */
     combine(other) {
         const self = this;
 
@@ -114,8 +199,23 @@ class Summary {
 }
 
 
+/**
+ * Set of scales to use in rendering a visualization.
+ */
 class Scales {
 
+    /**
+     * Create a new set of scales.
+     * 
+     * @param {Summary} summary 
+     * @param {function} radiusScale Function to call in rendering catch data
+     *      which takes in the CPUE and outputs the radius for a ellipse marker.
+     * @param {function} waterScale Function to call in rendering temperature
+     *      data which takes in the temperature and outputs a color.
+     * @param {function} waterDivergingScale Function to call in rendering
+     *      changes in temperature which takes in the temperature and outputs a
+     *      color.
+     */
     constructor(summary, radiusScale, waterScale, waterDivergingScale) {
         const self = this;
         self._summary = summary;
@@ -124,16 +224,37 @@ class Scales {
         self._waterDivergingScale = waterDivergingScale;
     }
 
+    /**
+     * Get the summary used in building these scales.
+     * 
+     * @return {Summary} The summary from which these scales were built.
+     */
     getSummary() {
         const self = this;
         return self._summary;
     }
 
+    /**
+     * Get the scale to use when drawing fish markers.
+     * 
+     * @return {function} Function to call in rendering catch data which takes
+     *      in the CPUE and outputs the radius for a ellipse marker.
+     */
     getRadiusScale() {
         const self = this;
         return self._radiusScale;
     }
     
+    /**
+     * Get the scale to use when drawing water grid.
+     * 
+     * @param {boolean} diverging Flag indicating if deltas or temperatures are
+     *      to be drawn. Pass true for changes in temperature and false
+     *      otherwise.
+     * @return {function} Scale to use either for displaying temperature or
+     *      temperature changes taking in a temperature / delta and outputting
+     *      a color.
+     */
     getWaterScale(diverging) {
         const self = this;
 
@@ -147,8 +268,25 @@ class Scales {
 }
 
 
+/**
+ * Utility to generate scales based on current selections in the dataset.
+ * 
+ * Utility driving the "dynamic scale" feature which generates scales for use
+ * across the visualization based on the user's current selections and dataset.
+ */
 class CommonScale {
 
+    /**
+     * Create a new common scale.
+     * 
+     * @param {function} getGetters Function which return current "getter"
+     *      functions for the active Displays on the page. The getters, when
+     *      called, provide the DisplaySelections currently active in the
+     *      visualization.
+     * @param {function} getDynamicScaling Function to call which returns true
+     *      if the user has enabled dynamic scaling and false if they have
+     *      disabled it.
+     */
     constructor(getGetters, getDynamicScaling) {
         const self = this;
 
@@ -158,6 +296,16 @@ class CommonScale {
         self._cachedKey = null;
     }
 
+    /**
+     * Build scales given the current user selections.
+     * 
+     * Build scales given the current user selections, using cached scales if
+     * the selection remains unchanged from the previous call.
+     * 
+     * @return {Scales} A set of scales appropriate for the current data
+     *      selection if dynamic scaling was enabled or a static set of scales
+     *      otherwise.
+     */
     getScales() {
         const self = this;
 
@@ -180,12 +328,26 @@ class CommonScale {
         });
     }
 
+    /**
+     * Determine if the visualization is likely to be visually dense.
+     * 
+     * @return {boolean} True if it is likely that glyphs will appear close
+     *      together such that visibility adjustments should be made for
+     *      readability. False otherwise.
+     */
     getIsDense() {
         const self = this;
 
         const getters = self._getGetters();
         const selections = getters.map((x) => x());
 
+        /**
+         * Determine if any display has temperature enabled across the
+         * visualization.
+         * 
+         * @return {boolean} False if all displays have temperature disabled.
+         *      True otherwise.
+         */
         const getTempEnabled = () => {
             const numWithTempEnabled = selections
                 .filter((x) => x.getTemperatureEnabled())
@@ -197,6 +359,13 @@ class CommonScale {
             return !tempDisabled;
         };
 
+        /**
+         * Determine if any display has multiple species or years selected
+         * across the visualization.
+         * 
+         * @return {boolean} False if all displays only display one year or
+         *      species in their map. True otherwise.
+         */
         const getComparing = () => {
             const numComparing = selections
                 .filter((x) => x.getSpeciesSelection2().getIsActive())
@@ -211,6 +380,9 @@ class CommonScale {
         return getTempEnabled() || getComparing();
     }
 
+    /**
+     * Rebuild the scales using current selections.
+     */
     _getScaleNoCache() {
         const self = this;
 
@@ -294,6 +466,14 @@ class CommonScale {
         });
     }
 
+    /**
+     * Create a set of summary statistics across the entire dataset.
+     * 
+     * Create a set of summary statistics across the entire dataset as required
+     * for building the scales.
+     * 
+     * @return {Summary} Newly built summary.
+     */
     _getSummary(getter) {
         const self = this;
 
