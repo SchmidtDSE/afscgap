@@ -478,7 +478,6 @@ class CommonScale {
         const self = this;
 
         const displaySelection = getter();
-        const survey = displaySelection.getSurvey();
         const speciesSelections = [
             displaySelection.getSpeciesSelection1(),
             displaySelection.getSpeciesSelection2()
@@ -498,54 +497,21 @@ class CommonScale {
                     }));
                 }
 
-                const year = speciesSelection.getYear();
-
-                const params = [
-                    "survey=" + survey,
-                    "year=" + speciesSelection.getYear(),
-                    "temperature=" + displaySelection.getTemperatureMode(),
-                    "geohashSize=" + (self.getIsDense() ? 4 : 5)
-                ];
-
-                if (speciesSelection.getIsSciName()) {
-                    params.push("species=" + speciesSelection.getName());
-                } else {
-                    params.push("commonName=" + speciesSelection.getName());
-                }
-
-                const queryString = params.join("&");
-                const url = "/summarize.json?" + queryString;
+                const url = generateSummarizeUrl(
+                    displaySelection,
+                    speciesSelection,
+                    self.getIsDense() ? 4 : 5
+                );
 
                 return fetch(url).then((response) => response.json());
             });
         } else {
-            const year = speciesSelections[0].getYear();
-
-            const params = [
-                "survey=" + survey,
-                "year=" + speciesSelections[0].getYear(),
-                "otherYear=" + speciesSelections[1].getYear(),
-                "temperature=" + displaySelection.getTemperatureMode(),
-                "geohashSize=" + (self.getIsDense() ? 4 : 5),
-                "comparison=y"
-            ];
-
-            const firstName = speciesSelections[0].getName();
-            if (speciesSelections[0].getIsSciName()) {
-                params.push("species=" + firstName);
-            } else {
-                params.push("commonName=" + firstName);
-            }
-
-            const secondName = speciesSelections[1].getName();
-            if (speciesSelections[1].getIsSciName()) {
-                params.push("otherSpecies=" + secondName);
-            } else {
-                params.push("otherCommonName=" + secondName);
-            }
-
-            const queryString = params.join("&");
-            const url = "/summarize.json?" + queryString;
+            const url = generateSummarizeUrl(
+                displaySelection,
+                speciesSelections[0],
+                self.getIsDense() ? 4 : 5,
+                speciesSelections[1]
+            );
 
             promises = [fetch(url).then((response) => response.json())];
         }
