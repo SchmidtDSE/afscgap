@@ -238,9 +238,9 @@ class Display {
             downloadUrl.href = newUrl;
 
             if (selection.getSpeciesSelection2().getIsActive()) {
-                downloadUrl.innerHTML = "Download Data";
-            } else {
                 downloadUrl.innerHTML = "Download Comparison";
+            } else {
+                downloadUrl.innerHTML = "Download Data";
             }
         };
 
