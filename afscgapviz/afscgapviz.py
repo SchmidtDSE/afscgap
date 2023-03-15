@@ -413,7 +413,7 @@ def build_app(app: flask.Flask, db_str: typing.Optional[str] = None,
 
         Returns:
             JSON encoded document with min and max temperatures and catch per
-            unit area.        
+            unit area.
         """
         survey = flask.request.args['survey']
         year = int(flask.request.args['year'])
