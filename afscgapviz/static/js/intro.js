@@ -1,9 +1,9 @@
 const STEP_TEXTS = [
     "Hello! This visualization explores data from the NOAA AFSC GAP surveys in and around Alaska. A guided intro is available (click Next >>) or click Skip Intro if you are a returning user.",
-    "We will walk through an example problem together: what happened to the cod stocks in Alaska?",
+    "We will walk through an example problem together: what happened during the <a target='_blank' href='https://www.npr.org/2019/12/08/785634169/alaska-cod-fishery-closes-and-industry-braces-for-ripple-effect'>dramatic decline in cod stocks in Alaska</a>? Of course, this demo offers just one (over-simplified) view of this complex situation but I'll link to <a target='_blank' href='https://onlinelibrary.wiley.com/doi/abs/10.1111/fog.12422'>related literature</a> with more details when relevant.",
     "This is a map of the Gulf of Alaska and these squares show areas where a survey has been taken to determine which fish are present.",
     "For example, these are haul reports for the economically important Pacific cod species. This is in terms of \"catch per unit effort\" or, in other words, weight of cod caught during a survey relative to area surveyed in kilograms per hectare.",
-    "Contrast this with the cod numbers from 2021 and note that the catches have gotten smaller, espeically around Kodiak Island in the middle. For many \"hauls\" in the same area, surveys caught fewer cod in 2021 compared to 2013.",
+    "Contrast this with the cod numbers from 2021 and note that the catches have gotten smaller, especially around Kodiak Island in the middle. For many \"hauls\" in the same area, surveys caught fewer cod in 2021 compared to 2013.",
     "It turns out that stocks decreased so much that <a href='https://www.npr.org/2019/12/08/785634169/alaska-cod-fishery-closes-and-industry-braces-for-ripple-effect' target='_blank'>the federal cod fishery closed in 2020</a>. What happened here? Let's find out! Click \"Next\" below.",
     "I have a hunch: \"The Blob\" warming event which took place roughly from 2013 to 2016. Let's stick with Pacific cod for now but try changing the date on the second display from 2021 to 2015 to see what was happing mid-event.",
     "Comparing 2013, signs of increased pressure start to show up even in 2015. That in mind, I wonder how temperatures changed geographically.",
@@ -17,7 +17,7 @@ const STEP_TEXTS = [
     "Looks like it! There are areas with higher temperatures in the Gulf of Alaska compared to the Aleutian Islands beforehand as well.",
     "That in mind, to better see what happened with The Blob, let's overlay the data. On the Gulf of Alaska display, let's put Pacific cod 2013 as Scatter 1 and Pacific cod 2015 as Scatter 2. Then, let's do 2014 for Scatter 1 and 2016 for Scatter 2 in the Aleutian Islands. Note that the year selector will appear after selecting a species.",
     "With these temperature deltas visualized, how much did temperature change in each region? How did the catch change in areas of warming?",
-    "For Pacific cod, <a href='https://cdnsciencepub.com/doi/full/10.1139/cjfas-2019-0238'>research suggests that warming matters quite a lot in a region but it's a complex phenomenon impacting spawning habitat</a>. The Gulf of Alaska with widespread warming may have been under more pressure than the Aleutian Islands.",
+    "For Pacific cod, <a target='_blank' href='https://cdnsciencepub.com/doi/full/10.1139/cjfas-2019-0238'>research suggests that warming matters quite a lot in a region but it's a complex phenomenon impacting spawning habitat</a>. The Gulf of Alaska with widespread warming may have been under more pressure than the Aleutian Islands.",
     "This is a lot of info on Pacific cod. How about walleye pollock? Did that species see something similar happen? Go ahead and explore that species below.",
     "That's it for the intro! Want to learn more about this? See our <a target='_blank' href='https://mybinder.org/v2/gh/SchmidtDSE/afscgap/main?urlpath=/tree/index.ipynb'>example notebook</a>."
 ];
