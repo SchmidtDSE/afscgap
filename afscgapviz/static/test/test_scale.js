@@ -6,7 +6,7 @@ QUnit.module("scale", function() {
             2,
             null,
             null,
-            3,
+            -3,
             4
         );
 
@@ -25,7 +25,7 @@ QUnit.module("scale", function() {
         assert.ok(combined.getMaxCpue(), 20);
         assert.ok(combined.getMinTemperature(), 30);
         assert.ok(combined.getMaxTemperature(), 40);
-        assert.ok(combined.getMinTemperatureDelta(), 3);
+        assert.ok(combined.getMinTemperatureDelta(), -3);
         assert.ok(combined.getMaxTemperatureDelta(), 4);
     });
 
