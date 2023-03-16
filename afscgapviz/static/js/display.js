@@ -418,6 +418,8 @@ class Display {
      * case due to a number of database interactions required.
      */
     _generateSurveyPanelUrl() {
+        const self = this;
+        
         const area = self._element.querySelector(".area-select").value;
         const speciesSelection1 = self._speciesDisplayFirst.getSelection();
         const speciesSelection2 = self._speciesDisplaySecond.getSelection();
