@@ -640,9 +640,9 @@ class MapViz {
         const self = this;
 
         const dispSelect = self._displaySelection;
-        const secondSelection = self.dispSelect .getSpeciesSelection2();
+        const secondSelection = dispSelect.getSpeciesSelection2();
         const isComparing = secondSelection.getIsActive();
-        const temperatureDisplayed = self.dispSelect.getTemperatureEnabled();
+        const temperatureDisplayed = dispSelect.getTemperatureEnabled();
 
         const legendSelect = d3.select("#" + self._element.id)
             .select(".legend");
