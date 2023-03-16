@@ -12,6 +12,10 @@ CREATE TABLE records (
     num_records_aggregated INTEGER
 );
 
+CREATE INDEX simplified_records_survey ON records (
+    survey
+);
+
 CREATE INDEX simplified_records_year_survey_species ON records (
     year,
     survey,

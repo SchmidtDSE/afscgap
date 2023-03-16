@@ -1,0 +1,285 @@
+@font-face {
+    font-family: Fanwood;
+    src: url(/static/font/fanwood_text-webfont.woff);
+}
+
+a {
+    color: #E0E0E0;
+}
+
+a:hover {
+    color: white;
+}
+
+body {
+    background-color: #505050;
+    color: white;
+}
+
+footer {
+    margin-top: 50px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+header {
+    padding-bottom: 20px;
+    border-bottom: 1px solid white;
+}
+
+html {
+    font-family: Fanwood;
+    font-size: 18px;
+}
+
+#skip-link-hodler {
+    height: 0;
+}
+
+#skip-link {
+    top: -30px;
+    left: 0;
+    position: absolute;
+}
+
+#skip-link:focus {
+    top: 10px;
+    background: #E0E0E0;
+    padding: 3px;
+    z-index: 3;
+}
+
+.button-holder {
+    padding: 7px;
+}
+
+.button-holder a {
+    padding: 5px;
+    background-color: #E0E0E0;
+    color: black;
+    border-radius: 5px;
+}
+
+.button-holder a:visited, .button-holder a:link {
+    text-decoration: none;
+}
+
+.button-holder a:hover, .button-holder a:active {
+    background-color: white;
+}
+
+.display .dataset-selector {
+    text-align: center;
+    padding-bottom: 5px;
+    border-bottom: 1px dotted white;
+}
+
+.display .dataset-selector select {
+    width: 30%;
+}
+
+.display .download-panel {
+    text-align: center;
+}
+
+.display .panel {
+    padding-bottom: 10px;
+    padding-top: 10px;
+    border-bottom: 1px dotted #C0C0C0;
+}
+
+.display .refresh-button-panel {
+    text-align: center;
+}
+
+.display .species select {
+    width: 100%;
+}
+
+.display .species .color-display {
+    width: 14px;
+    height: 14px;
+    border-color: 1px solid black;
+    display: inline-block;
+    margin: 2px;
+    border-radius: 1px;
+}
+
+.display .species .color-display.color-1 {
+    background-color: white;
+}
+
+.display .species .color-display.color-2 {
+    background-color: #b2df8a;
+}
+
+.display .viz {
+    width: 100%;
+    min-width: 650px;
+}
+
+.display .viz .fish.fish-1 {
+    fill: rgba(255, 255, 255, 0.5);
+    paint-order: stroke fill;
+    stroke-width: 1;
+    stroke: #FFFFFF;
+}
+
+.display .viz .fish.fish-2 {
+    fill: rgba(178, 223, 138, 0.5);
+    paint-order: stroke fill;
+    stroke-width: 1;
+    stroke: #333;
+}
+
+.display .viz .hover .grid {
+    fill: rgba(0, 0, 0, 0);
+    stroke-width: 1.2;
+    opacity: 0;
+    stroke: white;
+    paint-order: stroke fill;
+}
+
+.display .viz .land {
+    fill: none;
+    paint-order: stroke fill;
+    stroke-width: 1.8;
+    stroke: #222;
+}
+
+.display .viz .negative-markers .grid {
+    stroke: black;
+    fill: rgba(0, 0, 0, 0);
+    stroke-width: 0.5;
+}
+
+.display .viz .water .grid {
+    stroke-width: 0;
+    opacity: 0.5;
+}
+
+.display .viz-panel .viz-holder {
+    overflow-x: auto;
+}
+
+.display .viz-panel .graph-description {
+    font-size: 15px;
+    background-color: rgba(20, 20, 20, 0.2);
+    text-align: center;
+    padding: 5px;
+    margin-top: 5px;
+}
+
+.display .viz-panel .legend {
+    display: grid;
+    column-gap: 10px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-top: 10px;
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+.display .viz-panel .legend .fish-marker {
+    fill: rgba(250, 250, 250, 0.2);
+    paint-order: stroke fill;
+    stroke-width: 1;
+    stroke: black;
+}
+
+.display .viz-panel .legend .legend-title {
+    font-size: 18px;
+}
+
+.display .viz-panel .legend .presence-indicator {
+    margin: 5px;
+    width: 20px;
+    height: 20px;
+    background-color: #0570b0;
+    display: inline-block;
+}
+
+.display .viz-panel .no-data-message {
+    background-color: rgba(20, 20, 20, 0.2);
+    text-align: center;
+    padding: 5px;
+    display: none;
+}
+
+.dynamic-scales-options {
+    text-align: center;
+    margin-top: 50px;
+    margin-bottom: 50px;
+    opacity: 0;
+    padding: 20px;
+    width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid #303030;
+    color: #E0E0E0;
+}
+
+.dynamic-scales-options .small {
+    font-size: 15px;
+}
+
+.dynamic-scales-options .small div {
+    border-top: 1px dotted #303030;
+    margin-top: 5px;
+    padding-top: 5px;
+    text-align: left;
+}
+
+.loading {
+    text-align: center;
+    display: none;
+    border-bottom: 1px dotted white;
+}
+
+.loading img {
+    height: 18px;
+}
+
+#intro {
+    padding-bottom: 20px;
+}
+
+#main {
+    margin-top: 50px;
+}
+
+#tutorial-panel {
+    background-color: rgba(20, 20, 20, 0.2);
+    padding: 5px;
+    margin-bottom: 30px;
+}
+
+#tutorial-panel #intro-links {
+    text-align: center;
+    border-top: 1px dotted white;
+    padding: 10px;
+    margin-top: 8px;
+    opacity: 0;
+}
+
+#tutorial-panel #intro-links a {
+    padding: 5px;
+}
+
+#tutorial-panel #intro-text {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+@media screen and (min-width: 1100px) {
+    .displays {
+        display: grid;
+        column-gap: 40px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .display .species-selects {
+        display: grid;
+        column-gap: 10px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}

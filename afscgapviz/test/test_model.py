@@ -81,7 +81,7 @@ class ModelTests(unittest.TestCase):
         self.assertEquals(self._combine_result.get_species(), 'scientific')
         self.assertEquals(self._combine_result.get_common_name(), 'common')
         self.assertEquals(self._combine_result.get_geohash(), 'abc')
-        
+
     def test_combine_record_calculations(self):
         self.assertAlmostEquals(
             self._combine_result.get_surface_temperature(),

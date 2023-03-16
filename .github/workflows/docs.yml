@@ -37,3 +37,11 @@ jobs:
           password: ${{ secrets.SFTPPASSWORD }}
           localPath: './website'
           remotePath: './pyafscgap.org'
+      - name: Deploy app
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          host: ${{ secrets.SSHHOST }}
+          username: ${{ secrets.SSHUSERNAME }}
+          key: ${{ secrets.SSHKEY }}
+          port: ${{ secrets.SSHPORT }}
+          script: bash reload_afscgap.sh

@@ -1,0 +1,163 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<html lang="en">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" type="text/css" href="/static/css/viz.css?v=202303144">
+        <title>AFSC GAP Comparison Tool</title>
+        <meta name="description" content="Open source visualization for bottom trawl surveys data from the NOAA Alaska Fisheries Science Center Groundfish Assessment Program (NOAA AFSC GAP)" />
+        <meta property="og:title" content="NOAA AFSC GAP Visualization" />
+        <meta property="og:url" content="https://app.pyafscgap.org" />
+        <meta property="og:image" content="https://pyafscgap.org/static/img/hero.png" />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:site" content="@SamSpotsTime" />
+        <meta name="twitter:title" content="NOAA AFSC GAP Visualization" />
+        <meta name="twitter:description" content="Open source visualization for bottom trawl surveys data from the NOAA Alaska Fisheries Science Center Groundfish Assessment Program (NOAA AFSC GAP)" />
+        <meta name="twitter:image" content="https://pyafscgap.org/static/img/hero.png" />
+    </head>
+
+    <body>
+        <div><a id="skip-link" href="#main">Skip to main content</a></div>
+        <header>
+            <div class="inner">
+                <h1>AFSC GAP Comparison Tool</h1>
+                <div id="intro">
+                    Community contributed visualization of bottom trawl surveys data from the NOAA Alaska Fisheries Science Center Groundfish Assessment Program (<a target="_blank" href="https://www.fisheries.noaa.gov/contact/groundfish-assessment-program">NOAA AFSC GAP</a>) as part of <a href="https://pyafscgap.org/">AFSC GAP for Python</a>. This tool enables fast comparisons between species, years, and areas. Though you do not need to be a developer to use this application, it also offers links to download data as CSV and to generate Python code for programmers to continue their explorations outside this tool. We'd love to hear from you if you are using this tool! <a href="mailto:dse@berkeley.edu">Send DSE an email</a>.
+                </div>
+                <div class="button-holder">
+                    <a href="#main" id="share-link">Share</a>
+                    <a href="https://pyafscgap.org" target="_blank">Pyafscgap Homepage >></a>
+                </div>
+            </div>
+        </header>
+        <section id="main">
+            <div id="tutorial-panel">
+                <div id="intro-text">
+                    <div class="loading" id="intro-loading">
+                        <img src="/static/img/loading.svg" alt="loading indicator"> Loading...
+                    </div>
+                </div>
+                <div id="intro-links">
+                    <span id="skip-intro-link-holder">
+                        <a href="#tutorial-panel" id="skip-intro-link">Skip Intro >></a> //
+                    </span>
+                    <span id="back-link-holder">
+                        <a href="#tutorial-panel" id="back-link"><< Back</a> //
+                    </span>
+                    <span id="next-link-holder">
+                        <a href="#tutorial-panel" id="next-link">Next >></a>
+                    </span>
+                </div>
+            </div>
+            <div class="displays" id="displays">
+                {% for display in displays %}
+                <div class="display" id="display-{{ loop.index }}">
+                    <div class="dataset-selector">
+                        <select class="area-select" autocomplete="off">
+                            <option value="AI" {% if display['area'] == 'AI' %}selected{% endif %}>Aleutian Islands</option>
+                            <option value="BSS" {% if display['area'] == 'BSS' %}selected{% endif %}>Bearing Sea Slope</option>
+                            <option value="GOA" {% if display['area'] == 'GOA' %}selected{% endif %}>Gulf of Alaska</option>
+                            <option value="NBS" {% if display['area'] == 'NBS' %}selected{% endif %}>North Bearing Sea</option>
+                            <option value="EBS" {% if display['area'] == 'EBS' %}selected{% endif %}>South East Bearing Sea</option>
+                        </select>
+                        <select class="species-type-select" autocomplete="off">
+                            <option value="common" {% if display['speciesType'] == 'common' %}selected{% endif %}>Common names</option>
+                            <option value="scientific" {% if display['speciesType'] == 'scientific' %}selected{% endif %}>Scientific name</option>
+                        </select>
+                        <select class="temperature-select temperature-select-{{ loop.index }}" autocomplete="off">
+                            <option value="disabled" {% if display['temperature'] == 'disabled' %}selected{% endif %}>No temperatures</option>
+                            <option value="surface" {% if display['temperature'] == 'surface' %}selected{% endif %}>Surface temperatures</option>
+                            <option value="bottom" {% if display['temperature'] == 'bottom' %}selected{% endif %}>Bottom temperatures</option>
+                        </select>
+                    </div>
+                    <div class="survey-loading loading panel">
+                        <img src="/static/img/loading.svg" alt="loading indicator"> Loading...
+                    </div>
+                    <div class="survey-specific-fields panel">
+                        <div class="species-selects">
+                            {{ get_species_select_content(display, loop.index) | safe }}
+                        </div>
+                    </div>
+                    <div class="viz-panel panel" id="viz-panel-{{ loop.index }}">
+                        <div class="map-loading loading">
+                            <img src="/static/img/loading.svg" alt="loading indicator"> Loading...
+                        </div>
+                        <div class="no-data-message">No matching data found</div>
+                        <div class="viz-holder">
+                            <svg class="viz" id="viz-{{ loop.index }}"></svg>
+                        </div>
+                        <div class="graph-description">
+                            <div class="graph-description-inner"></div>
+                            <div class="position-hover-display"></div>
+                            <div class="temperature-hover-display"></div>
+                            <div class="species-1-hover-display"></div>
+                            <div class="species-2-hover-display"></div>
+                        </div>
+                        <div class="legend">
+                            <div class="grid-legend-holder">
+                                <div class="legend-title">Temperature</div>
+                                <table class="grid-legend">
+                                </table>
+                            </div>
+                            <div class="grid-diverging-legend-holder">
+                                <div class="legend-title">Change in Temperature</div>
+                                <table class="grid-diverging-legend">
+                                </table>
+                            </div>
+                            <div class="grid-indicator-holder">
+                                <div class="legend-title">Hauls</div>
+                                <table>
+                                    <tr>
+                                        <td><span class="presence-indicator"></span></td>
+                                        <td class="presence-description">Haul taken in area.</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="radius-legend-holder">
+                                <div class="legend-title">Catch</div>
+                                <table class="radius-legend">
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="download-panel panel">
+                        <div class="button-holder">
+                            <a href="#" class="download-link" target="_blank">Download Data</a>
+                            <a href="#" class="python-link" target="_blank">Generate Python</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="dynamic-scales-options" id="dynamic-scales-options">
+                <div><input type="checkbox" id="dynamic-scales-check" checked> Dynamic scaling</div>
+                <details class="small">
+                    <summary>More info about dynamic scaling.</summary>
+                    <div>
+                        The same scales are always used on the two displays but, by default, the circle size and color scales are recalculated using the min and max values for the currently active filters in the visualization. In other words, the colors and circle sizes are scaled for the data currently visualized to show contrast and not for the min / max of all data available. If you don't want this behavior, a fixed set of min and max values can be used for the scale for all visualizations by unchecking the "dynamic scaling" option (0 - 1000 kg / hectare CPUE, -2 to 14 C temperature, -5 to 5 C temperature delta). In general, dynamic scaling is recommended.
+                    </div>
+                </details>
+            </div>
+        </section>
+        <footer>
+            <a href="https://pyafscgap.org/terms.html">Notices, licenses, privacy >></a> / <a href="https://pyafscgap.org/sitemap.html">Sitemap >></a></p>
+        </footer>
+    </body>
+</html>
+
+<script type="text/javascript" src="/static/js_third_party/d3.min.js"></script>
+<script type="text/javascript" src="/static/js_third_party/papaparse.min.js"></script>
+
+<script type="text/javascript" src="/static/js/afscgapviz.js?v=20230316"></script>
+<script type="text/javascript" src="/static/js/display.js?v=20230316"></script>
+<script type="text/javascript" src="/static/js/intro.js?v=20230316"></script>
+<script type="text/javascript" src="/static/js/mapviz.js?v=20230316"></script>
+<script type="text/javascript" src="/static/js/scale.js?v=20230316"></script>
+<script type="text/javascript" src="/static/js/species.js?v=20230316"></script>
+<script type="text/javascript" src="/static/js/state.js?v=20230316"></script>
+<script type="text/javascript" src="/static/js/url.js?v=20230316"></script>
+<script type="text/javascript">
+    new VizPresenter();
+</script>
