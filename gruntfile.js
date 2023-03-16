@@ -16,7 +16,7 @@ module.exports = function(grunt) {
             all: {
                 options: {
                     urls: [
-                        'http://localhost:8000/afscagapviz/static/test/test.html'
+                        'http://localhost:8000/afscgapviz/static/test/test.html'
                     ]
                 }
             }

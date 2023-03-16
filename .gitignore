@@ -8,3 +8,4 @@ docs/
 website/devdocs
 notebooks/.ipynb_checkpoints
 afscgapviz/geohashes.db
+node_modules
