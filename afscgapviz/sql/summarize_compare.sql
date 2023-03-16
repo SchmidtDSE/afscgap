@@ -2,7 +2,10 @@ SELECT
     min(subset.min_cpue) AS min_cpue,
     max(subset.max_cpue) AS max_cpue,
     min(subset.temperature_delta) AS min_temperature,
-    max(subset.temperature_delta) AS max_temperature
+    max(subset.temperature_delta) AS max_temperature,
+    max(subset.temperature_delta) AS max_temperature,
+    sum(subset.first_weight) / sum(subset.first_area_swept) AS first_cpue,
+    sum(subset.second_weight) / sum(subset.second_area_swept) AS second_cpue
 FROM
     (
         SELECT
@@ -18,11 +21,17 @@ FROM
                     ELSE second.cpue
                 END
             ) AS max_cpue,
-            second.temperature - first.temperature AS temperature_delta
+            second.temperature - first.temperature AS temperature_delta,
+            sum(first.weight) AS first_weight,
+            sum(first.area_swept) AS first_area_swept,
+            sum(second.weight) AS second_weight,
+            sum(second.area_swept) AS second_area_swept
         FROM
             (
                 SELECT
                     sum(weight) / sum(area_swept) AS cpue,
+                    sum(weight) AS weight,
+                    sum(area_swept) AS area_swept,
                     sum(temperature * num_records_aggregated) / sum(num_records_aggregated) AS temperature,
                     geohash AS geohash
                 FROM
@@ -47,6 +56,8 @@ FROM
             (
                 SELECT
                     sum(weight) / sum(area_swept) AS cpue,
+                    sum(weight) AS weight,
+                    sum(area_swept) AS area_swept,
                     sum(temperature * num_records_aggregated) / sum(num_records_aggregated) AS temperature,
                     geohash AS geohash
                 FROM

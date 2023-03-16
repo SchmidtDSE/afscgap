@@ -66,9 +66,10 @@ class Summary {
      * @param {?number} maxTemperatureDelta The largest change in temperature
      *      observed in the dataset subset (in C) or null if no temperature
      *      changes reported.
+     * @param {Map} cpues CPUEs by "species/year" strings.
      */
     constructor(minCpue, maxCpue, minTemperature, maxTemperature,
-        minTemperatureDelta, maxTemperatureDelta) {
+        minTemperatureDelta, maxTemperatureDelta, cpues) {
         const self = this;
         self._minCpue = minCpue;
         self._maxCpue = maxCpue;
@@ -76,6 +77,7 @@ class Summary {
         self._maxTemperature = maxTemperature;
         self._minTemperatureDelta = minTemperatureDelta;
         self._maxTemperatureDelta = maxTemperatureDelta;
+        self._cpues = cpues;
     }
 
     /**
@@ -145,6 +147,17 @@ class Summary {
     }
 
     /**
+     * Get the CPUEs observed by species/year.
+     * 
+     * @return {Map} Map whose keys is the species name followed by a forward
+     *      slash followed by the four digit year.
+     */
+    getCpues() {
+        const self = this;
+        return self._cpues;
+    }
+
+    /**
      * Combine this summary with another, aggregating their statistics.
      * 
      * @param {Summary} other The other summary to be combined with this one.
@@ -186,13 +199,22 @@ class Summary {
             other.getMaxTemperatureDelta()
         ];
 
+        const combinedMap = new Map();
+        self.getCpues().forEach((value, key) => {
+            combinedMap.set(key, value);
+        });
+        other.getCpues().forEach((value, key) => {
+            combinedMap.set(key, value);
+        });
+
         return new Summary(
             Math.min(...minCpues),
             Math.max(...maxCpues),
             Math.min(...minTemperatures),
             Math.max(...maxTemperatures),
             Math.min(...minTemperatureDeltas),
-            Math.max(...maxTemperatureDeltas)
+            Math.max(...maxTemperatureDeltas),
+            combinedMap
         );
     }
 
@@ -389,24 +411,29 @@ class CommonScale {
         return new Promise((resolve, reject) => {
             let promises = null;
 
+            const innerPromises = promises = self._getGetters().map(
+                (x) => self._getSummary(x)
+            );
+
             if (self._getDynamicScaling()) {
-                promises = self._getGetters().map(
-                    (x) => self._getSummary(x)
-                );
+                promises = innerPromises;
             } else {
-                promises = [
-                    new Promise((resolve, reject) => {
+                const outerPromise = new Promise((resolve, reject) => {
+                    Promise.all(innerPromises).then((values) => {
+                        const value = values.reduce((a, b) => a.combine(b));
                         const summary = new Summary(
                             0,
                             1000,
                             -2,
                             14,
                             -5,
-                            5
+                            5,
+                            value.getCpues()
                         );
                         resolve(summary);
-                    })
-                ];
+                    });
+                });
+                promises = [outerPromise];
             }
 
             Promise.all(promises).then((values) => {
@@ -518,13 +545,52 @@ class CommonScale {
         
         return new Promise((resolve, reject) => {
             Promise.all(promises).then((results) => {
+                let minGlobalCpue = x["cpue"]["min"];
+                let maxGlobalCpue = x["cpue"]["max"];
+                const cpues = new Map();
+
+                minGlobalCpue = Math.min(
+                    x["cpue"]["first"]["value"],
+                    minGlobalCpue
+                );
+
+                maxGlobalCpue = Math.max(
+                    x["cpue"]["first"]["value"],
+                    maxGlobalCpue
+                );
+
+                const firstKey = [
+                    x["cpue"]["first"]["name"],
+                    x["cpue"]["first"]["year"]
+                ].join("/");
+                cpues.set(firstKey, x["cpue"]["first"]["value"]);
+
+                if (x["cpue"]["second"] !== undefined) {
+                    minGlobalCpue = Math.min(
+                        x["cpue"]["second"]["value"],
+                        minGlobalCpue
+                    );
+
+                    maxGlobalCpue = Math.max(
+                        x["cpue"]["second"]["value"],
+                        maxGlobalCpue
+                    );
+
+                    const secondKey = [
+                        x["cpue"]["second"]["name"],
+                        x["cpue"]["second"]["year"]
+                    ].join("/");
+                    cpues.set(secondKey, x["cpue"]["second"]["value"]);
+                }
+
                 const summaries = results.map((x) => new Summary(
-                    x["cpue"]["min"],
-                    x["cpue"]["max"],
+                    minGlobalCpue,
+                    maxGlobalCpue,
                     noComparison ? x["temperature"]["min"] : null,
                     noComparison ? x["temperature"]["max"] : null,
                     noComparison ? null : x["temperature"]["min"],
-                    noComparison ? null: x["temperature"]["max"]
+                    noComparison ? null: x["temperature"]["max"],
+                    cpues
                 ));
                 const combined = summaries.reduce((a, b) => a.combine(b));
                 resolve(combined);
