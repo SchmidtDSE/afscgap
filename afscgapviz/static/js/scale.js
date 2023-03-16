@@ -545,53 +545,59 @@ class CommonScale {
         
         return new Promise((resolve, reject) => {
             Promise.all(promises).then((results) => {
-                let minGlobalCpue = x["cpue"]["min"];
-                let maxGlobalCpue = x["cpue"]["max"];
-                const cpues = new Map();
+                const summaries = results.map((x) => {
+                    let minGlobalCpue = x["cpue"]["min"];
+                    let maxGlobalCpue = x["cpue"]["max"];
+                    const cpues = new Map();
 
-                minGlobalCpue = Math.min(
-                    x["cpue"]["first"]["value"],
-                    minGlobalCpue
-                );
+                    if (x["cpue"]["first"] !== undefined) {
+                        minGlobalCpue = Math.min(
+                            x["cpue"]["first"]["value"],
+                            minGlobalCpue
+                        );
 
-                maxGlobalCpue = Math.max(
-                    x["cpue"]["first"]["value"],
-                    maxGlobalCpue
-                );
+                        maxGlobalCpue = Math.max(
+                            x["cpue"]["first"]["value"],
+                            maxGlobalCpue
+                        );
 
-                const firstKey = [
-                    x["cpue"]["first"]["name"],
-                    x["cpue"]["first"]["year"]
-                ].join("/");
-                cpues.set(firstKey, x["cpue"]["first"]["value"]);
+                        const firstKey = [
+                            x["cpue"]["first"]["name"],
+                            x["cpue"]["first"]["year"]
+                        ].join("/");
+                        cpues.set(firstKey, x["cpue"]["first"]["value"]);
+                    }
 
-                if (x["cpue"]["second"] !== undefined) {
-                    minGlobalCpue = Math.min(
-                        x["cpue"]["second"]["value"],
-                        minGlobalCpue
+                    if (x["cpue"]["second"] !== undefined) {
+                        minGlobalCpue = Math.min(
+                            x["cpue"]["second"]["value"],
+                            minGlobalCpue
+                        );
+
+                        maxGlobalCpue = Math.max(
+                            x["cpue"]["second"]["value"],
+                            maxGlobalCpue
+                        );
+
+                        const secondKey = [
+                            x["cpue"]["second"]["name"],
+                            x["cpue"]["second"]["year"]
+                        ].join("/");
+                        cpues.set(secondKey, x["cpue"]["second"]["value"]);
+                    }
+
+                    const summary = new Summary(
+                        minGlobalCpue,
+                        maxGlobalCpue,
+                        noComparison ? x["temperature"]["min"] : null,
+                        noComparison ? x["temperature"]["max"] : null,
+                        noComparison ? null : x["temperature"]["min"],
+                        noComparison ? null: x["temperature"]["max"],
+                        cpues
                     );
 
-                    maxGlobalCpue = Math.max(
-                        x["cpue"]["second"]["value"],
-                        maxGlobalCpue
-                    );
-
-                    const secondKey = [
-                        x["cpue"]["second"]["name"],
-                        x["cpue"]["second"]["year"]
-                    ].join("/");
-                    cpues.set(secondKey, x["cpue"]["second"]["value"]);
-                }
-
-                const summaries = results.map((x) => new Summary(
-                    minGlobalCpue,
-                    maxGlobalCpue,
-                    noComparison ? x["temperature"]["min"] : null,
-                    noComparison ? x["temperature"]["max"] : null,
-                    noComparison ? null : x["temperature"]["min"],
-                    noComparison ? null: x["temperature"]["max"],
-                    cpues
-                ));
+                    return summary;
+                });
                 const combined = summaries.reduce((a, b) => a.combine(b));
                 resolve(combined);
             });

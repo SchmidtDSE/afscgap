@@ -524,7 +524,7 @@ def build_app(app: flask.Flask, db_str: typing.Optional[str] = None,
                 'value': second_cpue
             }
 
-        return json.dumps()
+        return json.dumps(ret_object)
 
     return app
 
