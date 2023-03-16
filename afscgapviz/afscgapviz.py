@@ -318,9 +318,9 @@ def build_app(app: flask.Flask, db_str: typing.Optional[str] = None,
 
             base_sql = sql_util.get_sql('delta')
             query_sql = base_sql % (
-                geohash_size,
+                geohash_size + 1,
                 species_filter[0],
-                geohash_size,
+                geohash_size + 1,
                 other_species_filter[0]
             )
             query_args = (
@@ -333,7 +333,7 @@ def build_app(app: flask.Flask, db_str: typing.Optional[str] = None,
             )
         else:
             base_sql = sql_util.get_sql('query')
-            query_sql = base_sql % (geohash_size, species_filter[0])
+            query_sql = base_sql % (geohash_size + 1, species_filter[0])
             query_args = (year, survey, species_filter[1])
 
         output_io = io.StringIO()
@@ -451,10 +451,10 @@ def build_app(app: flask.Flask, db_str: typing.Optional[str] = None,
             base_sql = sql_util.get_sql('summarize_compare')
             query_sql = base_sql % (
                 temperature_field,
-                geohash_size,
+                geohash_size + 1,
                 species_filter[0],
                 temperature_field,
-                geohash_size,
+                geohash_size + 1,
                 other_species_filter[0]
             )
             query_args = (
@@ -470,7 +470,7 @@ def build_app(app: flask.Flask, db_str: typing.Optional[str] = None,
             query_sql = base_sql % (
                 temperature_field,
                 species_filter[0],
-                geohash_size
+                geohash_size + 1
             )
             query_args = (year, survey, species_filter[1])
 

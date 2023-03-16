@@ -47,6 +47,8 @@ function generateDownloadDataUrl(survey, speciesSelection, secondSelection,
         } else {
             params.push("otherCommonName=" + secondName);
         }
+    } else {
+        params.push("comparison=n");
     }
 
     const queryString = params.join("&");
@@ -87,6 +89,8 @@ function generatePythonUrl(survey, speciesSelection, secondSelection) {
         } else {
             params.push("otherCommonName=" + secondName);
         }
+    } else {
+        params.push("comparison=n");
     }
 
     const queryString = params.join("&");
@@ -143,7 +147,13 @@ function generateSurveyPanelUrl(area, number, speciesSelection1,
  */
 function generateSummarizeUrl(displaySelection, speciesSelection, geohashSize,
     otherSpeciesSelection) {
-    const isComparison = otherSpeciesSelection !== undefined;
+    let isComparison = true;
+    if (otherSpeciesSelection === undefined) {
+        isComparison = false;
+    } else if (!otherSpeciesSelection.getIsActive()) {
+        isComparison = false;
+    }
+
     const params = [
         "survey=" + displaySelection.getSurvey(),
         "year=" + speciesSelection.getYear(),

@@ -500,7 +500,7 @@ class CommonScale {
                 const url = generateSummarizeUrl(
                     displaySelection,
                     speciesSelection,
-                    self.getIsDense() ? 4 : 5
+                    self.getIsDense() ? 3 : 4
                 );
 
                 return fetch(url).then((response) => response.json());
@@ -509,7 +509,7 @@ class CommonScale {
             const url = generateSummarizeUrl(
                 displaySelection,
                 speciesSelections[0],
-                self.getIsDense() ? 4 : 5,
+                self.getIsDense() ? 3 : 4,
                 speciesSelections[1]
             );
 

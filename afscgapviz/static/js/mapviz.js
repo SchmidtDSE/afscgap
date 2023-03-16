@@ -1114,7 +1114,7 @@ class MapViz {
                     survey,
                     speciesSelection,
                     secondSelection,
-                    isDense ? 4 : 5
+                    isDense ? 3 : 4
                 );
 
                 Papa.parse(url, {
