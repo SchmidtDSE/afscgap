@@ -154,6 +154,7 @@ class Display {
         self._onGeohashEnter = onGeohashEnter;
         self._onGeohashLeave = onGeohashLeave;
         self._mapViz = null;
+        self._previousWidth = self._getMapWidth();
 
         self._buildSpeciesDisplays();
         self._rebuildMap();
@@ -254,6 +255,12 @@ class Display {
         self._mapViz.updateSelection(self.getSelection());
     }
 
+    _getMapWidth() {
+        const self = this;
+        const vizElement = self._element.querySelector(".viz");
+        return vizElement.getBoundingClientRect().width;
+    }
+
     /**
      * Build the selection interface for the two species / scatters.
      */
@@ -318,7 +325,13 @@ class Display {
             }
 
             clearTimeout(timeout);
-            timeout = setTimeout(() => self._rebuildMap(), 500);
+            timeout = setTimeout(() => {
+                const newWidth = self._getMapWidth();
+                if (Math.abs(newWidth - self._previousWidth) > 20) {
+                    self._rebuildMap();
+                    self._previousWidth = newWidth;
+                }
+            }, 1000);
         });
     }
 
@@ -385,7 +398,7 @@ class Display {
         const vizElement = self._element.querySelector(".viz");
 
         const expectedHeight = Math.round(
-            vizElement.getBoundingClientRect().width * 0.55
+            self._getMapWidth() * 0.55
         );
         vizElement.style.height = expectedHeight + "px";
 
