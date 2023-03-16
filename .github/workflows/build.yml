@@ -41,4 +41,4 @@ jobs:
       - name: Install dependencies
         run: bash install_browser.sh
       - name: Compile with Grunt
-        uses: elstudio/actions-js-build/build@v4
+        run: grunt
