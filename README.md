@@ -74,12 +74,12 @@ This library provides access to the AFSC GAP data with optional zero catch ("abs
 <br>
 
 #### Visual analytics
-Visualization tools are available to help both programmers and non-programmers start their investigation, providing a UI that stands on the other functionality provided by this project. This is available online at [https://app.pyafscgap.org](https://app.pyafscgap.org). To self-host, see the [visualization readme](https://github.com/SchmidtDSE/afscgap/blob/main/afscgapviz/README.md).
+Visualization tools are available to help both programmers and non-programmers start their investigation, providing a UI that stands on the other functionality provided by this project. This is available online at [https://app.pyafscgap.org](https://app.pyafscgap.org) and can generate both CSV (spreadsheet) exports and Python query code to continue your investigations. To self-host, see the [visualization readme](https://github.com/SchmidtDSE/afscgap/blob/main/afscgapviz/README.md).
 
 <br>
 
 #### Basic queries
-The `afscgap.query` method is the main entry point into Python-based utilization. For example, this requests all records of Pasiphaea pacifica in 2021 from the Gulf of Alaska to get the median bottom temperature when they were observed:
+The `afscgap.query` method is the main entry point into Python-based utilization. Calls can be written manually or generated in the [visual analytics tool](https://app.pyafscgap.org). For example, this requests all records of Pasiphaea pacifica in 2021 from the Gulf of Alaska to get the median bottom temperature when they were observed:
 
 ```
 import statistics
