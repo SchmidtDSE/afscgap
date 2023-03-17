@@ -134,6 +134,12 @@ Note that the development of the tool is focused on sqlite. Pull requests are we
 <br>
 <br>
 
+## Data quality
+Invalid data are excluded and only data with area swept in hectares, catch count, and temperatures (both bottom and surface) are retained. No effort is made to try to "fix" records with incorrect data. Information is used as provided by the AFSC GAP API service.
+
+<br>
+<br>
+
 ## License
 Like the rest of the the project, we are happy to make this library available under the BSD 3-Clause license. See LICENSE for more details. (c) 2023 Regents of University of California. See the [Eric and Wendy Schmidt Center for Data Science and the Environment
 at UC Berkeley](https://dse.berkeley.edu).
