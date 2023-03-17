@@ -168,6 +168,8 @@ The following are citations specifically for the visual analytics tool not cover
 
  - "AFSC Groundfish and Crab Assessment Program Bottom Trawl Surveys." AFSC Gap Survey, NOAA Fisheries, https://www.fisheries.noaa.gov/foss/f?p=215%3A28. 
  - Brewer, Cynthia, and Mark Harrower. "Colorbrewer 2.0." ColorBrewer, The Pennsylvania State University, 3 May 2021, https://colorbrewer2.org/#type=sequential&amp;scheme=BuGn&amp;n=3. 
+ - Brown, Mark. "Super Mario 3D World's 4 Step Level Design." Game Maker's Toolkit, YouTube, 16 Mar. 2015, https://www.youtube.com/watch?v=dBmIkEvEBtA.
  - George, Kavitha. "Alaska Cod Fishery Closes and Industry Braces for Ripple Effect." NPR, NPR, 8 Dec. 2019, https://www.npr.org/2019/12/08/785634169/alaska-cod-fishery-closes-and-industry-braces-for-ripple-effect. 
  - Laurel, Benjamin J., and Lauren A. Rogers. "Loss of Spawning Habitat and Prerecruits of Pacific Cod during a Gulf of Alaska Heatwave." Canadian Journal of Fisheries and Aquatic Sciences, vol. 77, no. 4, 23 Jan. 2020, pp. 644–650., https://doi.org/10.1139/cjfas-2019-0238. 
+ - Nutt, Christian. "The Structure of Fun: Learning from Super Mario 3D Land's Director." Game Developer, Informa PLC Informa UK, 13 Apr. 2012, https://www.gamedeveloper.com/design/the-structure-of-fun-learning-from-i-super-mario-3d-land-i-s-director.
  - Yang, Qiong, et al. "How 'The Blob' Affected Groundfish Distributions in the Gulf of Alaska." Fisheries Oceanography, 6 Feb. 2019, https://doi.org/10.1111/fog.12422. 
