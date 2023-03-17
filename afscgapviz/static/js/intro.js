@@ -45,10 +45,15 @@ class Intro {
 
     /**
      * Create a new intro presenter and start the intro sequence.
+     * 
+     * @param {CommonScale} commonScale The scale to invalidate if the intro
+     *      needs to be rebuilt.
      */
-    constructor() {
+    constructor(commonScale) {
         const self = this;
         self._step = 0;
+
+        self._commonScale = commonScale;
 
         self._registerCallbacks();
 
@@ -105,36 +110,41 @@ class Intro {
     forceSync() {
         const self = this;
 
-        document.getElementById("intro-text").innerHTML = STEP_TEXTS[
-            self._step
-        ];
-        d3.select("#intro-links").transition().style("opacity", 1);
+        const fastForward = () => {
+            document.getElementById("intro-text").innerHTML = STEP_TEXTS[
+                self._step
+            ];
+            d3.select("#intro-links").transition().style("opacity", 1);
 
-        self._stepActions.forEach((actions) => {
-            actions.forEach((action) => {
-                d3.selectAll(action).attr("originalDisplay", function() {
-                    return this.style.display;
+            self._stepActions.forEach((actions) => {
+                actions.forEach((action) => {
+                    d3.selectAll(action).attr("originalDisplay", function() {
+                        return this.style.display;
+                    });
+
+                    if (PRESERVE_BOUNDS.indexOf(action) == -1) {
+                        d3.selectAll(action).style("display", "none");
+                    }
+
+                    d3.selectAll(action).style("opacity", "0");
                 });
-
-                if (PRESERVE_BOUNDS.indexOf(action) == -1) {
-                    d3.selectAll(action).style("display", "none");
-                }
-
-                d3.selectAll(action).style("opacity", "0");
             });
-        });
 
-        for (let i = 0; i <= self._step; i++) {
-            self._stepActions[i].forEach((action, i) => {
-                d3.selectAll(action).style("display", function() {
-                    return this.originalDisplay;
+            for (let i = 0; i <= self._step; i++) {
+                self._stepActions[i].forEach((action, i) => {
+                    d3.selectAll(action).style("display", function() {
+                        return this.originalDisplay;
+                    });
+                    d3.selectAll(action).transition()
+                        .style("opacity", 1);
                 });
-                d3.selectAll(action).transition()
-                    .style("opacity", 1);
-            });
-        }
+            }
 
-        self._updateLinkVisibility();
+            self._updateLinkVisibility();
+        };
+
+        self._commonScale.invalidateCache();
+        self._commonScale.getScales().then(fastForward);
     }
 
     /**
