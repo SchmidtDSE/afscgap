@@ -13,7 +13,7 @@ See [webpage](https://pyafscgap.org), [project Github](https://github.com/Schmid
 <br>
 
 ## Quickstart
-You don't need any local software to get started! To learn about the dataset, explore a visual analytics tool at [https://app.pyafscgap.org](https://app.pyafscgap.org) (no code needed!). When ready, move into code in a free [hosted notebook environment](https://mybinder.org/v2/gh/SchmidtDSE/afscgap/main?urlpath=/tree/index.ipynb).
+You don't need any local software to get started! To learn about the dataset, explore a visual analytics app at [https://app.pyafscgap.org](https://app.pyafscgap.org) (no code needed!). When ready, learn how to develop with these tools in a free [hosted notebook environment](https://mybinder.org/v2/gh/SchmidtDSE/afscgap/main?urlpath=/tree/index.ipynb).
 
 <br>
 <br>
