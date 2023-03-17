@@ -17,9 +17,10 @@ This application can be self-hosted or run locally. Due to the high disk usage r
 $ git clone https://github.com/SchmidtDSE/afscgap.git
 $ cd afscgap/afscgapviz
 $ pip install -r requirements.txt
+$ bash load_deps.sh
 ```
 
-Note that this application still requires a dataset as described below.
+Note that this application still requires a dataset as described below. For ease of development, webpack is not required.
 
 <br>
 <br>
