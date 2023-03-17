@@ -8,7 +8,7 @@ SELECT
 FROM
     (
         SELECT
-            sum(second.temperature - first.temperature) / count(1) AS temperature_delta,
+            sum(second.temperature) / count(1) - sum(first.temperature) / count(1) AS temperature_delta,
             sum(first.weight) AS first_weight,
             sum(first.area_swept) AS first_area_swept,
             sum(second.weight) AS second_weight,
@@ -18,7 +18,7 @@ FROM
                 SELECT
                     sum(weight) / sum(area_swept) AS cpue,
                     sum(weight) AS weight,
-                    sum(area_swept) AS area_swept,git 
+                    sum(area_swept) AS area_swept,
                     sum(temperature * num_records_aggregated) / sum(num_records_aggregated) AS temperature,
                     geohash AS geohash
                 FROM
