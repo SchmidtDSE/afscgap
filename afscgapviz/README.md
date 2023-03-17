@@ -135,7 +135,7 @@ Note that the development of the tool is focused on sqlite. Pull requests are we
 <br>
 
 ## Data quality
-Invalid data are excluded and only data with area swept in hectares, catch count, and temperatures (both bottom and surface) are retained. No effort is made to try to "fix" records with incorrect data. Information is used as provided by the AFSC GAP API service.
+Invalid data are excluded and only data with area swept in hectares, catch (count and weight in kg), and temperatures (both bottom and surface) are retained. No effort is made to try to "fix" records with incorrect data. Information is used as provided by the AFSC GAP API service.
 
 <br>
 <br>
