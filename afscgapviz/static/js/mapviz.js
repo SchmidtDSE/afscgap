@@ -209,6 +209,11 @@ class MapViz {
         const svgElement = self._element.querySelector(".viz");
         self._selection = d3.select("#" + svgElement.id);
 
+        d3.select("#" + self._element.id)
+            .select(".overall-catch-panel")
+            .selectAll(".bar")
+            .style("width", "0px");
+
         self._commonScale = commonScale;
 
         self._onGeohashEnter = onGeohashEnter;
@@ -641,6 +646,7 @@ class MapViz {
         const self = this;
         
         const summary = scales.getSummary();
+        const barScale = scales.getBarScale();
 
         const panel = d3.select("#" + self._element.id)
             .select(".overall-catch-panel");
@@ -654,14 +660,69 @@ class MapViz {
             ].join("/");
 
             if (!species.getIsActive() || !cpues.has(key)) {
-                selection.select(".label").html("Not found");
+                selection.select(".label").html("");
                 return;
             }
 
+            const cpue = cpues.get(key);
+
             selection.select(".label").html(
-                Math.round(cpues.get(key) * 100) / 100 + " kg/hectare"
+                Math.round(cpue * 100) / 100 + " kg/hectare"
             );
-        }
+
+            selection.select(".bar").transition()
+                .delay(500)
+                .duration(1000)
+                .style("width", barScale(cpue) + "px");
+        };
+
+        const updateTicks = () => {
+            const scaleSelection = panel.select(".scale");
+
+            const ticks = [];
+            for (let i = 0; i <= 50; i += 1) {
+                ticks.push(i);
+            }
+            
+            const bound = scaleSelection.selectAll(".tick")
+                .data(ticks, (x) => x);
+
+            bound.exit().remove();
+
+            const groups = bound.enter().append("g")
+                .classed("tick", true)
+                .attr("transform", "translate(0 10)");
+
+            groups.append("text")
+                .html((x) => {
+                    if (x % 5 == 0) {
+                        return x == 0 ? x + " kg / hectare" : x;
+                    } else {
+                        return "";
+                    }
+                });
+
+            groups.append("rect")
+                .attr("x", 0)
+                .attr("y", 5)
+                .attr("width", 1)
+                .attr("height", 2)
+
+            const tickSelection = scaleSelection.selectAll(".tick");
+
+            tickSelection.transition()
+                .duration(1000)
+                .attr("transform", (x) => {
+                    return "translate(" + barScale(x) + " 10)";
+                });
+        };
+
+        const updateDynamicScalingLink = () => {
+            const dynamicEnabled = self._commonScale.getDynamicScaling();
+            const messageStatus = dynamicEnabled ? "enabled" : "disabled";
+            const message = "Dynamic scaling " + messageStatus;
+            panel.select(".dynamic-scaling-link").html(message);
+        };
 
         displaySpecies(
             panel.select(".first-overall-catch"),
@@ -669,9 +730,13 @@ class MapViz {
         );
 
         displaySpecies(
-            panel.select(".first-overall-catch"),
-            self._displaySelection.getSpeciesSelection1()
+            panel.select(".second-overall-catch"),
+            self._displaySelection.getSpeciesSelection2()
         );
+
+        updateTicks();
+
+        updateDynamicScalingLink();
     }
 
     /**

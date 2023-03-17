@@ -205,6 +205,49 @@ html {
     display: none;
 }
 
+.display .viz-panel .overall-catch-panel {
+    margin-bottom: 10px;
+}
+
+.display .viz-panel .overall-catch-panel .bar {
+    height: 5px;
+}
+
+.display .viz-panel .overall-catch-panel .scale {
+    height: 18px;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.display .viz-panel .overall-catch-panel .scale .tick {
+    font-size: 12px;
+    fill: #C0C0C0;
+}
+
+.display .viz-panel .overall-catch-panel .first-overall-catch {
+    margin-bottom: 10px;
+}
+
+.display .viz-panel .overall-catch-panel .first-overall-catch .label {
+    color: #ffffff;
+}
+
+.display .viz-panel .overall-catch-panel .first-overall-catch .bar {
+    background-color: white;
+}
+
+.display .viz-panel .overall-catch-panel .second-overall-catch {
+    margin-bottom: 10px;
+}
+
+.display .viz-panel .overall-catch-panel .second-overall-catch .label {
+    color: #b2df8a;
+}
+
+.display .viz-panel .overall-catch-panel .second-overall-catch .bar {
+    background-color: #b2df8a;
+}
+
 .dynamic-scales-options {
     text-align: center;
     margin-top: 50px;

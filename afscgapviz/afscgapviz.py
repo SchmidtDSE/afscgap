@@ -441,9 +441,9 @@ def build_app(app: flask.Flask, db_str: typing.Optional[str] = None,
             other_species = flask.request.args.get('otherSpecies', None)
             other_common_name = flask.request.args.get('otherCommonName', None)
 
-            if species is not None:
+            if other_species is not None:
                 other_species_filter = ('species', other_species)
-            elif common_name is not None:
+            elif other_common_name is not None:
                 other_species_filter = ('common_name', other_common_name)
             else:
                 return 'Whoops! Please specify commonName or species.', 400

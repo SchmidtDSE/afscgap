@@ -328,7 +328,7 @@ class CommonScale {
         const self = this;
 
         self._getGetters = getGetters;
-        self._getDynamicScaling = getDynamicScaling;
+        self.getDynamicScaling = getDynamicScaling;
         self._cached = null;
         self._cachedKey = null;
     }
@@ -348,7 +348,7 @@ class CommonScale {
 
         const newKey = self._getGetters().map(
             (x) => x().getKey()
-        ).join("/") + "/" + self._getDynamicScaling();
+        ).join("/") + "/" + self.getDynamicScaling();
 
         if (self._cachedKey === newKey) {
             return new Promise((resolve, reject) => {
@@ -430,7 +430,7 @@ class CommonScale {
                 (x) => self._getSummary(x)
             );
 
-            if (self._getDynamicScaling()) {
+            if (self.getDynamicScaling()) {
                 promises = innerPromises;
             } else {
                 const outerPromise = new Promise((resolve, reject) => {
@@ -454,7 +454,7 @@ class CommonScale {
             Promise.all(promises).then((values) => {
                 const combined = values.reduce((a, b) => a.combine(b));
 
-                const isDense = self.getIsDense() || self._getDynamicScaling();
+                const isDense = self.getIsDense() || self.getDynamicScaling();
                 const maxArea = isDense ? MAX_AREA_DENSE : MAX_AREA_SPARSE;
 
                 const areaScale = d3.scaleLinear()
@@ -498,11 +498,30 @@ class CommonScale {
                     }
                 };
 
+                const barWidth = document.querySelector(".overall-catch-panel")
+                    .getBoundingClientRect()
+                    .width;
+
+                let maxCpueOverall = 0;
+                if (self.getDynamicScaling()) {
+                    combined.getCpues().forEach((value, key) => {
+                        maxCpueOverall = Math.max(value, maxCpueOverall);
+                    });
+                    maxCpueOverall = Math.floor(maxCpueOverall / 5) * 5 + 5;
+                } else {
+                    maxCpueOverall = 50;
+                }
+
+                const barScale = d3.scaleLinear()
+                    .domain([0, maxCpueOverall])
+                    .range([0, barWidth]);
+
                 resolve(new Scales(
                     combined,
                     radiusScale,
                     waterScale,
-                    waterDivergingScale
+                    waterDivergingScale,
+                    barScale
                 ));
             });
         });
@@ -514,7 +533,7 @@ class CommonScale {
      * Create a set of summary statistics across the entire dataset as required
      * for building the scales.
      * 
-     * @return {Summary} Newly built summary.
+     * @return {Summary} Newly built summarygetMaxCpue.
      */
     _getSummary(getter) {
         const self = this;
@@ -548,14 +567,30 @@ class CommonScale {
                 return fetch(url).then((response) => response.json());
             });
         } else {
-            const url = generateSummarizeUrl(
+            const urlFirst = generateSummarizeUrl(
+                displaySelection,
+                speciesSelections[0],
+                self.getIsDense() ? 3 : 4
+            );
+
+            const urlSecond = generateSummarizeUrl(
+                displaySelection,
+                speciesSelections[1],
+                self.getIsDense() ? 3 : 4
+            );
+
+            const urlCombine = generateSummarizeUrl(
                 displaySelection,
                 speciesSelections[0],
                 self.getIsDense() ? 3 : 4,
                 speciesSelections[1]
             );
 
-            promises = [fetch(url).then((response) => response.json())];
+            const urls = [urlFirst, urlSecond, urlCombine];
+
+            promises = urls.map(
+                (x) => fetch(x).then((response) => response.json())
+            );
         }
         
         return new Promise((resolve, reject) => {

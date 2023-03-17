@@ -44,7 +44,7 @@ class VizPresenter {
                     () => self._display2.getSelection()
                 ];
             },
-            () => self._getDynamicScaling()
+            () => self.getDynamicScaling()
         );
 
         self._display1 = new Display(
@@ -91,7 +91,7 @@ class VizPresenter {
      *      subsets and false if a set of global static scales should be used
      *      instead.
      */
-    _getDynamicScaling() {
+    getDynamicScaling() {
         const self = this;
 
         const checkbox = document.getElementById("dynamic-scales-check");
