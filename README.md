@@ -35,7 +35,7 @@ Unofficial Python-based tool set for interacting with [bottom trawl surveys](htt
 
  - Pythonic access to the official [NOAA AFSC GAP API service](https://www.fisheries.noaa.gov/foss/f?p=215%3A28).
  - Tools for inference of the "negative" observations not provided by the API service.
- - Visualization tools for quickly exploring and creating comparisons within the datset, including for audiences with limited programming experience.
+ - Visualization tools for quickly exploring and creating comparisons within the dataset, including for audiences with limited programming experience.
 
 Note that GAP is an excellent dataset produced by the [Resource Assessment and Conservation Engineering (RACE) Division](https://www.fisheries.noaa.gov/about/resource-assessment-and-conservation-engineering-division) of the [Alaska Fisheries Science Center (AFSC)](https://www.fisheries.noaa.gov/about/alaska-fisheries-science-center) as part of the National Oceanic and Atmospheric Administration's Fisheries organization ([NOAA Fisheries](https://www.fisheries.noaa.gov/)).
 
