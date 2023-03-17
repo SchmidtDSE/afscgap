@@ -418,7 +418,7 @@ def build_app(app: flask.Flask, db_str: typing.Optional[str] = None,
         def try_int(target: str) -> int:
             try:
                 return int(target)
-            except:
+            except ValueError:
                 return -1
 
         survey = flask.request.args['survey']
