@@ -8,7 +8,7 @@ SELECT
 FROM
     (
         SELECT
-            sum(second.temperature) - sum(first.temperature) AS temperature_delta,
+            sum(second.temperature - first.temperature) AS temperature_delta,
             sum(first.weight) AS first_weight,
             sum(first.area_swept) AS first_area_swept,
             sum(second.weight) AS second_weight,
