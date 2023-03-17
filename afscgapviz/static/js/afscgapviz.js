@@ -221,7 +221,7 @@ class VizPresenter {
 
         if (window.location.href.indexOf("?state") == -1) {
             document.getElementById("intro-links").style.display = "block";
-            self._intro = new Intro();
+            self._intro = new Intro(self._commonScale);
         } else {
             self._intro = null;
             document.getElementById("tutorial-panel").style.display = "none";

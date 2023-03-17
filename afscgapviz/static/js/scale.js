@@ -366,6 +366,14 @@ class CommonScale {
     }
 
     /**
+     * Force the next request for scales to be recalculated.
+     */
+    invalidateCache() {
+        const self = this;
+        self._cachedKey = null;
+    }
+
+    /**
      * Determine if the visualization is likely to be visually dense.
      * 
      * @return {boolean} True if it is likely that glyphs will appear close

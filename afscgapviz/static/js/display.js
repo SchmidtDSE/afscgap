@@ -328,6 +328,7 @@ class Display {
             timeout = setTimeout(() => {
                 const newWidth = self._getMapWidth();
                 if (Math.abs(newWidth - self._previousWidth) > 20) {
+                    self._commonScale.invalidateCache();
                     self._rebuildMap();
                     self._previousWidth = newWidth;
                 }
