@@ -618,7 +618,9 @@ class CommonScale {
                         cpues.set(firstKey, x["cpue"]["first"]["value"]);
                     }
 
-                    if (x["cpue"]["second"] !== undefined) {
+                    const secondAbsent = x["cpue"]["second"] === undefined;
+
+                    if (!secondAbsent) {
                         minGlobalCpue = Math.min(
                             x["cpue"]["second"]["value"],
                             minGlobalCpue
@@ -639,10 +641,10 @@ class CommonScale {
                     const summary = new Summary(
                         minGlobalCpue,
                         maxGlobalCpue,
-                        noComparison ? x["temperature"]["min"] : null,
-                        noComparison ? x["temperature"]["max"] : null,
-                        noComparison ? null : x["temperature"]["min"],
-                        noComparison ? null: x["temperature"]["max"],
+                        secondAbsent ? x["temperature"]["min"] : null,
+                        secondAbsent ? x["temperature"]["max"] : null,
+                        secondAbsent ? null : x["temperature"]["min"],
+                        secondAbsent ? null: x["temperature"]["max"],
                         cpues
                     );
 
