@@ -419,7 +419,13 @@ def build_app(app: flask.Flask, db_str: typing.Optional[str] = None,
             try:
                 return int(target)
             except ValueError:
-                return -1
+                return 0
+
+        def try_float(target: str) -> float:
+            try:
+                return float(target)
+            except ValueError:
+                return 0
 
         survey = flask.request.args['survey']
         year = try_int(flask.request.args['year'])
@@ -499,7 +505,7 @@ def build_app(app: flask.Flask, db_str: typing.Optional[str] = None,
             first_cpue = 0
             second_cpue = 0
         else:
-            result_float = [float(x) for x in result]
+            result_float = [try_float(x) for x in result]
 
             (
                 min_cpue,
