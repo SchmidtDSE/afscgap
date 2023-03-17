@@ -60,6 +60,7 @@ Next, for `afscgapviz`:
  - We use CSS and JS which should be usable directly without transpilation or compilation. Language compilation (Elm, SASS, CoffeeScript, etc) including migration to node / npm are not being considered at this time.
  - We do not use CDNs for privacy reasons and CDN migration PRs are discouraged.
  - We are using qunit and grunt for CI / CD.
+ - We are using Flask for the `afscgapviz` server.
 
 Note that some PRs may require paired Python and JS code changes.
 
