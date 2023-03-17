@@ -8,18 +8,8 @@ SELECT
 FROM
     (
         SELECT
-            (
-                CASE
-                    WHEN first.cpue < second.cpue THEN first.cpue
-                    ELSE second.cpue
-                END
-            ) AS min_cpue,
-            (
-                CASE
-                    WHEN first.cpue > second.cpue THEN first.cpue
-                    ELSE second.cpue
-                END
-            ) AS max_cpue,
+            LEAST(first.cpue, second.cpue) AS min_cpue,
+            GREATEST(first.cpue, second.cpue) AS max_cpue,
             second.temperature - first.temperature AS temperature_delta,
             sum(first.weight) AS first_weight,
             sum(first.area_swept) AS first_area_swept,
