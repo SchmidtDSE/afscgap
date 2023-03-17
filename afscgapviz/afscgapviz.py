@@ -415,8 +415,14 @@ def build_app(app: flask.Flask, db_str: typing.Optional[str] = None,
             JSON encoded document with min and max temperatures and catch per
             unit area.
         """
+        def try_int(target: str) -> int:
+            try:
+                return int(target)
+            except:
+                return -1
+
         survey = flask.request.args['survey']
-        year = int(flask.request.args['year'])
+        year = try_int(flask.request.args['year'])
         temperature_mode = flask.request.args['temperature']
 
         species = flask.request.args.get('species', None)
@@ -437,7 +443,7 @@ def build_app(app: flask.Flask, db_str: typing.Optional[str] = None,
 
         is_comparison = flask.request.args.get('comparison', 'n') == 'y'
         if is_comparison:
-            other_year = int(flask.request.args['otherYear'])
+            other_year = try_int(flask.request.args['otherYear'])
             other_species = flask.request.args.get('otherSpecies', None)
             other_common_name = flask.request.args.get('otherCommonName', None)
 
