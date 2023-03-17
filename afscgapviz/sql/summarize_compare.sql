@@ -8,9 +8,9 @@ SELECT
 FROM
     (
         SELECT
-            LEAST(first.cpue, second.cpue) AS min_cpue,
-            GREATEST(first.cpue, second.cpue) AS max_cpue,
-            second.temperature - first.temperature AS temperature_delta,
+            LEAST(sum(first.cpue), sum(second.cpue)) AS min_cpue,
+            GREATEST(sum(first.cpue), sum(second.cpue)) AS max_cpue,
+            sum(second.temperature) - sum(first.temperature) AS temperature_delta,
             sum(first.weight) AS first_weight,
             sum(first.area_swept) AS first_area_swept,
             sum(second.weight) AS second_weight,
