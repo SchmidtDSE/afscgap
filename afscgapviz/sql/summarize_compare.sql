@@ -13,7 +13,8 @@ FROM
             sum(first.weight) AS first_weight,
             sum(first.area_swept) AS first_area_swept,
             sum(second.weight) AS second_weight,
-            sum(second.area_swept) AS second_area_swept
+            sum(second.area_swept) AS second_area_swept,
+            first.geohash AS geohash
         FROM
             (
                 SELECT
@@ -68,4 +69,6 @@ FROM
             ) second
         ON
             first.geohash = second.geohash
+        GROUP BY
+            first.geohash
     ) subset
