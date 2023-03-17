@@ -237,13 +237,17 @@ class Scales {
      * @param {function} waterDivergingScale Function to call in rendering
      *      changes in temperature which takes in the temperature and outputs a
      *      color.
+     * @param {function} barScale The scale to use for the summary stats bar
+     *      chart.
      */
-    constructor(summary, radiusScale, waterScale, waterDivergingScale) {
+    constructor(summary, radiusScale, waterScale, waterDivergingScale,
+        barScale) {
         const self = this;
         self._summary = summary;
         self._radiusScale = radiusScale;
         self._waterScale = waterScale;
         self._waterDivergingScale = waterDivergingScale;
+        self._barScale = barScale;
     }
 
     /**
@@ -285,6 +289,17 @@ class Scales {
         } else {
             return self._waterScale;
         }
+    }
+
+    /**
+     * Get the scale to use for the summary metrics display.
+     * 
+     * @return {function} Function taking total CPUE and returning width in
+     *      pixels
+     */
+    getBarScale() {
+        const self = this;
+        return self._barScale;
     }
 
 }

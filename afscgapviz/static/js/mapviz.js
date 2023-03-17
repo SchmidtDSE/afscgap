@@ -455,6 +455,7 @@ class MapViz {
             }
 
             self._updateLegend(scales);
+            self._updateSummary(scales);
 
             self._requestLand()
                 .then(self._makeFutureRenderLand(landLayer, projection))
@@ -629,6 +630,48 @@ class MapViz {
     _hideLoading() {
         const self = this;
         self._element.querySelector(".map-loading").style.display = "none";
+    }
+
+    /**
+     * Update the summary CPUE display.
+     * 
+     * @param {Scales} scales The scales for which the display should be built.
+     */
+    _updateSummary(scales) {
+        const self = this;
+        
+        const summary = scales.getSummary();
+
+        const panel = d3.select("#" + self._element.id)
+            .select(".overall-catch-panel");
+
+        const cpues = summary.getCpues();
+
+        const displaySpecies = (selection, species) => {
+            const key = [
+                species.getName(),
+                species.getYear()
+            ].join("/");
+
+            if (!species.getIsActive() || !cpues.has(key)) {
+                selection.select(".label").html("Not found");
+                return;
+            }
+
+            selection.select(".label").html(
+                Math.round(cpues.get(key) * 100) / 100 + " kg/hectare"
+            );
+        }
+
+        displaySpecies(
+            panel.select(".first-overall-catch"),
+            self._displaySelection.getSpeciesSelection1()
+        );
+
+        displaySpecies(
+            panel.select(".first-overall-catch"),
+            self._displaySelection.getSpeciesSelection1()
+        );
     }
 
     /**
