@@ -46,7 +46,7 @@ Scientists and developers working on ocean health have an interest in survey dat
 
  - Using the GAP API from NOAA AFSC in Python can sometimes require a lot of work: understanding a complex schema, determining how to interact with a proprietary REST data service, forming long query URLs, and navigating pagination. 
  - The official API service provides presence-only data, complicating some common types of analysis and aggregation.
- - Limited public tooling exists for visualizing within and, especially, creating comparisons between subsets of the AFSC GAP dataset as useful for some types of investigation.
+ - Limited public tooling exists for visualizing within and, especially, creating comparisons between subsets of the AFSC GAP dataset which are useful for some types of investigation.
 
 These various elements together may increase the barrier for working with these data, limiting their reach within some communities including the Python community.
 
