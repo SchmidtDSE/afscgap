@@ -19,7 +19,7 @@ You don't need any local software to get started! To learn about the dataset, ex
 <br>
 
 ## Installation
-Ready to take it to your own machine? Install the open source tools for accessing the AFSC GAP dataset are available for install via Pypi / Pip:
+Ready to take it to your own machine? Install the open source tools for accessing the AFSC GAP via Pypi / Pip:
 
 ```
 $ pip install afscgap
