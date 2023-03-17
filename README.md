@@ -605,7 +605,7 @@ The query can be executed by making an HTTP GET request at the provided location
  - Thanks also to [Maya Weltman-Fahs](https://dse.berkeley.edu/people/maya-weltman-fahs), [Brookie Guzder-Williams](https://github.com/brookisme), and [Magali de Bruyn](https://github.com/magalidebruyn) for advice on the visual analytics tool.
 
 This is a project of the [The Eric and Wendy Schmidt Center for Data Science and the Environment
-at UC Berkeley](https://dse.berkeley.edu). Please contact us via dse@berkeley.edu.
+at UC Berkeley](https://dse.berkeley.edu) where [Kevin Koy](https://github.com/kevkoy) is Executive Director. Please contact us via dse@berkeley.edu.
 
 <br>
 <br>
