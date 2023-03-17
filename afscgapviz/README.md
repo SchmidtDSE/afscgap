@@ -147,6 +147,27 @@ at UC Berkeley](https://dse.berkeley.edu).
 <br>
 <br>
 
+## Local development
+After installing dev dependencies (`pip install -r requirements.txt`), we recommend the following local checks:
+
+```
+$ nose2
+$ mypy *.py
+$ pyflakes *.py
+$ pycodestyle *.py
+```
+
+Note these checks are run by CI / CD. Furthermore, JS tests can be run via grunt from the root directory or by:
+
+```
+$ python -m http.server
+```
+
+Then, direct your browser to [http://0.0.0.0:8000/static/test/test.html](http://0.0.0.0:8000/static/test/test.html).
+
+<br>
+<br>
+
 ## Contributing
 We invite contributions via [our project Github](https://github.com/SchmidtDSE/afscgap). Please read the [CONTRIBUTING.md](https://github.com/SchmidtDSE/afscgap/blob/main/CONTRIBUTING.md) file for more information.
 

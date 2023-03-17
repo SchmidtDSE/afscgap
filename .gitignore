@@ -10,4 +10,4 @@ notebooks/.ipynb_checkpoints
 afscgapviz/geohashes.db
 node_modules
 afscgapviz/static/js_third_party
-afscgapviz/static/test/qunit-*
+afscgapviz/static/test/qunit*
