@@ -74,7 +74,7 @@ This library provides access to the AFSC GAP data with optional zero catch ("abs
 <br>
 
 #### Visual analytics
-Visualization tools are available to help both programmers and non-programmers start their investigation, providing a UI that stands on the other functionality provided by this project. This is available online at [https://app.pyafscgap.org](https://app.pyafscgap.org) and can generate both CSV (spreadsheet) exports and Python query code to continue your investigations. To self-host, see the [visualization readme](https://github.com/SchmidtDSE/afscgap/blob/main/afscgapviz/README.md).
+Visualization tools are available to help both programmers and non-programmers start their investigation, providing a UI that stands on the other functionality provided by this project. This is available online at [https://app.pyafscgap.org](https://app.pyafscgap.org). It can generate both CSV (spreadsheet) exports and Python query code to continue your investigations. To self-host, see the [visualization readme](https://github.com/SchmidtDSE/afscgap/blob/main/afscgapviz/README.md).
 
 <br>
 
