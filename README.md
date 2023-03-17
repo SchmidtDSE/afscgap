@@ -598,8 +598,13 @@ The query can be executed by making an HTTP GET request at the provided location
 
 <br>
 
-#### Contacts
-[Sam Pottinger](https://github.com/sampottinger) is the primary contact. Thanks to [Giulia Zarpellon](https://github.com/gizarp) and [Carl Boettiger](https://github.com/cboettig) for their contributions. This is a project of the [The Eric and Wendy Schmidt Center for Data Science and the Environment
+#### People
+[Sam Pottinger](https://github.com/sampottinger) is the primary contact with additional development from [Giulia Zarpellon](https://github.com/gizarp). Additionally some acknowledgements:
+
+ - Thank you to [Carl Boettiger](https://github.com/cboettig) and [Fernando Perez](https://github.com/fperez) for advice in the Python library.
+ - Thanks also to [Maya Weltman-Fahs](https://dse.berkeley.edu/people/maya-weltman-fahs), [Brookie Guzder-Williams](https://github.com/brookisme), and [Magali de Bruyn](https://github.com/magalidebruyn) for advice on the visual analytics tool.
+
+This is a project of the [The Eric and Wendy Schmidt Center for Data Science and the Environment
 at UC Berkeley](https://dse.berkeley.edu). Please contact us via dse@berkeley.edu.
 
 <br>
