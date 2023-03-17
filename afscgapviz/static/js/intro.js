@@ -58,7 +58,7 @@ class Intro {
             ["#display-1", ".viz", ".land", ".water"],
             [".fish", ".radius-legend-holder", ".graph-description"],
             ["#display-2"],
-            [],
+            [".overall-catch-panel"],
             ["#display2-species-1"],
             ["#display1-species-1"],
             [".temperature-select-1", ".dynamic-scales-options"],

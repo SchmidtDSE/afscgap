@@ -403,8 +403,8 @@ def build_app(app: flask.Flask, db_str: typing.Optional[str] = None,
         return output
 
     @app.route('/summarize.json')
-    def summarize_cpue():
-        """Summarize the minimum and maximum values in a data subset.
+    def summarize():
+        """Provide summary statistics for a dataset.
 
         Summarize the minimum and maximum values in a data subset which is
         required to properly generate scales for the visualization. This is
@@ -441,9 +441,9 @@ def build_app(app: flask.Flask, db_str: typing.Optional[str] = None,
             other_species = flask.request.args.get('otherSpecies', None)
             other_common_name = flask.request.args.get('otherCommonName', None)
 
-            if species is not None:
+            if other_species is not None:
                 other_species_filter = ('species', other_species)
-            elif common_name is not None:
+            elif other_common_name is not None:
                 other_species_filter = ('common_name', other_common_name)
             else:
                 return 'Whoops! Please specify commonName or species.', 400
@@ -490,15 +490,41 @@ def build_app(app: flask.Flask, db_str: typing.Optional[str] = None,
             max_cpue = 0
             min_temp = 0
             max_temp = 0
+            first_cpue = 0
+            second_cpue = 0
         else:
             result_float = [float(x) for x in result]
 
-            (min_cpue, max_cpue, min_temp, max_temp) = result_float
+            (
+                min_cpue,
+                max_cpue,
+                min_temp,
+                max_temp,
+                first_cpue,
+                second_cpue
+            ) = result_float
 
-        return json.dumps({
-            'cpue': {'min': min_cpue, 'max': max_cpue},
+        ret_object = {
+            'cpue': {
+                'min': min_cpue,
+                'max': max_cpue,
+                'first': {
+                    'name': species_filter[1],
+                    'year': year,
+                    'value': first_cpue
+                }
+            },
             'temperature': {'min': min_temp, 'max': max_temp}
-        })
+        }
+
+        if is_comparison:
+            ret_object['cpue']['second'] = {
+                'name': other_species_filter[1],
+                'year': other_year,
+                'value': second_cpue
+            }
+
+        return json.dumps(ret_object)
 
     return app
 

@@ -66,9 +66,10 @@ class Summary {
      * @param {?number} maxTemperatureDelta The largest change in temperature
      *      observed in the dataset subset (in C) or null if no temperature
      *      changes reported.
+     * @param {Map} cpues CPUEs by "species/year" strings.
      */
     constructor(minCpue, maxCpue, minTemperature, maxTemperature,
-        minTemperatureDelta, maxTemperatureDelta) {
+        minTemperatureDelta, maxTemperatureDelta, cpues) {
         const self = this;
         self._minCpue = minCpue;
         self._maxCpue = maxCpue;
@@ -76,6 +77,7 @@ class Summary {
         self._maxTemperature = maxTemperature;
         self._minTemperatureDelta = minTemperatureDelta;
         self._maxTemperatureDelta = maxTemperatureDelta;
+        self._cpues = cpues;
     }
 
     /**
@@ -145,6 +147,17 @@ class Summary {
     }
 
     /**
+     * Get the CPUEs observed by species/year.
+     * 
+     * @return {Map} Map whose keys is the species name followed by a forward
+     *      slash followed by the four digit year.
+     */
+    getCpues() {
+        const self = this;
+        return self._cpues;
+    }
+
+    /**
      * Combine this summary with another, aggregating their statistics.
      * 
      * @param {Summary} other The other summary to be combined with this one.
@@ -186,13 +199,22 @@ class Summary {
             other.getMaxTemperatureDelta()
         ];
 
+        const combinedMap = new Map();
+        self.getCpues().forEach((value, key) => {
+            combinedMap.set(key, value);
+        });
+        other.getCpues().forEach((value, key) => {
+            combinedMap.set(key, value);
+        });
+
         return new Summary(
             Math.min(...minCpues),
             Math.max(...maxCpues),
             Math.min(...minTemperatures),
             Math.max(...maxTemperatures),
             Math.min(...minTemperatureDeltas),
-            Math.max(...maxTemperatureDeltas)
+            Math.max(...maxTemperatureDeltas),
+            combinedMap
         );
     }
 
@@ -215,13 +237,17 @@ class Scales {
      * @param {function} waterDivergingScale Function to call in rendering
      *      changes in temperature which takes in the temperature and outputs a
      *      color.
+     * @param {function} barScale The scale to use for the summary stats bar
+     *      chart.
      */
-    constructor(summary, radiusScale, waterScale, waterDivergingScale) {
+    constructor(summary, radiusScale, waterScale, waterDivergingScale,
+        barScale) {
         const self = this;
         self._summary = summary;
         self._radiusScale = radiusScale;
         self._waterScale = waterScale;
         self._waterDivergingScale = waterDivergingScale;
+        self._barScale = barScale;
     }
 
     /**
@@ -265,6 +291,17 @@ class Scales {
         }
     }
 
+    /**
+     * Get the scale to use for the summary metrics display.
+     * 
+     * @return {function} Function taking total CPUE and returning width in
+     *      pixels
+     */
+    getBarScale() {
+        const self = this;
+        return self._barScale;
+    }
+
 }
 
 
@@ -291,7 +328,7 @@ class CommonScale {
         const self = this;
 
         self._getGetters = getGetters;
-        self._getDynamicScaling = getDynamicScaling;
+        self.getDynamicScaling = getDynamicScaling;
         self._cached = null;
         self._cachedKey = null;
     }
@@ -311,7 +348,7 @@ class CommonScale {
 
         const newKey = self._getGetters().map(
             (x) => x().getKey()
-        ).join("/") + "/" + self._getDynamicScaling();
+        ).join("/") + "/" + self.getDynamicScaling();
 
         if (self._cachedKey === newKey) {
             return new Promise((resolve, reject) => {
@@ -389,30 +426,35 @@ class CommonScale {
         return new Promise((resolve, reject) => {
             let promises = null;
 
-            if (self._getDynamicScaling()) {
-                promises = self._getGetters().map(
-                    (x) => self._getSummary(x)
-                );
+            const innerPromises = promises = self._getGetters().map(
+                (x) => self._getSummary(x)
+            );
+
+            if (self.getDynamicScaling()) {
+                promises = innerPromises;
             } else {
-                promises = [
-                    new Promise((resolve, reject) => {
+                const outerPromise = new Promise((resolve, reject) => {
+                    Promise.all(innerPromises).then((values) => {
+                        const value = values.reduce((a, b) => a.combine(b));
                         const summary = new Summary(
                             0,
                             1000,
                             -2,
                             14,
                             -5,
-                            5
+                            5,
+                            value.getCpues()
                         );
                         resolve(summary);
-                    })
-                ];
+                    });
+                });
+                promises = [outerPromise];
             }
 
             Promise.all(promises).then((values) => {
                 const combined = values.reduce((a, b) => a.combine(b));
 
-                const isDense = self.getIsDense() || self._getDynamicScaling();
+                const isDense = self.getIsDense() || self.getDynamicScaling();
                 const maxArea = isDense ? MAX_AREA_DENSE : MAX_AREA_SPARSE;
 
                 const areaScale = d3.scaleLinear()
@@ -456,11 +498,30 @@ class CommonScale {
                     }
                 };
 
+                const barWidth = document.querySelector(".overall-catch-panel")
+                    .getBoundingClientRect()
+                    .width;
+
+                let maxCpueOverall = 0;
+                if (self.getDynamicScaling()) {
+                    combined.getCpues().forEach((value, key) => {
+                        maxCpueOverall = Math.max(value, maxCpueOverall);
+                    });
+                    maxCpueOverall = Math.floor(maxCpueOverall / 5) * 5 + 5;
+                } else {
+                    maxCpueOverall = 50;
+                }
+
+                const barScale = d3.scaleLinear()
+                    .domain([0, maxCpueOverall])
+                    .range([0, barWidth]);
+
                 resolve(new Scales(
                     combined,
                     radiusScale,
                     waterScale,
-                    waterDivergingScale
+                    waterDivergingScale,
+                    barScale
                 ));
             });
         });
@@ -472,7 +533,7 @@ class CommonScale {
      * Create a set of summary statistics across the entire dataset as required
      * for building the scales.
      * 
-     * @return {Summary} Newly built summary.
+     * @return {Summary} Newly built summarygetMaxCpue.
      */
     _getSummary(getter) {
         const self = this;
@@ -506,26 +567,87 @@ class CommonScale {
                 return fetch(url).then((response) => response.json());
             });
         } else {
-            const url = generateSummarizeUrl(
+            const urlFirst = generateSummarizeUrl(
+                displaySelection,
+                speciesSelections[0],
+                self.getIsDense() ? 3 : 4
+            );
+
+            const urlSecond = generateSummarizeUrl(
+                displaySelection,
+                speciesSelections[1],
+                self.getIsDense() ? 3 : 4
+            );
+
+            const urlCombine = generateSummarizeUrl(
                 displaySelection,
                 speciesSelections[0],
                 self.getIsDense() ? 3 : 4,
                 speciesSelections[1]
             );
 
-            promises = [fetch(url).then((response) => response.json())];
+            const urls = [urlFirst, urlSecond, urlCombine];
+
+            promises = urls.map(
+                (x) => fetch(x).then((response) => response.json())
+            );
         }
         
         return new Promise((resolve, reject) => {
             Promise.all(promises).then((results) => {
-                const summaries = results.map((x) => new Summary(
-                    x["cpue"]["min"],
-                    x["cpue"]["max"],
-                    noComparison ? x["temperature"]["min"] : null,
-                    noComparison ? x["temperature"]["max"] : null,
-                    noComparison ? null : x["temperature"]["min"],
-                    noComparison ? null: x["temperature"]["max"]
-                ));
+                const summaries = results.map((x) => {
+                    let minGlobalCpue = x["cpue"]["min"];
+                    let maxGlobalCpue = x["cpue"]["max"];
+                    const cpues = new Map();
+
+                    if (x["cpue"]["first"] !== undefined) {
+                        minGlobalCpue = Math.min(
+                            x["cpue"]["first"]["value"],
+                            minGlobalCpue
+                        );
+
+                        maxGlobalCpue = Math.max(
+                            x["cpue"]["first"]["value"],
+                            maxGlobalCpue
+                        );
+
+                        const firstKey = [
+                            x["cpue"]["first"]["name"],
+                            x["cpue"]["first"]["year"]
+                        ].join("/");
+                        cpues.set(firstKey, x["cpue"]["first"]["value"]);
+                    }
+
+                    if (x["cpue"]["second"] !== undefined) {
+                        minGlobalCpue = Math.min(
+                            x["cpue"]["second"]["value"],
+                            minGlobalCpue
+                        );
+
+                        maxGlobalCpue = Math.max(
+                            x["cpue"]["second"]["value"],
+                            maxGlobalCpue
+                        );
+
+                        const secondKey = [
+                            x["cpue"]["second"]["name"],
+                            x["cpue"]["second"]["year"]
+                        ].join("/");
+                        cpues.set(secondKey, x["cpue"]["second"]["value"]);
+                    }
+
+                    const summary = new Summary(
+                        minGlobalCpue,
+                        maxGlobalCpue,
+                        noComparison ? x["temperature"]["min"] : null,
+                        noComparison ? x["temperature"]["max"] : null,
+                        noComparison ? null : x["temperature"]["min"],
+                        noComparison ? null: x["temperature"]["max"],
+                        cpues
+                    );
+
+                    return summary;
+                });
                 const combined = summaries.reduce((a, b) => a.combine(b));
                 resolve(combined);
             });
