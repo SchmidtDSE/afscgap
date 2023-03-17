@@ -1,6 +1,6 @@
 SELECT
-    min(subset.min_cpue) AS min_cpue,
-    max(subset.max_cpue) AS max_cpue,
+    0 AS min_cpue,
+    0 AS max_cpue,
     min(subset.temperature_delta) AS min_temperature,
     max(subset.temperature_delta) AS max_temperature,
     sum(subset.first_weight) / sum(subset.first_area_swept) AS first_cpue,
@@ -8,8 +8,6 @@ SELECT
 FROM
     (
         SELECT
-            LEAST(sum(first.cpue), sum(second.cpue)) AS min_cpue,
-            GREATEST(sum(first.cpue), sum(second.cpue)) AS max_cpue,
             sum(second.temperature) - sum(first.temperature) AS temperature_delta,
             sum(first.weight) AS first_weight,
             sum(first.area_swept) AS first_area_swept,
