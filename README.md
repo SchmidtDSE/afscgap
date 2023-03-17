@@ -1,5 +1,5 @@
 # AFSC GAP for Python
-Python tool chain for working with the public bottom trawl surveys data from the [NOAA AFSC GAP](https://www.fisheries.noaa.gov/contact/groundfish-assessment-program).
+Python-based tool chain for working with the public bottom trawl surveys data from the [NOAA AFSC GAP](https://www.fisheries.noaa.gov/contact/groundfish-assessment-program).
 
 | Group | Badges |
 |-------|--------|
@@ -12,45 +12,56 @@ See [webpage](https://pyafscgap.org), [project Github](https://github.com/Schmid
 <br>
 <br>
 
+## Quickstart
+You don't need any local software to get started! To learn about the dataset, explore a visual analytics app at [https://app.pyafscgap.org](https://app.pyafscgap.org) (no code needed!). When ready, learn how to develop with these tools in a free [hosted notebook tutorial](https://mybinder.org/v2/gh/SchmidtDSE/afscgap/main?urlpath=/tree/index.ipynb).
+
+<br>
+<br>
+
 ## Installation
-This open source library is available for install via Pypi / Pip:
+Ready to take it to your own machine? Install the open source tools for accessing the AFSC GAP via Pypi / Pip:
 
 ```
 $ pip install afscgap
 ```
 
-Note that its only dependency is [requests](https://docs.python-requests.org/en/latest/index.html) and [Pandas / numpy are not expected but supported](#pandas).
+The library's only dependency is [requests](https://docs.python-requests.org/en/latest/index.html) and [Pandas / numpy are not expected but supported](#pandas).
 
 <br>
 <br>
 
 ## Purpose
-Unofficial Python tool set for interacting with [bottom trawl surveys](https://www.fisheries.noaa.gov/alaska/commercial-fishing/alaska-groundfish-bottom-trawl-survey-data) from the [Ground Fish Assessment Program (GAP)](https://www.fisheries.noaa.gov/contact/groundfish-assessment-program). It offers:
+Unofficial Python-based tool set for interacting with [bottom trawl surveys](https://www.fisheries.noaa.gov/alaska/commercial-fishing/alaska-groundfish-bottom-trawl-survey-data) from the [Ground Fish Assessment Program (GAP)](https://www.fisheries.noaa.gov/contact/groundfish-assessment-program). It offers:
 
  - Pythonic access to the official [NOAA AFSC GAP API service](https://www.fisheries.noaa.gov/foss/f?p=215%3A28).
  - Tools for inference of the "negative" observations not provided by the API service.
+ - Visualization tools for quickly exploring and creating comparisons within the datset, including for audiences with limited programming experience.
 
-Note that GAP is a dataset produced by the [Resource Assessment and Conservation Engineering (RACE) Division](https://www.fisheries.noaa.gov/about/resource-assessment-and-conservation-engineering-division) of the [Alaska Fisheries Science Center (AFSC)](https://www.fisheries.noaa.gov/about/alaska-fisheries-science-center) as part of the National Oceanic and Atmospheric Administration's Fisheries organization ([NOAA Fisheries](https://www.fisheries.noaa.gov/)).
+Note that GAP is an excellent dataset produced by the [Resource Assessment and Conservation Engineering (RACE) Division](https://www.fisheries.noaa.gov/about/resource-assessment-and-conservation-engineering-division) of the [Alaska Fisheries Science Center (AFSC)](https://www.fisheries.noaa.gov/about/alaska-fisheries-science-center) as part of the National Oceanic and Atmospheric Administration's Fisheries organization ([NOAA Fisheries](https://www.fisheries.noaa.gov/)).
 
 <br>
 
 #### Needs
 Scientists and developers working on ocean health have an interest in survey data from organizations like [NOAA Fisheries](https://www.fisheries.noaa.gov/). However,
 
- - Using the GAP API from NOAA AFSC in Python requires a lot of work: understanding a complex schema, determining how to interact with a proprietary REST data service, forming long query URLs, and navigating pagination. 
- - The official API service provides presence-only data, frustrating common types of analysis and aggregation.
+ - Using the GAP API from NOAA AFSC in Python can sometimes require a lot of work: understanding a complex schema, determining how to interact with a proprietary REST data service, forming long query URLs, and navigating pagination. 
+ - The official API service provides presence-only data, complicating some common types of analysis and aggregation.
+ - Limited public tooling exists for visualizing within and, especially, creating comparisons between subsets of the AFSC GAP dataset which are useful for some types of investigation.
 
-These various elements together may increase the barrier for working with these data, limiting their reach within the Python community.
+These various elements together may increase the barrier for working with these data, limiting their reach within some communities including the Python community.
 
 <br>
 
 #### Goals
-This low-dependency tool set provides the following:
+This tool set aims to provide the following from the start to finish of an investigation:
 
+ - **Visual analytics**: Visualization tools for quickly exploring AFSC GAP, helping users start their investigations by finding and comparing subsets of interest within the broader dataset.
  - **API access**: A type-annotated and documented Python interface to the official API service with ability to query with automated pagination, providing results in various formats compatible with different Python usage modalities (Pandas, pure-Python, etc). It adapts the HTTP-based API used by the agency with Python type hints for easy query and interface. 
  - **Contextual documentation**: Python docstrings annotate the data structures provided by the API to help users navigate the various fields available, offering contextual documentation when supported by Python IDEs.
- - **Absence inference**: Tools to infer absence or "zero catch" data as required for certain analysis and aggregation using a [supplemental hauls flat file dataset](https://pyafscgap.org/community/hauls.csv). Note that this flat file is provided by and hosted for this library's community after being created from [non-API public AFSC GAP data](https://www.fisheries.noaa.gov/foss/f?p=215%3A28).
+ - **Absence inference**: Tools to infer absence or "zero catch" data as required for certain analysis and aggregation using a [supplemental hauls flat file dataset](https://pyafscgap.org/community/hauls.csv). Note that this flat file is provided by and hosted for this library's community after being created from [non-API public AFSC GAP data](https://www.fisheries.noaa.gov/foss/f?p=215%3A28). It is updated yearly.
  - **Query generation**: This library converts more common Python standard types to types usable by the API service and emulated in Python when needed, reducing the need to interact directly with [ORDS syntax](https://www.oracle.com/database/technologies/appdev/rest.html).
+ - **Accelerate specialized analysis**: Affordances in code and non-code tools for both programmers and non-programmers to continue their investigation easily, including in tools outside this tool set.
+ - **Inclusive design**: Users of any skillset should be able to get something from this project.
 
 Though not intended to be general, this project also provides an example for working with [Oracle REST Data Services (ORDS)](https://www.oracle.com/database/technologies/appdev/rest.html) APIs in Python.
 
@@ -58,12 +69,17 @@ Though not intended to be general, this project also provides an example for wor
 <br>
 
 ## Usage
-This library provides access to the public API endpoints with optional zero catch ("absence") record inference. It offers keyword arguments for query filtering that match the column names described in the official [metadata repository](https://github.com/afsc-gap-products/metadata). Records returned by the service are parsed into plain old Python objects.
+This library provides access to the AFSC GAP data with optional zero catch ("absence") record inference.
+
+<br>
+
+#### Visual analytics
+Visualization tools are available to help both programmers and non-programmers start their investigation, providing a UI that stands on the other functionality provided by this project. This is available online at [https://app.pyafscgap.org](https://app.pyafscgap.org). It can generate both CSV (spreadsheet) exports and Python query code to move investigations to their next steps. To self-host or run this tool locally, see the [visualization readme](https://github.com/SchmidtDSE/afscgap/blob/main/afscgapviz/README.md).
 
 <br>
 
 #### Basic queries
-The `afscgap.query` method is the main entry point into the library. For example, this requests all records of Pasiphaea pacifica in 2021 from the Gulf of Alaska to get the median bottom temperature when they were observed:
+The `afscgap.query` method is the main entry point into Python-based utilization. Calls can be written manually or generated in the [visual analytics tool](https://app.pyafscgap.org). For example, this requests all records of Pasiphaea pacifica in 2021 from the Gulf of Alaska to get the median bottom temperature when they were observed:
 
 ```
 import statistics
@@ -80,7 +96,7 @@ temperatures = [record.get_bottom_temperature_c() for record in results]
 print(statistics.median(temperatures))
 ```
 
-Note that `afscgap.query` returns a [Cursor](https://pyafscgap.org/devdocs/afscgap/cursor.html#Cursor). One can iterate over this `Cursor` to access [Record]https://pyafscgap.org/devdocs/afscgap/model.html#Record) objects. You can do this with list comprehensions, maps, etc or with a good old for loop like in this example which gets a histogram of haul temperatures:
+Note that `afscgap.query` returns a [Cursor](https://pyafscgap.org/devdocs/afscgap/cursor.html#Cursor). One can iterate over this `Cursor` to access [Record](https://pyafscgap.org/devdocs/afscgap/model.html#Record) objects. You can do this with list comprehensions, maps, etc or with a good old for loop like in this example which gets a histogram of haul temperatures:
 
 ```
 count_by_temperature_c = {}
@@ -582,9 +598,14 @@ The query can be executed by making an HTTP GET request at the provided location
 
 <br>
 
-#### Contacts
-[Sam Pottinger](https://github.com/sampottinger) is the primary contact. Thanks to [Giulia Zarpellon](https://github.com/gizarp) and [Carl Boettiger](https://github.com/cboettig) for their contributions. This is a project of the [The Eric and Wendy Schmidt Center for Data Science and the Environment
-at UC Berkeley](https://dse.berkeley.edu). Please contact us via dse@berkeley.edu.
+#### People
+[Sam Pottinger](https://github.com/sampottinger) is the primary contact with additional development from [Giulia Zarpellon](https://github.com/gizarp). Additionally some acknowledgements:
+
+ - Thank you to [Carl Boettiger](https://github.com/cboettig) and [Fernando Perez](https://github.com/fperez) for advice in the Python library.
+ - Thanks also to [Maya Weltman-Fahs](https://dse.berkeley.edu/people/maya-weltman-fahs), [Brookie Guzder-Williams](https://github.com/brookisme), and [Magali de Bruyn](https://github.com/magalidebruyn) for advice on the visual analytics tool.
+
+This is a project of the [The Eric and Wendy Schmidt Center for Data Science and the Environment
+at UC Berkeley](https://dse.berkeley.edu) where [Kevin Koy](https://github.com/kevkoy) is Executive Director. Please contact us via dse@berkeley.edu.
 
 <br>
 <br>
@@ -592,15 +613,23 @@ at UC Berkeley](https://dse.berkeley.edu). Please contact us via dse@berkeley.ed
 ## Open Source
 We are happy to be part of the open source community.
 
-At this time, the only open source dependency used by this microlibrary is [Requests](https://docs.python-requests.org/en/latest/index.html) which is available under the [Apache v2 License](https://github.com/psf/requests/blob/main/LICENSE) from [Kenneth Reitz and other contributors](https://github.com/psf/requests/graphs/contributors). Our build and documentation systems also use the following but are not distributed with or linked to the project itself:
+At this time, the only open source dependency used by this microlibrary is [Requests](https://docs.python-requests.org/en/latest/index.html) which is available under the [Apache v2 License](https://github.com/psf/requests/blob/main/LICENSE) from [Kenneth Reitz and other contributors](https://github.com/psf/requests/graphs/contributors).
+
+In addition to Github-provided [Github Actions](https://docs.github.com/en/actions), our build and documentation systems also use the following but are not distributed with or linked to the project itself:
 
  - [mypy](https://github.com/python/mypy) under the [MIT License](https://github.com/python/mypy/blob/master/LICENSE) from Jukka Lehtosalo, Dropbox, and other contributors.
  - [nose2](https://docs.nose2.io/en/latest/index.html) under a [BSD license](https://github.com/nose-devs/nose2/blob/main/license.txt) from Jason Pellerin and other contributors.
  - [pdoc](https://github.com/mitmproxy/pdoc) under the [Unlicense license](https://github.com/mitmproxy/pdoc/blob/main/LICENSE) from [Andrew Gallant](https://github.com/BurntSushi) and [Maximilian Hils](https://github.com/mhils).
  - [pycodestyle](https://pycodestyle.pycqa.org/en/latest/) under the [Expat License](https://github.com/PyCQA/pycodestyle/blob/main/LICENSE) from Johann C. Rocholl, Florent Xicluna, and Ian Lee.
  - [pyflakes](https://github.com/PyCQA/pyflakes) under the [MIT License](https://github.com/PyCQA/pyflakes/blob/main/LICENSE) from Divmod, Florent Xicluna, and other contributors.
+ - [sftp-action](https://github.com/Creepios/sftp-action) under the [MIT License](https://github.com/Creepios/sftp-action/blob/master/LICENSE) from Niklas Creepios.
+ - [ssh-action](https://github.com/appleboy/ssh-action) under the [MIT License](https://github.com/appleboy/ssh-action/blob/master/LICENSE) from Bo-Yi Wu.
 
-Thank you to all of these projects for their contribution. Finally, note that the website uses assets from [The Noun Project](thenounproject.com/) under the NounPro plan. If used outside of https://pyafscgap.org, they may be subject to a [different license](https://thenounproject.com/pricing/#icons).
+Next, the visualization tool has additional dependencies as documented in the [visualization readme](https://github.com/SchmidtDSE/afscgap/blob/main/afscgapviz/README.md).
+
+Finally, note that the website uses assets from [The Noun Project](thenounproject.com/) under the NounPro plan. If used outside of https://pyafscgap.org, they may be subject to a [different license](https://thenounproject.com/pricing/#icons).
+
+Thank you to all of these projects for their contribution.
 
 <br>
 <br>
@@ -608,6 +637,7 @@ Thank you to all of these projects for their contribution. Finally, note that th
 ## Version history
 Annotated version history:
 
+ - `0.0.7`: Visual analytics tools.
  - `0.0.6`: Performance and size improvements.
  - `0.0.5`: Changes to documentation.
  - `0.0.4`: Negative / zero catch inference.
