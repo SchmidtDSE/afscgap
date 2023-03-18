@@ -17,9 +17,10 @@ This application can be self-hosted or run locally. Due to the high disk usage r
 $ git clone https://github.com/SchmidtDSE/afscgap.git
 $ cd afscgap/afscgapviz
 $ pip install -r requirements.txt
+$ bash load_deps.sh
 ```
 
-Note that this application still requires a dataset as described below.
+Note that this application still requires a dataset as described below. For ease of development, webpack is not required.
 
 <br>
 <br>
@@ -143,6 +144,27 @@ Invalid data are excluded and only data with area swept in hectares, catch (coun
 ## License
 Like the rest of the the project, we are happy to make this library available under the BSD 3-Clause license. See LICENSE for more details. (c) 2023 Regents of University of California. See the [Eric and Wendy Schmidt Center for Data Science and the Environment
 at UC Berkeley](https://dse.berkeley.edu).
+
+<br>
+<br>
+
+## Local development
+After installing dev dependencies (`pip install -r requirements.txt`), we recommend the following local checks:
+
+```
+$ nose2
+$ mypy *.py
+$ pyflakes *.py
+$ pycodestyle *.py
+```
+
+Note these checks are run by CI / CD. Furthermore, JS tests can be run via grunt from the root directory or by:
+
+```
+$ python -m http.server
+```
+
+Then, direct your browser to [http://0.0.0.0:8000/static/test/test.html](http://0.0.0.0:8000/static/test/test.html).
 
 <br>
 <br>

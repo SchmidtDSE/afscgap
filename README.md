@@ -573,6 +573,21 @@ at UC Berkeley](https://dse.berkeley.edu).
 <br>
 <br>
 
+## Local development
+After installing dev dependencies (`pip install -e .[dev]`), we recommend the following local checks:
+
+```
+$ nose2 --start-dir=afscgap
+$ mypy afscgap/*.py
+$ pyflakes afscgap/*.py
+$ pycodestyle afscgap/*.py
+```
+
+Note these checks are run by CI / CD. Also, `afscgapviz` has separate tests as described in the [visualization readme](https://github.com/SchmidtDSE/afscgap/blob/main/afscgapviz/README.md).
+
+<br>
+<br>
+
 ## Community
 Thanks for your support! Pull requests and issues very welcome.
 
