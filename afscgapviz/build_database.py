@@ -259,8 +259,8 @@ def create_db_main(args):
             specific to this command.
     """
     if len(args) != USAGE_CREATE_DB_NUM_ARGS:
-        print(USAGE_BASE_STR + USAGE_CREATE_DB_STR)
-        return
+        print(USAGE_BASE_STR + USAGE_CREATE_DB_STR, file=sys.stderr)
+        sys.exit(1)
 
     filepath = args[0]
     sql = sql_util.get_sql('create_hauls')
@@ -280,8 +280,8 @@ def download_main(args):
             specific to this command.
     """
     if len(args) != USAGE_DOWNLOAD_NUM_ARGS:
-        print(USAGE_BASE_STR + USAGE_DOWNLOAD_STR)
-        return
+        print(USAGE_BASE_STR + USAGE_DOWNLOAD_STR, file=sys.stderr)
+        sys.exit(1)
 
     year_range_maybe = try_parse_range(args[0])
     if year_range_maybe is None or len(year_range_maybe) != 2:
@@ -318,8 +318,8 @@ def download_main(args):
 def main():
     """Main overall entry point for this command line utility."""
     if len(sys.argv) < USAGE_BASE_NUM_ARGS + 1:
-        print(USAGE_BASE_STR + USAGE_COMMANDS_STR)
-        return
+        print(USAGE_BASE_STR + USAGE_COMMANDS_STR, file=sys.stderr)
+        sys.exit(1)
 
     command = sys.argv[1]
 
@@ -329,8 +329,8 @@ def main():
     }
 
     if command not in commands:
-        print(USAGE_BASE_STR + USAGE_COMMANDS_STR)
-        return
+        print(USAGE_BASE_STR + USAGE_COMMANDS_STR, file=sys.stderr)
+        sys.exit(1)
 
     commands[command](sys.argv[2:])
 
