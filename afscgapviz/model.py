@@ -8,7 +8,7 @@ are not expected to leave the visualization server.
 for Data Science and the Environment at UC Berkeley.
 
 This file is part of afscgap released under the BSD 3-Clause License. See
-LICENSE.txt.
+LICENSE.md.
 """
 import typing
 

@@ -5,7 +5,7 @@ Unit tests for the logic that interacts with the API and makes HTTP requests.
 for Data Science and the Environment at UC Berkeley.
 
 This file is part of afscgap released under the BSD 3-Clause License. See
-LICENSE.txt.
+LICENSE.md.
 """
 import json
 import unittest

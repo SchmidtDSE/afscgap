@@ -5,7 +5,7 @@ Definition of common library data with its structures and interfaces.
 for Data Science and the Environment at UC Berkeley.
 
 This file is part of afscgap released under the BSD 3-Clause License. See
-LICENSE.txt.
+LICENSE.md.
 """
 from afscgap.util import OPT_FLOAT
 from afscgap.util import OPT_INT
