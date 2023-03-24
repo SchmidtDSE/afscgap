@@ -37,13 +37,13 @@ That being said, access to the API alone cannot support some investigations as t
 ## General public needs
 Though the `afscgap` Python package makes GAP catch data more accessible to developer-lead work, the size and complexity of this dataset requires non-trivial engineering for comparative analysis between species, years, and/or geographic areas [@notebook]. Therefore, this project also offers visualization tools sitting on top of `afscgap` to begin investigations. Employing information and game design, this tool lowers usability barriers to address audiences of broad technical sophistication. Furthermore, it offers both Python code generation as a bridge to `afscgap` and CSV export for those at home in other tools.
 
-# Methods
+# Functions
 This project's design aims to improve accessibility of NOAA AFSC GAP catch data, democratizing developer access to the sophisticated methods required to interact with these data and offering inclusive approachable tools to kickstart analysis.
 
-## API design
+## Lazy querying
 Starting with the `afscgap` library, [lazy iterators]() increase accessibility of the data by encapsulating logic for memory-efficient pagination and "data munging" behind a familiar interface [@lazy]. Furthermore, to support zero catch data, [decorators]() adapt diverse structures to common interfaces to free client code from understanding the full complexities of `afscgap`'s type system [@decorators]. Finally, offering a single function entry-point into the library with keywords for complex use, this "facade" approach allows the user to interact with these systems without requiring client code to reflect deep understanding of the library's mechanics, a goal furthered by compilation of "standard" Python types to Oracle REST Data Service queries [@facade].
 
-## Algorithmic design
+## Zero catch inference
 "Negative" or "zero catch" uses the following proceedure:
 
  - Paginate while records remain available from the API service.
@@ -55,7 +55,7 @@ Starting with the `afscgap` library, [lazy iterators]() increase accessibility o
 
 Note that, in adddition to compiling Python types to ORDS queries, those queries are also emulated in Python to filter inferred records.
 
-## Visualization design
+## Visualization
 Despite these developer-focused tools, zero catch inference can expand this dataset into the millions, demanding technical sophistication to navigate. To further increase accessibility, this project offers visualization tools for temporal, spatial, and species comparisons.
 
 However, building competency in this sophisticated interface presents user experience challenges and, to that end, this project interprets Koichi Hayashida level design via Mark Brown's formalization into an in-tool introduction sequence that directs the player through a "real" analysis [@brown]:
@@ -65,12 +65,9 @@ However, building competency in this sophisticated interface presents user exper
  - **Twist**: Overlays on the same display are enabled, allowing the player to leverage mechanics they just exercised in a now more complex interface.
  - **Conclusion**: The tool ends by giving the player an opportunity to demonstrate all of the skills acquired in a new problem.
 
-Finally, while this interface uses game / information design techniques to offer an accessible on-ramp for new users to quickly learn a sophisticated interface, it is also designed as a starting point for continued analysis by enabling users to generate either CSV or Python code to "take out" their work into other tools.
+Finally, while this interface uses game / information design techniques to offer an accessible on-ramp for new users to quickly learn a sophisticated interface, it is also designed as a starting point for continued analysis by enabling users to generate either CSV or Python code to "take out" their work into other tools. Examined via the think aloud protocol, two user tests cofirm visualization design [@thinkaloud].
 
-# Results
-Pyafscgap.org confirms library usability and goals through a practical Pacific cod case study requiring aggregation as documented through a public notebook hosted on MyBinder [@binder]. Second, examined via the think aloud protocol, two user tests cofirm visualization design [@thinkaloud].
-
-# Limitations
+### Limitations
 This library only focuses on single threaded non-asynchoronous utilization and its viusalization recognizes that aggregation of hauls happens on a single latitude / longitude point due to dataset limitations which may cause some approximation in regional catch per unit effort as documented in the visualization's README [@readme].
 
 # Acknowledgements
