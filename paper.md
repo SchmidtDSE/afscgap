@@ -24,11 +24,9 @@ bibliography: paper.bib
 ---
 
 # Summary
-
 The National Oceanic and Atmospheric Administration's Alaska Fisheries Science Center (NOAA AFSC) runs the [Groundfish Assessment Program](https://www.fisheries.noaa.gov/contact/groundfish-assessment-program) which produces marine longitudinal catch data [@afscgap]. These "hauls" report where species are found and in what quantities, empowering biodiversity research and fisheries management [@pacificcod]. Increasing accessibility of these important data through a suite of tools for individuals of diverse programming experience, Pyafscgap.org offers not just easier access to the REST API through ORDS compilation but provides both memory-efficient algorithms for "zero-catch inference" and interactive visual analytics tools [@ords]. Altogether, this toolset supports investigatory tasks not easily executable using the API service alone and, leveraging game and information design, offers these data to a broader audience.
 
 # Statement of need
-
 Pyafscgap.org reduces barriers for use of AFSC GAP data, offering open source solutions for addressing the dataset's presence-only nature, use of proprietary databases, size, and complexity [@inport].
 
 ## Developer needs
@@ -40,15 +38,12 @@ That being said, access to the API alone cannot support some investigations as t
 Though the `afscgap` Python package makes GAP catch data more accessible to developer-lead work, the size and complexity of this dataset requires non-trivial engineering for comparative analysis between species, years, and/or geographic areas [@notebook]. Therefore, this project also offers visualization tools sitting on top of `afscgap` to begin investigations. Employing information and game design, this tool lowers usability barriers to address audiences of broad technical sophistication. Furthermore, it offers both Python code generation as a bridge to `afscgap` and CSV export for those at home in other tools.
 
 # Methods
-
 This project's design aims to improve accessibility of NOAA AFSC GAP catch data, democratizing developer access to the sophisticated methods required to interact with these data and offering inclusive approachable tools to kickstart analysis.
 
 ## API design
-
 Starting with the `afscgap` library, [lazy iterators]() increase accessibility of the data by encapsulating logic for memory-efficient pagination and "data munging" behind a familiar interface [@lazy]. Furthermore, to support zero catch data, [decorators]() adapt diverse structures to common interfaces to free client code from understanding the full complexities of `afscgap`'s type system [@decorators]. Finally, offering a single function entry-point into the library with keywords for complex use, this "facade" approach allows the user to interact with these systems without requiring client code to reflect deep understanding of the library's mechanics, a goal furthered by compilation of "standard" Python types to Oracle REST Data Service queries [@facade].
 
 ## Algorithmic design
-
 "Negative" or "zero catch" uses the following proceedure:
 
  - Paginate while records remain available from the API service.
@@ -61,7 +56,6 @@ Starting with the `afscgap` library, [lazy iterators]() increase accessibility o
 Note that, in adddition to compiling Python types to ORDS queries, those queries are also emulated in Python to filter inferred records.
 
 ## Visualization design
-
 Despite these developer-focused tools, zero catch inference can expand this dataset into the millions, demanding technical sophistication to navigate. To further increase accessibility, this project offers visualization tools for temporal, spatial, and species comparisons.
 
 However, building competency in this sophisticated interface presents user experience challenges and, to that end, this project interprets Koichi Hayashida level design via Mark Brown's formalization into an in-tool introduction sequence that directs the player through a "real" analysis [@brown]:
@@ -76,8 +70,10 @@ Finally, while this interface uses game / information design techniques to offer
 # Results
 Pyafscgap.org confirms library usability and goals through a practical Pacific cod case study requiring aggregation as documented through a public notebook hosted on MyBinder [@binder]. Second, examined via the think aloud protocol, two user tests cofirm visualization design [@thinkaloud].
 
-# Acknowledgements
+# Limitations
+This library only focuses on single threaded non-asynchoronous utilization and its viusalization recognizes that aggregation of hauls happens on a single latitude / longitude point due to dataset limitations which may cause some approximation in regional catch per unit effort as documented in the visualization's README [@readme].
 
+# Acknowledgements
 Thank you to Carl Boettiger and Fernando Perez for advice in the Python library. Also, thanks also to Maya Weltman-Fahs, Brookie Guzder-Williams, and Magali de Bruyn for advice on the visual analytics tool. This is a project of the The Eric and Wendy Schmidt Center for Data Science and the Environment at University of California Berkeley where Kevin Koy is Executive Director.
 
 # References
