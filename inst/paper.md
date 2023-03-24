@@ -58,7 +58,7 @@ Note that, in adddition to compiling Python types to ORDS queries, those queries
 ## Visualization
 Despite these developer-focused tools, zero catch inference can expand this dataset into the millions, demanding technical sophistication to navigate. To further increase accessibility, this project offers visualization tools for temporal, spatial, and species comparisons.
 
-However, building competency in this sophisticated interface presents user experience challenges and, to that end, this project interprets Koichi Hayashida level design via Mark Brown's formalization into an in-tool introduction sequence that directs the player through a "real" analysis [@brown]:
+However, building competency in this sophisticated interface presents user experience challenges and, to that end, this project interprets Koichi Hayashida level design via Mark Brown's formalization into an in-tool introduction sequence that directs the player through a "real" analysis [@hayashida; @brown]:
 
  - **Introduction**: The player sees information about Pacific cod with pre-filled elements used to achieve that analysis gradually fading in.
  - **Development**: The tool invites the player using the mechanics introduced moments prior to change the analysis to compare different regions with temperature data.
