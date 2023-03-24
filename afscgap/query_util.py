@@ -55,7 +55,7 @@ def interpret_query_to_py(target: dict) -> dict:
 
     Returns:
         Dictionary mapping from key to function which returns if a candidate
-        value for that field satisfies the criteria described for that field. 
+        value for that field satisfies the criteria described for that field.
     """
     target_items = target.items()
 
