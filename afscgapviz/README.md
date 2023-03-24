@@ -135,8 +135,8 @@ Note that the development of the tool is focused on sqlite. Pull requests are we
 <br>
 <br>
 
-## Data quality
-Invalid data are excluded and only data with area swept in hectares, catch (count and weight in kg), and temperatures (both bottom and surface) are retained. No effort is made to try to "fix" records with incorrect data. Information is used as provided by the AFSC GAP API service.
+## Data quality and limitations
+Invalid data are excluded and only data with area swept in hectares, catch (count and weight in kg), and temperatures (both bottom and surface) are retained. No effort is made to try to "fix" records with incorrect data. Information is used as provided by the AFSC GAP API service. Furthermore, aggregation uses a single latitude / longitude point for a record and it remains possible that a haul may spill out of a geohash causing some inaccuracy in catch per unit effort (CPUE) calculation. For more details on the "zero catch" inference methods used, see [main README](https://github.com/SchmidtDSE/afscgap#absence-vs-presence-data).
 
 <br>
 <br>
