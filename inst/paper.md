@@ -77,6 +77,6 @@ Finally, while this interface uses game / information design techniques to offer
 This library focuses on single threaded non-asynchoronous utilization and  visualization recognizes that aggregation of hauls happens on a latitude / longitude point due to dataset limitations which may cause some approximation in regional CPUE as documented in the visualization's README [@readme].
 
 # Acknowledgements
-Thank you Carl Boettiger and Fernando Perez for advice in the library. Thanks also to Maya Weltman-Fahs, Brookie Guzder-Williams, and Magali de Bruyn for advice on visualizations. Project of the The Eric and Wendy Schmidt Center for Data Science and the Environment at University of California Berkeley where Kevin Koy is Executive Director. Though the project lists full libraries, authors thank runtime dependencies D3, ColorBrewer, Requests, and Papa Parse [@d3; @colorbrewer; @requests; @papa].
+Thank you Carl Boettiger and Fernando Perez for advice in the library. Thanks also to Maya Weltman-Fahs, Brookie Guzder-Williams, and Magali de Bruyn for advice on visualizations. Project of the The Eric and Wendy Schmidt Center for Data Science and the Environment at University of California Berkeley where Kevin Koy is Executive Director. Though the project lists full libraries, authors thank runtime dependencies ColorBrewer, D3, Flask, Geolib, Requests, Toolz, and Papa Parse [@colorbrewer; @d3; @flask; @geolib; @requests; @toolz; @papa].
 
 # References
