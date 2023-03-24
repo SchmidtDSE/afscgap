@@ -40,8 +40,12 @@ Though the `afscgap` Python package makes GAP catch data more accessible to deve
 # Functions
 This project's design aims to improve accessibility of NOAA AFSC GAP catch data, democratizing developer access to the sophisticated methods required to interact with these data and offering inclusive approachable tools to kickstart analysis.
 
-## Lazy querying
-Starting with the `afscgap` library, lazy "generator iterables" increase accessibility of the data by encapsulating logic for memory-efficient pagination and "data munging" behind a familiar interface [@lazy]. Furthermore, to support zero catch data, decorators adapt diverse structures to common interfaces to free client code from understanding the full complexities of `afscgap`'s type system [@decorators]. Finally, offering a single function entry-point into the library with keywords for complex use, this "facade" approach allows the user to interact with these systems without requiring client code to reflect deep understanding of the library's mechanics, a goal furthered by compilation of "standard" Python types to Oracle REST Data Service queries [@facade].
+## Lazy querying facade
+Starting with the `afscgap` library, lazy "generator iterables" increase accessibility of the data by encapsulating logic for memory-efficient pagination and "data munging" behind a familiar interface [@lazy]. Furthermore, to support zero catch data, decorators adapt diverse structures to common interfaces to free client code from understanding the full complexities of `afscgap`'s type system [@decorators].
+
+![Diagram of simplified afscgap operation [@diagrams].\label{fig:library}](library.png)
+
+Finally, offering a single function entry-point into the library with keywords for complex use, this "facade" approach allows the user to interact with these systems without requiring client code to reflect deep understanding of the library's mechanics, a goal furthered by compilation of "standard" Python types to Oracle REST Data Service queries [@facade].
 
 ## Zero catch inference
 "Negative" or "zero catch" uses the following proceedure:
@@ -58,6 +62,8 @@ Note that, in adddition to compiling Python types to ORDS queries, those queries
 ## Visualization
 Despite these developer-focused tools, zero catch inference can expand this dataset into the millions, demanding technical sophistication to navigate. To further increase accessibility, this project offers visualization tools for temporal, spatial, and species comparisons.
 
+![Screenshot of the visualization tool.\label{fig:viz}](viz.png)
+
 However, building competency in this sophisticated interface presents user experience challenges and, to that end, this project interprets Koichi Hayashida level design via Mark Brown's formalization into an in-tool introduction sequence that directs the player through a "real" analysis [@hayashida; @brown]:
 
  - **Introduction**: The player sees information about Pacific cod with pre-filled elements used to achieve that analysis gradually fading in.
@@ -71,6 +77,6 @@ Finally, while this interface uses game / information design techniques to offer
 This library only focuses on single threaded non-asynchoronous utilization and its viusalization recognizes that aggregation of hauls happens on a single latitude / longitude point due to dataset limitations which may cause some approximation in regional catch per unit effort as documented in the visualization's README [@readme].
 
 # Acknowledgements
-Thank you to Carl Boettiger and Fernando Perez for advice in the Python library. Also, thanks also to Maya Weltman-Fahs, Brookie Guzder-Williams, and Magali de Bruyn for advice on the visual analytics tool. This is a project of the The Eric and Wendy Schmidt Center for Data Science and the Environment at University of California Berkeley where Kevin Koy is Executive Director.
+Thank you to Carl Boettiger and Fernando Perez for advice in the Python library. Also, thanks also to Maya Weltman-Fahs, Brookie Guzder-Williams, and Magali de Bruyn for advice on the visual analytics tool. This is a project of the The Eric and Wendy Schmidt Center for Data Science and the Environment at University of California Berkeley where Kevin Koy is Executive Director. Though the project lists full dependencies, authors wish to particularly thank runtime dependencies D3, ColorBrewer, Requests, and Papa Parse [@d3; @colorbrewer; @requests; @papa].
 
 # References
