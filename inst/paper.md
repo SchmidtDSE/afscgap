@@ -71,12 +71,12 @@ However, building competency in this sophisticated interface presents user exper
  - **Twist**: Overlays on the same display are enabled, allowing the player to leverage mechanics they just exercised in a now more complex interface.
  - **Conclusion**: The tool ends by giving the player an opportunity to demonstrate all of the skills acquired in a new problem.
 
-Finally, while this interface uses game / information design techniques to offer an accessible on-ramp for new users to quickly learn a sophisticated interface, it is also designed as a starting point for continued analysis by enabling users to generate either CSV or Python code to "take out" their work into other tools. Examined via two rounds of the Thinking-aloud Method, visualization design was evolved and confirmed [@thinkaloud].
+Finally, while this interface uses game / information design techniques to offer an accessible on-ramp to quickly learn a sophisticated interface, it is also designed as a starting point for continued analysis by enabling generating either CSV or Python code to "take out" work into other tools. Examined via Thinking-aloud Method [@thinkaloud].
 
 ### Limitations
-This library only focuses on single threaded non-asynchoronous utilization and its viusalization recognizes that aggregation of hauls happens on a single latitude / longitude point due to dataset limitations which may cause some approximation in regional catch per unit effort as documented in the visualization's README [@readme].
+This library focuses on single threaded non-asynchoronous utilization and  visualization recognizes that aggregation of hauls happens on a latitude / longitude point due to dataset limitations which may cause some approximation in regional CPUE as documented in the visualization's README [@readme].
 
 # Acknowledgements
-Thank you to Carl Boettiger and Fernando Perez for advice in the Python library. Also, thanks also to Maya Weltman-Fahs, Brookie Guzder-Williams, and Magali de Bruyn for advice on the visual analytics tool. This is a project of the The Eric and Wendy Schmidt Center for Data Science and the Environment at University of California Berkeley where Kevin Koy is Executive Director. Though the project lists full dependencies, authors wish to particularly thank runtime dependencies D3, ColorBrewer, Requests, and Papa Parse [@d3; @colorbrewer; @requests; @papa].
+Thank you Carl Boettiger and Fernando Perez for advice in the library. Thanks also to Maya Weltman-Fahs, Brookie Guzder-Williams, and Magali de Bruyn for advice on visualizations. Project of the The Eric and Wendy Schmidt Center for Data Science and the Environment at University of California Berkeley where Kevin Koy is Executive Director. Though the project lists full libraries, authors thank runtime dependencies D3, ColorBrewer, Requests, and Papa Parse [@d3; @colorbrewer; @requests; @papa].
 
 # References
