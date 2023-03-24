@@ -1,4 +1,4 @@
-# AFSC GAP for Python
+# Python Tools for AFSC GAP
 Python-based tool chain for working with the public bottom trawl surveys data from the [NOAA AFSC GAP](https://www.fisheries.noaa.gov/contact/groundfish-assessment-program). This provides information about where certain species were seen and when under what conditions, information useful for research in ocean health.
 
 <br>
