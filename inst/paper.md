@@ -73,7 +73,7 @@ However, building competency in this sophisticated interface presents user exper
 
 Finally, while this interface uses game / information design techniques to offer an accessible on-ramp to quickly learn a sophisticated interface, it is also designed as a starting point for continued analysis by enabling generating either CSV or Python code to "take out" work into other tools. Examined via Thinking-aloud Method [@thinkaloud].
 
-### Limitations
+## Limitations
 This library focuses on single threaded non-asynchoronous utilization and  visualization recognizes that aggregation of hauls happens on a latitude / longitude point due to dataset limitations which may cause some approximation in regional CPUE as documented in the visualization's README [@readme].
 
 # Acknowledgements
