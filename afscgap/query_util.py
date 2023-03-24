@@ -6,6 +6,14 @@ import numbers
 
 
 def interpret_query_to_ords(target: dict) -> dict:
+    """Convert a description of a query to ORDS syntax.
+
+    Args:
+        target: The "native Python structures" version of the query.
+
+    Returns:
+        Dicitionary encoding the ORDS-expected query format.
+    """
     target_items = target.items()
 
     def interpret_value(value):
@@ -40,6 +48,15 @@ def interpret_query_to_ords(target: dict) -> dict:
 
 
 def interpret_query_to_py(target: dict) -> dict:
+    """Emulate a query in Python.
+
+    Args:
+        target: The "native Python structures" format of the query.
+
+    Returns:
+        Dictionary mapping from key to function which returns if a candidate
+        value for that field satisfies the criteria described for that field. 
+    """
     target_items = target.items()
 
     def interpret_value(value):
