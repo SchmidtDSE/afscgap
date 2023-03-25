@@ -24,7 +24,7 @@ bibliography: paper.bib
 ---
 
 # Summary
-The National Oceanic and Atmospheric Administration's Alaska Fisheries Science Center's Resource Assessment and Conservation Engineering Division (NOAA AFSC RACE) runs the [Groundfish Assessment Program](https://www.fisheries.noaa.gov/contact/groundfish-assessment-program) which produces longitudinal catch data via bottom trawl surveys [@afscgap]. These "hauls" report where species are found and in what quantities, empowering ocean health research and fisheries management [@example]. Increasing accessibility of these important data (RACEBASE) through a suite of tools for individuals of diverse programming experience, Pyafscgap.org offers not just easier access to the REST API through ORDS compilation but provides both memory-efficient algorithms for "zero-catch inference" and interactive visual analytics tools [@inport; @ords]. Altogether, this toolset supports investigatory tasks not easily executable using the API service alone and, leveraging game and information design, offers these data to a broader audience.
+The Resource Assessment and Conservation Engineering Division of the National Oceanic and Atmospheric Administration's Alaska Fisheries Science Center (NOAA AFSC RACE) runs the [Groundfish Assessment Program](https://www.fisheries.noaa.gov/contact/groundfish-assessment-program) which produces longitudinal catch data via bottom trawl surveys [@afscgap]. These "hauls" report where species are found and in what quantities, empowering ocean health research and fisheries management [@example]. Increasing accessibility of these important data (RACEBASE) through a suite of tools for individuals of diverse programming experience, Pyafscgap.org offers not just easier access to the REST API through ORDS compilation but provides both memory-efficient algorithms for "zero-catch inference" and interactive visual analytics tools [@inport; @ords]. Altogether, this toolset supports investigatory tasks not easily executable using the API service alone and, leveraging game and information design, offers these data to a broader audience.
 
 # Statement of need
 Pyafscgap.org reduces barriers for use of GAP data, offering open source solutions for addressing the dataset's presence-only nature, use of proprietary databases, and size / complexity [@inport].
@@ -64,14 +64,14 @@ Despite these developer-focused tools, zero catch inference can expand this data
 
 ![Screenshot of the visualization tool.\label{fig:viz}](viz.png)
 
-However, building competency in this sophisticated interface presents user experience challenges and, to that end, this project interprets Koichi Hayashida level design via Mark Brown's formalization into an in-tool introduction sequence that directs the player through a "real" analysis [@hayashida; @brown]:
+However, building competency in sophisticated interfaces presents user experience challenges and, to that end, this project interprets Hayashida level design via Mark Brown's formalization into an in-tool introduction sequence that directs the player through a "real" analysis [@hayashida; @brown]:
 
  - **Introduction**: The player sees information about Pacific cod with pre-filled elements used to achieve that analysis gradually fading in.
  - **Development**: The tool invites the player using the mechanics introduced moments prior to change the analysis to compare different regions with temperature data.
  - **Twist**: Overlays on the same display are enabled, allowing the player to leverage mechanics they just exercised in a now more complex interface.
  - **Conclusion**: The tool ends by giving the player an opportunity to demonstrate all of the skills acquired in a new problem.
 
-Finally, while this interface uses game / information design techniques to offer an accessible on-ramp to quickly learn a sophisticated interface, it is also designed as a starting point for continued analysis by enabling generating either CSV or Python code to "take out" work into other tools. Examined via Thinking-aloud Method [@thinkaloud].
+Finally, while this interface uses game / information design techniques to offer an accessible on-ramp to quickly learn a sophisticated interface, it is also designed as a starting point for continued analysis by generating either CSV or Python code to "take out" work into other tools. Examined via Thinking-aloud Method [@thinkaloud].
 
 ## Limitations
 This library focuses on single threaded non-asynchoronous utilization and  visualization recognizes that aggregation of hauls happens on a latitude / longitude point due to dataset limitations which may cause some approximation in regional CPUE as documented in the visualization's README [@readme].
