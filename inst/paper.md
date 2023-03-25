@@ -1,5 +1,5 @@
 ---
-title: 'Pyafscgap.org: Python tools for NOAA AFSC GAP'
+title: 'Pyafscgap.org: Open source multi-modal Python-based tools for NOAA AFSC RACE GAP'
 tags:
   - Python
   - fishery
@@ -15,12 +15,22 @@ authors:
   - name: Giulia Zarpellon
     orcid: 0000-0002-9122-4709
     affiliation: 1
+author:
+  - "A Samuel Pottinger":
+      institute:
+        - ucberkeley
+      correspondence: "yes"
+      email: sam.pottinger@berkeley.edu
+  - "Giulia Zarpellon":
+      institute:
+        - ucberkeley
 affiliations:
- - name: University of California Berkeley
+ - name: University of California, Berkeley
    index: 1
+institute:
+  - ucberkeley: University of California, Berkeley
 date: 21 March 2023
 bibliography: paper.bib
-
 ---
 
 # Summary

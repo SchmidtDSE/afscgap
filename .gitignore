@@ -11,3 +11,5 @@ afscgapviz/geohashes.db
 node_modules
 afscgapviz/static/js_third_party
 afscgapviz/static/test/qunit*
+inst/*.lua
+inst/*.sh
