@@ -81,7 +81,7 @@ However, building competency in sophisticated interfaces presents user experienc
  - **Twist**: Overlays on the same display are enabled, allowing the player to leverage mechanics they just exercised in a now more complex interface.
  - **Conclusion**: The tool ends by giving the player an opportunity to demonstrate all of the skills acquired in a new problem.
 
-Finally, while this interface uses game / information design techniques to offer an accessible on-ramp to quickly learn a sophisticated interface, it is also a starting point for continued analysis by generating either CSV or Python code to "take out" work into other tools. Examined via Thinking-aloud Method [@thinkaloud]. Note it also includes comparison-facilitating designs like coordinated highlighting, separated color channels, summary statistics, and side-by-side display.
+Finally, while this interface uses game / information design techniques to offer an accessible on-ramp to quickly learn a sophisticated interface, it is also a starting point for continued analysis by generating either CSV or Python code to "take out" work into other tools. Examined via Thinking-aloud Method [@thinkaloud]. Note it also includes comparison-facilitating designs like coordinated highlighting, separated color channels, summary statistics, and side-by-side display [@few].
 
 ## Limitations
 This library focuses on single-threaded non-asynchoronous utilization and recognizes that aggregation of hauls happens on a latitude / longitude point due to dataset limitations which may cause some approximation in regional CPUE as documented in the visualization's README [@readme].
