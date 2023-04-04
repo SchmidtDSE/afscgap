@@ -48,7 +48,7 @@ jobs:
         run: grunt
   buildpaper:
     runs-on: ubuntu-latest
-    name: Check js
+    name: Check paper
     steps:
       - name: Checkout
         uses: actions/checkout@v2.3.4
