@@ -6,6 +6,7 @@ build
 dist/
 docs/
 website/devdocs
+website/static/paper.pdf
 notebooks/.ipynb_checkpoints
 afscgapviz/geohashes.db
 node_modules
