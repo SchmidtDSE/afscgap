@@ -30,7 +30,7 @@ jobs:
       - name: Build API docs
         run: pdoc --docformat google ./afscgap -o website/devdocs/
       - name: Build paper
-        run: bash inst/preview_paper.sh
+        run: cd inst; bash preview_paper.sh
       - name: Upload website
         id: uploadWebsite
         uses: Creepios/sftp-action@v1.0.3

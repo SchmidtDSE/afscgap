@@ -53,4 +53,4 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2.3.4
       - name: Try building paper
-        run: bash inst/preview_paper.sh
+        run: cd inst; bash preview_paper.sh
