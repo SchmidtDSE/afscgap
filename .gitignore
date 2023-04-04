@@ -6,10 +6,10 @@ build
 dist/
 docs/
 website/devdocs
+website/static/paper.pdf
 notebooks/.ipynb_checkpoints
 afscgapviz/geohashes.db
 node_modules
 afscgapviz/static/js_third_party
 afscgapviz/static/test/qunit*
 inst/*.lua
-inst/*.sh
