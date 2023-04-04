@@ -25,8 +25,12 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-      - run: pip install -e .[dev]
-      - run: pdoc --docformat google ./afscgap -o website/devdocs/
+      - name: Install Python deps
+        run: pip install -e .[dev]
+      - name: Build API docs
+        run: pdoc --docformat google ./afscgap -o website/devdocs/
+      - name: Build paper
+        run: bash inst/preview_paper.sh
       - name: Upload website
         id: uploadWebsite
         uses: Creepios/sftp-action@v1.0.3
