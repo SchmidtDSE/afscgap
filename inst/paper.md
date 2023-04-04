@@ -85,7 +85,7 @@ Of course, building competency in a sophisticated interface like this presents u
 Finally, while this interface uses game / information design techniques to offer an accessible on-ramp to quickly learn a sophisticated interface, it also serves as a starting point for continued analysis by generating either CSV or Python code to take work into other tools. Examined via Thinking-aloud Method [@thinkaloud].
 
 ## Limitations
-Current limitations:
+Notable current limitations:
 
  - Single-threaded and non-asynchoronous.
  - Visualization aggregation of hauls happens on a point due to dataset limitations which may cause some approximation in regional CPUE [@readme].
