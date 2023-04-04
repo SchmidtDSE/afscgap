@@ -34,18 +34,19 @@ bibliography: paper.bib
 ---
 
 # Summary
-The Resource Assessment and Conservation Engineering Division of the National Oceanic and Atmospheric Administration's Alaska Fisheries Science Center (NOAA AFSC RACE) runs the [Groundfish Assessment Program](https://www.fisheries.noaa.gov/contact/groundfish-assessment-program) (GAP) which produces longitudinal catch data [@afscgap]. These "hauls" report where marine species are found during bottom trawl surveys and in what quantities, empowering ocean health research and fisheries management [@example]. Increasing accessibility of these important data (RACEBASE) through tools for individuals of diverse programming experience, Pyafscgap.org offers not just easier access to the REST API through query compilation but provides both memory-efficient algorithms for "zero-catch inference" and interactive visual analytics tools [@inport; @ords]. Altogether, this toolset supports investigatory tasks not easily executable using the API service alone and, leveraging game and information design, offers these data to a broader audience.
+The Resource Assessment and Conservation Engineering Division of the National Oceanic and Atmospheric Administration's Alaska Fisheries Science Center (NOAA AFSC RACE) runs the [Groundfish Assessment Program](https://www.fisheries.noaa.gov/contact/groundfish-assessment-program) (GAP) which produces longitudinal catch data [@afscgap]. These "hauls" report where marine species are found during bottom trawl surveys and in what quantities, empowering ocean health research and fisheries management [@example]. Increasing accessibility of these important data (RACEBASE) through tools for individuals of diverse programming experience, Pyafscgap.org offers not just easier access to the dataset's REST API through query compilation but provides both memory-efficient algorithms for "zero-catch inference" and interactive visual analytics tools [@inport]. Altogether, this toolset supports investigatory tasks not easily executable using the API service alone and, leveraging game and information design, offers these data to a broader audience.
 
 # Statement of need
 Pyafscgap.org reduces barriers for use of GAP data, offering open source solutions for addressing the dataset's presence-only nature, use of proprietary databases, and size / complexity [@inport].
 
-## Developer needs
-The `afscgap` package offers easier developer access to the official REST service with automated pagination, query language compilation, and documented types. Together, these tools enable Python developers to use familiar patterns to interact with these data like type checking, standard documentation, and other Python data-related libraries while freeing programs from structures specific to closed-source Oracle REST Data Services (ORDS) [@ords].
+## Developer accessibility
+First, working with these data requires knowledge of tools ouside the Python "standard toolchest" like the closed-source Oracle REST Data Services (ORDS) [@ords]. The `afscgap` package offers easier developer access to the official REST service with automated pagination, query language compilation, and documented types. Together, these tools enable Python developers to use familiar patterns to interact with these data like type checking, standard documentation, and other Python data-related libraries.
 
-That being said, access to the API alone cannot support some investigations as the API provides "presence-only" data [@inport]. Many types of analysis (like geohash-aggregated species catch per unit effort) require information not just about where a species was present but also where it was not [@geohash]. In other words, while the presence-only dataset may provide a total weight or count, the total area swept for a region may not necessarily be easily available but required [@notebook]. The `afscgap` Python package can, with memory efficiency, algorithmically infer those needed "zero catch" records.
+## Common analysis
+That being said, access to the API alone cannot support some investigations as the API provides "presence-only" data [@inport]. Many types of analysis (like geohash-aggregated species catch per unit effort) require information not just about where a species was present but also where it was not [@geohash]. In other words, while the presence-only dataset may provide a total weight or count, the total area swept for a region may not necessarily be easily available but required [@notebook]. The `afscgap` Python package can, with memory efficiency, algorithmically infer those needed "zero catch" records for developers.
 
-## General public needs
-Though the `afscgap` Python package makes GAP catch data more accessible to developers, the size and complexity of this dataset requires non-trivial engineering for comparative analysis between species, years, and/or geographic areas [@notebook]. To address a broader audience, this project also offers a no-code visualization tool sitting on top of `afscgap` to begin investigations with CSV and Python code export as a bridge to further analysis.
+## General public accessibility
+Though the `afscgap` Python package makes GAP catch data more accessible to developers, the size and complexity of this dataset requires non-trivial engineering for comparative analysis between species, years, and/or geographic areas [@notebook]. Without deep developer experience, it can be difficult to get started. To address a broader audience, this project also offers a no-code visualization tool sitting on top of `afscgap` to begin investigations with CSV and Python code export as a bridge to further analysis.
 
 # Functions
 This project aims to improve accessibility of GAP catch data, democratizing developer access and offering inclusive approachable tools to kickstart analysis.
@@ -58,7 +59,7 @@ Starting with the `afscgap` library, lazy "generator iterables" increase accessi
 Finally, offering a single function entry-point into the library, this "facade" approach allows the user to interact with these systems without requiring client code to reflect deep understanding of the library's mechanics, a goal furthered by compilation of "standard" Python types to Oracle REST Data Service queries [@facade].
 
 ## Zero catch inference
-"Negative" or "zero catch" uses the following algorithm:
+"Negative" or "zero catch" inference enables scientists to conduct a broader range of analysis. To achieve this, the package uses the following algorithm:
 
  - Paginate while records remain available from the API service.
    - Record species and hauls observed from API-returned results.
@@ -67,21 +68,21 @@ Finally, offering a single function entry-point into the library, this "facade" 
    - For each species observed in API results, check if it had a record for each haul in a hauls flat file [@flatfile].
    - For any hauls without the species, produce an 0 catch record from the iterator.
 
-Note that, this library offers compilation to ORDS queries and Python-emaultion of queries for inferred records.
+Note that, this library offers Python-emaultion of ORDS-compiled fitlers for inferred records.
 
 ## Visualization
-Despite these developer-focused tools, zero catch inference's millions of records requires technical sophistication to navigate. To further increase accessibility, this project offers a tool for starting temporal, spatial, and species comparisons with coordinated highlighting, separated color channels, summary statistics, and side-by-side display [@few].
+Despite these developer-focused tools, zero catch inference's millions of records requires technical sophistication to navigate. To further increase accessibility, this project offers a visualization tool for starting temporal, spatial, and species comparisons with coordinated highlighting, separated color channels, summary statistics, and side-by-side display [@few].
 
 ![Screenshot of the visualization tool.\label{fig:viz}](viz.png)
 
-Building competency in sophisticated interfaces presents user experience challenges and, to that end, this project interprets Hayashida level design via Mark Brown's formalization into an in-tool introduction sequence that directs the player through a "real" analysis [@hayashida; @brown]:
+Of course, building competency in a sophisticated interface like this presents user experience challenges and, to that end, this project interprets Hayashida level design via Mark Brown's formalization into an in-tool introduction sequence that directs the player through a "real" analysis [@hayashida; @brown]:
 
  - **Introduction**: The player sees information about Pacific cod with pre-filled elements used to achieve that analysis gradually fading in.
- - **Development**: The tool invites the player using the mechanics introduced moments prior to change the analysis to compare different regions with temperature data.
+ - **Development**: Using the mechanics introduced moments prior, the tool invites the player to change the analysis to compare different regions with temperature data.
  - **Twist**: Overlays on the same display are enabled, allowing the player to leverage mechanics they just exercised in a now more complex interface.
  - **Conclusion**: The tool ends by giving the player an opportunity to demonstrate all of the skills acquired in a new problem.
 
-Finally, while this interface uses game / information design techniques to offer an accessible on-ramp to quickly learn a sophisticated interface, it serves as a starting point for continued analysis by generating either CSV or Python code to take work into other tools. Examined via Thinking-aloud Method [@thinkaloud].
+Finally, while this interface uses game / information design techniques to offer an accessible on-ramp to quickly learn a sophisticated interface, it also serves as a starting point for continued analysis by generating either CSV or Python code to take work into other tools. Examined via Thinking-aloud Method [@thinkaloud].
 
 ## Limitations
 Current limitations:
