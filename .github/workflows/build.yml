@@ -46,3 +46,11 @@ jobs:
         run: cd afscgapviz; bash load_deps.sh
       - name: Compile with Grunt
         run: grunt
+  buildpaper:
+    runs-on: ubuntu-latest
+    name: Check js
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.3.4
+      - name: Try building paper
+        run: bash inst/preview_paper.sh
