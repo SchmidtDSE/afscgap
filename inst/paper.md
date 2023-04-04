@@ -87,7 +87,7 @@ Finally, while this interface uses game / information design techniques to offer
 Current limitations:
 
  - Single-threaded and non-asynchoronous.
- - Aggregation of hauls happens on a latitude / longitude point due to dataset limitations which may cause some approximation in regional CPUE [@readme].
+ - Visualization aggregation of hauls happens on a point due to dataset limitations which may cause some approximation in regional CPUE [@readme].
 
 # Acknowledgements
 Thanks to the following for feedback / testing on these components:
@@ -95,6 +95,6 @@ Thanks to the following for feedback / testing on these components:
  - Library: Carl Boettiger and Fernando Perez
  - Visualization: Maya Weltman-Fahs, Brookie Guzder-Williams, and Magali de Bruyn.
 
-Project of the The Eric and Wendy Schmidt Center for Data Science and the Environment at University of California Berkeley. Though the README lists full library credits, thanks to runtime dependencies ColorBrewer, D3, Flask, Geolib, Requests, Toolz, and PapaParse [@colorbrewer; @d3; @flask; @geolib; @requests; @toolz; @papa].
+Project of the The Eric and Wendy Schmidt Center for Data Science and the Environment at University of California Berkeley. Though the README lists full library credits, thanks to runtime dependencies ColorBrewer, D3, Flask, Geolib, Requests, Toolz, and Papa Parse [@colorbrewer; @d3; @flask; @geolib; @requests; @toolz; @papa].
 
 # References
