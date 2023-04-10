@@ -9,6 +9,8 @@ LICENSE.md.
 """
 import typing
 
+import requests
+
 
 OPT_FLOAT = typing.Optional[float]
 OPT_INT = typing.Optional[int]
