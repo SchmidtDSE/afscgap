@@ -1,5 +1,5 @@
 """
-Convienence functions and definitions.
+Logic to convert types when interacting with the AFSC GAP REST service.
 
 (c) 2023 Regents of University of California / The Eric and Wendy Schmidt Center
 for Data Science and the Environment at UC Berkeley.
@@ -11,7 +11,7 @@ import re
 
 import requests
 
-from typesdef import STR_PARAM
+from afscgap.typesdef import STR_PARAM
 
 DATE_REGEX = re.compile('(?P<month>\\d{2})\\/(?P<day>\\d{2})\\/' + \
     '(?P<year>\\d{4}) (?P<hours>\\d{2})\\:(?P<minutes>\\d{2})\\:' + \
