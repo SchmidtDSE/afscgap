@@ -14,16 +14,17 @@ import itertools
 import queue
 import typing
 
+import afscgap.convert
 import afscgap.client
 import afscgap.cursor
+import afscgap.http
 import afscgap.model
 import afscgap.query_util
-import afscgap.util
 
-from afscgap.util import OPT_FLOAT
-from afscgap.util import OPT_INT
-from afscgap.util import OPT_REQUESTOR
-from afscgap.util import OPT_STR
+from afscgap.typesdef import OPT_FLOAT
+from afscgap.typesdef import OPT_INT
+from afscgap.typesdef import OPT_REQUESTOR
+from afscgap.typesdef import OPT_STR
 
 DEFAULT_HAULS_URL = 'https://pyafscgap.org/community/hauls.csv'
 SPECIES_DICT = typing.Dict[str, afscgap.model.SpeciesRecord]
@@ -82,7 +83,7 @@ def build_inference_cursor(params: dict, inner_cursor: afscgap.cursor.Cursor,
     params_safe = copy.deepcopy(params)
 
     if 'date_time' in params_safe:
-        params_safe['date_time'] = afscgap.util.convert_from_iso8601(
+        params_safe['date_time'] = afscgap.convert.convert_from_iso8601(
             params_safe['date_time']
         )
 
@@ -160,10 +161,10 @@ def get_hauls_data(params: dict, requestor: OPT_REQUESTOR = None,
     params_checker = build_params_checker(params)
 
     if requestor is None:
-        requestor = afscgap.util.build_requestor()
+        requestor = afscgap.http.build_requestor()
 
     response = requestor(hauls_url)
-    afscgap.util.check_result(response)
+    afscgap.http.check_result(response)
 
     response.encoding = 'utf-8'
     response_io = io.StringIO(response.text, newline='')
@@ -1029,7 +1030,7 @@ def parse_haul(target: dict) -> afscgap.model.Haul:
     station = str(target['Station'])
     vessel_name = str(target['Vessel Name'])
     vessel_id = float(target['Vessel Id'])
-    date_time = str(afscgap.util.convert_to_iso8601(target['Date Time']))
+    date_time = str(afscgap.convert.convert_to_iso8601(target['Date Time']))
     latitude_dd = float(target['Latitude Dd'])
     longitude_dd = float(target['Longitude Dd'])
     bottom_temperature_c = afscgap.model.get_opt_float(

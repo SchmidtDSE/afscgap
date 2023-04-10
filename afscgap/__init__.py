@@ -28,13 +28,13 @@ import afscgap.client
 import afscgap.inference
 import afscgap.model
 
-from afscgap.util import FLOAT_PARAM
-from afscgap.util import INT_PARAM
-from afscgap.util import STR_PARAM
+from afscgap.typesdef import FLOAT_PARAM
+from afscgap.typesdef import INT_PARAM
+from afscgap.typesdef import STR_PARAM
 
-from afscgap.util import OPT_INT
-from afscgap.util import OPT_STR
-from afscgap.util import OPT_REQUESTOR
+from afscgap.typesdef import OPT_INT
+from afscgap.typesdef import OPT_STR
+from afscgap.typesdef import OPT_REQUESTOR
 
 from afscgap.inference import OPT_HAUL_LIST
 

@@ -13,15 +13,16 @@ import json
 import queue
 import typing
 
+import afscgap.convert
 import afscgap.cursor
+import afscgap.http
 import afscgap.model
 import afscgap.query_util
-import afscgap.util
 
-from afscgap.util import OPT_FLOAT
-from afscgap.util import OPT_INT
-from afscgap.util import OPT_REQUESTOR
-from afscgap.util import OPT_STR
+from afscgap.typesdef import OPT_FLOAT
+from afscgap.typesdef import OPT_INT
+from afscgap.typesdef import OPT_REQUESTOR
+from afscgap.typesdef import OPT_STR
 
 DEFAULT_DOMAIN = 'https://apps-st.fisheries.noaa.gov'
 DEFAULT_URL = DEFAULT_DOMAIN + '/ods/foss/afsc_groundfish_survey/'
@@ -53,7 +54,7 @@ def build_api_cursor(params: dict, limit: OPT_INT = None,
         Cursor which iterates over the results from the API service.
     """
     params_safe = copy.deepcopy(params)
-    params_safe['date_time'] = afscgap.util.convert_from_iso8601(
+    params_safe['date_time'] = afscgap.convert.convert_from_iso8601(
         params_safe['date_time']
     )
     params_ords = afscgap.query_util.interpret_query_to_ords(params_safe)
@@ -125,7 +126,7 @@ class ApiServiceCursor(afscgap.cursor.Cursor):
         if requestor:
             self._request_strategy = requestor
         else:
-            self._request_strategy = afscgap.util.build_requestor()
+            self._request_strategy = afscgap.http.build_requestor()
 
         self._next_url = self.get_page_url()
 
@@ -215,7 +216,7 @@ class ApiServiceCursor(afscgap.cursor.Cursor):
         url = self.get_page_url(offset, limit)
 
         result = self._request_strategy(url)
-        afscgap.util.check_result(result)
+        afscgap.http.check_result(result)
 
         result_parsed = result.json()
         items_raw = result_parsed['items']
@@ -292,7 +293,7 @@ class ApiServiceCursor(afscgap.cursor.Cursor):
             return
 
         result = self._request_strategy(self._next_url)
-        afscgap.util.check_result(result)
+        afscgap.http.check_result(result)
 
         result_parsed = result.json()
 
@@ -943,7 +944,7 @@ class ApiRecord(afscgap.model.Record):
 
         has_none = None in optional_fields
         all_fields_present = not has_none
-        has_valid_date_time = afscgap.util.is_iso8601(self._date_time)
+        has_valid_date_time = afscgap.convert.is_iso8601(self._date_time)
 
         return all_fields_present and has_valid_date_time
 
@@ -1017,7 +1018,7 @@ def parse_record(target: dict) -> afscgap.model.Record:
     station = str(target['station'])
     vessel_name = str(target['vessel_name'])
     vessel_id = float(target['vessel_id'])
-    date_time = afscgap.util.convert_to_iso8601(str(target['date_time']))
+    date_time = afscgap.convert.convert_to_iso8601(str(target['date_time']))
     latitude_dd = float(target['latitude_dd'])
     longitude_dd = float(target['longitude_dd'])
     species_code = float(target['species_code'])
