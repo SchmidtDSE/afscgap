@@ -9,8 +9,6 @@ LICENSE.md.
 """
 import re
 
-import requests
-
 from afscgap.typesdef import STR_PARAM
 
 DATE_REGEX = re.compile('(?P<month>\\d{2})\\/(?P<day>\\d{2})\\/' + \
