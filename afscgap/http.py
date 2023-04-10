@@ -9,7 +9,7 @@ LICENSE.md.
 """
 import requests
 
-from typesdef import REQUESTOR
+from afscgap.typesdef import REQUESTOR
 
 TIMEOUT = 60 * 5  # 5 minutes
 
