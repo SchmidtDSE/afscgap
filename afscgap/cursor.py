@@ -13,7 +13,7 @@ import typing
 
 import afscgap.model
 
-from afscgap.util import OPT_INT
+from afscgap.typesdef import OPT_INT
 
 
 class Cursor(typing.Iterable[afscgap.model.Record]):
