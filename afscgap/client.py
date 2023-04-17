@@ -851,7 +851,7 @@ class ApiRecord(afscgap.model.Record):
 
         Returns:
             Catch weight divided by net area (kg / hectares) if available. See
-            metadata. Will be zero if a zero catch record.
+            metadata.
         """
         return afscgap.model.assert_float_present(
             self.get_cpue_weight_maybe(units=units)
@@ -870,7 +870,7 @@ class ApiRecord(afscgap.model.Record):
 
         Returns:
             Catch number divided by net sweep area if available (count /
-            hectares). See metadata. Will be zero if a zero catch record.
+            hectares). See metadata.
         """
         return afscgap.model.assert_float_present(
             self.get_cpue_count_maybe(units=units)
@@ -888,8 +888,7 @@ class ApiRecord(afscgap.model.Record):
             could not be parsed as expected.
 
         Returns:
-            Taxon weight (kg) if available. See metadata. Will be zero if a zero
-            catch record.
+            Taxon weight (kg) if available. See metadata.
         """
         return afscgap.model.assert_float_present(
             self.get_weight_maybe(units=units)
@@ -976,6 +975,9 @@ class ApiRecord(afscgap.model.Record):
 
     def to_dict(self) -> dict:
         """Serialize this Record to a dictionary form.
+
+        Serialize this Record to a dictionary form, including only field names
+        on records returned from the API service.
 
         Returns:
             Dictionary with field names matching those found in the API results
