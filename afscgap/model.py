@@ -175,23 +175,25 @@ class Record(HaulKeyable):
         """
         raise NotImplementedError('Use implementor.')
 
-    def get_latitude(self, units='dd') -> float:
+    def get_latitude(self, units: str = 'dd') -> float:
         """Get the field labeled as latitude_dd in the API.
 
         Args:
             units: The units to return this value in. Only supported is dd for
                 degrees. Deafults to dd.
+        
         Returns:
             Latitude in decimal degrees associated with the haul.
         """
         raise NotImplementedError('Use implementor.')
 
-    def get_longitude(self, units='dd') -> float:
+    def get_longitude(self, units: str = 'dd') -> float:
         """Get the field labeled as longitude_dd in the API.
 
         Args:
             units: The units to return this value in. Only supported is dd for
                 degrees. Deafults to dd.
+        
         Returns:
             Longitude in decimal degrees associated with the haul.
         """
@@ -233,7 +235,7 @@ class Record(HaulKeyable):
         """
         raise NotImplementedError('Use implementor.')
 
-    def get_cpue_weight_maybe(self, units='kg/ha') -> OPT_FLOAT:
+    def get_cpue_weight_maybe(self, units: str = 'kg/ha') -> OPT_FLOAT:
         """Get a field labeled as cpue_* in the API.
 
         Args:
@@ -247,7 +249,7 @@ class Record(HaulKeyable):
         """
         raise NotImplementedError('Use implementor.')
 
-    def get_cpue_count_maybe(self, units='count/ha') -> OPT_FLOAT:
+    def get_cpue_count_maybe(self, units: str = 'count/ha') -> OPT_FLOAT:
         """Get the field labeled as cpue_* in the API.
 
         Get the catch per unit effort from the record with one of the following
@@ -264,7 +266,7 @@ class Record(HaulKeyable):
         """
         raise NotImplementedError('Use implementor.')
 
-    def get_weight_maybe(self, units='kg') -> OPT_FLOAT:
+    def get_weight_maybe(self, units: str = 'kg') -> OPT_FLOAT:
         """Get the field labeled as weight_kg in the API.
 
         Args:
@@ -288,7 +290,7 @@ class Record(HaulKeyable):
         """
         raise NotImplementedError('Use implementor.')
 
-    def get_bottom_temperature_maybe(self, units='c') -> OPT_FLOAT:
+    def get_bottom_temperature_maybe(self, units: str = 'c') -> OPT_FLOAT:
         """Get the field labeled as bottom_temperature_c in the API.
 
         Args:
@@ -303,7 +305,7 @@ class Record(HaulKeyable):
         """
         raise NotImplementedError('Use implementor.')
 
-    def get_surface_temperature_maybe(self, units='c') -> OPT_FLOAT:
+    def get_surface_temperature_maybe(self, units: str = 'c') -> OPT_FLOAT:
         """Get the field labeled as surface_temperature_c in the API.
 
         Args:
@@ -317,7 +319,7 @@ class Record(HaulKeyable):
         """
         raise NotImplementedError('Use implementor.')
 
-    def get_depth(self, units='m') -> float:
+    def get_depth(self, units: str = 'm') -> float:
         """Get the field labeled as depth_m in the API.
 
         Args:
@@ -329,7 +331,7 @@ class Record(HaulKeyable):
         """
         raise NotImplementedError('Use implementor.')
 
-    def get_distance_fished(self, units='km') -> float:
+    def get_distance_fished(self, units: str = 'km') -> float:
         """Get the field labeled as distance_fished_km in the API.
 
         Args:
@@ -341,7 +343,7 @@ class Record(HaulKeyable):
         """
         raise NotImplementedError('Use implementor.')
 
-    def get_net_width(self, units='m') -> float:
+    def get_net_width(self, units: str = 'm') -> float:
         """Get the field labeled as net_width_m in the API.
 
         Args:
@@ -353,7 +355,7 @@ class Record(HaulKeyable):
         """
         raise NotImplementedError('Use implementor.')
 
-    def get_net_height(self, units='m') -> float:
+    def get_net_height(self, units:str = 'm') -> float:
         """Get the field labeled as net_height_m in the API.
 
         Args:
@@ -365,7 +367,7 @@ class Record(HaulKeyable):
         """
         raise NotImplementedError('Use implementor.')
 
-    def get_net_width_maybe(self, units='m') -> OPT_FLOAT:
+    def get_net_width_maybe(self, units: str = 'm') -> OPT_FLOAT:
         """Get the field labeled as net_width_m in the API.
 
         Args:
@@ -377,7 +379,7 @@ class Record(HaulKeyable):
         """
         raise NotImplementedError('Use implementor.')
 
-    def get_net_height_maybe(self, units='m') -> OPT_FLOAT:
+    def get_net_height_maybe(self, units: str = 'm') -> OPT_FLOAT:
         """Get the field labeled as net_height_m in the API.
 
         Args:
@@ -389,7 +391,7 @@ class Record(HaulKeyable):
         """
         raise NotImplementedError('Use implementor.')
 
-    def get_area_swept(self, units='ha') -> float:
+    def get_area_swept(self, units: str = 'ha') -> float:
         """Get the field labeled as area_swept_ha in the API.
 
         Args:
@@ -401,7 +403,7 @@ class Record(HaulKeyable):
         """
         raise NotImplementedError('Use implementor.')
 
-    def get_duration(self, units='hr') -> float:
+    def get_duration(self, units: str = 'hr') -> float:
         """Get the field labeled as duration_hr in the API.
 
         Args:
@@ -446,7 +448,7 @@ class Record(HaulKeyable):
         """
         raise NotImplementedError('Use implementor.')
 
-    def get_cpue_weight(self, units='kg/ha') -> float:
+    def get_cpue_weight(self, units: str = 'kg/ha') -> float:
         """Get the value of field cpue_kgha with validity assert.
 
         Args:
@@ -463,7 +465,7 @@ class Record(HaulKeyable):
         """
         raise NotImplementedError('Use implementor.')
 
-    def get_cpue_count(self, units='count/ha') -> float:
+    def get_cpue_count(self, units: str = 'count/ha') -> float:
         """Get the value of field cpue_noha with validity assert.
 
         Args:
@@ -480,7 +482,7 @@ class Record(HaulKeyable):
         """
         raise NotImplementedError('Use implementor.')
 
-    def get_weight(self, units='kg') -> float:
+    def get_weight(self, units: str = 'kg') -> float:
         """Get the value of field weight_kg with validity assert.
 
         Args:
@@ -557,6 +559,10 @@ class Record(HaulKeyable):
 
     def to_dict(self) -> dict:
         """Serialize this Record to a dictionary form.
+
+        Serialize this Record to a dictionary form, reporting all keys which are
+        returned natively from the API. Note that this does not include virtual
+        fields like temperature in Fahrenheit.
 
         Returns:
             Dictionary with field names matching those found in the API results
