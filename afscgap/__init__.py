@@ -133,6 +133,8 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        Returns:
+            This object for chaining if desired.
         """
         self._year = self._create_float_param(eq, min_val, max_val)
         return self
@@ -158,6 +160,8 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        Returns:
+            This object for chaining if desired.
         """
         self._srvy = self._create_str_param(eq, min_val, max_val)
         return self
@@ -180,6 +184,8 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        Returns:
+            This object for chaining if desired.
         """
         self._survey = self._create_str_param(eq, min_val, max_val)
         return self
@@ -199,6 +205,8 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        Returns:
+            This object for chaining if desired.
         """
         self._survey_id = self._create_float_param(eq, min_val, max_val)
         return self
@@ -221,6 +229,8 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        Returns:
+            This object for chaining if desired.
         """
         self._cruise = self._create_float_param(eq, min_val, max_val)
         return self
@@ -243,6 +253,8 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        Returns:
+            This object for chaining if desired.
         """
         self._haul = self._create_float_param(eq, min_val, max_val)
         return self
@@ -262,6 +274,8 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        Returns:
+            This object for chaining if desired.
         """
         self._stratum = self._create_float_param(eq, min_val, max_val)
         return self
@@ -281,6 +295,8 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        Returns:
+            This object for chaining if desired.
         """
         self._station = self._create_str_param(eq, min_val, max_val)
         return self
@@ -300,6 +316,8 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        Returns:
+            This object for chaining if desired.
         """
         self._vessel_name = self._create_str_param(eq, min_val, max_val)
         return self
@@ -319,6 +337,8 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        Returns:
+            This object for chaining if desired.
         """
         self._vessel_id = self._create_float_param(eq, min_val, max_val)
         return self
@@ -343,6 +363,8 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        Returns:
+            This object for chaining if desired.
         """
         self._date_time = self._create_str_param(eq, min_val, max_val)
         return self
@@ -362,6 +384,8 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        Returns:
+            This object for chaining if desired.
         """
         self._latitude_dd = self._create_float_param(eq, min_val, max_val)
         return self
@@ -381,6 +405,8 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        Returns:
+            This object for chaining if desired.
         """
         self._longitude_dd = self._create_float_param(eq, min_val, max_val)
         return self
@@ -400,6 +426,8 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        Returns:
+            This object for chaining if desired.
         """
         self._species_code = self._create_float_param(eq, min_val, max_val)
         return self
@@ -419,6 +447,8 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        Returns:
+            This object for chaining if desired.
         """
         self._common_name = self._create_str_param(eq, min_val, max_val)
         return self
@@ -438,6 +468,8 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        Returns:
+            This object for chaining if desired.
         """
         self._scientific_name = self._create_str_param(eq, min_val, max_val)
         return self
@@ -457,6 +489,8 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        Returns:
+            This object for chaining if desired.
         """
         self._taxon_confidence = self._create_str_param(eq, min_val, max_val)
         return self
@@ -479,6 +513,8 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        Returns:
+            This object for chaining if desired.
         """
         self._cpue_kgha = self._create_float_param(eq, min_val, max_val)
         return self
@@ -501,6 +537,8 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        Returns:
+            This object for chaining if desired.
         """
         self._cpue_kgkm2 = self._create_float_param(eq, min_val, max_val)
         return self
@@ -523,6 +561,8 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        Returns:
+            This object for chaining if desired.
         """
         self._cpue_kg1000km2 = self._create_float_param(eq, min_val, max_val)
         return self
@@ -545,6 +585,8 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        Returns:
+            This object for chaining if desired.
         """
         self._cpue_noha = self._create_float_param(eq, min_val, max_val)
         return self
@@ -567,6 +609,8 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        Returns:
+            This object for chaining if desired.
         """
         self._cpue_nokm2 = self._create_float_param(eq, min_val, max_val)
         return self
@@ -589,6 +633,8 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        Returns:
+            This object for chaining if desired.
         """
         self._cpue_no1000km2 = self._create_float_param(eq, min_val, max_val)
         return self
@@ -608,6 +654,8 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        Returns:
+            This object for chaining if desired.
         """
         self._weight_kg = self._create_float_param(eq, min_val, max_val)
         return self
@@ -627,6 +675,8 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        Returns:
+            This object for chaining if desired.
         """
         self._count = self._create_float_param(eq, min_val, max_val)
         return self
@@ -649,6 +699,8 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        Returns:
+            This object for chaining if desired.
         """
         self._bottom_temperature_c = self._create_float_param(
             eq,
@@ -675,6 +727,8 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        Returns:
+            This object for chaining if desired.
         """
         self._surface_temperature_c = self._create_float_param(
             eq,
@@ -698,6 +752,8 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        Returns:
+            This object for chaining if desired.
         """
         self._depth_m = self._create_float_param(eq, min_val, max_val)
         return self
@@ -717,6 +773,8 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        Returns:
+            This object for chaining if desired.
         """
         self._distance_fished_km = self._create_float_param(
             eq,
@@ -740,6 +798,8 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        Returns:
+            This object for chaining if desired.
         """
         self._net_width_m = self._create_float_param(eq, min_val, max_val)
         return self
@@ -759,6 +819,8 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        Returns:
+            This object for chaining if desired.
         """
         self._net_height_m = self._create_float_param(eq, min_val, max_val)
         return self
@@ -778,6 +840,8 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        Returns:
+            This object for chaining if desired.
         """
         self._area_swept_ha = self._create_float_param(eq, min_val, max_val)
         return self
@@ -797,6 +861,8 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        Returns:
+            This object for chaining if desired.
         """
         self._duration_hr = self._create_float_param(eq, min_val, max_val)
         return self
@@ -816,6 +882,8 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        Returns:
+            This object for chaining if desired.
         """
         self._tsn = self._create_int_param(eq, min_val, max_val)
         return self
@@ -835,6 +903,8 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        Returns:
+            This object for chaining if desired.
         """
         self._ak_survey_id = self._create_int_param(eq, min_val, max_val)
         return self
@@ -845,6 +915,8 @@ class Query:
         Args:
             limit: The maximum number of results to retrieve per HTTP request.
                 If None or not provided, will use API's default.
+        Returns:
+            This object for chaining if desired.
         """
         self._limit = limit
         return self
@@ -855,6 +927,8 @@ class Query:
         Args:
             start_offset: The number of initial results to skip in retrieving
                 results. If None or not provided, none will be skipped.
+        Returns:
+            This object for chaining if desired.
         """
         self._start_offset = start_offset
         return self
@@ -868,6 +942,8 @@ class Query:
                 from the results, putting them in the invalid records queue. If
                 false, they are included and their is_complete() will return
                 false. Defaults to false.
+        Returns:
+            This object for chaining if desired.
         """
         self._filter_incomplete = filter_incomplete
         return self
@@ -880,6 +956,8 @@ class Query:
                 be inferred. If false, will run abscence data inference. If
                 true, will return presence only data as returned by the NOAA API
                 service. Defaults to true.
+        Returns:
+            This object for chaining if desired.
         """
         self._presence_only = presence_only
         return self
@@ -891,6 +969,8 @@ class Query:
             suppress_large_warning: Indicate if the library should warn when an
                 operation may consume a large amount of memory. If true, the
                 warning will not be emitted. Defaults to true.
+        Returns:
+            This object for chaining if desired.
         """
         self._suppress_large_warning = supress
         return self
@@ -901,6 +981,8 @@ class Query:
         Args:
             warn_function: Function to call with a message describing warnings
                 encountered. If None, will use warnings.warn. Defaults to None.
+        Returns:
+            This object for chaining if desired.
         """
         self._warn_function = warn_function
         return self
@@ -914,6 +996,8 @@ class Query:
                 Otherwise, if None, will instruct the library to download hauls
                 metadata. If not None, will use this as the hauls list for zero
                 catch record inference.
+        Returns:
+            This object for chaining if desired.
         """
         self._hauls_prefetch = hauls_prefetch
         return self
@@ -1006,6 +1090,7 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        
         """
         return self._create_param(eq, min_val, max_val)  # type: ignore
 
@@ -1042,6 +1127,8 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        Returns:
+            Compatible param representation.
         """
         return self._create_param(eq, min_val, max_val)  # type: ignore
 
@@ -1059,6 +1146,8 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        Returns:
+            Compatible param representation.
         """
         eq_given = eq is not None
         min_val_given = min_val is not None

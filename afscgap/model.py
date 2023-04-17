@@ -175,17 +175,23 @@ class Record(HaulKeyable):
         """
         raise NotImplementedError('Use implementor.')
 
-    def get_latitude(self) -> float:
+    def get_latitude(self, units='dd') -> float:
         """Get the field labeled as latitude_dd in the API.
 
+        Args:
+            units: The units to return this value in. Only supported is dd for
+                degrees. Deafults to dd.
         Returns:
             Latitude in decimal degrees associated with the haul.
         """
         raise NotImplementedError('Use implementor.')
 
-    def get_longitude(self) -> float:
+    def get_longitude(self, units='dd') -> float:
         """Get the field labeled as longitude_dd in the API.
 
+        Args:
+            units: The units to return this value in. Only supported is dd for
+                degrees. Deafults to dd.
         Returns:
             Longitude in decimal degrees associated with the haul.
         """
@@ -228,30 +234,45 @@ class Record(HaulKeyable):
         raise NotImplementedError('Use implementor.')
 
     def get_cpue_weight_maybe(self, units='kg/ha') -> OPT_FLOAT:
-        """Get the field labeled as cpue_kgha in the API.
+        """Get a field labeled as cpue_* in the API.
 
+        Args:
+            units: The desired units for the catch per unit effort. Options:
+                kg/ha, kg/km2, kg1000/km2. Defaults to kg/ha.
+        
         Returns:
-            Catch weight divided by net area (kg / hectares) if available. See
+            Catch weight divided by net area (in given units) if available. See
             metadata. None if could not interpret as a float. If an inferred
             zero catch record, will be zero.
         """
         raise NotImplementedError('Use implementor.')
 
     def get_cpue_count_maybe(self, units='count/ha') -> OPT_FLOAT:
-        """Get the field labeled as cpue_kgha in the API.
+        """Get the field labeled as cpue_* in the API.
 
+        Get the catch per unit effort from the record with one of the following
+        units: kg/ha, kg/km2, kg1000/km2.
+
+        Args:
+            units: The desired units for the catch per unit effort. Options:
+                count/ha, count/km2, and count1000/km2. Defaults to count/ha.
+        
         Returns:
-            Catch weight divided by net area (kg / hectares) if available. See
+            Catch weight divided by net area (in given units) if available. See
             metadata. None if could not interpret as a float. If an inferred
             zero catch record, will be zero.
         """
         raise NotImplementedError('Use implementor.')
 
-    def get_weight_kg_maybe(self) -> OPT_FLOAT:
+    def get_weight_maybe(self, units='kg') -> OPT_FLOAT:
         """Get the field labeled as weight_kg in the API.
 
+        Args:
+            units: The units in which the weight should be returned. Options are
+                g, kg for grams and kilograms respectively. Deafults to kg.
+        
         Returns:
-            Taxon weight (kg) if available. See metadata. None if could not
+            Taxon weight if available. See metadata. None if could not
             interpret as a float. If an inferred zero catch record, will be
             zero.
         """
@@ -270,84 +291,125 @@ class Record(HaulKeyable):
     def get_bottom_temperature_maybe(self, units='c') -> OPT_FLOAT:
         """Get the field labeled as bottom_temperature_c in the API.
 
+        Args:
+            units: The units in which the temperature should be returned.
+                Options: c or f for Celcius and Fahrenheit respectively.
+                Defaults to c.
+        
         Returns:
             Bottom temperature associated with observation / inferrence if
-            available in Celsius. None if not given or could not interpret as a
-            float.
+            available in desired units. None if not given or could not interpret
+            as a float.
         """
         raise NotImplementedError('Use implementor.')
 
     def get_surface_temperature_maybe(self, units='c') -> OPT_FLOAT:
         """Get the field labeled as surface_temperature_c in the API.
 
+        Args:
+            units: The units in which the temperature should be returned.
+                Options: c or f for Celcius and Fahrenheit respectively.
+                Defaults to c.
+        
         Returns:
             Surface temperature associated with observation / inferrence if
-            available in Celsius. None if not given or could not interpret as a
-            float.
+            available. None if not given or could not interpret as a float.
         """
         raise NotImplementedError('Use implementor.')
 
     def get_depth(self, units='m') -> float:
         """Get the field labeled as depth_m in the API.
 
+        Args:
+            units: The units in which the distance should be returned. Options:
+                m or km for meters and kilometers respectively. Defaults to m.
+        
         Returns:
-            Depth of the bottom in meters.
+            Depth of the bottom.
         """
         raise NotImplementedError('Use implementor.')
 
     def get_distance_fished(self, units='km') -> float:
         """Get the field labeled as distance_fished_km in the API.
 
+        Args:
+            units: The units in which the distance should be returned. Options:
+                m or km for meters and kilometers respectively. Defaults to km.
+        
         Returns:
-            Distance of the net fished as km.
+            Distance of the net fished.
         """
         raise NotImplementedError('Use implementor.')
 
     def get_net_width(self, units='m') -> float:
         """Get the field labeled as net_width_m in the API.
 
+        Args:
+            units: The units in which the distance should be returned. Options:
+                m or km for meters and kilometers respectively. Defaults to m.
+        
         Returns:
-            Distance of the net fished as m after asserting it is given.
+            Distance of the net fished after asserting it is given.
         """
         raise NotImplementedError('Use implementor.')
 
     def get_net_height(self, units='m') -> float:
         """Get the field labeled as net_height_m in the API.
 
+        Args:
+            units: The units in which the distance should be returned. Options:
+                m or km for meters and kilometers respectively. Defaults to m.
+        
         Returns:
-            Height of the net fished as m after asserting it is given.
+            Height of the net fished after asserting it is given.
         """
         raise NotImplementedError('Use implementor.')
 
     def get_net_width_maybe(self, units='m') -> OPT_FLOAT:
         """Get the field labeled as net_width_m in the API.
 
+        Args:
+            units: The units in which the distance should be returned. Options:
+                m or km for meters and kilometers respectively. Defaults to m.
+        
         Returns:
-            Distance of the net fished as m or None if not given.
+            Distance of the net fished or None if not given.
         """
         raise NotImplementedError('Use implementor.')
 
     def get_net_height_maybe(self, units='m') -> OPT_FLOAT:
         """Get the field labeled as net_height_m in the API.
 
+        Args:
+            units: The units in which the distance should be returned. Options:
+                m or km for meters and kilometers respectively. Defaults to m.
+        
         Returns:
-            Height of the net fished as m or None if not given.
+            Height of the net fished or None if not given.
         """
         raise NotImplementedError('Use implementor.')
 
     def get_area_swept(self, units='ha') -> float:
         """Get the field labeled as area_swept_ha in the API.
 
+        Args:
+            units: The units in which the area should be returned. Options:
+                ha, m2, km2. Defaults to ha.
+        
         Returns:
-            Area covered by the net while fishing in hectares.
+            Area covered by the net while fishing in desired units.
         """
         raise NotImplementedError('Use implementor.')
 
     def get_duration(self, units='hr') -> float:
         """Get the field labeled as duration_hr in the API.
 
+        Args:
+            units: The units in which the duration should be returned. Options:
+                day, hr, min. Defaults to hr.
+        
         Returns:
-            Duration of the haul as number of hours.
+            Duration of the haul.
         """
         raise NotImplementedError('Use implementor.')
 
@@ -387,6 +449,10 @@ class Record(HaulKeyable):
     def get_cpue_weight(self, units='kg/ha') -> float:
         """Get the value of field cpue_kgha with validity assert.
 
+        Args:
+            units: The desired units for the catch per unit effort. Options:
+                kg/ha, kg/km2, kg1000/km2. Defaults to kg/ha.
+
         Raises:
             AssertionError: Raised if this field was not given by the API or
             could not be parsed as expected.
@@ -400,6 +466,10 @@ class Record(HaulKeyable):
     def get_cpue_count(self, units='count/ha') -> float:
         """Get the value of field cpue_noha with validity assert.
 
+        Args:
+            units: The desired units for the catch per unit effort. Options:
+                count/ha, count/km2, and count1000/km2. Defaults to count/ha.
+
         Raises:
             AssertionError: Raised if this field was not given by the API or
             could not be parsed as expected.
@@ -412,6 +482,10 @@ class Record(HaulKeyable):
 
     def get_weight(self, units='kg') -> float:
         """Get the value of field weight_kg with validity assert.
+
+        Args:
+            units: The units in which the weight should be returned. Options are
+                g, kg for grams and kilograms respectively. Deafults to kg.
 
         Raises:
             AssertionError: Raised if this field was not given by the API or
@@ -439,18 +513,28 @@ class Record(HaulKeyable):
     def get_bottom_temperature(self, units='c') -> float:
         """Get the value of field bottom_temperature_c with validity assert.
 
+        Args:
+            units: The units in which the temperature should be returned.
+                Options: c or f for Celcius and Fahrenheit respectively.
+                Defaults to c.
+
         Raises:
             AssertionError: Raised if this field was not given by the API or
             could not be parsed as expected.
 
         Returns:
             Bottom temperature associated with observation / inferrence if
-            available in Celsius.
+            available.
         """
         raise NotImplementedError('Use implementor.')
 
     def get_surface_temperature(self, units='c') -> float:
         """Get the value of field surface_temperature_c with validity assert.
+
+        Args:
+            units: The units in which the temperature should be returned.
+                Options: c or f for Celcius and Fahrenheit respectively.
+                Defaults to c.
 
         Raises:
             AssertionError: Raised if this field was not given by the API or
@@ -458,7 +542,7 @@ class Record(HaulKeyable):
 
         Returns:
             Surface temperature associated with observation / inferrence if
-            available in Celsius. None if not
+            available.
         """
         raise NotImplementedError('Use implementor.')
 
