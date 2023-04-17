@@ -1007,7 +1007,7 @@ class Query:
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
         """
-        return self._create_param(min_val, max_val, eq)  # type: ignore
+        return self._create_param(eq, min_val, max_val)  # type: ignore
 
     def _create_float_param(self, eq: FLOAT_PARAM = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None) -> FLOAT_PARAM:
@@ -1025,7 +1025,7 @@ class Query:
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
         """
-        return self._create_param(min_val, max_val, eq)  # type: ignore
+        return self._create_param(eq, min_val, max_val)  # type: ignore
 
     def _create_int_param(self, eq: INT_PARAM = None, min_val: OPT_INT = None,
         max_val: OPT_INT = None) -> INT_PARAM:
@@ -1043,7 +1043,7 @@ class Query:
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
         """
-        return self._create_param(min_val, max_val, eq)  # type: ignore
+        return self._create_param(eq, min_val, max_val)  # type: ignore
 
     def _create_param(self, eq=None, min_val=None, max_val=None):
         """Create a new parameter.
@@ -1069,5 +1069,7 @@ class Query:
 
         if eq_given:
             return eq
-        else:
+        elif min_val_given or max_val_given:
             return [min_val, max_val]
+        else:
+            return None
