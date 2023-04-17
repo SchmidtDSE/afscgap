@@ -133,6 +133,7 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+
         Returns:
             This object for chaining if desired.
         """
@@ -160,6 +161,7 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        
         Returns:
             This object for chaining if desired.
         """
@@ -184,6 +186,7 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        
         Returns:
             This object for chaining if desired.
         """
@@ -205,6 +208,7 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        
         Returns:
             This object for chaining if desired.
         """
@@ -229,6 +233,7 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        
         Returns:
             This object for chaining if desired.
         """
@@ -253,6 +258,7 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        
         Returns:
             This object for chaining if desired.
         """
@@ -274,6 +280,7 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        
         Returns:
             This object for chaining if desired.
         """
@@ -295,6 +302,7 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        
         Returns:
             This object for chaining if desired.
         """
@@ -316,6 +324,7 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        
         Returns:
             This object for chaining if desired.
         """
@@ -337,6 +346,7 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        
         Returns:
             This object for chaining if desired.
         """
@@ -363,6 +373,7 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        
         Returns:
             This object for chaining if desired.
         """
@@ -384,6 +395,7 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        
         Returns:
             This object for chaining if desired.
         """
@@ -405,6 +417,7 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        
         Returns:
             This object for chaining if desired.
         """
@@ -426,6 +439,7 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        
         Returns:
             This object for chaining if desired.
         """
@@ -447,6 +461,7 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        
         Returns:
             This object for chaining if desired.
         """
@@ -468,6 +483,7 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        
         Returns:
             This object for chaining if desired.
         """
@@ -489,6 +505,7 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        
         Returns:
             This object for chaining if desired.
         """
@@ -513,6 +530,7 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        
         Returns:
             This object for chaining if desired.
         """
@@ -537,6 +555,7 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        
         Returns:
             This object for chaining if desired.
         """
@@ -561,6 +580,7 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        
         Returns:
             This object for chaining if desired.
         """
@@ -585,6 +605,7 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        
         Returns:
             This object for chaining if desired.
         """
@@ -609,6 +630,7 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        
         Returns:
             This object for chaining if desired.
         """
@@ -633,6 +655,7 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        
         Returns:
             This object for chaining if desired.
         """
@@ -654,6 +677,7 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        
         Returns:
             This object for chaining if desired.
         """
@@ -675,6 +699,7 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        
         Returns:
             This object for chaining if desired.
         """
@@ -699,6 +724,7 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        
         Returns:
             This object for chaining if desired.
         """
@@ -727,6 +753,7 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        
         Returns:
             This object for chaining if desired.
         """
@@ -752,6 +779,7 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        
         Returns:
             This object for chaining if desired.
         """
@@ -773,6 +801,7 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        
         Returns:
             This object for chaining if desired.
         """
@@ -798,6 +827,7 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        
         Returns:
             This object for chaining if desired.
         """
@@ -819,6 +849,7 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        
         Returns:
             This object for chaining if desired.
         """
@@ -840,6 +871,7 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        
         Returns:
             This object for chaining if desired.
         """
@@ -861,6 +893,7 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        
         Returns:
             This object for chaining if desired.
         """
@@ -882,6 +915,7 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        
         Returns:
             This object for chaining if desired.
         """
@@ -903,6 +937,7 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        
         Returns:
             This object for chaining if desired.
         """
@@ -915,6 +950,7 @@ class Query:
         Args:
             limit: The maximum number of results to retrieve per HTTP request.
                 If None or not provided, will use API's default.
+        
         Returns:
             This object for chaining if desired.
         """
@@ -927,6 +963,7 @@ class Query:
         Args:
             start_offset: The number of initial results to skip in retrieving
                 results. If None or not provided, none will be skipped.
+        
         Returns:
             This object for chaining if desired.
         """
@@ -942,6 +979,7 @@ class Query:
                 from the results, putting them in the invalid records queue. If
                 false, they are included and their is_complete() will return
                 false. Defaults to false.
+        
         Returns:
             This object for chaining if desired.
         """
@@ -956,6 +994,7 @@ class Query:
                 be inferred. If false, will run abscence data inference. If
                 true, will return presence only data as returned by the NOAA API
                 service. Defaults to true.
+        
         Returns:
             This object for chaining if desired.
         """
@@ -969,6 +1008,7 @@ class Query:
             suppress_large_warning: Indicate if the library should warn when an
                 operation may consume a large amount of memory. If true, the
                 warning will not be emitted. Defaults to true.
+        
         Returns:
             This object for chaining if desired.
         """
@@ -981,6 +1021,7 @@ class Query:
         Args:
             warn_function: Function to call with a message describing warnings
                 encountered. If None, will use warnings.warn. Defaults to None.
+        
         Returns:
             This object for chaining if desired.
         """
@@ -996,6 +1037,7 @@ class Query:
                 Otherwise, if None, will instruct the library to download hauls
                 metadata. If not None, will use this as the hauls list for zero
                 catch record inference.
+        
         Returns:
             This object for chaining if desired.
         """
