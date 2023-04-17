@@ -117,11 +117,11 @@ class Query:
         self._suppress_large_warning: bool = False
         self._warn_function: WARN_FUNCTION = None
         self._hauls_prefetch: OPT_HAUL_LIST = None
-    
+
     def filter_year(self, eq: FLOAT_PARAM = None, min_val: OPT_FLOAT = None,
         max_val: OPT_FLOAT = None) -> 'Query':
         """Filter on year for the survey in which this observation was made.
-        
+
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
@@ -134,9 +134,9 @@ class Query:
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
         """
-        self._year = self._create_float_param(min_val, max_val, eq)
+        self._year = self._create_float_param(eq, min_val, max_val)
         return self
-    
+
     def filter_srvy(self, eq: STR_PARAM = None, min_val: OPT_STR = None,
         max_val: OPT_STR = None) -> 'Query':
         """Filter on haul survey short name.
@@ -146,7 +146,7 @@ class Query:
         that common values include: NBS (N Bearing Sea), EBS (SE Bearing Sea),
         BSS (Bearing Sea Slope), GOA (Gulf of Alaska), and AI (Aleutian
         Islands).
-        
+
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
@@ -159,9 +159,9 @@ class Query:
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
         """
-        self._srvy = self._create_str_param(min_val, max_val, eq)
+        self._srvy = self._create_str_param(eq, min_val, max_val)
         return self
-    
+
     def filter_survey(self, eq: STR_PARAM = None, min_val: OPT_STR = None,
         max_val: OPT_STR = None) -> 'Query':
         """Filter on survey long name.
@@ -181,9 +181,9 @@ class Query:
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
         """
-        self._survey = self._create_str_param(min_val, max_val, eq)
+        self._survey = self._create_str_param(eq, min_val, max_val)
         return self
-    
+
     def filter_survey_id(self, eq: FLOAT_PARAM = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None) -> 'Query':
         """Filter on unique numeric ID for the survey.
@@ -200,9 +200,9 @@ class Query:
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
         """
-        self._survey_id = self._create_float_param(min_val, max_val, eq)
+        self._survey_id = self._create_float_param(eq, min_val, max_val)
         return self
-    
+
     def filter_cruise(self, eq: FLOAT_PARAM = None, min_val: OPT_FLOAT = None,
         max_val: OPT_FLOAT = None) -> 'Query':
         """Filter on cruise ID.
@@ -222,9 +222,9 @@ class Query:
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
         """
-        self._cruise = self._create_float_param(min_val, max_val, eq)
+        self._cruise = self._create_float_param(eq, min_val, max_val)
         return self
-    
+
     def filter_haul(self, eq: FLOAT_PARAM = None, min_val: OPT_FLOAT = None,
         max_val: OPT_FLOAT = None) -> 'Query':
         """Filter on haul identifier.
@@ -244,9 +244,9 @@ class Query:
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
         """
-        self._haul = self._create_float_param(min_val, max_val, eq)
+        self._haul = self._create_float_param(eq, min_val, max_val)
         return self
-    
+
     def filter_stratum(self, eq: FLOAT_PARAM = None, min_val: OPT_FLOAT = None,
         max_val: OPT_FLOAT = None) -> 'Query':
         """Filter on unique ID for statistical area / survey combination.
@@ -263,9 +263,9 @@ class Query:
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
         """
-        self._stratum = self._create_float_param(min_val, max_val, eq)
+        self._stratum = self._create_float_param(eq, min_val, max_val)
         return self
-    
+
     def filter_station(self, eq: STR_PARAM = None, min_val: OPT_STR = None,
         max_val: OPT_STR = None) -> 'Query':
         """Filter on station associated with the survey.
@@ -282,9 +282,9 @@ class Query:
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
         """
-        self._station = self._create_str_param(min_val, max_val, eq)
+        self._station = self._create_str_param(eq, min_val, max_val)
         return self
-    
+
     def filter_vessel_name(self, eq: STR_PARAM = None,
         min_val: OPT_STR = None, max_val: OPT_STR = None) -> 'Query':
         """Filter on unique ID describing the vessel that made this observation.
@@ -301,9 +301,9 @@ class Query:
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
         """
-        self._vessel_name = self._create_str_param(min_val, max_val, eq)
+        self._vessel_name = self._create_str_param(eq, min_val, max_val)
         return self
-    
+
     def filter_vessel_id(self, eq: FLOAT_PARAM = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None) -> 'Query':
         """Filter on name of the vessel at the time the observation was made.
@@ -320,9 +320,9 @@ class Query:
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
         """
-        self._vessel_id = self._create_float_param(min_val, max_val, eq)
+        self._vessel_id = self._create_float_param(eq, min_val, max_val)
         return self
-    
+
     def filter_date_time(self, eq: STR_PARAM = None, min_val: OPT_STR = None,
         max_val: OPT_STR = None) -> 'Query':
         """Filter on the date and time of the haul.
@@ -344,9 +344,9 @@ class Query:
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
         """
-        self._date_time = self._create_str_param(min_val, max_val, eq)
+        self._date_time = self._create_str_param(eq, min_val, max_val)
         return self
-    
+
     def filter_latitude_dd(self, eq: FLOAT_PARAM = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None) -> 'Query':
         """Filter on latitude in decimal degrees associated with the haul.
@@ -363,9 +363,9 @@ class Query:
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
         """
-        self._latitude_dd = self._create_float_param(min_val, max_val, eq)
+        self._latitude_dd = self._create_float_param(eq, min_val, max_val)
         return self
-    
+
     def filter_longitude_dd(self, eq: FLOAT_PARAM = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None) -> 'Query':
         """Filter on longitude in decimal degrees associated with the haul.
@@ -382,9 +382,9 @@ class Query:
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
         """
-        self._longitude_dd = self._create_float_param(min_val, max_val, eq)
+        self._longitude_dd = self._create_float_param(eq, min_val, max_val)
         return self
-    
+
     def filter_species_code(self, eq: FLOAT_PARAM = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None) -> 'Query':
         """Filter on unique ID associated with the species observed.
@@ -401,9 +401,9 @@ class Query:
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
         """
-        self._species_code = self._create_float_param(min_val, max_val, eq)
+        self._species_code = self._create_float_param(eq, min_val, max_val)
         return self
-    
+
     def filter_common_name(self, eq: STR_PARAM = None, min_val: OPT_STR = None,
         max_val: OPT_STR = None) -> 'Query':
         """Filter on the “common name” associated with the species observed.
@@ -420,9 +420,9 @@ class Query:
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
         """
-        self._common_name = self._create_str_param(min_val, max_val, eq)
+        self._common_name = self._create_str_param(eq, min_val, max_val)
         return self
-    
+
     def filter_scientific_name(self, eq: STR_PARAM = None,
         min_val: OPT_STR = None, max_val: OPT_STR = None) -> 'Query':
         """Filter on the "scientific name" associated with the species observed.
@@ -439,9 +439,9 @@ class Query:
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
         """
-        self._scientific_name = self._create_str_param(min_val, max_val, eq)
+        self._scientific_name = self._create_str_param(eq, min_val, max_val)
         return self
-    
+
     def filter_taxon_confidence(self, eq: STR_PARAM = None,
         min_val: OPT_STR = None, max_val: OPT_STR = None) -> 'Query':
         """Filter on confidence flag regarding ability to identify species.
@@ -458,9 +458,9 @@ class Query:
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
         """
-        self._taxon_confidence = self._create_str_param(min_val, max_val, eq)
+        self._taxon_confidence = self._create_str_param(eq, min_val, max_val)
         return self
-    
+
     def filter_cpue_kgha(self, eq: FLOAT_PARAM = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None) -> 'Query':
         """Filter on catch per unit effort as kg/ha.
@@ -480,9 +480,9 @@ class Query:
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
         """
-        self._cpue_kgha = self._create_float_param(min_val, max_val, eq)
+        self._cpue_kgha = self._create_float_param(eq, min_val, max_val)
         return self
-    
+
     def filter_cpue_kgkm2(self, eq: FLOAT_PARAM = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None) -> 'Query':
         """Filter on catch per unit effort as kg/km2.
@@ -502,9 +502,9 @@ class Query:
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
         """
-        self._cpue_kgkm2 = self._create_float_param(min_val, max_val, eq)
+        self._cpue_kgkm2 = self._create_float_param(eq, min_val, max_val)
         return self
-    
+
     def filter_cpue_kg1000km2(self, eq: FLOAT_PARAM = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None) -> 'Query':
         """Filter on catch per unit effort as kg1000/km2*1000.
@@ -524,9 +524,9 @@ class Query:
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
         """
-        self._cpue_kg1000km2 = self._create_float_param(min_val, max_val, eq)
+        self._cpue_kg1000km2 = self._create_float_param(eq, min_val, max_val)
         return self
-    
+
     def filter_cpue_noha(self, eq: FLOAT_PARAM = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None) -> 'Query':
         """Filter catch per unit effort as count over area in hectares.
@@ -546,9 +546,9 @@ class Query:
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
         """
-        self._cpue_noha = self._create_float_param(min_val, max_val, eq)
+        self._cpue_noha = self._create_float_param(eq, min_val, max_val)
         return self
-    
+
     def filter_cpue_nokm2(self, eq: FLOAT_PARAM = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None) -> 'Query':
         """Filter catch per unit effort as count over area in km^2.
@@ -568,9 +568,9 @@ class Query:
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
         """
-        self._cpue_nokm2 = self._create_float_param(min_val, max_val, eq)
+        self._cpue_nokm2 = self._create_float_param(eq, min_val, max_val)
         return self
-    
+
     def filter_cpue_no1000km2(self, eq: FLOAT_PARAM = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None) -> 'Query':
         """Filter catch per unit effort as count over area in km^2 * 1000.
@@ -590,9 +590,9 @@ class Query:
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
         """
-        self._cpue_no1000km2 = self._create_float_param(min_val, max_val, eq)
+        self._cpue_no1000km2 = self._create_float_param(eq, min_val, max_val)
         return self
-    
+
     def filter_weight_kg(self, eq: FLOAT_PARAM = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None) -> 'Query':
         """Filter on taxon weight (kg) if available.
@@ -609,9 +609,9 @@ class Query:
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
         """
-        self._weight_kg = self._create_float_param(min_val, max_val, eq)
+        self._weight_kg = self._create_float_param(eq, min_val, max_val)
         return self
-    
+
     def filter_count(self, eq: FLOAT_PARAM = None, min_val: OPT_FLOAT = None,
         max_val: OPT_FLOAT = None) -> 'Query':
         """Filter on total number of organism individuals in haul.
@@ -628,9 +628,9 @@ class Query:
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
         """
-        self._count = self._create_float_param(min_val, max_val, eq)
+        self._count = self._create_float_param(eq, min_val, max_val)
         return self
-    
+
     def filter_bottom_temperature_c(self, eq: FLOAT_PARAM = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None) -> 'Query':
         """Filter on bottom temperature.
@@ -651,12 +651,12 @@ class Query:
                 thrown if eq also proivded.
         """
         self._bottom_temperature_c = self._create_float_param(
+            eq,
             min_val,
-            max_val,
-            eq
+            max_val
         )
         return self
-    
+
     def filter_surface_temperature_c(self, eq: FLOAT_PARAM = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None) -> 'Query':
         """Filter on surface temperature.
@@ -677,12 +677,12 @@ class Query:
                 thrown if eq also proivded.
         """
         self._surface_temperature_c = self._create_float_param(
+            eq,
             min_val,
-            max_val,
-            eq
+            max_val
         )
         return self
-    
+
     def filter_depth_m(self, eq: FLOAT_PARAM = None, min_val: OPT_FLOAT = None,
         max_val: OPT_FLOAT = None) -> 'Query':
         """Filter on depth of the bottom in meters.
@@ -699,9 +699,9 @@ class Query:
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
         """
-        self._depth_m = self._create_float_param(min_val, max_val, eq)
+        self._depth_m = self._create_float_param(eq, min_val, max_val)
         return self
-    
+
     def filter_distance_fished_km(self, eq: FLOAT_PARAM = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None) -> 'Query':
         """Filter on distance of the net fished as km.
@@ -719,12 +719,12 @@ class Query:
                 thrown if eq also proivded.
         """
         self._distance_fished_km = self._create_float_param(
+            eq,
             min_val,
-            max_val,
-            eq
+            max_val
         )
         return self
-    
+
     def filter_net_width_m(self, eq: FLOAT_PARAM = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None) -> 'Query':
         """Filter on distance of the net fished as m.
@@ -741,9 +741,9 @@ class Query:
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
         """
-        self._net_width_m = self._create_float_param(min_val, max_val, eq)
+        self._net_width_m = self._create_float_param(eq, min_val, max_val)
         return self
-    
+
     def filter_net_height_m(self, eq: FLOAT_PARAM = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None) -> 'Query':
         """Filter on height of the net fished as m.
@@ -760,9 +760,9 @@ class Query:
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
         """
-        self._net_height_m = self._create_float_param(min_val, max_val, eq)
+        self._net_height_m = self._create_float_param(eq, min_val, max_val)
         return self
-    
+
     def filter_area_swept_ha(self, eq: FLOAT_PARAM = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None) -> 'Query':
         """Filter on area covered by the net while fishing in hectares.
@@ -779,9 +779,9 @@ class Query:
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
         """
-        self._area_swept_ha = self._create_float_param(min_val, max_val, eq)
+        self._area_swept_ha = self._create_float_param(eq, min_val, max_val)
         return self
-    
+
     def filter_duration_hr(self, eq: FLOAT_PARAM = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None) -> 'Query':
         """Filter on duration of the haul as number of hours.
@@ -798,9 +798,9 @@ class Query:
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
         """
-        self._duration_hr = self._create_float_param(min_val, max_val, eq)
+        self._duration_hr = self._create_float_param(eq, min_val, max_val)
         return self
-    
+
     def filter_tsn(self, eq: INT_PARAM = None, min_val: OPT_INT = None,
         max_val: OPT_INT = None) -> 'Query':
         """Filter on taxonomic information system species code.
@@ -817,9 +817,9 @@ class Query:
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
         """
-        self._tsn = self._create_int_param(min_val, max_val, eq)
+        self._tsn = self._create_int_param(eq, min_val, max_val)
         return self
-    
+
     def filter_ak_survey_id(self, eq: INT_PARAM = None, min_val: OPT_INT = None,
         max_val: OPT_INT = None) -> 'Query':
         """Filter on AK identifier for the survey.
@@ -836,20 +836,19 @@ class Query:
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
         """
-        self._ak_survey_id = self._create_int_param(min_val, max_val, eq)
+        self._ak_survey_id = self._create_int_param(eq, min_val, max_val)
         return self
 
-    
     def set_limit(self, limit: OPT_INT = None) -> 'Query':
         """Set the max number of results.
-        
+
         Args:
             limit: The maximum number of results to retrieve per HTTP request.
                 If None or not provided, will use API's default.
         """
         self._limit = limit
         return self
-    
+
     def set_start_offset(self, start_offset: OPT_INT = None) -> 'Query':
         """Indicate how many results to skip.
 
@@ -858,7 +857,8 @@ class Query:
                 results. If None or not provided, none will be skipped.
         """
         self._start_offset = start_offset
-    
+        return self
+
     def set_filter_incomplete(self, filter_incomplete: bool = False) -> 'Query':
         """Indicate if incomplete records should be filtered out.
 
@@ -871,7 +871,7 @@ class Query:
         """
         self._filter_incomplete = filter_incomplete
         return self
-    
+
     def set_presence_only(self, presence_only: bool = True) -> 'Query':
         """Indicate if zero catch inference should be enabled.
 
@@ -883,7 +883,7 @@ class Query:
         """
         self._presence_only = presence_only
         return self
-    
+
     def set_suppress_large_warning(self, supress: bool = False) -> 'Query':
         """Indicate if the large results warning should be supressed.
 
@@ -894,7 +894,7 @@ class Query:
         """
         self._suppress_large_warning = supress
         return self
-    
+
     def set_warn_function(self, warn_function: WARN_FUNCTION = None) -> 'Query':
         """Indicate how warnings should be emitted.
 
@@ -904,7 +904,7 @@ class Query:
         """
         self._warn_function = warn_function
         return self
-    
+
     def set_hauls_prefetch(self,
         hauls_prefetch: OPT_HAUL_LIST = None) -> 'Query':
         """Indicate if hauls' data were prefetched.
@@ -973,7 +973,7 @@ class Query:
 
         if self._presence_only:
             return api_cursor
-
+        
         decorated_cursor = afscgap.inference.build_inference_cursor(
             all_dict_raw,
             api_cursor,
@@ -1045,7 +1045,7 @@ class Query:
         """
         return self._create_param(min_val, max_val, eq)  # type: ignore
 
-    def _create_param(self, eq = None, min_val = None, max_val = None):
+    def _create_param(self, eq=None, min_val=None, max_val=None):
         """Create a new parameter.
 
         Args:
@@ -1070,4 +1070,4 @@ class Query:
         if eq_given:
             return eq
         else:
-            return [min_val, max_val] 
+            return [min_val, max_val]

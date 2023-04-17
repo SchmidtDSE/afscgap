@@ -179,11 +179,12 @@ def get_year(survey: str, year: int, geohash_size: int) -> SIMPLIFIED_RECORDS:
     Returns:
         Iterable over SimplifiedRecords generated / downloaded.
     """
-    results = afscgap.query(
-        srvy=survey,
-        year=year,
-        presence_only=False
-    )
+    query = afscgap.Query()
+    query.filter_srvy(eq=survey)
+    query.filter_year(eq=year)
+    query.set_presence_only(False)
+
+    results = query.execute()
 
     simplified_records_maybe = map(
         lambda x: simplify_record(x, geohash_size),

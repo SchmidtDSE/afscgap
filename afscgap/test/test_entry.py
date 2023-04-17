@@ -9,6 +9,7 @@ LICENSE.md.
 """
 import csv
 import unittest
+import unittest.mock
 
 import afscgap.test.test_tools
 
@@ -67,6 +68,7 @@ class EntryPointNoInferenceTests(unittest.TestCase):
         query.filter_longitude_dd(eq={'$gte': -143.96, '$lte': -144.01})
         query.set_filter_incomplete(True)
         result = query.execute()
+        list(result)
         self.assertEquals(result.get_invalid().qsize(), 2)
 
     def test_query_dict_invalid_keep_incomplete(self):
@@ -76,7 +78,27 @@ class EntryPointNoInferenceTests(unittest.TestCase):
         query.filter_longitude_dd(eq={'$gte': -143.96, '$lte': -144.01})
         query.set_filter_incomplete(False)
         result = query.execute()
+        list(result)
         self.assertEquals(result.get_invalid().qsize(), 1)
+
+    def test_create_param_eq(self):
+        query = afscgap.Query(requestor=self._mock_requestor)
+        self.assertEqual(query._create_param(2021), 2021)
+
+    def test_create_param_lt(self):
+        query = afscgap.Query(requestor=self._mock_requestor)
+        self.assertEqual(query._create_param(min_val=2021), [2021, None])
+
+    def test_create_param_gt(self):
+        query = afscgap.Query(requestor=self._mock_requestor)
+        self.assertEqual(query._create_param(max_val=2021), [None, 2021])
+
+    def test_create_param_between(self):
+        query = afscgap.Query(requestor=self._mock_requestor)
+        self.assertEqual(
+            query._create_param(min_val=2020, max_val=2021),
+            [2020, 2021]
+        )
 
 
 class EntryPointInferenceTests(unittest.TestCase):
@@ -110,7 +132,7 @@ class EntryPointInferenceTests(unittest.TestCase):
 
         query = afscgap.Query(requestor=self._mock_requestor)
         query.filter_year(eq=2021)
-        query.set_presence_only(True)
+        query.set_presence_only(False)
         query.set_warn_function(warn_function)
         result = query.execute()
 
@@ -122,7 +144,7 @@ class EntryPointInferenceTests(unittest.TestCase):
 
         query = afscgap.Query(requestor=self._mock_requestor)
         query.filter_year(eq=2021)
-        query.set_presence_only(True)
+        query.set_presence_only(False)
         query.set_warn_function(warn_function)
         result = query.execute()
 
