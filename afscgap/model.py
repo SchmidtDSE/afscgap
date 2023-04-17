@@ -175,7 +175,7 @@ class Record(HaulKeyable):
         """
         raise NotImplementedError('Use implementor.')
 
-    def get_latitude_dd(self) -> float:
+    def get_latitude(self) -> float:
         """Get the field labeled as latitude_dd in the API.
 
         Returns:
@@ -183,7 +183,7 @@ class Record(HaulKeyable):
         """
         raise NotImplementedError('Use implementor.')
 
-    def get_longitude_dd(self) -> float:
+    def get_longitude(self) -> float:
         """Get the field labeled as longitude_dd in the API.
 
         Returns:
@@ -227,7 +227,7 @@ class Record(HaulKeyable):
         """
         raise NotImplementedError('Use implementor.')
 
-    def get_cpue_kgha_maybe(self) -> OPT_FLOAT:
+    def get_cpue_weight_maybe(self, units='kg/ha') -> OPT_FLOAT:
         """Get the field labeled as cpue_kgha in the API.
 
         Returns:
@@ -237,53 +237,13 @@ class Record(HaulKeyable):
         """
         raise NotImplementedError('Use implementor.')
 
-    def get_cpue_kgkm2_maybe(self) -> OPT_FLOAT:
-        """Get the field labeled as cpue_kgkm2 in the API.
+    def get_cpue_count_maybe(self, units='count/ha') -> OPT_FLOAT:
+        """Get the field labeled as cpue_kgha in the API.
 
         Returns:
-            Catch weight divided by net area (kg / km^2) if available. See
+            Catch weight divided by net area (kg / hectares) if available. See
             metadata. None if could not interpret as a float. If an inferred
             zero catch record, will be zero.
-        """
-        raise NotImplementedError('Use implementor.')
-
-    def get_cpue_kg1000km2_maybe(self) -> OPT_FLOAT:
-        """Get the field labeled as cpue_kg1000km2 in the API.
-
-        Returns:
-            Catch weight divided by net area (kg / km^2 * 1000) if available.
-            See metadata. None if could not interpret as a float. If an inferred
-            zero catch record, will be zero.
-        """
-        raise NotImplementedError('Use implementor.')
-
-    def get_cpue_noha_maybe(self) -> OPT_FLOAT:
-        """Get the field labeled as cpue_noha in the API.
-
-        Returns:
-            Catch number divided by net sweep area if available (count /
-            hectares). See metadata. None if could not interpret as a float. If
-            an inferred zero catch record, will be zero.
-        """
-        raise NotImplementedError('Use implementor.')
-
-    def get_cpue_nokm2_maybe(self) -> OPT_FLOAT:
-        """Get the field labeled as cpue_nokm2 in the API.
-
-        Returns:
-            Catch number divided by net sweep area if available (count / km^2).
-            See metadata. None if could not interpret as a float. If an inferred
-            zero catch record, will be zero.
-        """
-        raise NotImplementedError('Use implementor.')
-
-    def get_cpue_no1000km2_maybe(self) -> OPT_FLOAT:
-        """Get the field labeled as cpue_no1000km2 in the API.
-
-        Returns:
-            Catch number divided by net sweep area if available (count / km^2 *
-            1000). See metadata. None if could not interpret as a float. If an
-            inferred zero catch record, will be zero.
         """
         raise NotImplementedError('Use implementor.')
 
@@ -307,7 +267,7 @@ class Record(HaulKeyable):
         """
         raise NotImplementedError('Use implementor.')
 
-    def get_bottom_temperature_c_maybe(self) -> OPT_FLOAT:
+    def get_bottom_temperature_maybe(self, units='c') -> OPT_FLOAT:
         """Get the field labeled as bottom_temperature_c in the API.
 
         Returns:
@@ -317,7 +277,7 @@ class Record(HaulKeyable):
         """
         raise NotImplementedError('Use implementor.')
 
-    def get_surface_temperature_c_maybe(self) -> OPT_FLOAT:
+    def get_surface_temperature_maybe(self, units='c') -> OPT_FLOAT:
         """Get the field labeled as surface_temperature_c in the API.
 
         Returns:
@@ -327,7 +287,7 @@ class Record(HaulKeyable):
         """
         raise NotImplementedError('Use implementor.')
 
-    def get_depth_m(self) -> float:
+    def get_depth(self, units='m') -> float:
         """Get the field labeled as depth_m in the API.
 
         Returns:
@@ -335,7 +295,7 @@ class Record(HaulKeyable):
         """
         raise NotImplementedError('Use implementor.')
 
-    def get_distance_fished_km(self) -> float:
+    def get_distance_fished(self, units='km') -> float:
         """Get the field labeled as distance_fished_km in the API.
 
         Returns:
@@ -343,7 +303,7 @@ class Record(HaulKeyable):
         """
         raise NotImplementedError('Use implementor.')
 
-    def get_net_width_m(self) -> float:
+    def get_net_width(self, units='m') -> float:
         """Get the field labeled as net_width_m in the API.
 
         Returns:
@@ -351,7 +311,7 @@ class Record(HaulKeyable):
         """
         raise NotImplementedError('Use implementor.')
 
-    def get_net_height_m(self) -> float:
+    def get_net_height(self, units='m') -> float:
         """Get the field labeled as net_height_m in the API.
 
         Returns:
@@ -359,7 +319,7 @@ class Record(HaulKeyable):
         """
         raise NotImplementedError('Use implementor.')
 
-    def get_net_width_m_maybe(self) -> OPT_FLOAT:
+    def get_net_width_maybe(self, units='m') -> OPT_FLOAT:
         """Get the field labeled as net_width_m in the API.
 
         Returns:
@@ -367,7 +327,7 @@ class Record(HaulKeyable):
         """
         raise NotImplementedError('Use implementor.')
 
-    def get_net_height_m_maybe(self) -> OPT_FLOAT:
+    def get_net_height_maybe(self, units='m') -> OPT_FLOAT:
         """Get the field labeled as net_height_m in the API.
 
         Returns:
@@ -375,7 +335,7 @@ class Record(HaulKeyable):
         """
         raise NotImplementedError('Use implementor.')
 
-    def get_area_swept_ha(self) -> float:
+    def get_area_swept(self, units='ha') -> float:
         """Get the field labeled as area_swept_ha in the API.
 
         Returns:
@@ -383,7 +343,7 @@ class Record(HaulKeyable):
         """
         raise NotImplementedError('Use implementor.')
 
-    def get_duration_hr(self) -> float:
+    def get_duration(self, units='hr') -> float:
         """Get the field labeled as duration_hr in the API.
 
         Returns:
@@ -424,7 +384,7 @@ class Record(HaulKeyable):
         """
         raise NotImplementedError('Use implementor.')
 
-    def get_cpue_kgha(self) -> float:
+    def get_cpue_weight(self, units='kg/ha') -> float:
         """Get the value of field cpue_kgha with validity assert.
 
         Raises:
@@ -437,33 +397,7 @@ class Record(HaulKeyable):
         """
         raise NotImplementedError('Use implementor.')
 
-    def get_cpue_kgkm2(self) -> float:
-        """Get the value of field cpue_kgkm2 with validity assert.
-
-        Raises:
-            AssertionError: Raised if this field was not given by the API or
-            could not be parsed as expected.
-
-        Returns:
-            Catch weight divided by net area (kg / km^2) if available. See
-            metadata. Will be zero if a zero catch record.
-        """
-        raise NotImplementedError('Use implementor.')
-
-    def get_cpue_kg1000km2(self) -> float:
-        """Get the value of field cpue_kg1000km2 with validity assert.
-
-        Raises:
-            AssertionError: Raised if this field was not given by the API or
-            could not be parsed as expected.
-
-        Returns:
-            Catch weight divided by net area (kg / km^2 * 1000) if available.
-            See metadata. Will be zero if a zero catch record.
-        """
-        raise NotImplementedError('Use implementor.')
-
-    def get_cpue_noha(self) -> float:
+    def get_cpue_count(self, units='count/ha') -> float:
         """Get the value of field cpue_noha with validity assert.
 
         Raises:
@@ -476,33 +410,7 @@ class Record(HaulKeyable):
         """
         raise NotImplementedError('Use implementor.')
 
-    def get_cpue_nokm2(self) -> float:
-        """Get the value of field cpue_nokm2 with validity assert.
-
-        Raises:
-            AssertionError: Raised if this field was not given by the API or
-            could not be parsed as expected.
-
-        Returns:
-            Catch number divided by net sweep area if available (count / km^2).
-            See metadata. Will be zero if a zero catch record.
-        """
-        raise NotImplementedError('Use implementor.')
-
-    def get_cpue_no1000km2(self) -> float:
-        """Get the value of field cpue_no1000km2 with validity assert.
-
-        Raises:
-            AssertionError: Raised if this field was not given by the API or
-            could not be parsed as expected.
-
-        Returns:
-            Catch number divided by net sweep area if available (count / km^2 *
-            1000). See metadata. Will be zero if a zero catch record.
-        """
-        raise NotImplementedError('Use implementor.')
-
-    def get_weight_kg(self) -> float:
+    def get_weight(self, units='kg') -> float:
         """Get the value of field weight_kg with validity assert.
 
         Raises:
@@ -528,7 +436,7 @@ class Record(HaulKeyable):
         """
         raise NotImplementedError('Use implementor.')
 
-    def get_bottom_temperature_c(self) -> float:
+    def get_bottom_temperature(self, units='c') -> float:
         """Get the value of field bottom_temperature_c with validity assert.
 
         Raises:
@@ -541,7 +449,7 @@ class Record(HaulKeyable):
         """
         raise NotImplementedError('Use implementor.')
 
-    def get_surface_temperature_c(self) -> float:
+    def get_surface_temperature(self, units='c') -> float:
         """Get the value of field surface_temperature_c with validity assert.
 
         Raises:
