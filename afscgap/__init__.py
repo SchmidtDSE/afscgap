@@ -973,7 +973,7 @@ class Query:
 
         if self._presence_only:
             return api_cursor
-        
+
         decorated_cursor = afscgap.inference.build_inference_cursor(
             all_dict_raw,
             api_cursor,

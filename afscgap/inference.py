@@ -157,7 +157,7 @@ def get_hauls_data(params: dict, requestor: OPT_REQUESTOR = None,
     """
     if hauls_url is None:
         hauls_url = DEFAULT_HAULS_URL
-    
+
     params_checker = build_params_checker(params)
 
     if requestor is None:
