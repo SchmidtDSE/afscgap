@@ -9,6 +9,7 @@ LICENSE.md.
 """
 import re
 
+from afscgap.typesdef import OPT_FLOAT
 from afscgap.typesdef import STR_PARAM
 
 DATE_REGEX = re.compile('(?P<month>\\d{2})\\/(?P<day>\\d{2})\\/' + \
@@ -19,6 +20,33 @@ ISO_8601_REGEX = re.compile('(?P<year>\\d{4})\\-(?P<month>\\d{2})\\-' + \
     '(?P<day>\\d{2})T(?P<hours>\\d{2})\\:(?P<minutes>\\d{2})\\:' + \
     '(?P<seconds>\\d{2})')
 ISO_8601_TEMPLATE = '%s-%s-%sT%s:%s:%s'
+
+AREA_CONVERTERS = {
+    'ha': lambda x: x,
+    'm2': lambda x: x * 10000,
+    'km2': lambda x: x * 0.01
+}
+
+DISTANCE_CONVERTERS = {
+    'm': lambda x: x,
+    'km': lambda x: x / 1000
+}
+
+TEMPERATURE_CONVERTERS = {
+    'c': lambda x: x,
+    'f': lambda x: x * 9 / 5 + 32
+}
+
+TIME_CONVERTERS = {
+    'day': lambda x: x / 24,
+    'hr': lambda x: x,
+    'min': lambda x: x * 60
+}
+
+WEIGHT_CONVERTERS = {
+    'g': lambda x: x * 1000,
+    'kg': lambda x: x
+}
 
 
 def convert_from_iso8601(target: STR_PARAM) -> STR_PARAM:
@@ -112,3 +140,86 @@ def is_iso8601(target: str) -> bool:
         True if it matches the expected format and false otherwise.
     """
     return ISO_8601_REGEX.match(target) is not None
+
+
+def convert_area(target: OPT_FLOAT, units: str) -> OPT_FLOAT:
+    """Convert an area.
+
+    Args:
+        target: The value to convert in hectares.
+        units: Desired units.
+
+    Returns:
+        The converted value. Note that, if target is None, will return None.
+    """
+    if target is None:
+        return None
+
+    return AREA_CONVERTERS[units](target)
+
+
+def convert_degrees(target: OPT_FLOAT, units: str) -> OPT_FLOAT:
+    """Convert targets from degrees to another units.
+
+    Args:
+        target: The value to convert which may be None.
+        units: Desired units.
+
+    Returns:
+        The same value input after asserting that units are dd, the only
+        supported units.
+    """
+    assert units == 'dd'
+    return target
+
+
+def convert_distance(target: OPT_FLOAT, units: str) -> OPT_FLOAT:
+    """Convert a linear distance.
+
+    Args:
+        target: The value to convert in meters.
+        units: Desired units.
+
+    Returns:
+        The converted value. Note that, if target is None, will return None.
+    """
+    return DISTANCE_CONVERTERS[units](target)
+
+
+def convert_temperature(target: OPT_FLOAT, units: str) -> OPT_FLOAT:
+    """Convert a temperature.
+
+    Args:
+        target: The value to convert in Celcius.
+        units: Desired units.
+
+    Returns:
+        The converted value. Note that, if target is None, will return None.
+    """
+    return TEMPERATURE_CONVERTERS[units](target)
+
+
+def convert_time(target: OPT_FLOAT, units: str) -> OPT_FLOAT:
+    """Convert a time.
+
+    Args:
+        target: The value to convert in hours.
+        units: Desired units.
+
+    Returns:
+        The converted value. Note that, if target is None, will return None.
+    """
+    return TIME_CONVERTERS[units](target)
+
+
+def convert_weight(target: OPT_FLOAT, units: str) -> OPT_FLOAT:
+    """Convert a weight.
+
+    Args:
+        target: The value to convert in kilograms.
+        units: Desired units.
+
+    Returns:
+        The converted value. Note that, if target is None, will return None.
+    """
+    return WEIGHT_CONVERTERS[units](target)
