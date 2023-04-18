@@ -286,7 +286,7 @@ query.filter_scientific_name(eq='Pasiphaea pacifica')
 results = query.execute()
 
 # Sum weight
-weights = map(lambda x: x.get_weight(units='kg'))
+weights = map(lambda x: x.get_weight(units='kg'), results)
 total_weight = sum(weights)
 print(total_weight)
 ```
@@ -304,7 +304,7 @@ query.filter_scientific_name(eq='Pasiphaea pacifica')
 results = query.execute()
 
 # Sum weight
-weights = map(lambda x: x.get_weight(units='kg'))
+weights = map(lambda x: x.get_weight(units='kg'), results)
 total_weight = sum(weights)
 print(total_weight)
 ```
@@ -322,7 +322,7 @@ query.filter_scientific_name(eq='Pasiphaea pacifica')
 results = query.execute()
 
 # Sum weight
-weights = map(lambda x: x.get_weight(units='kg'))
+weights = map(lambda x: x.get_weight(units='kg'), results)
 total_weight = sum(weights)
 print(total_weight)
 ```
@@ -341,7 +341,7 @@ import afscgap
 query = afscgap.Query()
 query.filter_year(eq=2021)
 query.filter_latitude({'$between': [56, 57]})
-query.filter_latitude({'$between': [-161, -160]})
+query.filter_longitude({'$between': [-161, -160]})
 results = query.execute()
 
 # Summarize
@@ -354,7 +354,7 @@ for record in results:
     count_by_common_name[common_name] = count
 
 # Print
-print(count_by_common_name['Pacific cod'])
+print(count_by_common_name['walleye pollock'])
 ```
 
 For more info about the options available, consider the [Oracle docs](https://docs.oracle.com/en/database/oracle/oracle-rest-data-services/19.2/aelig/developing-REST-applications.html#GUID-F0A4D4F9-443B-4EB9-A1D3-1CDE0A8BAFF2) or a helpful unaffiliated [getting started tutorial from Jeff Smith](https://www.thatjeffsmith.com/archive/2019/09/some-query-filtering-examples-in-ords/).
@@ -365,6 +365,8 @@ For more info about the options available, consider the [Oracle docs](https://do
 By default, the library will iterate through all results and handle pagination behind the scenes. However, one can also request an individual page:
 
 ```
+import afscgap 
+
 query = afscgap.Query()
 query.filter_year(eq=2021)
 query.filter_srvy(eq='GOA')
@@ -378,12 +380,15 @@ print(len(results_for_page))  # Will print 32 (results contains 52 records)
 Client code can also change the pagination behavior used when iterating:
 
 ```
+import afscgap
+
 query = afscgap.Query()
 query.filter_year(eq=2021)
 query.filter_srvy(eq='GOA')
 query.filter_scientific_name(eq='Gadus macrocephalus')
 query.set_start_offset(10)
 query.set_limit(200)
+query.set_filter_incomplete(True)
 results = query.execute()
 
 for record in results:
@@ -516,14 +521,14 @@ query.set_presence_only(False)
 results = query.execute()
 
 def simplify_record(full_record):
-    latitude = full_record.get_latitude_dd()
-    longitude = full_record.get_longitude_dd()
+    latitude = full_record.get_latitude(units='dd')
+    longitude = full_record.get_longitude(units='dd')
     geohash = geolib.geohash.encode(latitude, longitude, 5)
     
     return {
         'geohash': geohash,
-        'area': full_record.get_area_swept_ha(),
-        'weight': full_record.get_weight_kg()
+        'area': full_record.get_area_swept(units='ha'),
+        'weight': full_record.get_weight(units='kg')
     }
 
 def combine_record(a, b):
@@ -622,6 +627,8 @@ Metadata fields such as `year` are always required to make a `Record` whereas ot
 `Record` objects also have an `is_complete` method which returns true if both all optional fields on the `Record` are non-None and the `date_time` field on the `Record` is a valid ISO 8601 string. By default, records for which `is_complete` are false are returned when iterating or through `get_page` but this can be overridden by with the `filter_incomplete` keyword argument like so:
 
 ```
+import afscgap
+
 query = afscgap.Query()
 query.filter_year(eq=2021)
 query.filter_srvy(eq='GOA')
@@ -636,6 +643,8 @@ for result in results:
 Results returned by the API for which non-Optional fields could not be parsed (like missing `year`) are considered "invalid" and always excluded during iteration when those raw unreadable records are kept in a `queue.Queue[dict]` that can be accessed via `get_invalid` like so:
 
 ```
+import afscgap
+
 query = afscgap.Query()
 query.set_year(eq=2021)
 query.set_srvy(eq='GOA')
@@ -699,6 +708,8 @@ We invite contributions via [our project Github](https://github.com/SchmidtDSE/a
 While participating in the community, you may need to debug URL generation. Therefore, for investigating issues or evaluating the underlying operations, you can also request a full URL for a query:
 
 ```
+import afscgap
+
 query = afscgap.Query()
 query.filter_year(eq=2021)
 query.filter_latitude(eq={'$between': [56, 57]})
