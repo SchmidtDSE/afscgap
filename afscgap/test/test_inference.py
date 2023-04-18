@@ -89,7 +89,7 @@ class InferenceTests(unittest.TestCase):
             34,
             567
         )
-        self.assertEquals(decorated.get_cpue_kgha_maybe(), 0)
+        self.assertEquals(decorated.get_cpue_weight_maybe(units='kg/ha'), 0)
 
     def test_decorator_infer_given(self):
         data_2021 = filter(lambda x: x.get_year() == 2021, self._all_hauls_data)
@@ -102,7 +102,7 @@ class InferenceTests(unittest.TestCase):
             34,
             567
         )
-        self.assertEquals(decorated.get_cpue_kgha_maybe(), 0)
+        self.assertEquals(decorated.get_cpue_weight_maybe(units='kg/ha'), 0)
 
     def test_decorator_dict(self):
         data_2021 = filter(lambda x: x.get_year() == 2021, self._all_hauls_data)

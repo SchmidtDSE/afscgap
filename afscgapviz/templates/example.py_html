@@ -1,17 +1,16 @@
 import afscgap
 
-results_1 = afscgap.query(
-    survey='{{ survey }}',
-    year={{ year }},
-    {% if species %}scientific_name='{{ species }}'{% else %}common_name='{{ common_name }}'{% endif %},
-    presence_only=False
-)
-
+query_1 = afscgap.Query()
+query_1.filter_srvy(eq='{{ survey }}')
+query_1.filter_year(eq={{ year }})
+{% if species %}query_1.filter_scientific_name(eq='{{ species }}'){% else %}query_1.filter_common_name(eq='{{ common_name }}'){% endif %}
+query_1.set_presence_only(False)
+results_1 = query_1.execute()
 {% if is_comparison %}
-results_2 = afscgap.query(
-    survey='{{ survey }}',
-    year={{ other_year }},
-    {% if other_species %}scientific_name='{{ other_species }}'{% else %}common_name='{{ other_common_name }}'{% endif %},
-    presence_only=False
-)
+query_2 = afscgap.Query()
+query_2.filter_srvy(eq='{{ survey }}')
+query_2.filter_year(eq={{ other_year }})
+{% if other_species %}query_2.filter_scientific_name(eq='{{ other_species }}'){% else %}query_2.filter_common_name(eq='{{ other_common_name }}'){% endif %}
+query_2.set_presence_only(False)
+results_2 = query_2.execute()
 {% endif %}

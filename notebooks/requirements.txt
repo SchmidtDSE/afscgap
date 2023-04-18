@@ -1,4 +1,4 @@
-afscgap ~= 0.0.6
+afscgap ~= 0.0.8
 Cartopy ~= 0.21.1
 geolib ~= 1.0.7
 matplotlib ~= 3.7.0

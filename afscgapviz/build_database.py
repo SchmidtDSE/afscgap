@@ -99,19 +99,21 @@ def simplify_record(target: afscgap.model.Record,
     Returns:
         Record with information needed for the web application.
     """
-    latitude = target.get_latitude_dd()
-    longitude = target.get_longitude_dd()
+    latitude = target.get_latitude(units='dd')
+    longitude = target.get_longitude(units='dd')
     geohash = geolib.geohash.encode(latitude, longitude, geohash_size)
 
-    surface_temperature_c_maybe = target.get_surface_temperature_c_maybe()
+    surface_temperature_c_maybe = target.get_surface_temperature_maybe(
+        units='c'
+    )
     if surface_temperature_c_maybe is None:
         return None
 
-    bottom_temperature_c_maybe = target.get_bottom_temperature_c_maybe()
+    bottom_temperature_c_maybe = target.get_bottom_temperature_maybe(units='c')
     if bottom_temperature_c_maybe is None:
         return None
 
-    weight_kg_maybe = target.get_weight_kg_maybe()
+    weight_kg_maybe = target.get_weight_maybe(units='kg')
     if weight_kg_maybe is None:
         return None
 
@@ -129,7 +131,7 @@ def simplify_record(target: afscgap.model.Record,
         bottom_temperature_c_maybe,
         weight_kg_maybe,
         count_maybe,
-        target.get_area_swept_ha(),
+        target.get_area_swept(units='ha'),
         1
     )
 
@@ -179,11 +181,12 @@ def get_year(survey: str, year: int, geohash_size: int) -> SIMPLIFIED_RECORDS:
     Returns:
         Iterable over SimplifiedRecords generated / downloaded.
     """
-    results = afscgap.query(
-        srvy=survey,
-        year=year,
-        presence_only=False
-    )
+    query = afscgap.Query()
+    query.filter_srvy(eq=survey)
+    query.filter_year(eq=year)
+    query.set_presence_only(False)
+
+    results = query.execute()
 
     simplified_records_maybe = map(
         lambda x: simplify_record(x, geohash_size),

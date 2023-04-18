@@ -555,21 +555,33 @@ class ApiRecord(afscgap.model.Record):
         """
         return self._date_time
 
-    def get_latitude_dd(self) -> float:
+    def get_latitude(self, units: str = 'dd') -> float:
         """Get the field labeled as latitude_dd in the API.
+
+        Args:
+            units: The units to return this value in. Only supported is dd for
+                degrees. Deafults to dd.
 
         Returns:
             Latitude in decimal degrees associated with the haul.
         """
-        return self._latitude_dd
+        return afscgap.model.assert_float_present(
+            afscgap.convert.convert_degrees(self._latitude_dd, units)
+        )
 
-    def get_longitude_dd(self) -> float:
+    def get_longitude(self, units: str = 'dd') -> float:
         """Get the field labeled as longitude_dd in the API.
+
+        Args:
+            units: The units to return this value in. Only supported is dd for
+                degrees. Deafults to dd.
 
         Returns:
             Longitude in decimal degrees associated with the haul.
         """
-        return self._longitude_dd
+        return afscgap.model.assert_float_present(
+            afscgap.convert.convert_degrees(self._longitude_dd, units)
+        )
 
     def get_species_code(self) -> float:
         """Get the field labeled as species_code in the API.
@@ -606,68 +618,58 @@ class ApiRecord(afscgap.model.Record):
         """
         return self._taxon_confidence
 
-    def get_cpue_kgha_maybe(self) -> OPT_FLOAT:
-        """Get the field labeled as cpue_kgha in the API.
+    def get_cpue_weight_maybe(self, units: str = 'kg/ha') -> OPT_FLOAT:
+        """Get a field labeled as cpue_* in the API.
+
+        Args:
+            units: The desired units for the catch per unit effort. Options:
+                kg/ha, kg/km2, kg1000/km2. Defaults to kg/ha.
 
         Returns:
-            Catch weight divided by net area (kg / hectares) if available. See
-            metadata. None if could not interpret as a float.
+            Catch weight divided by net area (in given units) if available. See
+            metadata. None if could not interpret as a float. If an inferred
+            zero catch record, will be zero.
         """
-        return self._cpue_kgha
+        return {
+            'kg/ha': self._cpue_kgha,
+            'kg/km2': self._cpue_kgkm2,
+            'kg1000/km2': self._cpue_kg1000km2
+        }[units]
 
-    def get_cpue_kgkm2_maybe(self) -> OPT_FLOAT:
-        """Get the field labeled as cpue_kgkm2 in the API.
+    def get_cpue_count_maybe(self, units: str = 'kg/ha') -> OPT_FLOAT:
+        """Get the field labeled as cpue_* in the API.
+
+        Get the catch per unit effort from the record with one of the following
+        units: kg/ha, kg/km2, kg1000/km2.
+
+        Args:
+            units: The desired units for the catch per unit effort. Options:
+                count/ha, count/km2, and count1000/km2. Defaults to count/ha.
 
         Returns:
-            Catch weight divided by net area (kg / km^2) if available. See
-            metadata. None if could not interpret as a float.
+            Catch weight divided by net area (in given units) if available. See
+            metadata. None if could not interpret as a float. If an inferred
+            zero catch record, will be zero.
         """
-        return self._cpue_kgkm2
+        return {
+            'count/ha': self._cpue_noha,
+            'count/km2': self._cpue_nokm2,
+            'count1000/km2': self._cpue_no1000km2
+        }[units]
 
-    def get_cpue_kg1000km2_maybe(self) -> OPT_FLOAT:
-        """Get the field labeled as cpue_kg1000km2 in the API.
-
-        Returns:
-            Catch weight divided by net area (kg / km^2 * 1000) if available.
-            See metadata. None if could not interpret as a float.
-        """
-        return self._cpue_kg1000km2
-
-    def get_cpue_noha_maybe(self) -> OPT_FLOAT:
-        """Get the field labeled as cpue_noha in the API.
-
-        Returns:
-            Catch number divided by net sweep area if available (count /
-            hectares). See metadata. None if could not interpret as a float.
-        """
-        return self._cpue_noha
-
-    def get_cpue_nokm2_maybe(self) -> OPT_FLOAT:
-        """Get the field labeled as cpue_nokm2 in the API.
-
-        Returns:
-            Catch number divided by net sweep area if available (count / km^2).
-            See metadata. None if could not interpret as a float.
-        """
-        return self._cpue_nokm2
-
-    def get_cpue_no1000km2_maybe(self) -> OPT_FLOAT:
-        """Get the field labeled as cpue_no1000km2 in the API.
-
-        Returns:
-            Catch number divided by net sweep area if available (count / km^2 *
-            1000). See metadata. None if could not interpret as a float.
-        """
-        return self._cpue_no1000km2
-
-    def get_weight_kg_maybe(self) -> OPT_FLOAT:
+    def get_weight_maybe(self, units: str = 'kg') -> OPT_FLOAT:
         """Get the field labeled as weight_kg in the API.
 
+        Args:
+            units: The units in which the weight should be returned. Options are
+                g, kg for grams and kilograms respectively. Deafults to kg.
+
         Returns:
-            Taxon weight (kg) if available. See metadata. None if could not
-            interpret as a float.
+            Taxon weight if available. See metadata. None if could not
+            interpret as a float. If an inferred zero catch record, will be
+            zero.
         """
-        return self._weight_kg
+        return afscgap.convert.convert_weight(self._weight_kg, units)
 
     def get_count_maybe(self) -> OPT_FLOAT:
         """Get the field labeled as count in the API.
@@ -678,87 +680,157 @@ class ApiRecord(afscgap.model.Record):
         """
         return self._count
 
-    def get_bottom_temperature_c_maybe(self) -> OPT_FLOAT:
+    def get_bottom_temperature_maybe(self, units: str = 'c') -> OPT_FLOAT:
         """Get the field labeled as bottom_temperature_c in the API.
 
-        Returns:
-            Bottom temperature associated with observation if available in
-            Celsius. None if not given or could not interpret as a float.
-        """
-        return self._bottom_temperature_c
+        Args:
+            units: The units in which the temperature should be returned.
+                Options: c or f for Celcius and Fahrenheit respectively.
+                Defaults to c.
 
-    def get_surface_temperature_c_maybe(self) -> OPT_FLOAT:
+        Returns:
+            Bottom temperature associated with observation / inferrence if
+            available in desired units. None if not given or could not interpret
+            as a float.
+        """
+        return afscgap.convert.convert_temperature(
+            self._bottom_temperature_c,
+            units
+        )
+
+    def get_surface_temperature_maybe(self, units: str = 'c') -> OPT_FLOAT:
         """Get the field labeled as surface_temperature_c in the API.
 
-        Returns:
-            Surface temperature associated with observation if available in
-            Celsius. None if not given or could not interpret as a float.
-        """
-        return self._surface_temperature_c
+        Args:
+            units: The units in which the temperature should be returned.
+                Options: c or f for Celcius and Fahrenheit respectively.
+                Defaults to c.
 
-    def get_depth_m(self) -> float:
+        Returns:
+            Surface temperature associated with observation / inferrence if
+            available. None if not given or could not interpret as a float.
+        """
+        return afscgap.convert.convert_temperature(
+            self._surface_temperature_c,
+            units
+        )
+
+    def get_depth(self, units: str = 'm') -> float:
         """Get the field labeled as depth_m in the API.
 
-        Returns:
-            Depth of the bottom in meters.
-        """
-        return self._depth_m
+        Args:
+            units: The units in which the distance should be returned. Options:
+                m or km for meters and kilometers respectively. Defaults to m.
 
-    def get_distance_fished_km(self) -> float:
+        Returns:
+            Depth of the bottom.
+        """
+        return afscgap.model.assert_float_present(
+            afscgap.convert.convert_distance(self._depth_m, units)
+        )
+
+    def get_distance_fished(self, units: str = 'm') -> float:
         """Get the field labeled as distance_fished_km in the API.
 
-        Returns:
-            Distance of the net fished as km.
-        """
-        return self._distance_fished_km
+        Args:
+            units: The units in which the distance should be returned. Options:
+                m or km for meters and kilometers respectively. Defaults to m.
 
-    def get_net_width_m_maybe(self) -> OPT_FLOAT:
+        Returns:
+            Distance of the net fished.
+        """
+        return afscgap.model.assert_float_present(
+            afscgap.convert.convert_distance(
+                self._distance_fished_km * 1000,
+                units
+            )
+        )
+
+    def get_net_width_maybe(self, units: str = 'm') -> OPT_FLOAT:
         """Get the field labeled as net_width_m in the API.
 
-        Returns:
-            Distance of the net fished as m or None if not given.
-        """
-        return self._net_width_m
+        Args:
+            units: The units in which the distance should be returned. Options:
+                m or km for meters and kilometers respectively. Defaults to m.
 
-    def get_net_height_m_maybe(self) -> OPT_FLOAT:
+        Returns:
+            Distance of the net fished or None if not given.
+        """
+        return afscgap.convert.convert_distance(
+            self._net_width_m,
+            units
+        )
+
+    def get_net_height_maybe(self, units: str = 'm') -> OPT_FLOAT:
         """Get the field labeled as net_height_m in the API.
 
-        Returns:
-            Height of the net fished as m or None if not given.
-        """
-        return self._net_height_m
+        Args:
+            units: The units in which the distance should be returned. Options:
+                m or km for meters and kilometers respectively. Defaults to m.
 
-    def get_net_width_m(self) -> float:
+        Returns:
+            Height of the net fished or None if not given.
+        """
+        return afscgap.convert.convert_distance(
+            self._net_height_m,
+            units
+        )
+
+    def get_net_width(self, units: str = 'm') -> float:
         """Get the field labeled as net_width_m in the API.
 
-        Returns:
-            Distance of the net fished as m after asserting it is given.
-        """
-        return afscgap.model.assert_float_present(self._net_width_m)
+        Args:
+            units: The units in which the distance should be returned. Options:
+                m or km for meters and kilometers respectively. Defaults to m.
 
-    def get_net_height_m(self) -> float:
+        Returns:
+            Distance of the net fished after asserting it is given.
+        """
+        return afscgap.model.assert_float_present(
+            self.get_net_width_maybe(units=units)
+        )
+
+    def get_net_height(self, units: str = 'm') -> float:
         """Get the field labeled as net_height_m in the API.
 
-        Returns:
-            Height of the net fished as m after asserting it is given.
-        """
-        return afscgap.model.assert_float_present(self._net_height_m)
+        Args:
+            units: The units in which the distance should be returned. Options:
+                m or km for meters and kilometers respectively. Defaults to m.
 
-    def get_area_swept_ha(self) -> float:
+        Returns:
+            Height of the net fished after asserting it is given.
+        """
+        return afscgap.model.assert_float_present(
+            self.get_net_height_maybe(units=units)
+        )
+
+    def get_area_swept(self, units: str = 'ha') -> float:
         """Get the field labeled as area_swept_ha in the API.
 
-        Returns:
-            Area covered by the net while fishing in hectares.
-        """
-        return self._area_swept_ha
+        Args:
+            units: The units in which the area should be returned. Options:
+                ha, m2, km2. Defaults to ha.
 
-    def get_duration_hr(self) -> float:
+        Returns:
+            Area covered by the net while fishing in desired units.
+        """
+        return afscgap.model.assert_float_present(
+            afscgap.convert.convert_area(self._area_swept_ha, units)
+        )
+
+    def get_duration(self, units: str = 'hr') -> float:
         """Get the field labeled as duration_hr in the API.
 
+        Args:
+            units: The units in which the duration should be returned. Options:
+                day, hr, min. Defaults to hr.
+
         Returns:
-            Duration of the haul as number of hours.
+            Duration of the haul.
         """
-        return self._duration_hr
+        return afscgap.model.assert_float_present(
+            afscgap.convert.convert_time(self._duration_hr, units)
+        )
 
     def get_tsn(self) -> int:
         """Get the field labeled as tsn in the API.
@@ -793,8 +865,12 @@ class ApiRecord(afscgap.model.Record):
         """
         return self._ak_survey_id
 
-    def get_cpue_kgha(self) -> float:
+    def get_cpue_weight(self, units: str = 'kg/ha') -> float:
         """Get the value of field cpue_kgha with validity assert.
+
+        Args:
+            units: The desired units for the catch per unit effort. Options:
+                kg/ha, kg/km2, kg1000/km2. Defaults to kg/ha.
 
         Raises:
             AssertionError: Raised if this field was not given by the API or
@@ -804,36 +880,16 @@ class ApiRecord(afscgap.model.Record):
             Catch weight divided by net area (kg / hectares) if available. See
             metadata.
         """
-        return afscgap.model.assert_float_present(self._cpue_kgha)
+        return afscgap.model.assert_float_present(
+            self.get_cpue_weight_maybe(units=units)
+        )
 
-    def get_cpue_kgkm2(self) -> float:
-        """Get the value of field cpue_kgkm2 with validity assert.
-
-        Raises:
-            AssertionError: Raised if this field was not given by the API or
-            could not be parsed as expected.
-
-        Returns:
-            Catch weight divided by net area (kg / km^2) if available. See
-            metadata.
-        """
-        return afscgap.model.assert_float_present(self._cpue_kgkm2)
-
-    def get_cpue_kg1000km2(self) -> float:
-        """Get the value of field cpue_kg1000km2 with validity assert.
-
-        Raises:
-            AssertionError: Raised if this field was not given by the API or
-            could not be parsed as expected.
-
-        Returns:
-            Catch weight divided by net area (kg / km^2 * 1000) if available.
-            See metadata.
-        """
-        return afscgap.model.assert_float_present(self._cpue_kg1000km2)
-
-    def get_cpue_noha(self) -> float:
+    def get_cpue_count(self, units: str = 'count/ha') -> float:
         """Get the value of field cpue_noha with validity assert.
+
+        Args:
+            units: The desired units for the catch per unit effort. Options:
+                count/ha, count/km2, and count1000/km2. Defaults to count/ha.
 
         Raises:
             AssertionError: Raised if this field was not given by the API or
@@ -843,36 +899,16 @@ class ApiRecord(afscgap.model.Record):
             Catch number divided by net sweep area if available (count /
             hectares). See metadata.
         """
-        return afscgap.model.assert_float_present(self._cpue_noha)
+        return afscgap.model.assert_float_present(
+            self.get_cpue_count_maybe(units=units)
+        )
 
-    def get_cpue_nokm2(self) -> float:
-        """Get the value of field cpue_nokm2 with validity assert.
-
-        Raises:
-            AssertionError: Raised if this field was not given by the API or
-            could not be parsed as expected.
-
-        Returns:
-            Catch number divided by net sweep area if available (count / km^2).
-            See metadata.
-        """
-        return afscgap.model.assert_float_present(self._cpue_nokm2)
-
-    def get_cpue_no1000km2(self) -> float:
-        """Get the value of field cpue_no1000km2 with validity assert.
-
-        Raises:
-            AssertionError: Raised if this field was not given by the API or
-            could not be parsed as expected.
-
-        Returns:
-            Catch number divided by net sweep area if available (count / km^2 *
-            1000). See metadata.
-        """
-        return afscgap.model.assert_float_present(self._cpue_no1000km2)
-
-    def get_weight_kg(self) -> float:
+    def get_weight(self, units: str = 'kg') -> float:
         """Get the value of field weight_kg with validity assert.
+
+        Args:
+            units: The units in which the weight should be returned. Options are
+                g, kg for grams and kilograms respectively. Deafults to kg.
 
         Raises:
             AssertionError: Raised if this field was not given by the API or
@@ -881,7 +917,9 @@ class ApiRecord(afscgap.model.Record):
         Returns:
             Taxon weight (kg) if available. See metadata.
         """
-        return afscgap.model.assert_float_present(self._weight_kg)
+        return afscgap.model.assert_float_present(
+            self.get_weight_maybe(units=units)
+        )
 
     def get_count(self) -> float:
         """Get the value of field count with validity assert.
@@ -895,31 +933,45 @@ class ApiRecord(afscgap.model.Record):
         """
         return afscgap.model.assert_float_present(self._count)
 
-    def get_bottom_temperature_c(self) -> float:
+    def get_bottom_temperature(self, units='c') -> float:
         """Get the value of field bottom_temperature_c with validity assert.
 
+        Args:
+            units: The units in which the temperature should be returned.
+                Options: c or f for Celcius and Fahrenheit respectively.
+                Defaults to c.
+
         Raises:
             AssertionError: Raised if this field was not given by the API or
             could not be parsed as expected.
 
         Returns:
-            Bottom temperature associated with observation if available in
-            Celsius.
+            Bottom temperature associated with observation / inferrence if
+            available.
         """
-        return afscgap.model.assert_float_present(self._bottom_temperature_c)
+        return afscgap.model.assert_float_present(
+            self.get_bottom_temperature_maybe(units=units)
+        )
 
-    def get_surface_temperature_c(self) -> float:
+    def get_surface_temperature(self, units='c') -> float:
         """Get the value of field surface_temperature_c with validity assert.
 
+        Args:
+            units: The units in which the temperature should be returned.
+                Options: c or f for Celcius and Fahrenheit respectively.
+                Defaults to c.
+
         Raises:
             AssertionError: Raised if this field was not given by the API or
             could not be parsed as expected.
 
         Returns:
-            Surface temperature associated with observation if available in
-            Celsius. None if not
+            Surface temperature associated with observation / inferrence if
+            available.
         """
-        return afscgap.model.assert_float_present(self._surface_temperature_c)
+        return afscgap.model.assert_float_present(
+            self.get_surface_temperature_maybe(units=units)
+        )
 
     def is_complete(self) -> bool:
         """Determine if this record has all of its values filled in.
@@ -947,51 +999,6 @@ class ApiRecord(afscgap.model.Record):
         has_valid_date_time = afscgap.convert.is_iso8601(self._date_time)
 
         return all_fields_present and has_valid_date_time
-
-    def to_dict(self) -> dict:
-        """Serialize this Record to a dictionary form.
-
-        Returns:
-            Dictionary with field names matching those found in the API results
-            with incomplete records having some values as None.
-        """
-        return {
-            'year': self._year,
-            'srvy': self._srvy,
-            'survey': self._survey,
-            'survey_id': self._survey_id,
-            'cruise': self._cruise,
-            'haul': self._haul,
-            'stratum': self._stratum,
-            'station': self._station,
-            'vessel_name': self._vessel_name,
-            'vessel_id': self._vessel_id,
-            'date_time': self._date_time,
-            'latitude_dd': self._latitude_dd,
-            'longitude_dd': self._longitude_dd,
-            'species_code': self._species_code,
-            'common_name': self._common_name,
-            'scientific_name': self._scientific_name,
-            'taxon_confidence': self._taxon_confidence,
-            'cpue_kgha': self._cpue_kgha,
-            'cpue_kgkm2': self._cpue_kgkm2,
-            'cpue_kg1000km2': self._cpue_kg1000km2,
-            'cpue_noha': self._cpue_noha,
-            'cpue_nokm2': self._cpue_nokm2,
-            'cpue_no1000km2': self._cpue_no1000km2,
-            'weight_kg': self._weight_kg,
-            'count': self._count,
-            'bottom_temperature_c': self._bottom_temperature_c,
-            'surface_temperature_c': self._surface_temperature_c,
-            'depth_m': self._depth_m,
-            'distance_fished_km': self._distance_fished_km,
-            'net_width_m': self._net_width_m,
-            'net_height_m': self._net_height_m,
-            'area_swept_ha': self._area_swept_ha,
-            'duration_hr': self._duration_hr,
-            'tsn': self._tsn,
-            'ak_survey_id': self._ak_survey_id,
-        }
 
 
 def parse_record(target: dict) -> afscgap.model.Record:

@@ -9,6 +9,7 @@ LICENSE.md.
 """
 import csv
 import unittest
+import unittest.mock
 
 import afscgap.test.test_tools
 
@@ -29,56 +30,75 @@ class EntryPointNoInferenceTests(unittest.TestCase):
         )
 
     def test_query_primitive(self):
-        result = afscgap.query(
-            year=2021,
-            srvy='BSS',
-            requestor=self._mock_requestor
-        )
-        results = list(result)
+        query = afscgap.Query(requestor=self._mock_requestor)
+        query.filter_year(eq=2021)
+        query.filter_srvy(eq='BSS')
+        results = list(query.execute())
         self.assertEquals(len(results), 20)
 
     def test_query_dict(self):
-        result = afscgap.query(
-            year=2021,
-            latitude_dd={'$gte': 56.99, '$lte': 57.04},
-            longitude_dd={'$gte': -143.96, '$lte': -144.01},
-            requestor=self._mock_requestor
-        )
-        results = list(result)
+        query = afscgap.Query(requestor=self._mock_requestor)
+        query.filter_year(eq=2021)
+        query.filter_latitude(eq={'$gte': 56.99, '$lte': 57.04})
+        query.filter_longitude(eq={'$gte': -143.96, '$lte': -144.01})
+        results = list(query.execute())
+        self.assertEquals(len(results), 20)
+
+    def test_query_keywords(self):
+        query = afscgap.Query(requestor=self._mock_requestor)
+        query.filter_year(eq=2021)
+        query.filter_latitude(min_val=56.99, max_val=57.04)
+        query.filter_longitude(min_val=-143.96, max_val=-144.01)
+        results = list(query.execute())
         self.assertEquals(len(results), 20)
 
     def test_query_dict_filter_incomplete(self):
-        result = afscgap.query(
-            year=2021,
-            latitude_dd={'$gte': 56.99, '$lte': 57.04},
-            longitude_dd={'$gte': -143.96, '$lte': -144.01},
-            requestor=self._mock_requestor,
-            filter_incomplete=True
-        )
-        results = list(result)
+        query = afscgap.Query(requestor=self._mock_requestor)
+        query.filter_year(eq=2021)
+        query.filter_latitude(eq={'$gte': 56.99, '$lte': 57.04})
+        query.filter_longitude(eq={'$gte': -143.96, '$lte': -144.01})
+        query.set_filter_incomplete(True)
+        results = list(query.execute())
         self.assertEquals(len(results), 19)
 
     def test_query_dict_invalid_filter_incomplete(self):
-        result = afscgap.query(
-            year=2021,
-            latitude_dd={'$gte': 56.99, '$lte': 57.04},
-            longitude_dd={'$gte': -143.96, '$lte': -144.01},
-            requestor=self._mock_requestor,
-            filter_incomplete=True
-        )
+        query = afscgap.Query(requestor=self._mock_requestor)
+        query.filter_year(eq=2021)
+        query.filter_latitude(eq={'$gte': 56.99, '$lte': 57.04})
+        query.filter_longitude(eq={'$gte': -143.96, '$lte': -144.01})
+        query.set_filter_incomplete(True)
+        result = query.execute()
         list(result)
         self.assertEquals(result.get_invalid().qsize(), 2)
 
     def test_query_dict_invalid_keep_incomplete(self):
-        result = afscgap.query(
-            year=2021,
-            latitude_dd={'$gte': 56.99, '$lte': 57.04},
-            longitude_dd={'$gte': -143.96, '$lte': -144.01},
-            requestor=self._mock_requestor,
-            filter_incomplete=False
-        )
+        query = afscgap.Query(requestor=self._mock_requestor)
+        query.filter_year(eq=2021)
+        query.filter_latitude(eq={'$gte': 56.99, '$lte': 57.04})
+        query.filter_longitude(eq={'$gte': -143.96, '$lte': -144.01})
+        query.set_filter_incomplete(False)
+        result = query.execute()
         list(result)
         self.assertEquals(result.get_invalid().qsize(), 1)
+
+    def test_create_param_eq(self):
+        query = afscgap.Query(requestor=self._mock_requestor)
+        self.assertEqual(query._create_param(2021), 2021)
+
+    def test_create_param_lt(self):
+        query = afscgap.Query(requestor=self._mock_requestor)
+        self.assertEqual(query._create_param(min_val=2021), [2021, None])
+
+    def test_create_param_gt(self):
+        query = afscgap.Query(requestor=self._mock_requestor)
+        self.assertEqual(query._create_param(max_val=2021), [None, 2021])
+
+    def test_create_param_between(self):
+        query = afscgap.Query(requestor=self._mock_requestor)
+        self.assertEqual(
+            query._create_param(min_val=2020, max_val=2021),
+            [2020, 2021]
+        )
 
 
 class EntryPointInferenceTests(unittest.TestCase):
@@ -99,45 +119,47 @@ class EntryPointInferenceTests(unittest.TestCase):
             side_effect=[self._api_result]
         )
 
-        result = afscgap.query(
-            year=2021,
-            requestor=mock_requestor,
-            presence_only=True
-        )
+        query = afscgap.Query(requestor=mock_requestor)
+        query.filter_year(eq=2021)
+        query.set_presence_only(True)
+        result = query.execute()
+
         results = list(result)
         self.assertEquals(len(results), 2)
 
     def test_query_primitive(self):
         warn_function = unittest.mock.MagicMock()
 
-        result = afscgap.query(
-            year=2021,
-            requestor=self._mock_requestor,
-            presence_only=False,
-            warn_function=warn_function
-        )
+        query = afscgap.Query(requestor=self._mock_requestor)
+        query.filter_year(eq=2021)
+        query.set_presence_only(False)
+        query.set_warn_function(warn_function)
+        result = query.execute()
+
         results = list(result)
         self.assertEquals(len(results), 4)
 
     def test_query_primitive_warning(self):
         warn_function = unittest.mock.MagicMock()
-        result = afscgap.query(
-            year=2021,
-            requestor=self._mock_requestor,
-            presence_only=False,
-            warn_function=warn_function
-        )
+
+        query = afscgap.Query(requestor=self._mock_requestor)
+        query.filter_year(eq=2021)
+        query.set_presence_only(False)
+        query.set_warn_function(warn_function)
+        result = query.execute()
+
         warn_function.assert_called()
 
     def test_query_primitive_suppress(self):
         warn_function = unittest.mock.MagicMock()
-        result = afscgap.query(
-            year=2021,
-            requestor=self._mock_requestor,
-            presence_only=False,
-            suppress_large_warning=True,
-            warn_function=warn_function
-        )
+        
+        query = afscgap.Query(requestor=self._mock_requestor)
+        query.filter_year(eq=2021)
+        query.set_presence_only(False)
+        query.set_warn_function(warn_function)
+        query.set_suppress_large_warning(True)
+        result = query.execute()
+
         warn_function.assert_not_called()
 
     def test_prefetch(self):
@@ -147,12 +169,13 @@ class EntryPointInferenceTests(unittest.TestCase):
             hauls = [afscgap.inference.parse_haul(row) for row in rows]
 
         warn_function = unittest.mock.MagicMock()
-        result = afscgap.query(
-            year=2021,
-            requestor=self._mock_requestor,
-            presence_only=False,
-            suppress_large_warning=True,
-            warn_function=warn_function,
-            hauls_prefetch=hauls
-        )
+
+        query = afscgap.Query(requestor=self._mock_requestor)
+        query.filter_year(eq=2021)
+        query.set_presence_only(False)
+        query.set_warn_function(warn_function)
+        query.set_suppress_large_warning(True)
+        query.set_hauls_prefetch(hauls)
+        result = query.execute()
+
         self._mock_requestor.assert_not_called()
