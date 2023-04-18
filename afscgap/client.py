@@ -15,7 +15,7 @@ import typing
 
 import afscgap.convert
 import afscgap.cursor
-import afscgap.http
+import afscgap.http_util
 import afscgap.model
 import afscgap.query_util
 
@@ -126,7 +126,7 @@ class ApiServiceCursor(afscgap.cursor.Cursor):
         if requestor:
             self._request_strategy = requestor
         else:
-            self._request_strategy = afscgap.http.build_requestor()
+            self._request_strategy = afscgap.http_util.build_requestor()
 
         self._next_url = self.get_page_url()
 
@@ -216,7 +216,7 @@ class ApiServiceCursor(afscgap.cursor.Cursor):
         url = self.get_page_url(offset, limit)
 
         result = self._request_strategy(url)
-        afscgap.http.check_result(result)
+        afscgap.http_util.check_result(result)
 
         result_parsed = result.json()
         items_raw = result_parsed['items']
@@ -293,7 +293,7 @@ class ApiServiceCursor(afscgap.cursor.Cursor):
             return
 
         result = self._request_strategy(self._next_url)
-        afscgap.http.check_result(result)
+        afscgap.http_util.check_result(result)
 
         result_parsed = result.json()
 

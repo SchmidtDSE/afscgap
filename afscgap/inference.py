@@ -17,7 +17,7 @@ import typing
 import afscgap.convert
 import afscgap.client
 import afscgap.cursor
-import afscgap.http
+import afscgap.http_util
 import afscgap.model
 import afscgap.query_util
 
@@ -161,10 +161,10 @@ def get_hauls_data(params: dict, requestor: OPT_REQUESTOR = None,
     params_checker = build_params_checker(params)
 
     if requestor is None:
-        requestor = afscgap.http.build_requestor()
+        requestor = afscgap.http_util.build_requestor()
 
     response = requestor(hauls_url)
-    afscgap.http.check_result(response)
+    afscgap.http_util.check_result(response)
 
     response.encoding = 'utf-8'
     response_io = io.StringIO(response.text, newline='')
