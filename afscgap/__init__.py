@@ -122,6 +122,10 @@ class Query:
         max_val: OPT_FLOAT = None) -> 'Query':
         """Filter on year for the survey in which this observation was made.
 
+        Filter on year for the survey in which this observation was made,
+        ovewritting all prior year filters on this Query if one was previously
+        set.
+
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
@@ -148,7 +152,7 @@ class Query:
         made. Pass None if no filter should be applied. Defaults to None. Note
         that common values include: NBS (N Bearing Sea), EBS (SE Bearing Sea),
         BSS (Bearing Sea Slope), GOA (Gulf of Alaska), and AI (Aleutian
-        Islands).
+        Islands). Overwrites all prior srvy filters if set on this Query.
 
         Args:
             eq: The exact value that must be matched for a record to be
@@ -173,7 +177,7 @@ class Query:
         """Filter on survey long name.
 
         Filter on long form description of the survey in which the observation
-        was made.
+        was made. Overwrites all prior survey filters if set on this Query.
 
         Args:
             eq: The exact value that must be matched for a record to be
@@ -196,6 +200,9 @@ class Query:
     def filter_survey_id(self, eq: FLOAT_PARAM = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None) -> 'Query':
         """Filter on unique numeric ID for the survey.
+
+        Filter on unique numeric ID for the survey, overwritting prior survey ID
+        filters if set on this Query.
 
         Args:
             eq: The exact value that must be matched for a record to be
@@ -220,7 +227,7 @@ class Query:
         """Filter on cruise ID.
 
         Filter on an ID uniquely identifying the cruise in which the observation
-        was made.
+        was made. Overwrites all prior cruise filters on this Query.
 
         Args:
             eq: The exact value that must be matched for a record to be
@@ -245,7 +252,7 @@ class Query:
         """Filter on haul identifier.
 
         Filter on an ID uniquely identifying the haul in which this observation
-        was made.
+        was made. Overwrites all prior haul filters on this Query.
 
         Args:
             eq: The exact value that must be matched for a record to be
@@ -269,6 +276,9 @@ class Query:
         max_val: OPT_FLOAT = None) -> 'Query':
         """Filter on unique ID for statistical area / survey combination.
 
+        Filter on unique ID for statistical area / survey combination,
+        overwritting all prior stratum filters on Query.
+
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
@@ -290,6 +300,9 @@ class Query:
     def filter_station(self, eq: STR_PARAM = None, min_val: OPT_STR = None,
         max_val: OPT_STR = None) -> 'Query':
         """Filter on station associated with the survey.
+
+        Filter on station associated with the survey, overwritting all prior
+        station filters on this Query.
 
         Args:
             eq: The exact value that must be matched for a record to be
@@ -313,6 +326,9 @@ class Query:
         min_val: OPT_STR = None, max_val: OPT_STR = None) -> 'Query':
         """Filter on unique ID describing the vessel that made this observation.
 
+        Filter on unique ID describing the vessel that made this observation,
+        overwritting all prior vessel name filters on this Query.
+
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
@@ -334,6 +350,9 @@ class Query:
     def filter_vessel_id(self, eq: FLOAT_PARAM = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None) -> 'Query':
         """Filter on name of the vessel at the time the observation was made.
+
+        Filter on name of the vessel at the time the observation was made,
+        overwritting all prior vessel ID filters on this Query.
 
         Args:
             eq: The exact value that must be matched for a record to be
@@ -361,7 +380,8 @@ class Query:
         an ISO 8601 string, will afscgap.convert from ISO 8601 to the API
         datetime string format. Similarly, if given a dictionary, all values
         matching an ISO 8601 string will be afscgap.converted to the API
-        datetime string format.
+        datetime string format. Overwrites all prior date time filters on
+        this Query.
 
         Args:
             eq: The exact value that must be matched for a record to be
@@ -385,6 +405,9 @@ class Query:
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None,
         units: str = 'dd') -> 'Query':
         """Filter on latitude in decimal degrees associated with the haul.
+
+        Filter on latitude in decimal degrees associated with the haul,
+        overwritting all prior latitude filters on this Query.
 
         Args:
             eq: The exact value that must be matched for a record to be
@@ -416,6 +439,9 @@ class Query:
         units: str = 'dd') -> 'Query':
         """Filter on longitude in decimal degrees associated with the haul.
 
+        Filter on longitude in decimal degrees associated with the haul,
+        overwritting all prior longitude filters on this Query.
+
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
@@ -444,6 +470,9 @@ class Query:
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None) -> 'Query':
         """Filter on unique ID associated with the species observed.
 
+        Filter on unique ID associated with the species observed, overwritting
+        all prior species code filters on this Query.
+
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
@@ -464,7 +493,10 @@ class Query:
 
     def filter_common_name(self, eq: STR_PARAM = None, min_val: OPT_STR = None,
         max_val: OPT_STR = None) -> 'Query':
-        """Filter on the “common name” associated with the species observed.
+        """Filter on the "common name" associated with the species observed.
+
+        Filter on the "common name" associated with the species observed,
+        overwritting all prior common name filters on this Query.
 
         Args:
             eq: The exact value that must be matched for a record to be
@@ -488,6 +520,9 @@ class Query:
         min_val: OPT_STR = None, max_val: OPT_STR = None) -> 'Query':
         """Filter on the "scientific name" associated with the species observed.
 
+        Filter on the "scientific name" associated with the species observed,
+        overwritting all prior scientific name filters on this Query.
+
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
@@ -509,6 +544,9 @@ class Query:
     def filter_taxon_confidence(self, eq: STR_PARAM = None,
         min_val: OPT_STR = None, max_val: OPT_STR = None) -> 'Query':
         """Filter on confidence flag regarding ability to identify species.
+
+        Filter on confidence flag regarding ability to identify species,
+        overwritting all taxon confidence filters on this Query.
 
         Args:
             eq: The exact value that must be matched for a record to be
@@ -534,7 +572,8 @@ class Query:
         """Filter on catch per unit effort.
 
         Filter on catch per unit effort as weight divided by net area if
-        available.
+        available. Overwrites all prior CPUE weight filters applied to this
+        Query.
 
         Args:
             eq: The exact value that must be matched for a record to be
@@ -556,6 +595,10 @@ class Query:
         """
         param = self._create_float_param(eq, min_val, max_val)
 
+        self._cpue_kgha = None
+        self._cpue_kgkm2 = None
+        self._cpue_kg1000km2 = None
+
         if units == 'kg/ha':
             self._cpue_kgha = param
         elif units == 'kg/km2':
@@ -573,7 +616,8 @@ class Query:
         """Filter catch per unit effort as count over area in hectares.
 
         Filter on catch number divided by net sweep area if available (count /
-        hectares).
+        hectares). Overwrites all prior CPUE count filters applied to this
+        Query.
 
         Args:
             eq: The exact value that must be matched for a record to be
@@ -595,6 +639,10 @@ class Query:
         """
         param = self._create_float_param(eq, min_val, max_val)
 
+        self._cpue_noha = None
+        self._cpue_nokm2 = None
+        self._cpue_no1000km2 = None
+
         if units == 'count/ha':
             self._cpue_noha = param
         elif units == 'count/km2':
@@ -610,6 +658,9 @@ class Query:
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None,
         units: str = 'kg') -> 'Query':
         """Filter on taxon weight (kg) if available.
+
+        Filter on taxon weight (kg) if available, overwrites all prior weight
+        filters applied to this Query.
 
         Args:
             eq: The exact value that must be matched for a record to be
@@ -640,6 +691,9 @@ class Query:
         max_val: OPT_FLOAT = None) -> 'Query':
         """Filter on total number of organism individuals in haul.
 
+        Filter on total number of organism individuals in haul, overwrites all
+        prior count filters applied to this Query.
+
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
@@ -665,7 +719,8 @@ class Query:
         """Filter on bottom temperature.
 
         Filter on bottom temperature associated with observation if available in
-        Celsius.
+        the units given. Overwrites all prior bottom temperature filters applied
+        to this Query.
 
         Args:
             eq: The exact value that must be matched for a record to be
@@ -698,7 +753,8 @@ class Query:
         """Filter on surface temperature.
 
         Filter on surface temperature associated with observation if available
-        in Celsius.
+        in the units given. Overwrites all prior bottom temperature filters
+        applied to this Query.
 
         Args:
             eq: The exact value that must be matched for a record to be
@@ -729,6 +785,9 @@ class Query:
         max_val: OPT_FLOAT = None, units: str = 'm') -> 'Query':
         """Filter on depth of the bottom in meters.
 
+        Filter on depth of the bottom in meters, overwrites all prior depth
+        filters applied to this Query.
+
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
@@ -757,7 +816,10 @@ class Query:
     def filter_distance_fished(self, eq: FLOAT_PARAM = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None,
         units: str = 'm') -> 'Query':
-        """Filter on distance of the net fished as km.
+        """Filter on distance of the net fished.
+
+        Filter on distance of the net fished, overwritting prior distance fished
+        filters applied to this Query.
 
         Args:
             eq: The exact value that must be matched for a record to be
@@ -791,7 +853,10 @@ class Query:
     def filter_net_width(self, eq: FLOAT_PARAM = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None,
         units: str = 'm') -> 'Query':
-        """Filter on distance of the net fished as m.
+        """Filter on distance of the net fished.
+
+        Filter on distance of the net fished, overwritting prior net width
+        filters applied to this Query.
 
         Args:
             eq: The exact value that must be matched for a record to be
@@ -820,7 +885,10 @@ class Query:
     def filter_net_height(self, eq: FLOAT_PARAM = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None,
         units: str = 'm') -> 'Query':
-        """Filter on height of the net fished as m.
+        """Filter on height of the net fished.
+
+        Filter on height of the net fished, overwritting prior net height
+        filters applied to this Query.
 
         Args:
             eq: The exact value that must be matched for a record to be
@@ -849,7 +917,10 @@ class Query:
     def filter_area_swept(self, eq: FLOAT_PARAM = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None,
         units: str = 'm') -> 'Query':
-        """Filter on area covered by the net while fishing in hectares.
+        """Filter on area covered by the net while fishing.
+
+        Filter on area covered by the net while fishing, overwritting prior
+        area swept filters applied to this Query.
 
         Args:
             eq: The exact value that must be matched for a record to be
@@ -878,7 +949,10 @@ class Query:
     def filter_duration(self, eq: FLOAT_PARAM = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None,
         units: str = 'hr') -> 'Query':
-        """Filter on duration of the haul as number of hours.
+        """Filter on duration of the haul.
+
+        Filter on duration of the haul, ovewritting all prior duration filters
+        applied to this Query.
 
         Args:
             eq: The exact value that must be matched for a record to be
@@ -908,6 +982,9 @@ class Query:
         max_val: OPT_INT = None) -> 'Query':
         """Filter on taxonomic information system species code.
 
+        Filter on taxonomic information system species code, overwritting all
+        prior TSN filters applied to this Query.
+
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
@@ -930,6 +1007,9 @@ class Query:
         max_val: OPT_INT = None) -> 'Query':
         """Filter on AK identifier for the survey.
 
+        Filter on AK identifier for the survey, overwritting all prior AK ID
+        filters applied to this Query.
+
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
@@ -951,6 +1031,9 @@ class Query:
     def set_limit(self, limit: OPT_INT) -> 'Query':
         """Set the max number of results.
 
+        Set the max number of results, overwritting prior limit settings on this
+        Query.
+
         Args:
             limit: The maximum number of results to retrieve per HTTP request.
                 If None or not provided, will use API's default.
@@ -964,6 +1047,9 @@ class Query:
     def set_start_offset(self, start_offset: OPT_INT) -> 'Query':
         """Indicate how many results to skip.
 
+        Indicate how many results to skip, overwritting prior offset settings on
+        this Query.
+
         Args:
             start_offset: The number of initial results to skip in retrieving
                 results. If None or not provided, none will be skipped.
@@ -976,6 +1062,9 @@ class Query:
 
     def set_filter_incomplete(self, filter_incomplete: bool) -> 'Query':
         """Indicate if incomplete records should be filtered out.
+
+        Indicate if incomplete records should be filtered out, overwritting
+        prior incomplete filter settings on this Query.
 
         Args:
             filter_incomplete: Flag indicating if "incomplete" records should be
@@ -993,6 +1082,9 @@ class Query:
     def set_presence_only(self, presence_only: bool) -> 'Query':
         """Indicate if zero catch inference should be enabled.
 
+        Indicate if zero catch inference should be enabled, overwritting prior
+        abscence / zero catch data settings on this Query. 
+
         Args:
             presence_only: Flag indicating if abscence / zero catch data should
                 be inferred. If false, will run abscence data inference. If
@@ -1008,6 +1100,9 @@ class Query:
     def set_suppress_large_warning(self, supress: bool) -> 'Query':
         """Indicate if the large results warning should be supressed.
 
+        Indicate if the large results warning should be supressed, overwritting
+        prior large results warning supressions settings on this Query.
+
         Args:
             suppress_large_warning: Indicate if the library should warn when an
                 operation may consume a large amount of memory. If true, the
@@ -1022,6 +1117,9 @@ class Query:
     def set_warn_function(self, warn_function: WARN_FUNCTION) -> 'Query':
         """Indicate how warnings should be emitted.
 
+        Indicate how warnings should be emitted, overwritting the prior warning
+        function settings on this Query.
+
         Args:
             warn_function: Function to call with a message describing warnings
                 encountered. If None, will use warnings.warn. Defaults to None.
@@ -1034,6 +1132,9 @@ class Query:
 
     def set_hauls_prefetch(self, hauls_prefetch: OPT_HAUL_LIST) -> 'Query':
         """Indicate if hauls' data were prefetched.
+
+        Indicate if hauls' data were prefetched, overwritting prior prefetch
+        settings on this Query.
 
         Args:
             hauls_prefetch: If using presence_only=True, this is ignored.
@@ -1049,6 +1150,10 @@ class Query:
 
     def execute(self) -> afscgap.cursor.Cursor:
         """Execute the query built up in this object.
+
+        Execute the query built up in this object using its current state. Note
+        that later changes to this builder will not impact prior returned
+        Cursors from execute.
 
         Returns:
             Cursor to manage HTTP requests and query results.
