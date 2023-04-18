@@ -20,7 +20,7 @@ def interpret_query_to_ords(target: dict) -> dict:
         if value is None:
             return None
 
-        if not isinstance(value, tuple):
+        if not (isinstance(value, tuple) or isinstance(value, list)):
             return value
 
         if len(value) != 2:
