@@ -1083,7 +1083,7 @@ class Query:
         """Indicate if zero catch inference should be enabled.
 
         Indicate if zero catch inference should be enabled, overwritting prior
-        abscence / zero catch data settings on this Query. 
+        abscence / zero catch data settings on this Query.
 
         Args:
             presence_only: Flag indicating if abscence / zero catch data should
