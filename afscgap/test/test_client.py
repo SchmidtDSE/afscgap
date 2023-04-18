@@ -140,7 +140,7 @@ class ClientTests(unittest.TestCase):
         self.assertEqual(parsed.get_srvy(), 'GOA')
         self.assertAlmostEquals(parsed.get_vessel_id(), 148)
         self.assertAlmostEquals(
-            parsed.get_cpue_kg1000km2(),
+            parsed.get_cpue_weight(units='kg1000/km2'),
             40.132273,
             places=5
         )
