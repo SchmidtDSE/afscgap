@@ -646,8 +646,8 @@ Results returned by the API for which non-Optional fields could not be parsed (l
 import afscgap
 
 query = afscgap.Query()
-query.set_year(eq=2021)
-query.set_srvy(eq='GOA')
+query.filter_year(eq=2021)
+query.filter_srvy(eq='GOA')
 results = query.execute()
 
 valid = list(results)
