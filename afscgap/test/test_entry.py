@@ -39,24 +39,24 @@ class EntryPointNoInferenceTests(unittest.TestCase):
     def test_query_dict(self):
         query = afscgap.Query(requestor=self._mock_requestor)
         query.filter_year(eq=2021)
-        query.filter_latitude_dd(eq={'$gte': 56.99, '$lte': 57.04})
-        query.filter_longitude_dd(eq={'$gte': -143.96, '$lte': -144.01})
+        query.filter_latitude(eq={'$gte': 56.99, '$lte': 57.04})
+        query.filter_longitude(eq={'$gte': -143.96, '$lte': -144.01})
         results = list(query.execute())
         self.assertEquals(len(results), 20)
 
     def test_query_keywords(self):
         query = afscgap.Query(requestor=self._mock_requestor)
         query.filter_year(eq=2021)
-        query.filter_latitude_dd(min_val=56.99, max_val=57.04)
-        query.filter_longitude_dd(min_val=-143.96, max_val=-144.01)
+        query.filter_latitude(min_val=56.99, max_val=57.04)
+        query.filter_longitude(min_val=-143.96, max_val=-144.01)
         results = list(query.execute())
         self.assertEquals(len(results), 20)
 
     def test_query_dict_filter_incomplete(self):
         query = afscgap.Query(requestor=self._mock_requestor)
         query.filter_year(eq=2021)
-        query.filter_latitude_dd(eq={'$gte': 56.99, '$lte': 57.04})
-        query.filter_longitude_dd(eq={'$gte': -143.96, '$lte': -144.01})
+        query.filter_latitude(eq={'$gte': 56.99, '$lte': 57.04})
+        query.filter_longitude(eq={'$gte': -143.96, '$lte': -144.01})
         query.set_filter_incomplete(True)
         results = list(query.execute())
         self.assertEquals(len(results), 19)
@@ -64,8 +64,8 @@ class EntryPointNoInferenceTests(unittest.TestCase):
     def test_query_dict_invalid_filter_incomplete(self):
         query = afscgap.Query(requestor=self._mock_requestor)
         query.filter_year(eq=2021)
-        query.filter_latitude_dd(eq={'$gte': 56.99, '$lte': 57.04})
-        query.filter_longitude_dd(eq={'$gte': -143.96, '$lte': -144.01})
+        query.filter_latitude(eq={'$gte': 56.99, '$lte': 57.04})
+        query.filter_longitude(eq={'$gte': -143.96, '$lte': -144.01})
         query.set_filter_incomplete(True)
         result = query.execute()
         list(result)
@@ -74,8 +74,8 @@ class EntryPointNoInferenceTests(unittest.TestCase):
     def test_query_dict_invalid_keep_incomplete(self):
         query = afscgap.Query(requestor=self._mock_requestor)
         query.filter_year(eq=2021)
-        query.filter_latitude_dd(eq={'$gte': 56.99, '$lte': 57.04})
-        query.filter_longitude_dd(eq={'$gte': -143.96, '$lte': -144.01})
+        query.filter_latitude(eq={'$gte': 56.99, '$lte': 57.04})
+        query.filter_longitude(eq={'$gte': -143.96, '$lte': -144.01})
         query.set_filter_incomplete(False)
         result = query.execute()
         list(result)

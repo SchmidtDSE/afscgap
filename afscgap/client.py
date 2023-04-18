@@ -634,7 +634,7 @@ class ApiRecord(afscgap.model.Record):
             'kg/ha': self._cpue_kgha,
             'kg/km2': self._cpue_kgkm2,
             'kg1000/km2': self._cpue_kg1000km2
-        }[units.lower()]
+        }[units]
 
     def get_cpue_count_maybe(self, units: str = 'kg/ha') -> OPT_FLOAT:
         """Get the field labeled as cpue_* in the API.
@@ -657,7 +657,7 @@ class ApiRecord(afscgap.model.Record):
             'count1000/km2': self._cpue_no1000km2
         }[units]
 
-    def get_weight_maybe(self, units='kg') -> OPT_FLOAT:
+    def get_weight_maybe(self, units: str = 'kg') -> OPT_FLOAT:
         """Get the field labeled as weight_kg in the API.
 
         Args:

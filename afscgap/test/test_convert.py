@@ -56,3 +56,75 @@ class ConvertTests(unittest.TestCase):
 
     def test_is_iso8601_fail(self):
         self.assertFalse(afscgap.convert.is_iso8601('07/16/2021 11:30:22'))
+
+    def test_convert_area(self):
+        self.assertAlmostEquals(
+            afscgap.convert.convert_area(123, 'm2'),
+            1230000
+        )
+
+    def test_unconvert_area(self):
+        self.assertAlmostEquals(
+            afscgap.convert.unconvert_area(1.23, 'km2'),
+            123
+        )
+
+    def test_convert_degrees(self):
+        self.assertAlmostEquals(
+            afscgap.convert.convert_degrees(123, 'dd'),
+            123
+        )
+
+    def test_unconvert_degrees(self):
+        self.assertAlmostEquals(
+            afscgap.convert.unconvert_degrees(123, 'dd'),
+            123
+        )
+
+    def test_convert_distance(self):
+        self.assertAlmostEquals(
+            afscgap.convert.convert_distance(123, 'km'),
+            0.123
+        )
+
+    def test_unconvert_distance(self):
+        self.assertAlmostEquals(
+            afscgap.convert.unconvert_distance(123, 'km'),
+            123000
+        )
+
+    def test_convert_temperature(self):
+        self.assertAlmostEquals(
+            afscgap.convert.convert_temperature(12, 'f'),
+            53.6
+        )
+
+    def test_unconvert_temperature(self):
+        self.assertAlmostEquals(
+            afscgap.convert.unconvert_temperature(12, 'f'),
+            -11.111111111
+        )
+
+    def test_convert_time(self):
+        self.assertAlmostEquals(
+            afscgap.convert.convert_time(123, 'day'),
+            5.125
+        )
+
+    def test_unconvert_time(self):
+        self.assertAlmostEquals(
+            afscgap.convert.unconvert_time(123, 'min'),
+            2.05
+        )
+
+    def test_convert_weight(self):
+        self.assertAlmostEquals(
+            afscgap.convert.convert_weight(12, 'g'),
+            12000
+        )
+
+    def test_unconvert_weight(self):
+        self.assertAlmostEquals(
+            afscgap.convert.unconvert_weight(12, 'g'),
+            0.012
+        )

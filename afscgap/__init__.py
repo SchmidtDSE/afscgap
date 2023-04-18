@@ -358,9 +358,10 @@ class Query:
         """Filter on the date and time of the haul.
 
         Filter on the date and time of the haul as an ISO 8601 string. If given
-        an ISO 8601 string, will convert from ISO 8601 to the API datetime
-        string format. Similarly, if given a dictionary, all values matching an
-        ISO 8601 string will be converted to the API datetime string format.
+        an ISO 8601 string, will afscgap.convert from ISO 8601 to the API
+        datetime string format. Similarly, if given a dictionary, all values
+        matching an ISO 8601 string will be afscgap.converted to the API
+        datetime string format.
 
         Args:
             eq: The exact value that must be matched for a record to be
@@ -380,8 +381,9 @@ class Query:
         self._date_time = self._create_str_param(eq, min_val, max_val)
         return self
 
-    def filter_latitude_dd(self, eq: FLOAT_PARAM = None,
-        min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None) -> 'Query':
+    def filter_latitude(self, eq: FLOAT_PARAM = None,
+        min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None,
+        units: str = 'dd') -> 'Query':
         """Filter on latitude in decimal degrees associated with the haul.
 
         Args:
@@ -395,15 +397,23 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+            units: The units in which the filter values are provided. Currently
+                only dd supported. Ignored if given eq value containing ORDS
+                query.
 
         Returns:
             This object for chaining if desired.
         """
-        self._latitude_dd = self._create_float_param(eq, min_val, max_val)
+        self._latitude_dd = self._create_float_param(
+            afscgap.convert.unconvert_degrees(eq, units),
+            afscgap.convert.unconvert_degrees(min_val, units),
+            afscgap.convert.unconvert_degrees(max_val, units)
+        )
         return self
 
-    def filter_longitude_dd(self, eq: FLOAT_PARAM = None,
-        min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None) -> 'Query':
+    def filter_longitude(self, eq: FLOAT_PARAM = None,
+        min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None,
+        units: str = 'dd') -> 'Query':
         """Filter on longitude in decimal degrees associated with the haul.
 
         Args:
@@ -417,11 +427,17 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+            units: The units in which the filter values are provided. Currently
+                only dd supported.
 
         Returns:
             This object for chaining if desired.
         """
-        self._longitude_dd = self._create_float_param(eq, min_val, max_val)
+        self._longitude_dd = self._create_float_param(
+            afscgap.convert.unconvert_degrees(eq, units),
+            afscgap.convert.unconvert_degrees(min_val, units),
+            afscgap.convert.unconvert_degrees(max_val, units)
+        )
         return self
 
     def filter_species_code(self, eq: FLOAT_PARAM = None,
@@ -512,61 +528,12 @@ class Query:
         self._taxon_confidence = self._create_str_param(eq, min_val, max_val)
         return self
 
-    def filter_cpue_kgha(self, eq: FLOAT_PARAM = None,
-        min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None) -> 'Query':
-        """Filter on catch per unit effort as kg/ha.
+    def filter_cpue_weight(self, eq: FLOAT_PARAM = None,
+        min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None,
+        units: str = 'kg/ha') -> 'Query':
+        """Filter on catch per unit effort.
 
-        Filter on catch per unit effort as weight divided by net area (kg /
-        hectares) if available.
-
-        Args:
-            eq: The exact value that must be matched for a record to be
-                returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
-            min_val: The minimum allowed value, inclusive. Pass None if no
-                minimum value filter should be applied. Defaults to None. Error
-                thrown if eq also proivded.
-            max_val: The maximum allowed value, inclusive. Pass None if no
-                maximum value filter should be applied. Defaults to None. Error
-                thrown if eq also proivded.
-
-        Returns:
-            This object for chaining if desired.
-        """
-        self._cpue_kgha = self._create_float_param(eq, min_val, max_val)
-        return self
-
-    def filter_cpue_kgkm2(self, eq: FLOAT_PARAM = None,
-        min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None) -> 'Query':
-        """Filter on catch per unit effort as kg/km2.
-
-        Filter on catch per unit effort as weight divided by net area (kg /
-        km^2) if available.
-
-        Args:
-            eq: The exact value that must be matched for a record to be
-                returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
-            min_val: The minimum allowed value, inclusive. Pass None if no
-                minimum value filter should be applied. Defaults to None. Error
-                thrown if eq also proivded.
-            max_val: The maximum allowed value, inclusive. Pass None if no
-                maximum value filter should be applied. Defaults to None. Error
-                thrown if eq also proivded.
-
-        Returns:
-            This object for chaining if desired.
-        """
-        self._cpue_kgkm2 = self._create_float_param(eq, min_val, max_val)
-        return self
-
-    def filter_cpue_kg1000km2(self, eq: FLOAT_PARAM = None,
-        min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None) -> 'Query':
-        """Filter on catch per unit effort as kg1000/km2*1000.
-
-        Filter on catch weight divided by net area (kg / km^2 * 1000) if
+        Filter on catch per unit effort as weight divided by net area if
         available.
 
         Args:
@@ -580,15 +547,29 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+            units: The units for the catch per unit effort provided. Options:
+                kg/ha, kg/km2, kg1000/km2. Defaults to kg/ha. Ignored if given
+                eq value containing ORDS query.
 
         Returns:
             This object for chaining if desired.
         """
-        self._cpue_kg1000km2 = self._create_float_param(eq, min_val, max_val)
+        param = self._create_float_param(eq, min_val, max_val)
+
+        if units == 'kg/ha':
+            self._cpue_kgha = param
+        elif units == 'kg/km2':
+            self._cpue_kgkm2 = param
+        elif units == 'kg1000/km2':
+            self._cpue_kg1000km2 = param
+        else:
+            raise RuntimeError('Unrecognized units ' + units)
+
         return self
 
-    def filter_cpue_noha(self, eq: FLOAT_PARAM = None,
-        min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None) -> 'Query':
+    def filter_cpue_count(self, eq: FLOAT_PARAM = None,
+        min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None,
+        units: str = 'count/ha') -> 'Query':
         """Filter catch per unit effort as count over area in hectares.
 
         Filter on catch number divided by net sweep area if available (count /
@@ -605,65 +586,29 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+            units: The units for the given catch per unit effort. Options:
+                count/ha, count/km2, and count1000/km2. Defaults to count/ha.
+                Ignored if given eq value containing ORDS query.
 
         Returns:
             This object for chaining if desired.
         """
-        self._cpue_noha = self._create_float_param(eq, min_val, max_val)
+        param = self._create_float_param(eq, min_val, max_val)
+
+        if units == 'count/ha':
+            self._cpue_noha = param
+        elif units == 'count/km2':
+            self._cpue_nokm2 = param
+        elif units == 'count1000/km2':
+            self._cpue_no1000km2 = param
+        else:
+            raise RuntimeError('Unrecognized units ' + units)
+
         return self
 
-    def filter_cpue_nokm2(self, eq: FLOAT_PARAM = None,
-        min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None) -> 'Query':
-        """Filter catch per unit effort as count over area in km^2.
-
-        Filter on catch number divided by net sweep area if available (count /
-        km^2).
-
-        Args:
-            eq: The exact value that must be matched for a record to be
-                returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
-            min_val: The minimum allowed value, inclusive. Pass None if no
-                minimum value filter should be applied. Defaults to None. Error
-                thrown if eq also proivded.
-            max_val: The maximum allowed value, inclusive. Pass None if no
-                maximum value filter should be applied. Defaults to None. Error
-                thrown if eq also proivded.
-
-        Returns:
-            This object for chaining if desired.
-        """
-        self._cpue_nokm2 = self._create_float_param(eq, min_val, max_val)
-        return self
-
-    def filter_cpue_no1000km2(self, eq: FLOAT_PARAM = None,
-        min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None) -> 'Query':
-        """Filter catch per unit effort as count over area in km^2 * 1000.
-
-        Filter on catch number divided by net sweep area if available (count /
-        km^2 * 1000).
-
-        Args:
-            eq: The exact value that must be matched for a record to be
-                returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
-            min_val: The minimum allowed value, inclusive. Pass None if no
-                minimum value filter should be applied. Defaults to None. Error
-                thrown if eq also proivded.
-            max_val: The maximum allowed value, inclusive. Pass None if no
-                maximum value filter should be applied. Defaults to None. Error
-                thrown if eq also proivded.
-
-        Returns:
-            This object for chaining if desired.
-        """
-        self._cpue_no1000km2 = self._create_float_param(eq, min_val, max_val)
-        return self
-
-    def filter_weight_kg(self, eq: FLOAT_PARAM = None,
-        min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None) -> 'Query':
+    def filter_weight(self, eq: FLOAT_PARAM = None,
+        min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None,
+        units: str = 'kg') -> 'Query':
         """Filter on taxon weight (kg) if available.
 
         Args:
@@ -677,11 +622,18 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+            units: The units in which the weight are given. Options are
+                g, kg for grams and kilograms respectively. Deafults to kg.
+                Ignored if given eq value containing ORDS query.
 
         Returns:
             This object for chaining if desired.
         """
-        self._weight_kg = self._create_float_param(eq, min_val, max_val)
+        self._weight_kg = self._create_float_param(
+            afscgap.convert.unconvert_weight(eq, units),
+            afscgap.convert.unconvert_weight(min_val, units),
+            afscgap.convert.unconvert_weight(max_val, units)
+        )
         return self
 
     def filter_count(self, eq: FLOAT_PARAM = None, min_val: OPT_FLOAT = None,
@@ -698,7 +650,8 @@ class Query:
                 thrown if eq also proivded.
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
-                thrown if eq also proivded.
+                thrown if eq also proivded. Ignored if given eq value containing
+                ORDS query.
 
         Returns:
             This object for chaining if desired.
@@ -706,8 +659,9 @@ class Query:
         self._count = self._create_float_param(eq, min_val, max_val)
         return self
 
-    def filter_bottom_temperature_c(self, eq: FLOAT_PARAM = None,
-        min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None) -> 'Query':
+    def filter_bottom_temperature(self, eq: FLOAT_PARAM = None,
+        min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None,
+        units: str = 'c') -> 'Query':
         """Filter on bottom temperature.
 
         Filter on bottom temperature associated with observation if available in
@@ -724,19 +678,23 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+            units: The units in which the temperature filter values are given.
+                Options: c or f for Celcius and Fahrenheit respectively.
+                Defaults to c. Ignored if given eq value containing ORDS query.
 
         Returns:
             This object for chaining if desired.
         """
         self._bottom_temperature_c = self._create_float_param(
-            eq,
-            min_val,
-            max_val
+            afscgap.convert.unconvert_temperature(eq, units),
+            afscgap.convert.unconvert_temperature(min_val, units),
+            afscgap.convert.unconvert_temperature(max_val, units)
         )
         return self
 
-    def filter_surface_temperature_c(self, eq: FLOAT_PARAM = None,
-        min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None) -> 'Query':
+    def filter_surface_temperature(self, eq: FLOAT_PARAM = None,
+        min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None,
+        units: str = 'c') -> 'Query':
         """Filter on surface temperature.
 
         Filter on surface temperature associated with observation if available
@@ -753,19 +711,22 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+            units: The units in which the temperature filter values are given.
+                Options: c or f for Celcius and Fahrenheit respectively.
+                Defaults to c. Ignored if given eq value containing ORDS query.
 
         Returns:
             This object for chaining if desired.
         """
         self._surface_temperature_c = self._create_float_param(
-            eq,
-            min_val,
-            max_val
+            afscgap.convert.unconvert_temperature(eq, units),
+            afscgap.convert.unconvert_temperature(min_val, units),
+            afscgap.convert.unconvert_temperature(max_val, units)
         )
         return self
 
-    def filter_depth_m(self, eq: FLOAT_PARAM = None, min_val: OPT_FLOAT = None,
-        max_val: OPT_FLOAT = None) -> 'Query':
+    def filter_depth(self, eq: FLOAT_PARAM = None, min_val: OPT_FLOAT = None,
+        max_val: OPT_FLOAT = None, units: str = 'm') -> 'Query':
         """Filter on depth of the bottom in meters.
 
         Args:
@@ -779,15 +740,23 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+            units: The units in which the distance are given. Options:
+                m or km for meters and kilometers respectively. Defaults to m.
+                Ignored if given eq value containing ORDS query.
 
         Returns:
             This object for chaining if desired.
         """
-        self._depth_m = self._create_float_param(eq, min_val, max_val)
+        self._depth_m = self._create_float_param(
+            afscgap.convert.unconvert_distance(eq, units),
+            afscgap.convert.unconvert_distance(min_val, units),
+            afscgap.convert.unconvert_distance(max_val, units)
+        )
         return self
 
-    def filter_distance_fished_km(self, eq: FLOAT_PARAM = None,
-        min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None) -> 'Query':
+    def filter_distance_fished(self, eq: FLOAT_PARAM = None,
+        min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None,
+        units: str = 'm') -> 'Query':
         """Filter on distance of the net fished as km.
 
         Args:
@@ -801,19 +770,27 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+            units: The units in which the distance values are given. Options:
+                m or km for meters and kilometers respectively. Defaults to m.
+                Ignored if given eq value containing ORDS query.
 
         Returns:
             This object for chaining if desired.
         """
+        def convert_to_km(target, units):
+            in_meters = afscgap.convert.unconvert_distance(target, units)
+            return afscgap.convert.convert_distance(in_meters, 'km')
+
         self._distance_fished_km = self._create_float_param(
-            eq,
-            min_val,
-            max_val
+            convert_to_km(eq, units),
+            convert_to_km(min_val, units),
+            convert_to_km(max_val, units)
         )
         return self
 
-    def filter_net_width_m(self, eq: FLOAT_PARAM = None,
-        min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None) -> 'Query':
+    def filter_net_width(self, eq: FLOAT_PARAM = None,
+        min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None,
+        units: str = 'm') -> 'Query':
         """Filter on distance of the net fished as m.
 
         Args:
@@ -827,15 +804,22 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+            units: The units in which the distance should be returned. Options:
+                m or km for meters and kilometers respectively. Defaults to m.
 
         Returns:
             This object for chaining if desired.
         """
-        self._net_width_m = self._create_float_param(eq, min_val, max_val)
+        self._net_width_m = self._create_float_param(
+            afscgap.convert.unconvert_distance(eq, units),
+            afscgap.convert.unconvert_distance(min_val, units),
+            afscgap.convert.unconvert_distance(max_val, units)
+        )
         return self
 
-    def filter_net_height_m(self, eq: FLOAT_PARAM = None,
-        min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None) -> 'Query':
+    def filter_net_height(self, eq: FLOAT_PARAM = None,
+        min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None,
+        units: str = 'm') -> 'Query':
         """Filter on height of the net fished as m.
 
         Args:
@@ -849,15 +833,22 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+            units: The units in which the distance should be returned. Options:
+                m or km for meters and kilometers respectively. Defaults to m.
 
         Returns:
             This object for chaining if desired.
         """
-        self._net_height_m = self._create_float_param(eq, min_val, max_val)
+        self._net_height_m = self._create_float_param(
+            afscgap.convert.unconvert_distance(eq, units),
+            afscgap.convert.unconvert_distance(min_val, units),
+            afscgap.convert.unconvert_distance(max_val, units)
+        )
         return self
 
-    def filter_area_swept_ha(self, eq: FLOAT_PARAM = None,
-        min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None) -> 'Query':
+    def filter_area_swept(self, eq: FLOAT_PARAM = None,
+        min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None,
+        units: str = 'm') -> 'Query':
         """Filter on area covered by the net while fishing in hectares.
 
         Args:
@@ -871,15 +862,22 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+            units: The units in which the area should be returned. Options:
+                ha, m2, km2. Defaults to ha.
 
         Returns:
             This object for chaining if desired.
         """
-        self._area_swept_ha = self._create_float_param(eq, min_val, max_val)
+        self._area_swept_ha = self._create_float_param(
+            afscgap.convert.unconvert_area(eq, units),
+            afscgap.convert.unconvert_area(min_val, units),
+            afscgap.convert.unconvert_area(max_val, units)
+        )
         return self
 
-    def filter_duration_hr(self, eq: FLOAT_PARAM = None,
-        min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None) -> 'Query':
+    def filter_duration(self, eq: FLOAT_PARAM = None,
+        min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None,
+        units: str = 'hr') -> 'Query':
         """Filter on duration of the haul as number of hours.
 
         Args:
@@ -893,11 +891,17 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+            units: The units in which the duration should be returned. Options:
+                day, hr, min. Defaults to hr.
 
         Returns:
             This object for chaining if desired.
         """
-        self._duration_hr = self._create_float_param(eq, min_val, max_val)
+        self._duration_hr = self._create_float_param(
+            afscgap.convert.unconvert_time(eq, units),
+            afscgap.convert.unconvert_time(min_val, units),
+            afscgap.convert.unconvert_time(max_val, units)
+        )
         return self
 
     def filter_tsn(self, eq: INT_PARAM = None, min_val: OPT_INT = None,
@@ -1137,7 +1141,8 @@ class Query:
         return self._create_param(eq, min_val, max_val)  # type: ignore
 
     def _create_float_param(self, eq: FLOAT_PARAM = None,
-        min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None) -> FLOAT_PARAM:
+        min_val: FLOAT_PARAM = None,
+        max_val: FLOAT_PARAM = None) -> FLOAT_PARAM:
         """Create a new float parameter.
 
         Args:
