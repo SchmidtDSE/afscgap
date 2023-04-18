@@ -189,6 +189,36 @@ Each filter and set method on Query returns the same query object.
 
 <br>
 
+#### Builder operations
+Note that Query is a builder. So, it may be used to execute a search and then execute another search with slightly modified parameters:
+
+```
+import statistics
+
+import afscgap
+
+# Build query
+query = afscgap.Query()
+query.filter_srvy(eq='GOA')
+query.filter_scientific_name(eq='Pasiphaea pacifica')
+
+# Get temperatures in Celsius for 2021
+query.filter_year(eq=2021)
+results = query.execute()
+temperatures = [record.get_bottom_temperature(units='c') for record in results]
+print(statistics.median(temperatures))
+
+# Get temperatures in Celsius for 2019
+query.filter_year(eq=2019)
+results = query.execute()
+temperatures = [record.get_bottom_temperature(units='c') for record in results]
+print(statistics.median(temperatures))
+```
+
+When calling filter, all prior filters on the query object for that field are overwritten.
+
+<br>
+
 #### Serialization
 Users may request a dictionary representation:
 
@@ -207,11 +237,8 @@ for record in results:
     dict_representation = record.to_dict()
     print(dict_representation['bottom_temperature_c'])
 
-results = afscgap.query(
-    year=2021,
-    srvy='GOA',
-    scientific_name='Pasiphaea pacifica'
-)
+# Execute again
+results = query.execute()
 
 # Get dictionary for all records
 results_dicts = results.to_dicts()
