@@ -56,7 +56,7 @@ Starting with the `afscgap` library, lazy "generator iterables" increase accessi
 
 ![Diagram of simplified afscgap operation [@diagrams].\label{fig:library}](library.png)
 
-Finally, offering a single function entry-point into the library, this "facade" approach allows the user to interact with these systems without requiring client code to reflect deep understanding of the library's mechanics, a goal furthered by compilation of "standard" Python types to Oracle REST Data Service queries [@facade].
+Finally, offering a single object entry-point into the library, this "facade" approach allows the user to interact with these systems without requiring client code to reflect deep understanding of the library's mechanics, a goal furthered by compilation of "standard" Python types to Oracle REST Data Service queries [@facade].
 
 ## Zero catch inference
 "Negative" or "zero catch" inference enables scientists to conduct a broader range of analysis. To achieve this, the package uses the following algorithm:
