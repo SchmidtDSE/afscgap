@@ -648,6 +648,7 @@ import afscgap
 query = afscgap.Query()
 query.filter_year(eq=2021)
 query.filter_srvy(eq='GOA')
+query.filter_scientific_name(eq='Pasiphaea pacifica')
 results = query.execute()
 
 valid = list(results)
@@ -713,7 +714,7 @@ import afscgap
 query = afscgap.Query()
 query.filter_year(eq=2021)
 query.filter_latitude(eq={'$between': [56, 57]})
-query.fitler_longitude(eq={'$between': [-161, -160]})
+query.filter_longitude(eq={'$between': [-161, -160]})
 results = query.execute()
 
 print(results.get_page_url(limit=10, offset=0))
