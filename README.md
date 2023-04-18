@@ -373,8 +373,8 @@ query.filter_srvy(eq='GOA')
 query.filter_scientific_name(eq='Gadus macrocephalus')
 results = query.execute()
 
-results_for_page = results.get_page(offset=20, limit=100)
-print(len(results_for_page))  # Will print 32 (results contains 52 records)
+results_for_page = results.get_page(offset=20, limit=53)
+print(len(results_for_page))
 ```
 
 Client code can also change the pagination behavior used when iterating:
