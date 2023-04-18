@@ -948,7 +948,7 @@ class Query:
         self._ak_survey_id = self._create_int_param(eq, min_val, max_val)
         return self
 
-    def set_limit(self, limit: OPT_INT = None) -> 'Query':
+    def set_limit(self, limit: OPT_INT) -> 'Query':
         """Set the max number of results.
 
         Args:
@@ -961,7 +961,7 @@ class Query:
         self._limit = limit
         return self
 
-    def set_start_offset(self, start_offset: OPT_INT = None) -> 'Query':
+    def set_start_offset(self, start_offset: OPT_INT) -> 'Query':
         """Indicate how many results to skip.
 
         Args:
@@ -974,7 +974,7 @@ class Query:
         self._start_offset = start_offset
         return self
 
-    def set_filter_incomplete(self, filter_incomplete: bool = False) -> 'Query':
+    def set_filter_incomplete(self, filter_incomplete: bool) -> 'Query':
         """Indicate if incomplete records should be filtered out.
 
         Args:
@@ -990,7 +990,7 @@ class Query:
         self._filter_incomplete = filter_incomplete
         return self
 
-    def set_presence_only(self, presence_only: bool = True) -> 'Query':
+    def set_presence_only(self, presence_only: bool) -> 'Query':
         """Indicate if zero catch inference should be enabled.
 
         Args:
@@ -1005,7 +1005,7 @@ class Query:
         self._presence_only = presence_only
         return self
 
-    def set_suppress_large_warning(self, supress: bool = False) -> 'Query':
+    def set_suppress_large_warning(self, supress: bool) -> 'Query':
         """Indicate if the large results warning should be supressed.
 
         Args:
@@ -1019,7 +1019,7 @@ class Query:
         self._suppress_large_warning = supress
         return self
 
-    def set_warn_function(self, warn_function: WARN_FUNCTION = None) -> 'Query':
+    def set_warn_function(self, warn_function: WARN_FUNCTION) -> 'Query':
         """Indicate how warnings should be emitted.
 
         Args:
@@ -1032,8 +1032,7 @@ class Query:
         self._warn_function = warn_function
         return self
 
-    def set_hauls_prefetch(self,
-        hauls_prefetch: OPT_HAUL_LIST = None) -> 'Query':
+    def set_hauls_prefetch(self, hauls_prefetch: OPT_HAUL_LIST) -> 'Query':
         """Indicate if hauls' data were prefetched.
 
         Args:
