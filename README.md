@@ -163,6 +163,32 @@ For more [details on the zero catch record feature](#absence-vs-presence-data), 
 
 <br>
 
+#### Chaining
+It is possible to use the Query object for method chaining.
+
+```
+import statistics
+
+import afscgap
+
+# Build query
+results = afscgap.Query() \
+    .filter_year(eq=2021) \
+    .filter_srvy(eq='GOA') \
+    .filter_scientific_name(eq='Pasiphaea pacifica') \
+    .execute()
+
+# Get temperatures in Celsius
+temperatures = [record.get_bottom_temperature(units='c') for record in results]
+
+# Take the median
+print(statistics.median(temperatures))
+```
+
+Each filter and set method on Query returns the same query object.
+
+<br>
+
 #### Serialization
 Users may request a dictionary representation:
 
@@ -216,30 +242,6 @@ pandas.DataFrame(results.to_dicts())
 ```
 
 Note that Pandas is not required to use this library.
-
-#### Chaining
-Similar to other packages, it is possible to use the Query object for chaining.
-
-```
-import statistics
-
-import afscgap
-
-# Build query
-results = afscgap.Query() \
-    .filter_year(eq=2021) \
-    .filter_srvy(eq='GOA') \
-    .filter_scientific_name(eq='Pasiphaea pacifica') \
-    .execute()
-
-# Get temperatures in Celsius
-temperatures = [record.get_bottom_temperature(units='c') for record in results]
-
-# Take the median
-print(statistics.median(temperatures))
-```
-
-Each filter and set method on Query returns the same query object.
 
 <br>
 
