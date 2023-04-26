@@ -1,3 +1,5 @@
+.gitpod.yml
+settings.json
 *.pyc
 __pycache__
 .mypy_cache
