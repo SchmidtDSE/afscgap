@@ -17,9 +17,9 @@ See [webpage](https://pyafscgap.org), [project Github](https://github.com/Schmid
 ## Quickstart
 Taking your first step is easy!
 
-**Explore the data in a UI:** To learn about the dataset, explore a visual analytics app at [https://app.pyafscgap.org](https://app.pyafscgap.org).
+**Explore the data in a UI:** To learn about the dataset, try out an in-browser visual analytics app at [https://app.pyafscgap.org](https://app.pyafscgap.org) without writing any code.
 
-**Try out a tutorial in your browser:** Take a look at a free [hosted notebook tutorial](https://mybinder.org/v2/gh/SchmidtDSE/afscgap/main?urlpath=/tree/index.ipynb) with a practical analysis task all without installing any local software.
+**Try out a tutorial in your browser:** Learn from and modify an in-depth [tutorial notebook](https://mybinder.org/v2/gh/SchmidtDSE/afscgap/main?urlpath=/tree/index.ipynb) in a free hosted academic environment (all without installing any local software).
 
 **Jump into code:** Ready to build your own scripts? Here's an example querying for Pacific Cod in the Gulf of Alaska for 2021:
 
@@ -32,7 +32,7 @@ query.filter_scientific_name(eq='Pasiphaea pacifica')
 results = query.execute()
 ```
 
-Continue your exploration in the [developer docs]().
+Continue your exploration in the [developer docs](https://pyafscgap.org/devdocs/afscgap.html#usage).
 
 <br>
 <br>
