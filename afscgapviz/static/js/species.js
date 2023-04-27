@@ -174,9 +174,25 @@ class SpeciesSelector {
         const self = this;
 
         const query = self._getNameQuery();
-        self._element.querySelector(query).addEventListener("change", () => {
-            self._refreshVisibility();
-            self._onChange();
+        let callback = null;
+        const speciesOptions = [];
+        const speciesElement = self._element.querySelector(query);
+        const speciesList = speciesElement.list;
+        for (const child of speciesList.children) {
+            speciesOptions.push(child.value.toLowerCase());
+        }
+        speciesElement.addEventListener("input", () => {
+            clearTimeout(callback);
+            callback = setTimeout(
+                () => {
+                    const lowerInputValue = speciesElement.value.toLowerCase();
+                    if (speciesOptions.indexOf(lowerInputValue) != -1) {
+                        self._refreshVisibility();
+                        self._onChange();
+                    }
+                },
+                500
+            );
         });
 
         const yearDropdown = self._element.querySelector(".year-select");

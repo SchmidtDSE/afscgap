@@ -93,7 +93,11 @@ html {
 }
 
 .display .species select {
-    width: 100%;
+    width: 90%;
+}
+
+.display .species input {
+    width: 90%;
 }
 
 .display .species .color-display {
@@ -311,6 +315,12 @@ html {
 #tutorial-panel #intro-text {
     padding-top: 10px;
     padding-bottom: 10px;
+}
+
+@media screen and (max-width: 1100px) {
+    .display .species-2 {
+        margin-top: 20px;
+    }
 }
 
 @media screen and (min-width: 1100px) {

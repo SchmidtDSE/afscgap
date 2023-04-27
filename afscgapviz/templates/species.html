@@ -4,24 +4,26 @@
         <span class="color-display color-{{ loop.index }}"></span> Scatter {{ loop.index }}
     </div>
     <div>
-        <select class="scientific-name-select name-select" autocomplete="off">
+        <input type="text" class="scientific-name-select name-select" autocomplete="off" list="display{{ display_index }}-scientific-name-{{ loop.index }}-list" value="{% if selection['speciesType'] == 'scientific'%}{{ selection['scientificName'] }}{% else %}None{% endif %}">
+        <datalist id="display{{ display_index }}-scientific-name-{{ loop.index }}-list">
             {% if loop.index > 1 %}
             <option value="None" {% if selection['scientificName'] == "None" %}selected{% endif %}>None</option>
             {% endif %}
             {% for name in display['species'] %}
             <option value="{{ name }}" {% if selection['scientificName'] == name %}selected{% endif %}>{{ name }}</option>
             {% endfor %}
-        </select>
+        </datalist>
     </div>
     <div>
-        <select class="common-name-select name-select" autocomplete="off">
+        <input type="text" class="common-name-select name-select" autocomplete="off" list="display{{ display_index }}-species-{{ loop.index }}-list" value="{% if selection['speciesType'] == 'scientific'%}None{% else %}{{ selection['commonName'] }}{% endif %}">
+        <datalist id="display{{ display_index }}-species-{{ loop.index }}-list">
             {% if loop.index > 1 %}
-            <option value="None" {% if selection['commonName'] == "None" %}selected{% endif %}>None</option>
+            <option value="None">None</option>
             {% endif %}
             {% for name in display['commonNames'] %}
-            <option value="{{ name }}" {% if selection['commonName'] == name %}selected{% endif %}>{{ name }}</option>
+            <option value="{{ name }}">{{ name }}</option>
             {% endfor %}
-        </select>
+        </datalist>
     </div>
     <div>
         <select class="year-select" autocomplete="off">
