@@ -661,6 +661,10 @@ class MapViz {
 
             if (!species.getIsActive() || !cpues.has(key)) {
                 selection.select(".label").html("");
+                selection.select(".bar").transition()
+                    .delay(500)
+                    .duration(1000)
+                    .style("width", "0px");
                 return;
             }
 
