@@ -176,15 +176,17 @@ class SpeciesSelector {
         const self = this;
 
         const query = self._getNameQuery();
-        let callback = null;
+        const speciesElement = self._element.querySelector(query);
+        
         const speciesOptionsLower = [];
         const speciesOptionsOriginal = [];
-        const speciesElement = self._element.querySelector(query);
         const speciesList = speciesElement.list;
         for (const child of speciesList.children) {
             speciesOptionsLower.push(child.value.toLowerCase());
             speciesOptionsOriginal.push(child.value);
         }
+
+        let callback = null;
         speciesElement.addEventListener("input", () => {
             clearTimeout(callback);
             callback = setTimeout(
@@ -199,6 +201,34 @@ class SpeciesSelector {
                 },
                 500
             );
+        });
+
+        let forceNone = false;
+        speciesElement.addEventListener("focusin", () => {
+            if (speciesElement.value === "None") {
+                speciesElement.value = "";
+            }
+            forceNone = true;
+        });
+
+        speciesElement.addEventListener("focusout", () => {
+            const lowerInputValue = speciesElement.value.toLowerCase();
+            const index = speciesOptionsLower.indexOf(lowerInputValue);
+            clearTimeout(callback);
+            if (speciesElement.value === "" || index == -1) {
+                speciesElement.value = "None";
+            }
+            
+            self._refreshVisibility();
+            self._onChange();
+
+            forceNone = false;
+        });
+
+        window.addEventListener("resize", () => {
+            if (forceNone) {
+                speciesElement.value = "None";
+            }
         });
 
         const yearDropdown = self._element.querySelector(".year-select");

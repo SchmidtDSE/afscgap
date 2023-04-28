@@ -422,6 +422,8 @@ def build_app(app: flask.Flask, db_str: typing.Optional[str] = None,
                 return 0
 
         def try_float(target: str) -> float:
+            if target is None:
+                return 0
             try:
                 return float(target)
             except ValueError:
