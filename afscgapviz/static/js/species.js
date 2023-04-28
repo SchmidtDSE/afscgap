@@ -162,8 +162,10 @@ class SpeciesSelector {
 
         if (nameSet) {
             self._show(".year-select");
+            self._show(".clear-link-holder");
         } else {
             self._hide(".year-select");
+            self._hide(".clear-link-holder");
         }
     }
 
@@ -203,6 +205,16 @@ class SpeciesSelector {
         yearDropdown.addEventListener("change", () => {
             self._onChange();
         });
+
+        const clearLink = self._element.querySelector(".clear-link");
+        if (clearLink !== null) {
+            clearLink.addEventListener("click", (event) => {
+                speciesElement.value = "None";
+                self._refreshVisibility();
+                self._onChange();
+                event.preventDefault();
+            });
+        }
     }
 
     /**
@@ -225,7 +237,10 @@ class SpeciesSelector {
      */
     _show(query) {
         const self = this;
-        self._element.querySelector(query).style.display = "block";
+        const target = self._element.querySelector(query);
+        if (target !== null) {
+            target.style.display = "block";
+        }
     }
 
     /**
@@ -236,7 +251,10 @@ class SpeciesSelector {
      */
     _hide(query) {
         const self = this;
-        self._element.querySelector(query).style.display = "none";
+        const target = self._element.querySelector(query);
+        if (target !== null) {
+            target.style.display = "none";
+        }
     }
 
     /**

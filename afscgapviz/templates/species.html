@@ -4,7 +4,7 @@
         <span class="color-display color-{{ loop.index }}"></span> Scatter {{ loop.index }}
     </div>
     <div>
-        <input type="text" class="scientific-name-select name-select" autocomplete="off" list="display{{ display_index }}-scientific-name-{{ loop.index }}-list" value="{% if selection['speciesType'] == 'scientific'%}{{ selection['scientificName'] }}{% else %}None{% endif %}">
+        <input type="text" class="scientific-name-select name-select" autocomplete="off" list="display{{ display_index }}-scientific-name-{{ loop.index }}-list" value="{% if selection['speciesType'] == 'scientific'%}{{ selection['scientificName'] }}{% else %}None{% endif %}" id="display{{ display_index }}-scientific-name-{{ loop.index }}-input">
         <datalist id="display{{ display_index }}-scientific-name-{{ loop.index }}-list">
             {% if loop.index > 1 %}
             <option value="None" {% if selection['scientificName'] == "None" %}selected{% endif %}>None</option>
@@ -15,7 +15,7 @@
         </datalist>
     </div>
     <div>
-        <input type="text" class="common-name-select name-select" autocomplete="off" list="display{{ display_index }}-species-{{ loop.index }}-list" value="{% if selection['speciesType'] == 'scientific'%}None{% else %}{{ selection['commonName'] }}{% endif %}">
+        <input type="text" class="common-name-select name-select" autocomplete="off" list="display{{ display_index }}-species-{{ loop.index }}-list" value="{% if selection['speciesType'] == 'scientific'%}None{% else %}{{ selection['commonName'] }}{% endif %}" id="display{{ display_index }}-common-name-{{ loop.index }}-input">
         <datalist id="display{{ display_index }}-species-{{ loop.index }}-list">
             {% if loop.index > 1 %}
             <option value="None">None</option>
@@ -32,5 +32,10 @@
             {% endfor %}
         </select>
     </div>
+    {% if loop.index > 1%}
+    <div class="clear-link-holder">
+        <a href="#viz-{{ display_index }}" class="clear-link" subject="display{{ display_index }}-type-name-{{ loop.index }}-input">clear</a>
+    </div>
+    {% endif %}
 </div>
 {% endfor %}
