@@ -80,20 +80,22 @@ Of course, building competency in a sophisticated interface like this presents u
  - **Twist**: Overlays on the same display are enabled, allowing the player to leverage mechanics they just exercised in a now more complex interface.
  - **Conclusion**: End with giving the player an opportunity to demonstrate all of the skills acquired in a new problem.
 
-While this interface uses game / information design techniques to offer an accessible on-ramp to quickly learn a sophisticated interface, it also serves as a starting point for continued analysis by generating either CSV or Python code to take work into other tools. Examined via Thinking-aloud Method [@thinkaloud].
+While this interface uses game / information design techniques to offer an accessible on-ramp to quickly learn a sophisticated interface, it also serves as a starting point for continued analysis by generating either CSV or Python code to take work into other tools.
+
+In addition to inclusion in a graduate classroom setting, this tool was considered in four Thinking-aloud sessions each with an "expert" of a related scientific or engineering background but with limited prior experience with these data [@thinkaloud]. Though some usability improvements were made as a result of some of these conversations, participants "successfully" completed the introduction sequence.
 
 ## Limitations
 Notable current limitations:
 
  - Single-threaded and non-asynchoronous.
- - Due to dataset limitations, hauls are represeted by points not areas in visualization aggregation [@readme].
+ - From dataset limitations, hauls are points not areas in visualization aggregation [@readme].
 
 # Acknowledgements
-Thanks to the following for feedback / testing on these components:
+Thanks to the following for feedback on these components:
 
  - Library: Carl Boettiger and Fernando Perez
  - Visualization: Maya Weltman-Fahs, Brookie Guzder-Williams, and Magali de Bruyn.
 
-Project of the The Eric and Wendy Schmidt Center for Data Science and the Environment at University of California Berkeley. Though the README lists full library credits, thanks to runtime dependencies ColorBrewer, D3, Flask, Geolib, Requests, Toolz, and Papa Parse [@colorbrewer; @d3; @flask; @geolib; @requests; @toolz; @papa].
+Project of The Eric and Wendy Schmidt Center for Data Science and the Environment at University of California Berkeley. README lists full library credits but thanks to runtime dependencies ColorBrewer, D3, Flask, Geolib, Requests, Toolz, and Papa Parse [@colorbrewer; @d3; @flask; @geolib; @requests; @toolz; @papa].
 
 # References
