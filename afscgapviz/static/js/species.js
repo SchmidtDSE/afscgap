@@ -175,18 +175,22 @@ class SpeciesSelector {
 
         const query = self._getNameQuery();
         let callback = null;
-        const speciesOptions = [];
+        const speciesOptionsLower = [];
+        const speciesOptionsOriginal = [];
         const speciesElement = self._element.querySelector(query);
         const speciesList = speciesElement.list;
         for (const child of speciesList.children) {
-            speciesOptions.push(child.value.toLowerCase());
+            speciesOptionsLower.push(child.value.toLowerCase());
+            speciesOptionsOriginal.push(child.value);
         }
         speciesElement.addEventListener("input", () => {
             clearTimeout(callback);
             callback = setTimeout(
                 () => {
                     const lowerInputValue = speciesElement.value.toLowerCase();
-                    if (speciesOptions.indexOf(lowerInputValue) != -1) {
+                    const index = speciesOptionsLower.indexOf(lowerInputValue);
+                    if (index != -1) {
+                        speciesElement.value = speciesOptionsOriginal[index];
                         self._refreshVisibility();
                         self._onChange();
                     }
