@@ -176,15 +176,17 @@ class SpeciesSelector {
         const self = this;
 
         const query = self._getNameQuery();
-        let callback = null;
+        const speciesElement = self._element.querySelector(query);
+        
         const speciesOptionsLower = [];
         const speciesOptionsOriginal = [];
-        const speciesElement = self._element.querySelector(query);
         const speciesList = speciesElement.list;
         for (const child of speciesList.children) {
             speciesOptionsLower.push(child.value.toLowerCase());
             speciesOptionsOriginal.push(child.value);
         }
+
+        let callback = null;
         speciesElement.addEventListener("input", () => {
             clearTimeout(callback);
             callback = setTimeout(
@@ -199,6 +201,18 @@ class SpeciesSelector {
                 },
                 500
             );
+        });
+
+        speciesElement.addEventListener("focusin", () => {
+            if (speciesElement.value === "None") {
+                speciesElement.value = "";
+            }
+        });
+
+        speciesElement.addEventListener("focusout", () => {
+            if (speciesElement.value === "") {
+                speciesElement.value = "None";
+            }
         });
 
         const yearDropdown = self._element.querySelector(".year-select");
