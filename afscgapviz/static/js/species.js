@@ -203,14 +203,23 @@ class SpeciesSelector {
             );
         });
 
+        let forceNone = false;
         speciesElement.addEventListener("focusin", () => {
             if (speciesElement.value === "None") {
                 speciesElement.value = "";
             }
+            forceNone = true;
         });
 
         speciesElement.addEventListener("focusout", () => {
             if (speciesElement.value === "") {
+                speciesElement.value = "None";
+            }
+            forceNone = false;
+        });
+
+        window.addEventListener("resize", () => {
+            if (forceNone) {
                 speciesElement.value = "None";
             }
         });
