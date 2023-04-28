@@ -212,9 +212,16 @@ class SpeciesSelector {
         });
 
         speciesElement.addEventListener("focusout", () => {
-            if (speciesElement.value === "") {
+            const lowerInputValue = speciesElement.value.toLowerCase();
+            const index = speciesOptionsLower.indexOf(lowerInputValue);
+            clearTimeout(callback);
+            if (speciesElement.value === "" || index == -1) {
                 speciesElement.value = "None";
             }
+            
+            self._refreshVisibility();
+            self._onChange();
+
             forceNone = false;
         });
 
