@@ -37,7 +37,7 @@ The default usage leverages a sqlite database which is read only when used by th
 $ cd afscgap/afscgapviz
 $ wget https://pyafscgap.org/community/geohashes.zip
 $ unzip geohashes.zip
-$ rm goehashes.zip
+$ rm geohashes.zip
 ```
 
 If you want to build the dataset yourself, run the `build_database` script like so:

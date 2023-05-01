@@ -671,7 +671,7 @@ class MapViz {
             const cpue = cpues.get(key);
 
             selection.select(".label").html(
-                Math.round(cpue * 100) / 100 + " kg/hectare"
+                Math.round(cpue * 100) / 100 + " kg/hectare overall CPUE"
             );
 
             selection.select(".bar").transition()
