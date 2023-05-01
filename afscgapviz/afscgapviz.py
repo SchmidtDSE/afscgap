@@ -10,6 +10,7 @@ import contextlib
 import csv
 import io
 import json
+import re
 import sqlite3
 import typing
 
@@ -20,6 +21,8 @@ import model
 import sql_util
 import survey_util
 
+
+FILENAME_REGEX = re.compile('^[A-Za-z\\_0-9]+$')
 
 OUTPUT_COLS = [
     'year',
@@ -32,6 +35,24 @@ OUTPUT_COLS = [
     'weightKg',
     'count',
     'areaSweptHectares',
+    'numRecordsAggregated',
+    'latLowDegrees',
+    'lngLowDegrees',
+    'latHighDegrees',
+    'lngHighDegrees'
+]
+
+OUTPUT_COLS_DELTA = [
+    'year',
+    'survey',
+    'species',
+    'commonName',
+    'geohash',
+    'surfaceTemperatureCDelta',
+    'bottomTemperatureCDelta',
+    'weightKgDelta',
+    'countDelta',
+    'areaSweptHectaresDelta',
     'numRecordsAggregated',
     'latLowDegrees',
     'lngLowDegrees',
@@ -162,6 +183,25 @@ def get_species_select_content(display: typing.Dict, index: int) -> str:
         display=display,
         display_index=index
     )
+
+
+def transform_keys_for_delta(target: dict) -> dict:
+    """Prepare dicts for deltas.
+
+    Convert keys for a CSV export to indicate that they are doing a delta
+    between years.
+
+    Args:
+        target: The record whose keys should be transformed.
+    Returns:
+        The record with updated keys.
+    """
+    ret_dict = {}
+
+    for (before, after) in zip(OUTPUT_COLS, OUTPUT_COLS_DELTA):
+        ret_dict[after] = target[before]
+
+    return ret_dict
 
 
 def build_app(app: flask.Flask, db_str: typing.Optional[str] = None,
@@ -297,13 +337,21 @@ def build_app(app: flask.Flask, db_str: typing.Optional[str] = None,
         common_name = flask.request.args.get('commonName', None)
         geohash_size = int(flask.request.args.get('geohashSize', 4))
 
+        filename_pieces: typing.List[str] = []
+        filename_pieces.append(survey)
+
         if species is not None:
             species_filter = ('species', species)
+            filename_pieces.append(species)
         elif common_name is not None:
             species_filter = ('common_name', common_name)
+            filename_pieces.append(common_name)
         else:
             return 'Whoops! Please specify commonName or species.', 400
 
+        filename_pieces.append(year)
+
+        comparison_filename_pieces = []
         if is_comparison:
             other_year = flask.request.args['otherYear']
             other_species = flask.request.args.get('otherSpecies', None)
@@ -311,10 +359,15 @@ def build_app(app: flask.Flask, db_str: typing.Optional[str] = None,
 
             if species is not None:
                 other_species_filter = ('species', other_species)
+                comparison_filename_pieces.append(other_species)
             elif common_name is not None:
                 other_species_filter = ('common_name', other_common_name)
+                comparison_filename_pieces.append(other_common_name)
             else:
                 return 'Whoops! Please specify commonName or species.', 400
+
+            comparison_filename_pieces.append(other_year)
+            comparison_filename_pieces.append('minus')
 
             base_sql = sql_util.get_sql('delta')
             query_sql = base_sql % (
@@ -337,7 +390,10 @@ def build_app(app: flask.Flask, db_str: typing.Optional[str] = None,
             query_args = (year, survey, species_filter[1])
 
         output_io = io.StringIO()
-        writer = csv.DictWriter(output_io, fieldnames=OUTPUT_COLS)
+        writer = csv.DictWriter(
+            output_io,
+            fieldnames=OUTPUT_COLS_DELTA if is_comparison else OUTPUT_COLS
+        )
         writer.writeheader()
 
         with conn_generator() as connection:
@@ -351,10 +407,24 @@ def build_app(app: flask.Flask, db_str: typing.Optional[str] = None,
 
         results_obj = map(data_util.parse_record, results)
         results_dict = map(data_util.record_to_dict, results_obj)
-        writer.writerows(results_dict)
+
+        if is_comparison:
+            results_dict_final = map(transform_keys_for_delta, results_dict)
+        else:
+            results_dict_final = results_dict
+
+        writer.writerows(results_dict_final)
+
+        full_filename_pieces = comparison_filename_pieces + filename_pieces
+        filename_spaces = '_'.join(full_filename_pieces)
+        filename = filename_spaces.replace(' ', '_')
+
+        if FILENAME_REGEX.match(filename) is None:
+            filename = 'results'
 
         output = flask.make_response(output_io.getvalue())
-        output.headers['Content-Disposition'] = 'attachment; filename=geo.csv'
+        disposition = 'attachment; filename=%s.csv' % filename
+        output.headers['Content-Disposition'] = disposition
         output.headers['Content-type'] = 'text/csv'
 
         return output
