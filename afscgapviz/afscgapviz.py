@@ -187,20 +187,20 @@ def get_species_select_content(display: typing.Dict, index: int) -> str:
 
 def transform_keys_for_delta(target: dict) -> dict:
     """Prepare dicts for deltas.
-    
+
     Convert keys for a CSV export to indicate that they are doing a delta
     between years.
-    
+
     Args:
         target: The record whose keys should be transformed.
     Returns:
         The record with updated keys.
     """
     ret_dict = {}
-    
+
     for (before, after) in zip(OUTPUT_COLS, OUTPUT_COLS_DELTA):
         ret_dict[after] = target[before]
-    
+
     return ret_dict
 
 
@@ -365,7 +365,7 @@ def build_app(app: flask.Flask, db_str: typing.Optional[str] = None,
                 comparison_filename_pieces.append(other_common_name)
             else:
                 return 'Whoops! Please specify commonName or species.', 400
-            
+
             comparison_filename_pieces.append(other_year)
             comparison_filename_pieces.append('minus')
 
@@ -423,7 +423,8 @@ def build_app(app: flask.Flask, db_str: typing.Optional[str] = None,
             filename = 'results'
 
         output = flask.make_response(output_io.getvalue())
-        output.headers['Content-Disposition'] = 'attachment; filename=%s.csv' % filename
+        disposition = 'attachment; filename=%s.csv' % filename
+        output.headers['Content-Disposition'] = disposition
         output.headers['Content-type'] = 'text/csv'
 
         return output
