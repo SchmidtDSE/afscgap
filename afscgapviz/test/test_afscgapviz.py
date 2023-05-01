@@ -20,3 +20,27 @@ class AfscgapvizTests(unittest.TestCase):
         self.assertEquals(result[0], 'aAbc')
         self.assertEquals(result[1], 'ABC')
         self.assertEquals(result[2], 'cDE')
+    
+    def test_transform_keys_for_delta(self):
+        target = {
+            'year': 1,
+            'survey': 2,
+            'species': 3,
+            'commonName': 4,
+            'geohash': 5,
+            'surfaceTemperatureC': 6,
+            'bottomTemperatureC': 7,
+            'weightKg': 8,
+            'count': 9,
+            'areaSweptHectares': 10,
+            'numRecordsAggregated': 11,
+            'latLowDegrees': 12,
+            'lngLowDegrees': 13,
+            'latHighDegrees': 14,
+            'lngHighDegrees': 15
+        }
+
+        result = afscgapviz.transform_keys_for_delta(target)
+        self.assertEqual(result['year'], 1)
+        self.assertEqual(result['weightKgDelta'], 8)
+        self.assertFalse('weightKg' in result)
