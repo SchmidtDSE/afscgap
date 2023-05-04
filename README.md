@@ -44,7 +44,13 @@ Ready to take it to your own machine? Install the open source tools for accessin
 $ pip install afscgap
 ```
 
-The library's only dependency is [requests](https://docs.python-requests.org/en/latest/index.html) and [Pandas / numpy are not expected but supported](#pandas).
+The library's only dependency is [requests](https://docs.python-requests.org/en/latest/index.html) and [Pandas / numpy are not expected but supported](#pandas). The above will install the release version of the library. However, you can also install the development version via:
+
+```
+$ pip install git+https://github.com/SchmidtDSE/afscgap.git@main
+```
+
+Installing directly from the repo provides the "edge" version of the library which should be treated as pre-release.
 
 <br>
 <br>
