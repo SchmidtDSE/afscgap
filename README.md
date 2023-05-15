@@ -21,14 +21,14 @@ Taking your first step is easy!
 
 **Try out a tutorial in your browser:** Learn from and modify an in-depth [tutorial notebook](https://mybinder.org/v2/gh/SchmidtDSE/afscgap/main?urlpath=/tree/index.ipynb) in a free hosted academic environment (all without installing any local software).
 
-**Jump into code:** Ready to build your own scripts? Here's an example querying for Pacific Cod in the Gulf of Alaska for 2021:
+**Jump into code:** Ready to build your own scripts? Here's an example querying for Pacific cod in the Gulf of Alaska for 2021:
 
 ```
 import afscgap  # install with pip install afscgap
 query = afscgap.Query()
 query.filter_year(eq=2021)
 query.filter_srvy(eq='GOA')
-query.filter_scientific_name(eq='Pasiphaea pacifica')
+query.filter_scientific_name(eq='Gadus macrocephalus')
 results = query.execute()
 ```
 
