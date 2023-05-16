@@ -80,7 +80,9 @@ Of course, building competency in a sophisticated interface like this presents u
  - **Twist**: Overlays on the same display are enabled, allowing the player to leverage mechanics they just exercised in a now more complex interface.
  - **Conclusion**: End with giving the player an opportunity to demonstrate all of the skills acquired in a new problem.
 
-While this interface uses game / information design techniques to offer an accessible on-ramp to quickly learn a sophisticated interface, it also serves as a starting point for continued analysis by generating either CSV or Python code to take work into other tools. Note that, in addition to use in a graduate classroom lecture setting, five individuals with related scientific background have provided tool-specific feedback in a quality / usability assurance capacity.
+While this interface uses game / information design techniques to offer an accessible on-ramp to quickly learn a sophisticated interface, it also serves as a starting point for continued analysis by generating either CSV or Python code to take work into other tools.
+
+Note that, in addition to use in a graduate classroom lecture setting, five individuals with related scientific background have provided tool-specific feedback in a quality / usability assurance capacity.
 
 ## Limitations
 Notable current limitations:
