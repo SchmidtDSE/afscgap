@@ -694,6 +694,11 @@ Note that this queue is filled during iteration (like `for result in results` or
 Though not officially mentioned by the NOAA API, the authors of this library observe some positive longitudes in returned data where negative longitudes of the same magnitude would be expected. Users of the library should be careful to determine how to handle these records (inferring they should have been the same magnitude of longitude but negative or excluded). Publications should be careful to document their decision.
 
 <br>
+
+#### Fully empty hauls
+We've been made aware that some historical surveys from NOAA may not report hauls in the hauls flat file if no specimens were captured. This is a limitation of upstream data and may cause some approximation in CPUE calculations depending on one's definition of effort (should hauls which did not get any specimens be considered a "successful" haul and should they be included as effort?). Note that this inclusion decision is decided by NOAA and not this project. Instead this package uses any hauls reported by NOAA in zero catch inference. One can use an alternative inclusion criteria by providing a static hauls file via `set_hauls_prefetch`.
+
+<br>
 <br>
 
 ## License
