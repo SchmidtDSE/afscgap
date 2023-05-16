@@ -69,11 +69,11 @@ The `afscgap` library manages significant complexity to offer a simple familiar 
 Note that, this library offers Python-emaultion of ORDS-compiled fitlers for inferred records.
 
 ## Visualization
-Despite these developer-focused tools, the dataset complexity requires technical sophistication. To further increase accessibility, this project offers a visualization tool for starting temporal, spatial, and species comparisons with coordinated highlighting, separated color channels, summary statistics, and side-by-side display [@few].
+Despite these developer-focused tools, this dataset complexity requires technical sophistication to navigate. To further increase accessibility, this project offers a visualization tool for starting temporal, spatial, and species comparisons with coordinated highlighting, separated color channels, summary statistics, and side-by-side display [@few].
 
 ![Screenshot of the visualization tool.\label{fig:viz}](viz.png)
 
-Of course, building competency in a sophisticated interface like this presents UX challenges and, to that end, this project interprets Hayashida level design via Mark Brown's formalization into an in-tool introduction sequence that directs the player through a "real" analysis [@hayashida; @brown]:
+To building competency in its sophisticated, this project interprets Hayashida level design via Mark Brown's formalization into an in-tool introduction sequence that directs the player through a "real" analysis [@hayashida; @brown]:
 
  - **Introduction**: The player sees information about Pacific cod with pre-filled elements used to achieve that analysis gradually fading in.
  - **Development**: Using the mechanics introduced moments prior, the tool invites the player to change the analysis to compare different regions with temperature data.
