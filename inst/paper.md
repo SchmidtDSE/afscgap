@@ -46,18 +46,18 @@ Working with these data requires knowledge of tools ouside the Python "standard 
 Access to the API alone cannot support some investigations as the API provides "presence-only" data [@inport]. Many types of analysis require information not just about where a species was present but also where it was not. For example, consider geohash-aggregated species catch per unit effort: while the presence-only dataset may provide a total weight or count for a species, the total area swept must include hauls in which the speices was not found [@geohash; @notebook]. The `afscgap` Python package can, with memory efficiency, algorithmically infer those "zero catch" records.
 
 ## General public accessibility
-Though the `afscgap` Python package makes GAP catch data more accessible to developers, the size and complexity of this dataset requires non-trivial engineering for comparative analysis between species, years, and/or geographic areas [@notebook]. Without deep developer experience, it can be difficult to get started. To address a broader audience, this project also offers a no-code visualization tool sitting on top of `afscgap` to begin investigations with CSV and Python code export as a bridge to further analysis.
+Though the `afscgap` Python package makes GAP catch data more accessible to developers, the size and complexity of this dataset complicates comparative analysis between species, years, and/or geographic areas [@notebook]. Without deep developer experience, it can be difficult to get started. To address a broader audience, this project also offers a no-code visualization tool sitting on top of `afscgap` to begin investigations with CSV and Python code export as a bridge to further analysis.
 
 # Functions
 This project aims to improve accessibility of GAP catch data and offer inclusive approachable tools to kickstart analysis.
 
 ## Lazy querying facade
-The `afscgap` library manages significant data structure complexity to offer a simple familiar interface to Python developers. First, lazy "generator iterables" increase accessibility by encapsulating logic for memory-efficient pagination and "data munging" behind Python-standard iterators [@lazy]. Furthermore, to support zero catch data, decorators adapt diverse structures to common interfaces, offering polymorphism [@decorators]. Finally, offering a single object entry-point into the library, a "facade" approach frees users from needing deep understanding of the library's types, a goal furthered by compilation of "standard" Python types to Oracle REST Data Service queries [@facade].
+The `afscgap` library manages significant complexity to offer a simple familiar interface to Python developers. First, lazy "generator iterables" increase accessibility by encapsulating logic for memory-efficient pagination and "data munging" behind Python-standard iterators [@lazy]. Furthermore, to support zero catch data, decorators adapt diverse structures to common interfaces, offering polymorphism [@decorators]. Finally, offering a single object entry-point into the library, a "facade" approach frees users from needing deep understanding of the library's types, a goal furthered by compilation of "standard" Python types to Oracle REST Data Service queries [@facade].
 
 ![Diagram of simplified afscgap operation [@diagrams].\label{fig:library}](library.png)
 
 ## Zero catch inference
-"Negative" or "zero catch" inference enables scientists to conduct a broader range of analysis. To achieve this, the package uses the following algorithm:
+"Negative" or "zero catch" inference enables a broader range of analysis. To achieve this, the package uses the following algorithm:
 
  - Paginate while records remain available from the API service.
    - Record species and hauls observed from API-returned results.
@@ -69,33 +69,25 @@ The `afscgap` library manages significant data structure complexity to offer a s
 Note that, this library offers Python-emaultion of ORDS-compiled fitlers for inferred records.
 
 ## Visualization
-Despite these developer-focused tools, zero catch inference's millions of records requires technical sophistication to navigate. To further increase accessibility, this project offers a visualization tool for starting temporal, spatial, and species comparisons with coordinated highlighting, separated color channels, summary statistics, and side-by-side display [@few].
+Despite these developer-focused tools, the dataset complexity requires technical sophistication. To further increase accessibility, this project offers a visualization tool for starting temporal, spatial, and species comparisons with coordinated highlighting, separated color channels, summary statistics, and side-by-side display [@few].
 
 ![Screenshot of the visualization tool.\label{fig:viz}](viz.png)
 
-Of course, building competency in a sophisticated interface like this presents user experience challenges and, to that end, this project interprets Hayashida level design via Mark Brown's formalization into an in-tool introduction sequence that directs the player through a "real" analysis [@hayashida; @brown]:
+Of course, building competency in a sophisticated interface like this presents UX challenges and, to that end, this project interprets Hayashida level design via Mark Brown's formalization into an in-tool introduction sequence that directs the player through a "real" analysis [@hayashida; @brown]:
 
  - **Introduction**: The player sees information about Pacific cod with pre-filled elements used to achieve that analysis gradually fading in.
  - **Development**: Using the mechanics introduced moments prior, the tool invites the player to change the analysis to compare different regions with temperature data.
  - **Twist**: Overlays on the same display are enabled, allowing the player to leverage mechanics they just exercised in a now more complex interface.
  - **Conclusion**: End with giving the player an opportunity to demonstrate all of the skills acquired in a new problem.
 
-While this interface uses game / information design techniques to offer an accessible on-ramp to quickly learn a sophisticated interface, it also serves as a starting point for continued analysis by generating either CSV or Python code to take work into other tools.
+While using interface uses game / information design techniques to quickly teach a sophisticated interface, this visualization also serves as a starting point for continued analysis by generating either CSV or Python code to take work into other tools.
 
-Note that, in addition to use in a graduate classroom lecture setting, five individuals with related scientific background have provided tool-specific feedback in a quality / usability assurance capacity.
+In addition to use in a graduate classroom lecture setting, five individuals with related scientific background have provided tool-specific feedback in a quality / usability assurance capacity.
 
 ## Limitations
-Notable current limitations:
-
- - Single-threaded and non-asynchoronous.
- - From dataset limitations, hauls are points not areas in visualization aggregation [@readme].
+This tool is single-threaded and non-asynchoronous. Also, from dataset limitations, hauls are points not areas in visualization aggregation [@readme].
 
 # Acknowledgements
-Thanks to the following for feedback on these components:
-
- - Library: Carl Boettiger and Fernando Perez
- - Visualization: Maya Weltman-Fahs, Brookie Guzder-Williams, and Magali de Bruyn.
-
-Project of The Eric and Wendy Schmidt Center for Data Science and the Environment at University of California Berkeley. README lists full credits but thanks to runtime dependencies ColorBrewer, D3, Flask, Geolib, Requests, Toolz, and Papa Parse [@colorbrewer; @d3; @flask; @geolib; @requests; @toolz; @papa].
+Project of The Eric and Wendy Schmidt Center for Data Science and the Environment at University of California Berkeley. README lists full credits but thanks to runtime dependencies ColorBrewer, D3, Flask, Geolib, Requests, Toolz, and Papa Parse [@colorbrewer; @d3; @flask; @geolib; @requests; @toolz; @papa]. Thanks to those providing guidance to help adoption: Carl Boettiger, Fernando Perez, Maya Weltman-Fahs, Brookie Guzder-Williams, Magali de Bruyn, and Ciera Martinez. 
 
 # References
