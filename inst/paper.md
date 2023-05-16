@@ -82,7 +82,7 @@ Of course, building competency in a sophisticated interface like this presents u
 
 While this interface uses game / information design techniques to offer an accessible on-ramp to quickly learn a sophisticated interface, it also serves as a starting point for continued analysis by generating either CSV or Python code to take work into other tools.
 
-In addition to inclusion in a graduate classroom setting, this tool was considered in four Thinking-aloud sessions each with an "expert" of a related scientific or engineering background but with limited prior experience with these data [@thinkaloud]. Though some usability improvements were made as a result of some of these conversations, participants "successfully" completed the introduction sequence.
+Note that, in addition to use in a graduate classroom lecture setting, five individuals with related scientific background have provided tool-specific feedback in a quality / usability assurance capacity. Four of the five provided feedback by video conference while one offered commentary by email.
 
 ## Limitations
 Notable current limitations:
