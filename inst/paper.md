@@ -71,9 +71,7 @@ Note that, this library offers Python-emaultion of ORDS-compiled fitlers for inf
 ## Visualization
 Despite these developer-focused tools, this dataset complexity requires technical sophistication to navigate. To further increase accessibility, this project offers a visualization tool for starting temporal, spatial, and species comparisons with coordinated highlighting, separated color channels, summary statistics, and side-by-side display [@few].
 
-![Screenshot of the visualization tool.\label{fig:viz}](viz.png)
-
-To building competency in its sophisticated, this project interprets Hayashida level design via Mark Brown's formalization into an in-tool introduction sequence that directs the player through a "real" analysis [@hayashida; @brown]:
+Building competency in its sophisticated, this project interprets Hayashida level design via Mark Brown's formalization into an in-tool introduction sequence that directs the player through a "real" analysis [@hayashida; @brown]:
 
  - **Introduction**: The player sees information about Pacific cod with pre-filled elements used to achieve that analysis gradually fading in.
  - **Development**: Using the mechanics introduced moments prior, the tool invites the player to change the analysis to compare different regions with temperature data.
@@ -81,6 +79,8 @@ To building competency in its sophisticated, this project interprets Hayashida l
  - **Conclusion**: End with giving the player an opportunity to demonstrate all of the skills acquired in a new problem.
 
 While using interface uses game / information design techniques to quickly teach a sophisticated interface, this visualization also serves as a starting point for continued analysis by generating either CSV or Python code to take work into other tools.
+
+![Screenshot of the visualization tool.\label{fig:viz}](viz.png)
 
 In addition to use in a graduate classroom lecture setting, five individuals with related scientific background have provided tool-specific feedback in a quality / usability assurance capacity.
 
