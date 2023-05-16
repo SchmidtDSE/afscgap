@@ -786,6 +786,8 @@ Thank you to all of these projects for their contribution.
 ## Version history
 Annotated version history:
 
+ - `0.0.9`: Fix with issue for certain import modalities and the `http` module.
+ - `0.0.8`: New query syntax (builder / chaining) and units conversions.
  - `0.0.7`: Visual analytics tools.
  - `0.0.6`: Performance and size improvements.
  - `0.0.5`: Changes to documentation.
