@@ -52,7 +52,11 @@ Though the `afscgap` Python package makes GAP catch data more accessible to deve
 This project aims to improve accessibility of GAP catch data and offer inclusive approachable tools to kickstart analysis.
 
 ## Lazy querying facade
-The `afscgap` library manages significant complexity to offer a simple familiar interface to Python developers. First, lazy "generator iterables" increase accessibility by encapsulating logic for memory-efficient pagination and "data munging" behind Python-standard iterators [@lazy]. Furthermore, to support zero catch data, decorators adapt diverse structures to common interfaces, offering polymorphism [@decorators]. Finally, offering a single object entry-point into the library, a "facade" approach frees users from needing deep understanding of the library's types, a goal furthered by compilation of "standard" Python types to Oracle REST Data Service queries [@facade].
+The `afscgap` library manages significant complexity to offer a simple familiar interface to Python developers:
+
+ - Lazy "generator iterables" increase accessibility by encapsulating logic for memory-efficient pagination and "data munging" behind Python-standard iterators [@lazy].
+ - To support zero catch data, decorators adapt diverse structures to common interfaces, offering polymorphism [@decorators].
+ - Offering a single object entry-point into the library, a "facade" approach frees users from needing deep understanding of the library's types, a goal furthered by compilation of "standard" Python types to Oracle REST Data Service queries [@facade].
 
 ![Diagram of simplified afscgap operation [@diagrams].\label{fig:library}](library.png)
 
