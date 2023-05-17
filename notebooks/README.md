@@ -8,7 +8,7 @@ One can run example code in a hosted cloud notebook environment at [MyBinder](ht
 
 <br>
 
-### Docker on your computer
+### Docker
 We provide a Docker image to run a Jupyter notebook server in a VM with all of the dependencies installed.
 
 ```
