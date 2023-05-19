@@ -1,0 +1,12 @@
+site_name: Python afscgap package
+site_url: https://pyafscgap.org/docs
+theme: windmill
+site_dir: website/docs
+nav:
+  - Home: index.md
+  - Usage: usage.md
+  - Objectives: objectives.md
+  - Data Model: model.md
+  - Inference: inference.md
+  - Limitations: limitations.md
+  - Building: building.md

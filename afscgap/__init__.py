@@ -1,12 +1,4 @@
-"""
-.. include:: ../README.md
-
-<br>
-<br>
-
-# API docs
-
-Library which allows for Pythonic access to the interacting with AFSC GAP.
+"""Library which allows for Pythonic access to the interacting with AFSC GAP.
 
 This library supports Pythonic utilization of the API for the Ground
 Fish Assessment Program (GAP), a dataset produced by the Resource Assessment
