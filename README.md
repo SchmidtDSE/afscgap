@@ -32,7 +32,7 @@ query.filter_scientific_name(eq='Gadus macrocephalus')
 results = query.execute()
 ```
 
-Continue your exploration in the [developer docs](https://pyafscgap.org/devdocs/afscgap.html#usage).
+Continue your exploration in the [developer docs](https://pyafscgap.org/docs/#usage/).
 
 <br>
 <br>
@@ -44,7 +44,7 @@ Ready to take it to your own machine? Install the open source tools for accessin
 $ pip install afscgap
 ```
 
-The library's only dependency is [requests](https://docs.python-requests.org/en/latest/index.html) and [Pandas / numpy are not expected but supported](#pandas). The above will install the release version of the library. However, you can also install the development version via:
+The library's only dependency is [requests](https://docs.python-requests.org/en/latest/index.html) and [Pandas / numpy are not expected but supported](https://pyafscgap.org/docs/#usage/#pandas). The above will install the release version of the library. However, you can also install the development version via:
 
 ```
 $ pip install git+https://github.com/SchmidtDSE/afscgap.git@main
