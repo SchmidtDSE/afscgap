@@ -32,7 +32,7 @@ query.filter_scientific_name(eq='Gadus macrocephalus')
 results = query.execute()
 ```
 
-Continue your exploration in the [developer docs](https://pyafscgap.org/docs/#usage/).
+Continue your exploration in the [developer docs](https://pyafscgap.org/docs/usage/).
 
 <br>
 <br>
@@ -44,7 +44,7 @@ Ready to take it to your own machine? Install the open source tools for accessin
 $ pip install afscgap
 ```
 
-The library's only dependency is [requests](https://docs.python-requests.org/en/latest/index.html) and [Pandas / numpy are not expected but supported](https://pyafscgap.org/docs/#usage/#pandas). The above will install the release version of the library. However, you can also install the development version via:
+The library's only dependency is [requests](https://docs.python-requests.org/en/latest/index.html) and [Pandas / numpy are not expected but supported](https://pyafscgap.org/docs/usage/#pandas). The above will install the release version of the library. However, you can also install the development version via:
 
 ```
 $ pip install git+https://github.com/SchmidtDSE/afscgap.git@main
@@ -64,7 +64,7 @@ Unofficial Python-based tool set for interacting with [bottom trawl surveys](htt
 
 Note that GAP is an excellent dataset produced by the [Resource Assessment and Conservation Engineering (RACE) Division](https://www.fisheries.noaa.gov/about/resource-assessment-and-conservation-engineering-division) of the [Alaska Fisheries Science Center (AFSC)](https://www.fisheries.noaa.gov/about/alaska-fisheries-science-center) as part of the National Oceanic and Atmospheric Administration's Fisheries organization ([NOAA Fisheries](https://www.fisheries.noaa.gov/)).
 
-Please see our [objectives documentation](https://pyafscgap.org/docs/#objectives/) for additional information about the purpose, developer needs addressed, and goals of the project.
+Please see our [objectives documentation](https://pyafscgap.org/docs/objectives/) for additional information about the purpose, developer needs addressed, and goals of the project.
 
 <br>
 <br>
@@ -75,7 +75,7 @@ This library provides access to the AFSC GAP data with optional zero catch ("abs
 <br>
 
 ### Examples / tutorial
-One of the best ways to learn is through our examples / tutorials series. For more details see our [usage guide](https://pyafscgap.org/docs/#usage/).
+One of the best ways to learn is through our examples / tutorials series. For more details see our [usage guide](https://pyafscgap.org/docs/usage/).
 
 <br>
 
@@ -85,17 +85,17 @@ One of the best ways to learn is through our examples / tutorials series. For mo
 <br>
 
 ### Data structure
-Detailed information about our data structures and their relationship to the data structures found in NOAA's upstream database is available in our [data model documentation](https://pyafscgap.org/docs/#model/).
+Detailed information about our data structures and their relationship to the data structures found in NOAA's upstream database is available in our [data model documentation](https://pyafscgap.org/docs/model/).
 
 <br>
 
 ### Absence vs presence data
-By default, the NOAA API service will only return information on hauls matching a query. So, for example, requesting data on Pacific cod will only return information on hauls in which Pacific cod is found. This can complicate the calculation of important metrics like catch per unit effort (CPUE). That in mind, one of the most important features in `afscgap` is the ability to infer "zero catch" records as enabled by `set_presence_only(False)`. See more information in [our inference docs](https://pyafscgap.org/docs/#inference/).
+By default, the NOAA API service will only return information on hauls matching a query. So, for example, requesting data on Pacific cod will only return information on hauls in which Pacific cod is found. This can complicate the calculation of important metrics like catch per unit effort (CPUE). That in mind, one of the most important features in `afscgap` is the ability to infer "zero catch" records as enabled by `set_presence_only(False)`. See more information in [our inference docs](https://pyafscgap.org/docs/inference/).
 
 <br>
 
 ### Data quality and completeness
-There are a few caveats for working with these data that are important for researchers to understand. These are detailed in our [limitations docs](https://pyafscgap.org/docs/#limitations/).
+There are a few caveats for working with these data that are important for researchers to understand. These are detailed in our [limitations docs](https://pyafscgap.org/docs/limitations/).
 
 <br>
 <br>
@@ -108,7 +108,7 @@ at UC Berkeley](https://dse.berkeley.edu).
 <br>
 
 ## Developing
-Intersted in contributing to the project or want to bulid manually? Please see our [build docs](https://pyafscgap.org/docs/#building/) for details.
+Intersted in contributing to the project or want to bulid manually? Please see our [build docs](https://pyafscgap.org/docs/building/) for details.
 
 <br>
 <br>
