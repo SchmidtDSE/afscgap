@@ -13,6 +13,7 @@ cd ..
 
 echo "[4 / 4] Build mkdocs..."
 cp README.md docs/index.md
+mkdocs build
 [[ ! -f website/docs/index.html ]] && exit 1
 
 exit 0
