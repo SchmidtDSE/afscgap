@@ -1,5 +1,5 @@
 # Data quality and completeness
-There are a few caveats for working with these data that are important for researchers to understand. These are detailed in our [limitations docs]().
+There are a few caveats for working with these data that are important for researchers to understand. These are detailed in our [limitations docs](https://pyafscgap.org/docs/#limitations/).
 
 <br>
 <br>
