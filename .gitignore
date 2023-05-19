@@ -6,8 +6,9 @@ __pycache__
 build
 *.egg-info
 dist/
-docs/
+docs/index.md
 website/devdocs
+website/docs
 website/static/paper.pdf
 notebooks/.ipynb_checkpoints
 afscgapviz/geohashes.db

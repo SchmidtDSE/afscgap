@@ -75,7 +75,7 @@ This library provides access to the AFSC GAP data with optional zero catch ("abs
 <br>
 
 ### Examples / tutorial
-One of the best ways to learn is through our examples / tutorials series. For more details see our [getting started guide]().
+One of the best ways to learn is through our examples / tutorials series. For more details see our [usage guide]().
 
 <br>
 

@@ -38,7 +38,9 @@ dev = [
   "pycodestyle",
   "pdoc",
   "twine",
-  "types-requests"
+  "types-requests",
+  "mkdocs",
+  "mkdocs-windmill"
 ]
 
 [build-system]
