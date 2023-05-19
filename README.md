@@ -132,8 +132,12 @@ At this time, the only open source dependency used by this microlibrary is [Requ
 
 In addition to Github-provided [Github Actions](https://docs.github.com/en/actions), our build and documentation systems also use the following but are not distributed with or linked to the project itself:
 
+ - [mkdocs](https://www.mkdocs.org) under the [BSD License](https://github.com/mkdocs/mkdocs/blob/master/LICENSE).
+ - [mkdocs-windmill](https://github.com/gristlabs/mkdocs-windmill) under the [MIT License](https://github.com/gristlabs/mkdocs-windmill/blob/master/LICENSE).
  - [mypy](https://github.com/python/mypy) under the [MIT License](https://github.com/python/mypy/blob/master/LICENSE) from Jukka Lehtosalo, Dropbox, and other contributors.
  - [nose2](https://docs.nose2.io/en/latest/index.html) under a [BSD license](https://github.com/nose-devs/nose2/blob/main/license.txt) from Jason Pellerin and other contributors.
+ - [pandoc/luafilters](https://github.com/pandoc/lua-filters) by pandoc Lua filters contributors under the [MIT License](https://github.com/pandoc/lua-filters/blob/master/LICENSE)
+ - [pandoc](https://pandoc.org/) (via call to OS package through shell script) by John MacFarlane, Albert Krewinkel, Jesse Rosenthal, and other contributors under the [GPL License](https://github.com/jgm/pandoc#license).
  - [pdoc](https://github.com/mitmproxy/pdoc) under the [Unlicense license](https://github.com/mitmproxy/pdoc/blob/main/LICENSE) from [Andrew Gallant](https://github.com/BurntSushi) and [Maximilian Hils](https://github.com/mhils).
  - [pycodestyle](https://pycodestyle.pycqa.org/en/latest/) under the [Expat License](https://github.com/PyCQA/pycodestyle/blob/main/LICENSE) from Johann C. Rocholl, Florent Xicluna, and Ian Lee.
  - [pyflakes](https://github.com/PyCQA/pyflakes) under the [MIT License](https://github.com/PyCQA/pyflakes/blob/main/LICENSE) from Divmod, Florent Xicluna, and other contributors.
@@ -152,6 +156,7 @@ Thank you to all of these projects for their contribution.
 ## Version history
 Annotated version history:
 
+ - `1.0.0`: Release with pyopensci.
  - `0.0.9`: Fix with issue for certain import modalities and the `http` module.
  - `0.0.8`: New query syntax (builder / chaining) and units conversions.
  - `0.0.7`: Visual analytics tools.
