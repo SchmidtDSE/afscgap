@@ -7,7 +7,7 @@ The API itself provides access to presence only data. This means that records ar
 ## Example of absence data in aggregation
 Here is a practical memory efficient example using [geolib](https://pypi.org/project/geolib/) and [toolz](https://github.com/pytoolz/toolz) to aggregate catch data by 5 character geohash.
 
-```
+```python
 import afscgap
 import geolib.geohash
 import toolz.itertoolz
@@ -90,7 +90,7 @@ Note that the library will emulate filtering in Python so that haul records are 
 ## Cached hauls
 If desired, a cached set of hauls data can be used instead. It must be a list of [Haul objects](https://pyafscgap.org/devdocs/afscgap/model.html#Haul) and can be passed like so:
 
-```
+```python
 import csv
 
 import afscgap

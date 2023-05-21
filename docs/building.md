@@ -7,7 +7,7 @@ This document provided additional details for building the project from scratch,
 ## Local development
 After installing dev dependencies (`pip install -e .[dev]`), we recommend the following local checks:
 
-```
+```bash
 $ nose2 --start-dir=afscgap
 $ mypy afscgap/*.py
 $ pyflakes afscgap/*.py
@@ -28,7 +28,7 @@ Thanks for your support! Pull requests and issues very welcome. We invite contri
 ## Debugging
 While participating in the community, you may need to debug URL generation. Therefore, for investigating issues or evaluating the underlying operations, you can also request a full URL for a query:
 
-```
+```python
 import afscgap
 
 query = afscgap.Query()

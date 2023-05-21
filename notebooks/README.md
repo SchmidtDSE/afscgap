@@ -11,7 +11,7 @@ One can run example code in a hosted cloud notebook environment at [MyBinder](ht
 ### Docker
 We provide a Docker image to run a Jupyter notebook server in a VM with all of the dependencies installed.
 
-```
+```bash
 $ git checkout git@github.com:SchmidtDSE/afscgap.git
 $ cd afscgap
 $ docker build --no-cache -t afscgap-notebooks .
@@ -25,7 +25,7 @@ Simply ctrl-c when done to close the notebook server and Docker instance.
 ### Run manually
 One can run manually with the following:
 
-```
+```bash
 $ git checkout git@github.com:SchmidtDSE/afscgap.git
 $ cd afscgap/notebooks
 $ pip install -r requirements.txt

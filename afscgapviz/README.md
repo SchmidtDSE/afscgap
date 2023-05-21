@@ -13,7 +13,7 @@ No install required! The application is hosted for the public at [https://app.py
 ## Installation
 This application can be self-hosted or run locally. Due to the high disk usage required for this tool to operate efficiently (about 1GB local disk storage), it is not installed by default when running `pip install afscgap`. To install:
 
-```
+```bash
 $ git clone https://github.com/SchmidtDSE/afscgap.git
 $ cd afscgap/afscgapviz
 $ pip install -r requirements.txt
@@ -33,7 +33,7 @@ This application is a [Flask](https://flask.palletsprojects.com/) application th
 #### Creating a sqlite database
 The default usage leverages a sqlite database which is read only when used by the application. A pre-built database can be downloaded into the `afscgap/afscgapviz` directory like so:
 
-```
+```bash
 $ cd afscgap/afscgapviz
 $ wget https://pyafscgap.org/community/geohashes.zip
 $ unzip geohashes.zip
@@ -42,7 +42,7 @@ $ rm geohashes.zip
 
 If you want to build the dataset yourself, run the `build_database` script like so:
 
-```
+```bash
 $ cd afscgap/afscgapviz
 $ bash build_database.sh
 ```
@@ -52,7 +52,7 @@ $ bash build_database.sh
 #### Starting the application
 Once the database is in place, one can start the web application with `python afscgapviz.py`. If you need to create a Flask app manually, it can be done like so:
 
-```
+```python
 import flask
 
 import afscgapviz
@@ -69,7 +69,7 @@ This may be useful when running outside a development server.
 #### Using a non-sqlite database
 Any [DB API 2.0](https://peps.python.org/pep-0249/) compliant database library may be used. For example, [pg8000](https://github.com/tlocke/pg8000) can be used to leverage Postgres instead of sqlite like so:
 
-```
+```python
 import contextlib
 import threading
 
@@ -151,7 +151,7 @@ at UC Berkeley](https://dse.berkeley.edu).
 ## Local development
 After installing dev dependencies (`pip install -r requirements.txt`), we recommend the following local checks:
 
-```
+```bash
 $ nose2
 $ mypy *.py
 $ pyflakes *.py
@@ -160,7 +160,7 @@ $ pycodestyle *.py
 
 Note these checks are run by CI / CD. Furthermore, JS tests can be run via grunt from the root directory or by:
 
-```
+```bash
 $ python -m http.server
 ```
 
