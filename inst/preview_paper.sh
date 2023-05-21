@@ -1,5 +1,5 @@
-wget https://raw.githubusercontent.com/pandoc/lua-filters/master/author-info-blocks/author-info-blocks.lua
-wget https://raw.githubusercontent.com/pandoc/lua-filters/master/scholarly-metadata/scholarly-metadata.lua
+[[ ! -f author-info-blocks.lua ]] && wget https://raw.githubusercontent.com/pandoc/lua-filters/master/author-info-blocks/author-info-blocks.lua
+[[ ! -f scholarly-metadata.lua ]] && wget https://raw.githubusercontent.com/pandoc/lua-filters/master/scholarly-metadata/scholarly-metadata.lua
 
 sudo apt-get update
 

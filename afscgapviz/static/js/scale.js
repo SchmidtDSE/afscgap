@@ -17,26 +17,26 @@ const MAX_AREA_DENSE = 200;
 
 // Colors from ColorBrewer for an increase in temperature.
 const POSITIVE_TEMP_COLORS = [
-    '#fddbc7',
-    '#f4a582',
-    '#d6604d'
+    "#fddbc7",
+    "#f4a582",
+    "#d6604d"
 ];
 
 // Colors from ColorBrewer for a decrease in temperature.
 const NEGATIVE_TEMP_COLORS = [
-    '#4393c3',
-    '#92c5de',
-    '#d1e5f0'
+    "#4393c3",
+    "#92c5de",
+    "#d1e5f0"
 ];
 
 // Colors from ColorBrewer for a linear scale of temperature.
 const SINGLE_TEMP_COLORS = [
-    '#0570b0',
-    '#3690c0',
-    '#74a9cf',
-    '#a6bddb',
-    '#d0d1e6',
-    '#f1eef6'
+    "#0570b0",
+    "#3690c0",
+    "#74a9cf",
+    "#a6bddb",
+    "#d0d1e6",
+    "#f1eef6"
 ];
 
 
@@ -501,8 +501,10 @@ class CommonScale {
                 const waterDivergingScale = (x) => {
                     if (x < 0) {
                         return negativeWaterScale(x);
-                    } else {
+                    } else if (x > 0) {
                         return positiveWaterScale(x);
+                    } else {
+                        return NEGATIVE_TEMP_COLORS[0];
                     }
                 };
 
