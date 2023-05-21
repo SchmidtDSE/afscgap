@@ -83,27 +83,25 @@ The `afscgap` library manages significant complexity to offer a simple familiar 
 This library offers Python-emulation of ORDS filters for inferred records.
 
 ## Visualization
-Despite these developer-focused tools, this dataset's complexity requires technical sophistication to navigate. To further increase accessibility, this project offers a visualization tool for starting temporal, spatial, and species comparisons with coordinated highlighting, separated color channels, summary statistics, and side-by-side display [@few]. To support learning this UI, an introduction sequence tutorializes a "real" analysis via Hayashida level design [@hayashida; @brown]:
+This complex dataset requires technical sophistication to navigate and, to further increase accessibility, visualization tools help start temporal, spatial, and species comparisons with deep linking, coordinated highlighting, separated color channels, summary statistics, and side-by-side display [@few]. To support learning this UI, an optional introduction sequence tutorializes a "real" analysis via Hayashida^[Uses Mark Brown's formalization [@brown].] level design [@hayashida; @brown]:
 
- - **Introduction**: The tool shows information about Pacific cod with pre-filled elements used to achieve that analysis gradually fading in.
- - **Development**: Using the mechanics introduced moments prior, the tool invites the user to change the analysis to compare different regions with temperature data.
- - **Twist**: Overlays on the same display are enabled, allowing the user to leverage mechanics they just exercised in a now more complex interface.
- - **Conclusion**: End with giving the user an opportunity to demonstrate all of the skills acquired in a new problem.
+ - **Introduction**: The tool shows information about Pacific cod with pre-filled controls used to achieve that analysis gradually fading in, asking the user for minor modifications.
+ - **Development**: Using the mechanics introduced moments prior, the tool invites the user to change the analysis to compare different regions.
+ - **Twist**: Enabling overlays on the same display, the user leverages mechanics they just exercised in a now more complex interface.
+ - **Conclusion**: The visualization invites the user to demonstrate skills acquired in a new problem.
 
 Note that this visualization also serves as a starting point for continued analysis by generating either CSV or Python code to take work into other tools.
 
 ![Visualization screenshot.\label{fig:viz}](viz.png)
 
-In addition to use in a graduate classroom setting, five individuals with relevant background offered detailed feedback specific to this open source visualization. Though sometimes aided by a think-aloud prompt, feedback was limited to needs assessment / quality improvement specific to this publicly accessible web service [@thinkaloud].
+In addition to graduate classroom use, five individuals with relevant background offered detailed feedback on this open source visualization. Though sometimes aided by a think-aloud prompt, feedback was limited to needs assessment / quality improvement specific to this publicly accessible web service [@thinkaloud].
 
 ## Limitations
-These tools:
+As further documented in the repository [@readme], these tools:
 
  - Run single-threaded and synchoronous.
  - Represents hauls as points not areas in visualization aggregation due to dataset limitation.
  - Must exclude any hauls also excluded by NOAA from their dataset.
-
-See developer documentation for further detail [@readme].
 
 # Acknowledgements
 Thanks to:

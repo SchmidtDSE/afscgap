@@ -955,9 +955,26 @@ class MapViz {
                 const area = parseFloat(target["areaSweptHectares"])
                 const cpue = weight / area;
 
+                /**
+                 * Get a value from an object or, if not present, try getting
+                 * the value with "Delta" appended to the key.
+                 * 
+                 * @param {object} target The object from which to read.
+                 * @param {string} key The name of the value to read.
+                 * @return {number} Value from the object.
+                 */
+                function getOrDelta(target, key) {
+                    const rawValue = target[key];
+                    if (rawValue === undefined) {
+                        return target[key + "Delta"];
+                    } else {
+                        return rawValue
+                    }
+                }
+                
                 const temperature = {
-                    "bottom": target["bottomTemperatureC"],
-                    "surface": target["surfaceTemperatureC"],
+                    "bottom": getOrDelta(target, "bottomTemperatureC"),
+                    "surface": getOrDelta(target, "surfaceTemperatureC"),
                     "disabled": null
                 }[temperatureMode];
 
