@@ -45,8 +45,8 @@ Working with these data requires knowledge of tools ouside the Python "standard 
 ## Common analysis
 Access to the API alone cannot support some investigations as the API provides "presence-only" data [@inport]. Many types of analysis require information not just about where a species was present but also where it was not. For example, consider geohash-aggregated species catch per unit effort: while the presence-only dataset may provide a total weight or count for a species, the total area swept must include hauls in which the speices was not found [@geohash; @notebook]. The `afscgap` Python package can, with memory efficiency, algorithmically infer those "zero catch" records.
 
-## General public accessibility
-Though the `afscgap` Python package makes GAP catch data more accessible to developers, the size and complexity of this dataset complicates comparative analysis between species, years, and/or geographic areas [@notebook]. Without deep developer experience, it can be difficult to get started. To address a broader audience, this project also offers a no-code visualization tool sitting on top of `afscgap` to begin investigations with CSV and Python code export as a bridge to further analysis.
+## General accessibility
+Though the `afscgap` Python package makes GAP catch data more accessible to developers, the size and complexity of this dataset complicates comparative analysis between species, years, and/or geographic areas [@notebook]. Without deep developer experience, it may be difficult to get started even with scientific background. To address a broader audience, this project also offers a no-code visualization tool sitting on top of `afscgap` to begin investigations with CSV and Python code export as a bridge to further analysis.
 
 # Functions
 This project aims to improve accessibility of GAP catch data and offer inclusive approachable tools to kickstart analysis.
@@ -86,12 +86,12 @@ While using interface uses game / information design techniques to quickly teach
 
 ![Screenshot of the visualization tool.\label{fig:viz}](viz.png)
 
-In addition to use in a graduate classroom lecture setting, five individuals with related scientific background have provided tool-specific feedback in a quality / usability assurance capacity.
+In addition to use in a graduate classroom setting, five individuals with relevant background provided feedback specific to this open source visualization and, though sometimes aided by a think-aloud prompt, conversation was limited to needs assessment / quality improvement specific to this publicly accessible web service [@thinkaloud].
 
 ## Limitations
 This tool is single-threaded and non-asynchoronous. Also, from dataset limitations, hauls are points not areas in visualization aggregation [@readme].
 
 # Acknowledgements
-Project of The Eric and Wendy Schmidt Center for Data Science and the Environment at University of California Berkeley. README lists full credits but thanks to runtime dependencies ColorBrewer, D3, Flask, Geolib, Requests, Toolz, and Papa Parse [@colorbrewer; @d3; @flask; @geolib; @requests; @toolz; @papa]. Thanks to those providing guidance to help adoption: Carl Boettiger, Fernando Perez, Maya Weltman-Fahs, Brookie Guzder-Williams, Magali de Bruyn, and Ciera Martinez. 
+Project of The Eric and Wendy Schmidt Center for Data Science and the Environment at University of California Berkeley. README lists full credits but thanks to runtime dependencies ColorBrewer, D3, Flask, Geolib, Requests, Toolz, and Papa Parse [@colorbrewer; @d3; @flask; @geolib; @requests; @toolz; @papa]. Thanks to those providing guidance to help adoption: Carl Boettiger, Fernando Perez, Maya Weltman-Fahs, Brookie Guzder-Williams, Magali de Bruyn, and Ciera Martinez. Thank you also to PyOpenSci reviewers for advice in the library.
 
 # References
