@@ -12,7 +12,7 @@ Metadata fields such as `year` are always required to make a `Record` whereas ot
 
 `Record` objects also have an `is_complete` method which returns true if both all optional fields on the `Record` are non-None and the `date_time` field on the `Record` is a valid ISO 8601 string. By default, records for which `is_complete` are false are returned when iterating or through `get_page` but this can be overridden by with the `filter_incomplete` keyword argument like so:
 
-```
+```python
 import afscgap
 
 query = afscgap.Query()
@@ -28,7 +28,7 @@ for result in results:
 
 Results returned by the API for which non-Optional fields could not be parsed (like missing `year`) are considered "invalid" and always excluded during iteration when those raw unreadable records are kept in a `queue.Queue[dict]` that can be accessed via `get_invalid` like so:
 
-```
+```python
 import afscgap
 
 query = afscgap.Query()

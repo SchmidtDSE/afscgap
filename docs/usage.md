@@ -14,7 +14,7 @@ Visualization tools are available to help both programmers and non-programmers s
 ## Basic queries
 The `afscgap.Query` object is the main entry point into Python-based utilization. Calls can be written manually or generated in the [visual analytics tool](https://app.pyafscgap.org). For example, this requests all records of Pasiphaea pacifica in 2021 from the Gulf of Alaska to get the median bottom temperature when they were observed:
 
-```
+```python
 import statistics
 
 import afscgap
@@ -35,7 +35,7 @@ print(statistics.median(temperatures))
 
 Note that `afscgap.Query.execute` returns a [Cursor](https://pyafscgap.org/devdocs/afscgap/cursor.html#Cursor). One can iterate over this `Cursor` to access [Record](https://pyafscgap.org/devdocs/afscgap/model.html#Record) objects. You can do this with list comprehensions, maps, etc or with a good old for loop like in this example which gets a histogram of haul temperatures:
 
-```
+```python
 # Mapping from temperature in Celsius to count
 count_by_temperature_c = {}
 
@@ -66,7 +66,7 @@ One of the major limitations of the official API is that it only provides presen
 
 Absence data / "zero catch" records inference can be turned on by passing `False` to `set_presence_only` in `Query`. To demonstrate, this example finds total area swept and total weight for Gadus macrocephalus from the Aleutian Islands in 2021:
 
-```
+```python
 import afscgap
 
 query = afscgap.Query()
@@ -97,7 +97,7 @@ For more [details on the zero catch record feature](https://pyafscgap.org/docs/i
 ## Chaining
 It is possible to use the Query object for method chaining.
 
-```
+```python
 import statistics
 
 import afscgap
@@ -123,7 +123,7 @@ Each filter and set method on Query returns the same query object.
 ## Builder operations
 Note that Query is a builder. So, it may be used to execute a search and then execute another search with slightly modified parameters:
 
-```
+```python
 import statistics
 
 import afscgap
@@ -153,7 +153,7 @@ When calling filter, all prior filters on the query object for that field are ov
 ## Serialization
 Users may request a dictionary representation:
 
-```
+```python
 import afscgap
 
 # Create a query
@@ -185,7 +185,7 @@ Note `to_dicts` returns an iterator by default, but it can be realized as a full
 ## Pandas
 The dictionary form of the data can be used to create a Pandas dataframe:
 
-```
+```python
 import pandas
 
 import afscgap
@@ -206,7 +206,7 @@ Note that Pandas is not required to use this library.
 ## Advanced filtering
 You can provide range queries which translate to ORDS or Python emulated filters. For example, the following requests before and including 2019:
 
-```
+```python
 import afscgap
 
 # Build query
@@ -224,7 +224,7 @@ print(total_weight)
 
 The following requests data after and including 2019:
 
-```
+```python
 import afscgap
 
 # Build query
@@ -242,7 +242,7 @@ print(total_weight)
 
 Finally, the following requests data between 2015 and 2019 (includes 2015 and 2019):
 
-```
+```python
 import afscgap
 
 # Build query
@@ -265,7 +265,7 @@ For more advanced filters, please see manual filtering below.
 ## Manual filtering
 Users may provide advanced queries using Oracle's REST API query parameters. For example, this queries for 2021 records with haul from the Gulf of Alaska in a specific geographic area:
 
-```
+```python
 import afscgap
 
 # Query with ORDS syntax
@@ -295,7 +295,7 @@ For more info about the options available, consider the [Oracle docs](https://do
 ## Manual pagination
 By default, the library will iterate through all results and handle pagination behind the scenes. However, one can also request an individual page:
 
-```
+```python
 import afscgap 
 
 query = afscgap.Query()
@@ -310,7 +310,7 @@ print(len(results_for_page))
 
 Client code can also change the pagination behavior used when iterating:
 
-```
+```python
 import afscgap
 
 query = afscgap.Query()

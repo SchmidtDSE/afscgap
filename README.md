@@ -23,7 +23,7 @@ Taking your first step is easy!
 
 **Jump into code:** Ready to build your own scripts? Here's an example querying for Pacific cod in the Gulf of Alaska for 2021:
 
-```
+```python
 import afscgap  # install with pip install afscgap
 query = afscgap.Query()
 query.filter_year(eq=2021)
@@ -40,13 +40,13 @@ Continue your exploration in the [developer docs](https://pyafscgap.org/docs/usa
 ## Installation
 Ready to take it to your own machine? Install the open source tools for accessing the AFSC GAP via Pypi / Pip:
 
-```
+```bash
 $ pip install afscgap
 ```
 
 The library's only dependency is [requests](https://docs.python-requests.org/en/latest/index.html) and [Pandas / numpy are not expected but supported](https://pyafscgap.org/docs/usage/#pandas). The above will install the release version of the library. However, you can also install the development version via:
 
-```
+```bash
 $ pip install git+https://github.com/SchmidtDSE/afscgap.git@main
 ```
 
