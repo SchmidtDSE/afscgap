@@ -108,7 +108,7 @@ Thanks to:
 
  - Runtime dependencies: ColorBrewer, D3, Flask, Geolib, Requests, Toolz, and Papa Parse [@colorbrewer; @d3; @flask; @geolib; @requests; @toolz; @papa].
  - Library advice: Carl Boettiger, Fernando Perez, and PyOpenSci reviewers.
- - Visualization advice: Magali de Bruyn, Brookie Guzder-Williams, Angela Hayes, David Joy, Maya Weltman-Fahs, Lewis Barnett.
+ - Visualization advice: Magali de Bruyn, Brookie Guzder-Williams, Angela Hayes, David Joy, Maya Weltman-Fahs, and Lewis Barnett.
  - Ciera Martinez for general guidance.
  - Draw.io for diagrams [@diagrams].
  - Others declining acknowledgment.
