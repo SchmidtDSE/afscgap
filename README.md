@@ -117,10 +117,10 @@ Intersted in contributing to the project or want to bulid manually? Please see o
 [Sam Pottinger](https://github.com/sampottinger) is the primary contact with additional development from [Giulia Zarpellon](https://github.com/gizarp). Additionally some acknowledgements:
 
  - Thank you to [Carl Boettiger](https://github.com/cboettig) and [Fernando Perez](https://github.com/fperez) for advice in the Python library.
- - Thanks also to [Maya Weltman-Fahs](https://dse.berkeley.edu/people/maya-weltman-fahs), [Brookie Guzder-Williams](https://github.com/brookisme), Angela Hayes, Lewis Barnett, and [Magali de Bruyn](https://github.com/magalidebruyn) for advice on the visual analytics tool.
+ - Thanks also to [Maya Weltman-Fahs](https://dse.berkeley.edu/people/maya-weltman-fahs), [Brookie Guzder-Williams](https://github.com/brookisme), Angela Hayes, Lewis Barnett, Emily Markowitz, and [Magali de Bruyn](https://github.com/magalidebruyn) for advice on the visual analytics tool.
 
 This is a project of the [The Eric and Wendy Schmidt Center for Data Science and the Environment
-at UC Berkeley](https://dse.berkeley.edu) where [Kevin Koy](https://github.com/kevkoy) is Executive Director. Please contact us via dse@berkeley.edu. Thanks also to those who contributed but declined acknowledgment.
+at UC Berkeley](https://dse.berkeley.edu) where [Kevin Koy](https://github.com/kevkoy) is Executive Director. Please contact us via dse@berkeley.edu.
 
 <br>
 <br>
