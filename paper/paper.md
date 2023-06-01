@@ -96,7 +96,7 @@ To support learning this UI, an optional introduction sequence tutorializes a "r
 
 Note that this visualization also serves as a starting point for continued analysis by generating either CSV or Python code to take work into other tools.
 
-In addition to graduate classroom use, five individuals with relevant scientific background offered detailed feedback on this open source visualization as listed in acknowledgements. Though conversation was sometimes aided by a think-aloud prompt to help structure advice, feedback was limited to needs assessment / quality improvement specific to this publicly accessible web service [@thinkaloud].
+In addition to graduate classroom use, six individuals with relevant background offered feedback on this open source visualization as listed in acknowledgements. Though sometimes aided by a think-aloud prompt to help structure conversation, feedback was limited to needs assessment / quality improvement specific to this publicly accessible web service [@thinkaloud].
 
 ## Limitations
 As further documented in the repository [@readme], these tools:
