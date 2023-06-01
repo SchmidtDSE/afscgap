@@ -117,7 +117,7 @@ Intersted in contributing to the project or want to bulid manually? Please see o
 [Sam Pottinger](https://github.com/sampottinger) is the primary contact with additional development from [Giulia Zarpellon](https://github.com/gizarp). Additionally some acknowledgements:
 
  - Thank you to [Carl Boettiger](https://github.com/cboettig) and [Fernando Perez](https://github.com/fperez) for advice in the Python library.
- - Thanks also to [Maya Weltman-Fahs](https://dse.berkeley.edu/people/maya-weltman-fahs), [Brookie Guzder-Williams](https://github.com/brookisme), Angela Hayes, and [Magali de Bruyn](https://github.com/magalidebruyn) for advice on the visual analytics tool.
+ - Thanks also to [Maya Weltman-Fahs](https://dse.berkeley.edu/people/maya-weltman-fahs), [Brookie Guzder-Williams](https://github.com/brookisme), Angela Hayes, David Joy, and [Magali de Bruyn](https://github.com/magalidebruyn) for advice on the visual analytics tool.
  - Lewis Barnett, Emily Markowitz, and Ciera Martinez for general guidance.
 
 This is a project of the [The Eric and Wendy Schmidt Center for Data Science and the Environment
