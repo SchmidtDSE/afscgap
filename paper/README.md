@@ -1,4 +1,4 @@
-Inst
+Paper
 ================================================================================
 Resources for the JOSS paper submission for the Pyafscgap.org project. See paper preview at https://pyafscgap.org/static/paper_preview.pdf or the JOSS formatted version at https://pyafscgap.org/static/paper_joss.pdf. Note that the paper preview uses the following open source tools:
 
