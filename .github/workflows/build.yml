@@ -65,3 +65,8 @@ jobs:
         with:
           journal: joss
           paper-path: paper/paper.md
+      - name: Upload JOSS preview
+        uses: actions/upload-artifact@v1
+        with:
+          name: paper
+          path: paper/paper.pdf
