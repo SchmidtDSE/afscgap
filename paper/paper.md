@@ -96,7 +96,7 @@ To support learning this UI, an optional introduction sequence tutorializes a "r
 
 Note that this visualization also serves as a starting point for continued analysis by generating either CSV or Python code to take work into other tools.
 
-In addition to graduate classroom use, six individuals with relevant background offered feedback on this open source visualization. Though often aided by a think-aloud prompt to help structure conversation, feedback was limited to needs assessment / quality improvement specific to this public web service^[IRB questionnaire indicates "project does not constitute human subjects research" and review is not required.] [@thinkaloud].
+In addition to graduate classroom use, five individuals with relevant background offered feedback on this open source visualization. Though typically aided by a think-aloud prompt to help structure conversation, feedback was limited to needs assessment / quality improvement specific to this public web service^[IRB questionnaire indicates "project does not constitute human subjects research" and review is not required.] [@thinkaloud].
 
 ## Limitations
 As further documented in the repository [@readme], these tools:
@@ -110,8 +110,8 @@ Thanks to:
 
  - Runtime dependencies: ColorBrewer, D3, Flask, Geolib, Requests, Toolz, and Papa Parse [@colorbrewer; @d3; @flask; @geolib; @requests; @toolz; @papa].
  - Library advice: Carl Boettiger, Fernando Perez, and PyOpenSci reviewers.
- - Visualization advice: Lewis Barnett, Magali de Bruyn, Brookie Guzder-Williams, Angela Hayes, David Joy, and Maya Weltman-Fahs.
- - Emily Markowitz and Ciera Martinez for general guidance.
+ - Visualization advice: Magali de Bruyn, Brookie Guzder-Williams, Angela Hayes, David Joy, and Maya Weltman-Fahs.
+ - Lewis Barnett, Emily Markowitz, and Ciera Martinez for general guidance.
  - Draw.io for diagrams [@diagrams].
 
 Project of The Eric and Wendy Schmidt Center for Data Science and the Environment at UC Berkeley.
