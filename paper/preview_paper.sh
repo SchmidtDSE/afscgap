@@ -5,4 +5,4 @@ sudo apt-get update
 
 sudo apt-get install pandoc pandoc-citeproc texlive-extra-utils texlive-fonts-recommended texlive-latex-base texlive-latex-extra
 
-pandoc paper.md --bibliography=paper.bib --lua-filter=scholarly-metadata.lua --lua-filter=author-info-blocks.lua -o ../website/static/paper_joss.pdf
+pandoc paper.md --bibliography=paper.bib --lua-filter=scholarly-metadata.lua --lua-filter=author-info-blocks.lua -o ../website/static/paper_preview.pdf
