@@ -1,6 +1,6 @@
 [project]
 name = "afscgap"
-version = "1.0.0"
+version = "1.0.1"
 authors = [
   { name="A Samuel Pottinger", email="sam.pottinger@berkeley.edu" },
 ]
