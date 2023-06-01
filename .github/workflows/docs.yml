@@ -27,13 +27,6 @@ jobs:
           python-version: '3.11'
       - name: Build docs
         run: bash build_docs.sh
-      - name: Build JOSS preview
-        uses: openjournals/openjournals-draft-action@master
-        with:
-          journal: joss
-          paper-path: paper/paper.md
-      - name: Move JOSS preview
-        run: cp paper.pdf website/static/paper.pdf
       - name: Upload website
         id: uploadWebsite
         uses: Creepios/sftp-action@v1.0.3
