@@ -27,6 +27,11 @@ jobs:
           python-version: '3.11'
       - name: Build docs
         run: bash build_docs.sh
+      - name: Build JOSS preview
+        uses: openjournals/openjournals-draft-action@master
+        with:
+          journal: joss
+          paper-path: paper/paper.md
       - name: Upload website
         id: uploadWebsite
         uses: Creepios/sftp-action@v1.0.3
@@ -45,3 +50,8 @@ jobs:
           key: ${{ secrets.SSHKEY }}
           port: ${{ secrets.SSHPORT }}
           script: bash reload_afscgap.sh
+      - name: Upload
+        uses: actions/upload-artifact@v1
+        with:
+          name: paper
+          path: paper/paper.pdf
