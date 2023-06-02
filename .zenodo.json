@@ -1,0 +1,55 @@
+{
+  "license": "other-open", 
+  "contributors": [
+      {
+          "orcid": "0000-0002-0458-4985", 
+          "affiliation": "UC Berkeley", 
+          "type": "ProjectLeader", 
+          "name": "Pottinger, A Samuel"
+      }, 
+      {
+          "orcid": "0000-0002-9122-4709", 
+          "affiliation": "UC Berkeley", 
+          "type": "ProjectMember", 
+          "name": "Zarpellon, Giulia"
+      }
+  ], 
+  "language": "eng", 
+  "title": "SchmidtDSE/afscgap: 1.0.2", 
+  "related_identifiers": [
+      {
+          "scheme": "url", 
+          "identifier": "https://github.com/SchmidtDSE/afscgap/tree/1.0.2", 
+          "relation": "isSupplementTo"
+      }, 
+      {
+          "scheme": "doi", 
+          "identifier": "10.5281/zenodo.7991875", 
+          "relation": "isVersionOf"
+      }
+  ], 
+  "version": "1.0.2", 
+  "upload_type": "software", 
+  "keywords": [
+      "ocean", 
+      "fish", 
+      "python", 
+      "NOAA", 
+      "AFSC", 
+      "GAP", 
+      "Alaska"
+  ], 
+  "publication_date": "2023-06-02", 
+  "creators": [
+      {
+          "affiliation": "UC Berkeley", 
+          "name": "A Samuel Pottinger"
+      }, 
+      {
+          "affiliation": "UC Berkeley",
+          "name": "Giulia Zarpellon"
+      }
+  ], 
+  "access_right": "open", 
+  "description": "<p>Python-based tool chain (&quot;Pyafscgap.org&quot;) for working with the public bottom trawl surveys data from the <a href=\"https://www.fisheries.noaa.gov/contact/groundfish-assessment-program\">NOAA AFSC GAP</a>. This provides information about where certain species were seen and when under what conditions, information useful for research in ocean health.</p>\n\n<p>See <a href=\"https://pyafscgap.org\">webpage</a>, <a href=\"https://github.com/SchmidtDSE/afscgap\">project Github</a>, and <a href=\"https://mybinder.org/v2/gh/SchmidtDSE/afscgap/main?urlpath=/tree/index.ipynb\">example notebook</a>.</p>"
+}

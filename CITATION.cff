@@ -1,0 +1,14 @@
+cff-version: 1.1.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: Pottinger
+    given-names: A Samuel
+    orcid: 0000-0002-0458-4985
+  - family-names: Zarpellon
+    given-names: Giulia
+    orcid: 0000-0002-9122-4709
+title: Pyafscgap.org
+abstract: Python-based tools for NOAA AFSC GAP marine species surveys data.
+license: BSD-3-Clause
+version: 1.0.2
+date-released: 2023-06-02
