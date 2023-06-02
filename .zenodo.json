@@ -9,7 +9,7 @@
       }, 
       {
           "orcid": "0000-0002-9122-4709", 
-          "affiliation": "UC Berkeley", 
+          "affiliation": "UC Berkeley",
           "type": "ProjectMember", 
           "name": "Zarpellon, Giulia"
       }
@@ -25,7 +25,7 @@
       {
           "scheme": "doi", 
           "identifier": "10.5281/zenodo.7991875", 
-          "relation": "isVersionOf"
+          "relation": "isNewVersionOf"
       }
   ], 
   "version": "1.0.2", 
