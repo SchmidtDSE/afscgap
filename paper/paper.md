@@ -56,10 +56,10 @@ $$CPUE_{species} = \frac{m_{species}}{A_{swept}}$$
 Knowing CPUE (kg/ha) must also include "absence data" or hauls in which the speices was not recorded, this package can efficiently infer those hauls not easily returned from the API service [@notebook].
 
 ## Broad accessibility
-Though the `afscgap` Python package makes GAP catch data more accessible, the size and complexity of this dataset complicates comparative analysis between species, years, and/or geographic areas [@notebook]. Without deep developer experience, it may still be difficult to get started even with scientific background. To address a broader audience, this project also offers a no-code visualization tool sitting on top of `afscgap` with CSV and Python code export as a bridge to further analysis.
+Though the `afscgap` Python package makes GAP catch data more accessible, the size and complexity of this dataset complicates comparative analysis between species, years, and/or geographic areas [@notebook]. Without deep developer experience, it may still be difficult to get started even with scientific background. To address a broader audience, this project offers visualization on top of `afscgap` with CSV and Python code export as a bridge to further analysis.
 
 # Functions
-This project aims to improve accessibility of GAP catch data and offer approachable tools to kickstart analysis.
+This project improves accessibility of GAP catch data and offers approachable tools to kickstart analysis.
 
 ## Lazy querying facade
 The `afscgap` library manages significant complexity to offer a simple familiar interface to Python developers:
@@ -73,14 +73,14 @@ The `afscgap` library manages significant complexity to offer a simple familiar 
 ## Zero catch inference
 "Zero catch" inference enables a broader range of analysis with the following algorithm:
 
- - Paginate while records remain available from the API service.
+ - Lazily paginate while records remain available from the API service.
    - Record species and hauls observed from API-returned results.
    - Return records as available.
- - Generate inferred records after API exhaustion.
+ - Lazily generate inferred records after API exhaustion.
    - For each species observed in API results, check if it had a record for each haul in a hauls flat file [@flatfile].
    - For any hauls without the species, produce a record from the iterator.
 
-This library offers Python-emulation of ORDS filters for inferred records.
+Note `afscgap` performs Python-emulation of ORDS filters on inferred records.
 
 ## Visualization
 This complex dataset requires technical sophistication to navigate and, to further increase accessibility, visualization tools help start temporal, spatial, and species comparisons with deep linking, coordinated highlighting, separated color channels, summary statistics, and side-by-side display [@few].
