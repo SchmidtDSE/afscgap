@@ -29,7 +29,7 @@ affiliations:
    index: 1
 institute:
   - ucberkeley: University of California, Berkeley
-date: 4 April 2023
+date: 2 June 2023
 bibliography: paper.bib
 ---
 
@@ -96,7 +96,7 @@ To support learning this UI, an optional introduction sequence tutorializes a "r
 
 Note that this visualization also serves as a starting point for continued analysis by generating either CSV or Python code to take work into other tools.
 
-Five individuals with relevant background have offered feedback on this open source visualization. Though typically aided by a think-aloud prompt to help structure conversation, discussion was limited to needs assessment / quality improvement specific to this public web service^[IRB questionnaire indicates "project does not constitute human subjects research" and review is not required.] [@thinkaloud].
+In addition to use in a graduate classroom setting, five individuals with relevant background offered feedback on this open source visualization with four aided by a think-aloud prompt^[Discussion was limited to needs assessment / quality improvement, collecting information about the tool and not about individuals. IRB questionnaire on file finds "project does not constitute human subjects research" and review is not required.] [@thinkaloud].
 
 ## Limitations
 As further documented in the repository [@readme], these tools:
