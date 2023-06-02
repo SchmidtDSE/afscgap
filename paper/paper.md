@@ -87,7 +87,7 @@ This complex dataset requires technical sophistication to navigate and, to furth
 
 ![Visualization screenshot.\label{fig:viz}](viz.png)
 
-To support learning this UI, an optional introduction sequence tutorializes a "real" analysis via Hayashida^[Uses Mark Brown's formalization [@brown].] level design [@hayashida; @brown]:
+To support learning this UI, an optional introduction sequence tutorializes a "real" analysis via Hayashida level design [@hayashida; @brown]:
 
  - **Introduction**: The tool shows information about Pacific cod with pre-filled controls used to achieve that analysis gradually fading in, asking the user for minor modifications.
  - **Development**: Using the mechanics introduced moments prior, the tool invites the user to change the analysis to compare different regions.
