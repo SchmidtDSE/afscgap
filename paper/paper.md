@@ -29,7 +29,7 @@ affiliations:
    index: 1
 institute:
   - ucberkeley: University of California, Berkeley
-date: 4 April 2023
+date: 2 June 2023
 bibliography: paper.bib
 ---
 
@@ -56,10 +56,10 @@ $$CPUE_{species} = \frac{m_{species}}{A_{swept}}$$
 Knowing CPUE (kg/ha) must also include "absence data" or hauls in which the speices was not recorded, this package can efficiently infer those hauls not easily returned from the API service [@notebook].
 
 ## Broad accessibility
-Though the `afscgap` Python package makes GAP catch data more accessible, the size and complexity of this dataset complicates comparative analysis between species, years, and/or geographic areas [@notebook]. Without deep developer experience, it may still be difficult to get started even with scientific background. To address a broader audience, this project also offers a no-code visualization tool sitting on top of `afscgap` with CSV and Python code export as a bridge to further analysis.
+Though the `afscgap` Python package makes GAP catch data more accessible, the size and complexity of this dataset complicates comparative analysis between species, years, and/or geographic areas [@notebook]. Without deep developer experience, it may still be difficult to get started even with scientific background. To address a broader audience, this project offers visualization on top of `afscgap` with CSV and Python code export as a bridge to further analysis.
 
 # Functions
-This project aims to improve accessibility of GAP catch data and offer approachable tools to kickstart analysis.
+This project improves accessibility of GAP catch data and offers approachable tools to kickstart analysis.
 
 ## Lazy querying facade
 The `afscgap` library manages significant complexity to offer a simple familiar interface to Python developers:
@@ -73,21 +73,21 @@ The `afscgap` library manages significant complexity to offer a simple familiar 
 ## Zero catch inference
 "Zero catch" inference enables a broader range of analysis with the following algorithm:
 
- - Paginate while records remain available from the API service.
+ - Lazily paginate while records remain available from the API service.
    - Record species and hauls observed from API-returned results.
    - Return records as available.
- - Generate inferred records after API exhaustion.
+ - Lazily generate inferred records after API exhaustion.
    - For each species observed in API results, check if it had a record for each haul in a hauls flat file [@flatfile].
    - For any hauls without the species, produce a record from the iterator.
 
-This library offers Python-emulation of ORDS filters for inferred records.
+Note `afscgap` performs Python-emulation of ORDS filters on inferred records.
 
 ## Visualization
 This complex dataset requires technical sophistication to navigate and, to further increase accessibility, visualization tools help start temporal, spatial, and species comparisons with deep linking, coordinated highlighting, separated color channels, summary statistics, and side-by-side display [@few].
 
 ![Visualization screenshot.\label{fig:viz}](viz.png)
 
-To support learning this UI, an optional introduction sequence tutorializes a "real" analysis via Hayashida^[Uses Mark Brown's formalization [@brown].] level design [@hayashida; @brown]:
+To support learning this UI, an optional introduction sequence tutorializes a "real" analysis via Hayashida level design [@hayashida; @brown]:
 
  - **Introduction**: The tool shows information about Pacific cod with pre-filled controls used to achieve that analysis gradually fading in, asking the user for minor modifications.
  - **Development**: Using the mechanics introduced moments prior, the tool invites the user to change the analysis to compare different regions.
@@ -96,7 +96,7 @@ To support learning this UI, an optional introduction sequence tutorializes a "r
 
 Note that this visualization also serves as a starting point for continued analysis by generating either CSV or Python code to take work into other tools.
 
-Five individuals with relevant background have offered feedback on this open source visualization. Though typically aided by a think-aloud prompt to help structure conversation, discussion was limited to needs assessment / quality improvement specific to this public web service^[IRB questionnaire indicates "project does not constitute human subjects research" and review is not required.] [@thinkaloud].
+In addition to use in a graduate classroom setting, five individuals with relevant background offered feedback on this open source visualization with four aided by a think-aloud prompt^[Discussion limited to tool-specific needs assessment / quality improvement, collecting information about the tool and not individuals. IRB questionnaire on file finds "project does not constitute human subjects research" and review is not required.] [@thinkaloud].
 
 ## Limitations
 As further documented in the repository [@readme], these tools:
