@@ -7,7 +7,7 @@
 
 <br>
 
-Python-based tool chain ("Pyafscgap.org") for working with the public bottom trawl surveys data from the [NOAA AFSC GAP](https://www.fisheries.noaa.gov/contact/groundfish-assessment-program). This provides information about where certain species were seen and when under what conditions, information useful for research in ocean health.
+Python-based tool chain ("Pyafscgap.org") for working with the public bottom trawl data from the [NOAA AFSC GAP](https://www.fisheries.noaa.gov/contact/groundfish-assessment-program). This provides information from multiple survey programs about where certain species were seen and when under what conditions, information useful for research in ocean health.
 
 See [webpage](https://pyafscgap.org), [project Github](https://github.com/SchmidtDSE/afscgap), and [example notebook](https://mybinder.org/v2/gh/SchmidtDSE/afscgap/main?urlpath=/tree/index.ipynb).
 
@@ -17,7 +17,7 @@ See [webpage](https://pyafscgap.org), [project Github](https://github.com/Schmid
 ## Quickstart
 Taking your first step is easy!
 
-**Explore the data in a UI:** To learn about the dataset, try out an in-browser visual analytics app at [https://app.pyafscgap.org](https://app.pyafscgap.org) without writing any code.
+**Explore the data in a UI:** To learn about the datasets, try out an in-browser visual analytics app at [https://app.pyafscgap.org](https://app.pyafscgap.org) without writing any code.
 
 **Try out a tutorial in your browser:** Learn from and modify an in-depth [tutorial notebook](https://mybinder.org/v2/gh/SchmidtDSE/afscgap/main?urlpath=/tree/index.ipynb) in a free hosted academic environment (all without installing any local software).
 
@@ -60,9 +60,9 @@ Unofficial Python-based tool set for interacting with [bottom trawl surveys](htt
 
  - Pythonic access to the official [NOAA AFSC GAP API service](https://www.fisheries.noaa.gov/foss/f?p=215%3A28).
  - Tools for inference of the "negative" observations not provided by the API service.
- - Visualization tools for quickly exploring and creating comparisons within the dataset, including for audiences with limited programming experience.
+ - Visualization tools for quickly exploring and creating comparisons within the datasets, including for audiences with limited programming experience.
 
-Note that GAP is an excellent dataset produced by the [Resource Assessment and Conservation Engineering (RACE) Division](https://www.fisheries.noaa.gov/about/resource-assessment-and-conservation-engineering-division) of the [Alaska Fisheries Science Center (AFSC)](https://www.fisheries.noaa.gov/about/alaska-fisheries-science-center) as part of the National Oceanic and Atmospheric Administration's Fisheries organization ([NOAA Fisheries](https://www.fisheries.noaa.gov/)).
+Note that GAP are an excellent collection of datasets produced by the [Resource Assessment and Conservation Engineering (RACE) Division](https://www.fisheries.noaa.gov/about/resource-assessment-and-conservation-engineering-division) of the [Alaska Fisheries Science Center (AFSC)](https://www.fisheries.noaa.gov/about/alaska-fisheries-science-center) as part of the National Oceanic and Atmospheric Administration's Fisheries organization ([NOAA Fisheries](https://www.fisheries.noaa.gov/)).
 
 Please see our [objectives documentation](https://pyafscgap.org/docs/objectives/) for additional information about the purpose, developer needs addressed, and goals of the project.
 
