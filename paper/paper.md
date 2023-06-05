@@ -34,39 +34,39 @@ bibliography: paper.bib
 ---
 
 # Summary
-The Groundfish Assessment Program within NOAA AFSC produces longitudinal catch data [@afscgap]. Supporting ocean health research and fisheries management, these "hauls" report where bottom trawl surveys find marine species and in what quantities [@example]. Increasing these data usability for communities of diverse programming experience, Pyafscgap.org offers query language compliation, memory-efficient algorithms for "zero-catch" inference, and interactive visual analytics for multiple locations' economically and scientifically important datasets. Altogether, this research toolset supports investigatory tasks across survey programs and broadens access through game and information design.
+NOAA AFSC's Groundfish Assessment Program produces longitudinal catch data [@afscgap]. Supporting ocean health research and fisheries management, these "hauls" report in what quantities, conditions, and locations bottom trawl surveys find different marine species [@example]. Increasing usability for communities of diverse programming experience, Pyafscgap.org offers query language compliation, memory-efficient algorithms for "zero-catch" inference, and interactive visual analytics for these economically and scientifically important GAP datasets. Altogether, this research toolset supports investigatory tasks across survey programs' locations and broadens access through game and information design.
 
 # Statement of need
 Pyafscgap.org reduces barriers for use of NOAA AFSC RACE GAP^[Groundfish Assessment Program in the Resource Assessment and Conservation Engineering Division of the National Oceanic and Atmospheric Administration's Alaska Fisheries Science Center] data, offering:
 
  - Improved developer usability.
- - Memory-efficient algorithms for analysis requiring zero catch inference.
- - Tools for those with less developer experience.
+ - Memory-efficient algorithms for zero catch inference.
+ - Zero-code visualization tools.
 
-Altogether, these open source tools extend the reach and approachability of the multiple survey programs operating under the division. Example utilization includes longitudinal analysis of catch per unit effort (CPUE) in context of fisheries management and environmental changes [@notebook].
+Altogether, these open source tools extend the reach and approachability of GAP's multiple survey programs, supporting analysis like longitudinal catch per unit effort (CPUE) in context of management and environmental changes [@notebook].
 
 ## Developer usability
-Working with these data requires knowledge of tools ouside the Python "standard toolset" like closed-source ORDS query language [@ords]. While the `afscgap` package offers easier access to the official REST service, it also crucially offers ORDS compilation, documented types, and lazy access to these sometimes large datasets. Together, these tools enable Python developers to use familiar patterns to efficiently interact with these data: type checking, standard documentation, lazy access, and compatability with common Python data-related libraries.
+Working with these data requires knowledge of tools ouside the Python "standard toolset" like closed-source ORDS query language [@ords]. While the `afscgap` package offers easier access to the official REST service, it also crucially offers ORDS compilation, documented types, and lazy access to these large datasets. Together, these tools enable Python developers to efficiently use familiar patterns to interact with these data: type checking, standard documentation, and compatability with common Python data-related libraries.
 
 ## Record inference
-The surveys on their own within the API struggle supporting some investigations as they provide "presence-only" data [@inport]. For example, the API may readily yield total mass of Pacific cod but not its geohash-aggregated CPUE [@geohash].
+Surveys on their own within the API struggle supporting some investigations as they provide "presence-only" data [@inport]. For example, the API may readily yield total mass of Pacific cod but not its geohash-aggregated CPUE [@geohash].
 
 $$CPUE_{species} = \frac{m_{species}}{A_{swept}}$$
 
-Knowing CPUE (kg/ha) must also include "absence data" or hauls in which the speices was not recorded, this package can efficiently infer query-specific relevant hauls [@notebook].
+Metrics like CPUE need "absence data" (hauls in which the speices was not recorded) and this package can efficiently infer those results [@notebook].
 
 ## Broad accessibility
-Though the `afscgap` Python package makes GAP catch data more accessible, the size and complexity of this dataset complicates comparative analysis between species, years, and/or geographic areas [@notebook]. Without deep developer experience, it may still be difficult to get started even with scientific background. To address a broader audience, this project offers visualization on top of `afscgap` with CSV and Python code export as a bridge to further analysis.
+Though the `afscgap` Python package makes GAP catch data more accessible, size and complexity complicates comparative analysis between species, years, and/or geographic areas [@notebook]. Without deep developer experience, it may still be difficult to get started even with scientific background. To address a broader audience, this project offers visualization on top of `afscgap` with CSV and Python code export as a bridge to further analysis.
 
 # Functions
 This project improves accessibility of GAP catch data and offers approachable tools to kickstart analysis.
 
-## Lazy querying facade
+## Efficient facade
 The `afscgap` library manages significant complexity to offer a simple familiar interface to Python developers:
 
  - Lazy "generator iterables" increase accessibility by encapsulating logic for memory-efficient pagination and "data munging" behind Python-standard iterators [@lazy].
- - To support zero catch data, decorators adapt diverse structures to common interfaces, offering polymorphism [@decorators].
- - Offering a single object entry-point into the library, a "facade" frees users from needing deep understanding of the library's types, a goal furthered by compilation of "standard" Python types to Oracle REST Data Service queries [@facade].
+ - Decorators adapt diverse structures to common interfaces in zero catch data, offering polymorphism [@decorators].
+ - Offering a single object entry-point into the library, a "facade" frees users from needing deep understanding of the library's types and transparently compiles "standard" Python types to Oracle REST Data Service queries [@facade].
 
 ![Diagram of afscgap.\label{fig:library}](library.png)
 
@@ -83,18 +83,18 @@ The `afscgap` library manages significant complexity to offer a simple familiar 
 Note `afscgap` performs Python-emulation of ORDS filters on inferred records.
 
 ## Visualization
-This complex dataset requires technical sophistication to navigate and, to further increase accessibility, visualization tools help start temporal, spatial, and species comparisons with deep linking, coordinated highlighting, separated color channels, summary statistics, and side-by-side display [@few].
+These complex data require technical sophistication to navigate and, to increase accessibility, visualization tools help start temporal, spatial, and species comparisons with deep linking, coordinated highlighting, separated color channels, summary statistics, and side-by-side display [@few].
 
 ![Visualization screenshot.\label{fig:viz}](viz.png)
 
-To support learning this UI, an optional introduction sequence tutorializes a "real" analysis via Hayashida level design [@hayashida; @brown]:
+To support learning this UI, an optional introduction sequence tutorializes a "real" analysis via Hayashida design [@hayashida; @brown]:
 
  - **Introduction**: The tool shows information about Pacific cod with pre-filled controls used to achieve that analysis gradually fading in, asking the user for minor modifications.
  - **Development**: Using the mechanics introduced moments prior, the tool invites the user to change the analysis to compare different regions.
  - **Twist**: Enabling overlays on the same display, the user leverages mechanics they just exercised in a now more complex interface.
  - **Conclusion**: The visualization invites the user to demonstrate skills acquired in a new problem.
 
-Note that this visualization also serves as a starting point for continued analysis by generating either CSV or Python code to take work into other tools.
+This visualization also serves as a starting point for continued analysis by generating either CSV or Python code to take work into other tools.
 
 In addition to use in a graduate classroom setting, five individuals with relevant background offered feedback on this open source visualization with four aided by a think-aloud prompt^[Discussion limited to tool-specific needs assessment / quality improvement, collecting information about the tool and not individuals. IRB questionnaire on file finds "project does not constitute human subjects research" and review is not required.] [@thinkaloud].
 
@@ -102,8 +102,8 @@ In addition to use in a graduate classroom setting, five individuals with releva
 As further documented in the repository [@readme], these tools:
 
  - Run single-threaded and synchoronous.
- - Represents hauls as points not areas in visualization aggregation due to dataset limitation.
- - Must exclude any hauls also excluded by NOAA from their dataset.
+ - Aggregates hauls as points in visualization due to data limitation.
+ - Ignores hauls if entirelly excluded by NOAA.
 
 # Acknowledgements
 Thanks to:
