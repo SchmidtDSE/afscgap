@@ -43,7 +43,7 @@ Pyafscgap.org reduces barriers for use of NOAA AFSC RACE GAP^[Groundfish Assessm
  - Memory-efficient algorithms for zero catch inference.
  - Zero-code visualization tools.
 
-Altogether, these open source tools extend the reach and approachability of GAP's multiple survey programs, supporting analysis like longitudinal catch per unit effort (CPUE) in context of management and environmental changes [@notebook].
+Altogether, these open source tools extend the reach and approachability of GAP's multiple survey programs, supporting analysis like longitudinal catch per unit effort (CPUE) in context of environmental changes [@notebook].
 
 ## Developer usability
 Working with these data requires knowledge of tools ouside the Python "standard toolset" like closed-source ORDS query language [@ords]. While the `afscgap` package offers easier access to the official REST service, it also crucially offers ORDS compilation, documented types, and lazy access to these large datasets. Together, these tools enable Python developers to efficiently use familiar patterns to interact with these data: type checking, standard documentation, and compatability with common Python data-related libraries.
