@@ -59,7 +59,7 @@ Metrics like CPUE need "absence data" (hauls in which the speices was not record
 Though the `afscgap` Python package makes GAP catch data more accessible, size and complexity complicates comparative analysis between species, years, and/or geographic areas [@notebook]. Without deep developer experience, it may still be difficult to get started even with scientific background. To address a broader audience, this project offers visualization on top of `afscgap` with CSV and Python code export as a bridge to further analysis.
 
 # Functions
-This project improves accessibility of GAP catch data and offers approachable tools to kickstart analysis.
+This project improves accessibility of GAP data and offers approachable tools to kickstart analysis.
 
 ## Efficient facade
 The `afscgap` library manages significant complexity to offer a simple familiar interface to Python developers:
