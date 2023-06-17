@@ -32,6 +32,8 @@ jobs:
         with:
           journal: joss
           paper-path: paper/paper.md
+      - name: Copy paper
+        run: cp paper/paper.pdf website/static/paper_preview.pdf
       - name: Upload website
         id: uploadWebsite
         uses: Creepios/sftp-action@v1.0.3
