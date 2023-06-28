@@ -105,7 +105,7 @@ As further documented in the repository [@readme], these tools:
  - Aggregate hauls as points in visualization due to data limitation.
  - Ignore hauls if entirely excluded by NOAA.
 
-# Acknowledgements
+# Acknowledgments
 Thanks to:
 
  - Runtime dependencies: ColorBrewer, D3, Flask, Geolib, Requests, Toolz, and Papa Parse [@colorbrewer; @d3; @flask; @geolib; @requests; @toolz; @papa].
