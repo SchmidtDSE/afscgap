@@ -25,7 +25,7 @@ author:
       institute:
         - ucberkeley
 affiliations:
- - name: University of California Berkeley, California, United States of America
+ - name: University of California, Berkeley, California, United States of America
    index: 1
 institute:
   - ucberkeley: University of California Berkeley, California, United States of America
