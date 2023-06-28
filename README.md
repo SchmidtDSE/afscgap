@@ -155,6 +155,7 @@ Thank you to all of these projects for their contribution.
 ## Version history
 Annotated version history:
 
+ - `1.0.4`: Minor documentation fypo fix.
  - `1.0.3`: Documentation edits for journal article.
  - `1.0.2`: Minor documentation touch ups for pyopensci.
  - `1.0.1`: Minor documentation fix.
