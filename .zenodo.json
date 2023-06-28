@@ -1,5 +1,5 @@
 {
-  "license": "other-open", 
+  "license": "BSD-3-Clause", 
   "contributors": [
       {
           "orcid": "0000-0002-0458-4985", 
@@ -15,7 +15,7 @@
       }
   ], 
   "language": "eng", 
-  "title": "SchmidtDSE/afscgap: 1.0.2", 
+  "title": "Pyafscgap.org: Open source multi-modal Python-based tools for NOAA AFSC RACE GAP", 
   "related_identifiers": [
       {
           "scheme": "url", 
@@ -42,11 +42,11 @@
   "publication_date": "2023-06-02", 
   "creators": [
       {
-          "affiliation": "UC Berkeley", 
+          "affiliation": "University of California, Berkeley, California, United States of America", 
           "name": "A Samuel Pottinger"
       }, 
       {
-          "affiliation": "UC Berkeley",
+          "affiliation": "University of California, Berkeley, California, United States of America",
           "name": "Giulia Zarpellon"
       }
   ], 

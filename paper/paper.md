@@ -25,16 +25,16 @@ author:
       institute:
         - ucberkeley
 affiliations:
- - name: University of California, Berkeley
+ - name: University of California, Berkeley, California, United States of America
    index: 1
 institute:
-  - ucberkeley: University of California, Berkeley
+  - ucberkeley: University of California Berkeley, California, United States of America
 date: 2 June 2023
 bibliography: paper.bib
 ---
 
 # Summary
-NOAA AFSC's Groundfish Assessment Program produces longitudinal catch data [@afscgap]. Supporting ocean health research and fisheries management, these "hauls" report in what quantities, conditions, and locations bottom trawl surveys find different marine species [@example]. Increasing usability for communities of diverse programming experience, Pyafscgap.org offers query language compliation, memory-efficient algorithms for "zero-catch" inference, and interactive visual analytics for these economically and scientifically important GAP datasets. Altogether, this research toolset supports investigatory tasks across survey programs' locations and broadens access through game and information design.
+NOAA AFSC's Groundfish Assessment Program produces longitudinal catch data which support ocean health research and fisheries management [@afscgap]. These "hauls" report in what quantities and locations bottom trawl surveys find different marine species along with environmental conditions at the time and place of observation [@example]. Increasing usability for communities of diverse programming experience, Pyafscgap.org offers query language compilation, memory-efficient algorithms for "zero-catch" inference, and interactive visual analytics for these economically and scientifically important GAP datasets. Altogether, this research toolset supports investigatory tasks across survey programs' locations and broadens access through game and information design.
 
 # Statement of need
 Pyafscgap.org reduces barriers for use of NOAA AFSC RACE GAP^[Groundfish Assessment Program in the Resource Assessment and Conservation Engineering Division of the National Oceanic and Atmospheric Administration's Alaska Fisheries Science Center] data, offering:
@@ -43,20 +43,20 @@ Pyafscgap.org reduces barriers for use of NOAA AFSC RACE GAP^[Groundfish Assessm
  - Memory-efficient algorithms for zero catch inference.
  - Zero-code visualization tools.
 
-Altogether, these open source tools extend the reach and approachability of GAP's multiple survey programs, supporting analysis like longitudinal catch per unit effort (CPUE) in context of environmental changes [@notebook].
+Altogether, these open source tools extend the reach and approachability of GAP's multiple survey programs to support analysis like longitudinal catch per unit effort (CPUE) in context of environmental changes [@notebook].
 
 ## Developer usability
-Working with these data requires knowledge of tools ouside the Python "standard toolset" like closed-source ORDS query language [@ords]. While the `afscgap` package offers easier access to the official REST service, it also crucially offers ORDS compilation, documented types, and lazy access to these large datasets. Together, these tools enable Python developers to efficiently use familiar patterns to interact with these data: type checking, standard documentation, and compatability with common Python data-related libraries.
+Working with these data requires knowledge of tools ouside the Python "standard toolset" like closed-source ORDS query language [@ords]. While the `afscgap` package offers easier access to the official REST service, it also crucially offers ORDS compilation, documented types, and lazy access to these large datasets. Together, these tools enable Python developers to efficiently use familiar patterns to interact with these data: type checking, standard documentation, and compatibility with common Python data-related libraries.
 
 ## Record inference
 Surveys on their own within the API struggle supporting some investigations as they provide "presence-only" data [@inport]. For example, the API may readily yield total mass of Pacific cod but not its geohash-aggregated CPUE [@geohash].
 
 $$CPUE_{species} = \frac{m_{species}}{A_{swept}}$$
 
-Metrics like CPUE need "absence data" (hauls in which the speices was not recorded) and this package can efficiently infer those results [@notebook].
+Metrics like CPUE need "absence data" or hauls in which the species was not recorded. This package can efficiently infer those results [@notebook].
 
 ## Broad accessibility
-Though the `afscgap` Python package makes GAP catch data more accessible, size and complexity complicates comparative analysis between species, years, and/or geographic areas [@notebook]. Without deep developer experience, it may still be difficult to get started even with scientific background. To address a broader audience, this project offers visualization on top of `afscgap` with CSV and Python code export as a bridge to further analysis.
+Though the `afscgap` Python package makes GAP catch information more accessible, the data's size and complexity complicates comparative analysis between species, years, and/or geographic areas [@notebook]. Without deep developer experience, it may still be difficult to get started even with scientific background. To address a broader audience, this project offers visualization on top of `afscgap` with CSV and Python code export as a bridge to further analysis.
 
 # Functions
 This project improves accessibility of GAP data and offers approachable tools to kickstart analysis.
@@ -65,8 +65,8 @@ This project improves accessibility of GAP data and offers approachable tools to
 The `afscgap` library manages significant complexity to offer a simple familiar interface to Python developers:
 
  - Lazy "generator iterables" increase accessibility by encapsulating logic for memory-efficient pagination and "data munging" behind Python-standard iterators [@lazy].
- - Decorators adapt diverse structures to common interfaces in zero catch data, offering polymorphism [@decorators].
- - Offering a single object entry-point into the library, a "facade" frees users from needing deep understanding of the library's types and transparently compiles "standard" Python types to Oracle REST Data Service queries [@facade].
+ - Decorators adapt diverse structures to common interfaces in zero catch data, offering polymorphism that helps to reduce the complexity of code using the library [@decorators].
+ - Providing a single object entry-point into the library, a "facade" frees users from needing deep understanding of the library's types and transparently compiles "standard" Python types to Oracle REST Data Service queries [@facade].
 
 ![Diagram of afscgap.\label{fig:library}](library.png)
 
@@ -101,9 +101,9 @@ In addition to use in a graduate classroom setting, five individuals with releva
 ## Limitations
 As further documented in the repository [@readme], these tools:
 
- - Run single-threaded and synchoronous.
- - Aggregates hauls as points in visualization due to data limitation.
- - Ignores hauls if entirelly excluded by NOAA.
+ - Run single-threaded and synchronous.
+ - Aggregate hauls as points in visualization due to data limitation.
+ - Ignore hauls if entirelly excluded by NOAA.
 
 # Acknowledgements
 Thanks to:
