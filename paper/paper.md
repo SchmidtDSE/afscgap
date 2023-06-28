@@ -65,8 +65,8 @@ This project improves accessibility of GAP data and offers approachable tools to
 The `afscgap` library manages significant complexity to offer a simple familiar interface to Python developers:
 
  - Lazy "generator iterables" increase accessibility by encapsulating logic for memory-efficient pagination and "data munging" behind Python-standard iterators [@lazy].
- - Decorators adapt diverse structures to common interfaces in zero catch data, offering polymorphism [@decorators].
- - Offering a single object entry-point into the library, a "facade" frees users from needing deep understanding of the library's types and transparently compiles "standard" Python types to Oracle REST Data Service queries [@facade].
+ - Decorators adapt diverse structures to common interfaces in zero catch data, offering polymorphism that helps to reduce the complexity of code using the library [@decorators].
+ - Providing a single object entry-point into the library, a "facade" frees users from needing deep understanding of the library's types and transparently compiles "standard" Python types to Oracle REST Data Service queries [@facade].
 
 ![Diagram of afscgap.\label{fig:library}](library.png)
 
