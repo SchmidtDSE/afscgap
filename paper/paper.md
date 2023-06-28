@@ -46,7 +46,7 @@ Pyafscgap.org reduces barriers for use of NOAA AFSC RACE GAP^[Groundfish Assessm
 Altogether, these open source tools extend the reach and approachability of GAP's multiple survey programs to support analysis like longitudinal catch per unit effort (CPUE) in context of environmental changes [@notebook].
 
 ## Developer usability
-Working with these data requires knowledge of tools ouside the Python "standard toolset" like closed-source ORDS query language [@ords]. While the `afscgap` package offers easier access to the official REST service, it also crucially offers ORDS compilation, documented types, and lazy access to these large datasets. Together, these tools enable Python developers to efficiently use familiar patterns to interact with these data: type checking, standard documentation, and compatibility with common Python data-related libraries.
+Working with these data requires knowledge of tools outside the Python "standard toolset" like closed-source ORDS query language [@ords]. While the `afscgap` package offers easier access to the official REST service, it also crucially offers ORDS compilation, documented types, and lazy access to these large datasets. Together, these tools enable Python developers to efficiently use familiar patterns to interact with these data: type checking, standard documentation, and compatibility with common Python data-related libraries.
 
 ## Record inference
 Surveys on their own within the API struggle supporting some investigations as they provide "presence-only" data [@inport]. For example, the API may readily yield total mass of Pacific cod but not its geohash-aggregated CPUE [@geohash].
