@@ -103,7 +103,7 @@ As further documented in the repository [@readme], these tools:
 
  - Run single-threaded and synchronous.
  - Aggregate hauls as points in visualization due to data limitation.
- - Ignore hauls if entirelly excluded by NOAA.
+ - Ignore hauls if entirely excluded by NOAA.
 
 # Acknowledgements
 Thanks to:
