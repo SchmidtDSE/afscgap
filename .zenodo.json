@@ -28,7 +28,7 @@
           "relation": "isNewVersionOf"
       }
   ], 
-  "version": "1.0.3", 
+  "version": "1.0.4", 
   "upload_type": "software", 
   "keywords": [
       "ocean", 
