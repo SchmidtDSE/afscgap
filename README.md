@@ -170,3 +170,5 @@ Annotated version history:
  - `0.0.3`: Minor updates in documentation.
  - `0.0.2`: License under BSD.
  - `0.0.1`: Initial release.
+
+The hauls community file was last updated on Nov 1, 2023.
