@@ -11,8 +11,8 @@ See build_database.sh for example.
 (c) 2023 Regents of University of California / The Eric and Wendy Schmidt Center
 for Data Science and the Environment at UC Berkeley.
 
-This file is part of afscgap released under the BSD 3-Clause License. See
-LICENSE.md.
+This file is released under the CC-BY-SA 4.0 License but may be used as a
+standalone executable.
 """
 import contextlib
 import re
