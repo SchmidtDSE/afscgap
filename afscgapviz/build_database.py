@@ -14,7 +14,6 @@ for Data Science and the Environment at UC Berkeley.
 This file is released under the BSD License but may be used as a standalone
 executable.
 """
-import contextlib
 import re
 import sqlite3
 import sys
