@@ -272,7 +272,7 @@ def create_db_main(args):
 
     for sub_sql in sql.split(';'):
         cursor.execute(sub_sql)
-    
+
     connection.commit()
     cursor.close()
     connection.close()
