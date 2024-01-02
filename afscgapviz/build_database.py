@@ -11,8 +11,8 @@ See build_database.sh for example.
 (c) 2023 Regents of University of California / The Eric and Wendy Schmidt Center
 for Data Science and the Environment at UC Berkeley.
 
-This file is released under the CC-BY-SA 4.0 License but may be used as a
-standalone executable.
+This file is released under the BSD License but may be used as a standalone
+executable.
 """
 import contextlib
 import re
@@ -268,11 +268,15 @@ def create_db_main(args):
     filepath = args[0]
     sql = sql_util.get_sql('create_hauls')
 
-    # Thanks https://stackoverflow.com/questions/19522505
-    with contextlib.closing(sqlite3.connect(filepath)) as con:
-        with con as cur:
-            for sub_sql in sql.split(';'):
-                cur.execute(sub_sql)
+    connection = sqlite3.connect(filepath)
+    cursor = connection.cursor()
+
+    for sub_sql in sql.split(';'):
+        cursor.execute(sub_sql)
+    
+    connection.commit()
+    cursor.close()
+    connection.close()
 
 
 def download_main(args):
@@ -306,16 +310,27 @@ def download_main(args):
 
     years = range(start_year, end_year + 1)
 
-    # Thanks https://stackoverflow.com/questions/19522505
-    with contextlib.closing(sqlite3.connect(filepath)) as con:
-        for year in years:
-            for survey in SURVEYS:
+    connection = sqlite3.connect(filepath)
+    cursor = connection.cursor()
 
-                with con as cur:
-                    download_and_persist_year(survey, year, cur, geohash_size)
+    for sub_sql in sql.split(';'):
+        cursor.execute(sub_sql)
+    
+    connection = sqlite3.connect(filepath)
+    cursor = connection.cursor()
 
-                print('Completed %d for %s.' % (year, survey))
-                time.sleep(SLEEP_TIME)
+    for year in years:
+        for survey in SURVEYS:
+
+            with con as cur:
+                download_and_persist_year(survey, year, cursor, geohash_size)
+
+            print('Completed %d for %s.' % (year, survey))
+            time.sleep(SLEEP_TIME)
+    
+    connection.commit()
+    cursor.close()
+    connection.close()
 
 
 def main():
