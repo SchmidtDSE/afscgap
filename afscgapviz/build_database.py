@@ -14,7 +14,6 @@ for Data Science and the Environment at UC Berkeley.
 This file is released under the BSD License but may be used as a standalone
 executable.
 """
-import contextlib
 import re
 import sqlite3
 import sys
@@ -273,7 +272,7 @@ def create_db_main(args):
 
     for sub_sql in sql.split(';'):
         cursor.execute(sub_sql)
-    
+
     connection.commit()
     cursor.close()
     connection.close()
@@ -313,23 +312,22 @@ def download_main(args):
     connection = sqlite3.connect(filepath)
     cursor = connection.cursor()
 
+    sql = sql_util.get_sql('create_hauls')
     for sub_sql in sql.split(';'):
         cursor.execute(sub_sql)
-    
+
     connection = sqlite3.connect(filepath)
-    cursor = connection.cursor()
 
     for year in years:
         for survey in SURVEYS:
 
-            with con as cur:
+            with connection as cursor:
                 download_and_persist_year(survey, year, cursor, geohash_size)
 
             print('Completed %d for %s.' % (year, survey))
             time.sleep(SLEEP_TIME)
-    
+
     connection.commit()
-    cursor.close()
     connection.close()
 
 
