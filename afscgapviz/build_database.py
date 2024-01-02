@@ -315,7 +315,7 @@ def download_main(args):
     sql = sql_util.get_sql('create_hauls')
     for sub_sql in sql.split(';'):
         cursor.execute(sub_sql)
-    
+
     connection = sqlite3.connect(filepath)
 
     for year in years:
@@ -326,7 +326,7 @@ def download_main(args):
 
             print('Completed %d for %s.' % (year, survey))
             time.sleep(SLEEP_TIME)
-    
+
     connection.commit()
     connection.close()
 
