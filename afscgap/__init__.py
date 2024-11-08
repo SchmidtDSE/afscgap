@@ -1067,7 +1067,44 @@ class Query:
         Returns:
             Cursor to manage HTTP requests and query results.
         """
-        raise NotImplementedError('Requires new implementation.')
+        params_dict = {
+            'year': self._year,
+            'srvy': self._srvy,
+            'survey': self._survey,
+            'survey_id': self._survey_id,
+            'cruise': self._cruise,
+            'haul': self._haul,
+            'stratum': self._stratum,
+            'station': self._station,
+            'vessel_name': self._vessel_name,
+            'vessel_id': self._vessel_id,
+            'date_time': self._date_time,
+            'latitude_dd': self._latitude_dd,
+            'longitude_dd': self._longitude_dd,
+            'species_code': self._species_code,
+            'common_name': self._common_name,
+            'scientific_name': self._scientific_name,
+            'taxon_confidence': self._taxon_confidence,
+            'cpue_kgha': self._cpue_kgha,
+            'cpue_kgkm2': self._cpue_kgkm2,
+            'cpue_kg1000km2': self._cpue_kg1000km2,
+            'cpue_noha': self._cpue_noha,
+            'cpue_nokm2': self._cpue_nokm2,
+            'cpue_no1000km2': self._cpue_no1000km2,
+            'weight_kg': self._weight_kg,
+            'count': self._count,
+            'bottom_temperature_c': self._bottom_temperature_c,
+            'surface_temperature_c': self._surface_temperature_c,
+            'depth_m': self._depth_m,
+            'distance_fished_km': self._distance_fished_km,
+            'net_width_m': self._net_width_m,
+            'net_height_m': self._net_height_m,
+            'area_swept_ha': self._area_swept_ha,
+            'duration_hr': self._duration_hr,
+            'tsn': self._tsn,
+            'ak_survey_id': self._ak_survey_id
+        }
+        return afscgap.flat.execute(params_dict)
 
     def _create_str_param(self, eq: STR_PARAM = None, min_val: OPT_STR = None,
         max_val: OPT_STR = None) -> afscgap.param.Param:
