@@ -7,7 +7,7 @@ Center (AFSC) as part of the National Oceanic and Atmospheric Administration
 (NOAA Fisheries). Note that this is a community-provided library and is not
 officially endorsed by NOAA.
 
-(c) 2023 Regents of University of California / The Eric and Wendy Schmidt Center
+(c) 2024 Regents of University of California / The Eric and Wendy Schmidt Center
 for Data Science and the Environment at UC Berkeley.
 
 This file is part of afscgap released under the BSD 3-Clause License. See
@@ -46,69 +46,62 @@ class Query:
     queries.
     """
 
-    def __init__(self, base_url: OPT_STR = None, hauls_url: OPT_STR = None,
-        requestor: OPT_REQUESTOR = None):
+    def __init__(self, base_url: OPT_STR = None, requestor: OPT_REQUESTOR = None):
         """Create a new Query.
 
         Args:
-            base_url: The URL at which the API can be found. If None, will use
-                default (offical URL at time of release). See
-                afscgap.client.DEFAULT_URL.
-            hauls_url: The URL at which the flat file with hauls metadata can be
-                found or None if a default should be used. Defaults to None.
+            base_url: The URL at which the flat files can be found. If None, will use
+                default. See afscgap.client.DEFAULT_URL.
             requestor: Strategy to use for making HTTP requests. If None, will
                 use a default as defined by afscgap.client.Cursor.
         """
         # URLs for data
         self._base_url = base_url
-        self._hauls_url = hauls_url
         self._requestor = requestor
 
         # Filter parameters
-        self._year: FLOAT_PARAM = None
-        self._srvy: STR_PARAM = None
-        self._survey: STR_PARAM = None
-        self._survey_id: FLOAT_PARAM = None
-        self._cruise: FLOAT_PARAM = None
-        self._haul: FLOAT_PARAM = None
-        self._stratum: FLOAT_PARAM = None
-        self._station: STR_PARAM = None
-        self._vessel_name: STR_PARAM = None
-        self._vessel_id: FLOAT_PARAM = None
-        self._date_time: STR_PARAM = None
-        self._latitude_dd: FLOAT_PARAM = None
-        self._longitude_dd: FLOAT_PARAM = None
-        self._species_code: FLOAT_PARAM = None
-        self._common_name: STR_PARAM = None
-        self._scientific_name: STR_PARAM = None
-        self._taxon_confidence: STR_PARAM = None
-        self._cpue_kgha: FLOAT_PARAM = None
-        self._cpue_kgkm2: FLOAT_PARAM = None
-        self._cpue_kg1000km2: FLOAT_PARAM = None
-        self._cpue_noha: FLOAT_PARAM = None
-        self._cpue_nokm2: FLOAT_PARAM = None
-        self._cpue_no1000km2: FLOAT_PARAM = None
-        self._weight_kg: FLOAT_PARAM = None
-        self._count: FLOAT_PARAM = None
-        self._bottom_temperature_c: FLOAT_PARAM = None
-        self._surface_temperature_c: FLOAT_PARAM = None
-        self._depth_m: FLOAT_PARAM = None
-        self._distance_fished_km: FLOAT_PARAM = None
-        self._net_width_m: FLOAT_PARAM = None
-        self._net_height_m: FLOAT_PARAM = None
-        self._area_swept_ha: FLOAT_PARAM = None
-        self._duration_hr: FLOAT_PARAM = None
-        self._tsn: INT_PARAM = None
-        self._ak_survey_id: INT_PARAM = None
+        self._year: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._srvy: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._survey: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._survey_id: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._cruise: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._haul: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._stratum: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._station: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._vessel_name: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._vessel_id: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._date_time: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._latitude_dd: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._longitude_dd: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._species_code: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._common_name: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._scientific_name: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._taxon_confidence: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._cpue_kgha: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._cpue_kgkm2: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._cpue_kg1000km2: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._cpue_noha: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._cpue_nokm2: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._cpue_no1000km2: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._weight_kg: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._count: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._bottom_temperature_c: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._surface_temperature_c: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._depth_m: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._distance_fished_km: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._net_width_m: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._net_height_m: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._area_swept_ha: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._duration_hr: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._tsn: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._ak_survey_id: afscgap.param.Param = afscgap.param.EmptyParam()
 
         # Query pararmeters
         self._limit: OPT_INT = None
-        self._start_offset: OPT_INT = None
         self._filter_incomplete: bool = False
         self._presence_only: bool = True
         self._suppress_large_warning: bool = False
         self._warn_function: WARN_FUNCTION = None
-        self._hauls_prefetch: OPT_HAUL_LIST = None
 
     def filter_year(self, eq: FLOAT_PARAM = None, min_val: OPT_FLOAT = None,
         max_val: OPT_FLOAT = None) -> 'Query':
@@ -998,22 +991,6 @@ class Query:
         self._limit = limit
         return self
 
-    def set_start_offset(self, start_offset: OPT_INT) -> 'Query':
-        """Indicate how many results to skip.
-
-        Indicate how many results to skip, overwritting prior offset settings on
-        this Query.
-
-        Args:
-            start_offset: The number of initial results to skip in retrieving
-                results. If None or not provided, none will be skipped.
-
-        Returns:
-            This object for chaining if desired.
-        """
-        self._start_offset = start_offset
-        return self
-
     def set_filter_incomplete(self, filter_incomplete: bool) -> 'Query':
         """Indicate if incomplete records should be filtered out.
 
@@ -1084,24 +1061,6 @@ class Query:
         self._warn_function = warn_function
         return self
 
-    def set_hauls_prefetch(self, hauls_prefetch: OPT_HAUL_LIST) -> 'Query':
-        """Indicate if hauls' data were prefetched.
-
-        Indicate if hauls' data were prefetched, overwritting prior prefetch
-        settings on this Query.
-
-        Args:
-            hauls_prefetch: If using presence_only=True, this is ignored.
-                Otherwise, if None, will instruct the library to download hauls
-                metadata. If not None, will use this as the hauls list for zero
-                catch record inference.
-
-        Returns:
-            This object for chaining if desired.
-        """
-        self._hauls_prefetch = hauls_prefetch
-        return self
-
     def execute(self) -> afscgap.cursor.Cursor:
         """Execute the query built up in this object.
 
@@ -1112,75 +1071,10 @@ class Query:
         Returns:
             Cursor to manage HTTP requests and query results.
         """
-        all_dict_raw = {
-            'year': self._year,
-            'srvy': self._srvy,
-            'survey': self._survey,
-            'survey_id': self._survey_id,
-            'cruise': self._cruise,
-            'haul': self._haul,
-            'stratum': self._stratum,
-            'station': self._station,
-            'vessel_name': self._vessel_name,
-            'vessel_id': self._vessel_id,
-            'date_time': self._date_time,
-            'latitude_dd': self._latitude_dd,
-            'longitude_dd': self._longitude_dd,
-            'species_code': self._species_code,
-            'common_name': self._common_name,
-            'scientific_name': self._scientific_name,
-            'taxon_confidence': self._taxon_confidence,
-            'cpue_kgha': self._cpue_kgha,
-            'cpue_kgkm2': self._cpue_kgkm2,
-            'cpue_kg1000km2': self._cpue_kg1000km2,
-            'cpue_noha': self._cpue_noha,
-            'cpue_nokm2': self._cpue_nokm2,
-            'cpue_no1000km2': self._cpue_no1000km2,
-            'weight_kg': self._weight_kg,
-            'count': self._count,
-            'bottom_temperature_c': self._bottom_temperature_c,
-            'surface_temperature_c': self._surface_temperature_c,
-            'depth_m': self._depth_m,
-            'distance_fished_km': self._distance_fished_km,
-            'net_width_m': self._net_width_m,
-            'net_height_m': self._net_height_m,
-            'area_swept_ha': self._area_swept_ha,
-            'duration_hr': self._duration_hr,
-            'tsn': self._tsn,
-            'ak_survey_id': self._ak_survey_id
-        }
-
-        api_cursor = afscgap.client.build_api_cursor(
-            all_dict_raw,
-            limit=self._limit,
-            start_offset=self._start_offset,
-            filter_incomplete=self._filter_incomplete,
-            requestor=self._requestor,
-            base_url=self._base_url
-        )
-
-        if self._presence_only:
-            return api_cursor
-
-        decorated_cursor = afscgap.inference.build_inference_cursor(
-            all_dict_raw,
-            api_cursor,
-            requestor=self._requestor,
-            hauls_url=self._hauls_url,
-            hauls_prefetch=self._hauls_prefetch
-        )
-
-        if not self._suppress_large_warning:
-            warn_function = self._warn_function
-            if not warn_function:
-                warn_function = lambda x: warnings.warn(x)
-
-            warn_function(LARGE_WARNING)
-
-        return decorated_cursor
+        raise NotImplementedError('Requires new implementation.')
 
     def _create_str_param(self, eq: STR_PARAM = None, min_val: OPT_STR = None,
-        max_val: OPT_STR = None) -> STR_PARAM:
+        max_val: OPT_STR = None) -> afscgap.param.StrParam:
         """Create a new string parameter.
 
         Args:
@@ -1195,11 +1089,11 @@ class Query:
                 thrown if eq also proivded.
 
         """
-        return self._create_param(eq, min_val, max_val)  # type: ignore
+        return afscgap.param.StrParam()
 
     def _create_float_param(self, eq: FLOAT_PARAM = None,
         min_val: FLOAT_PARAM = None,
-        max_val: FLOAT_PARAM = None) -> FLOAT_PARAM:
+        max_val: FLOAT_PARAM = None) -> afscgap.param.FloatParam:
         """Create a new float parameter.
 
         Args:
@@ -1216,7 +1110,7 @@ class Query:
         return self._create_param(eq, min_val, max_val)  # type: ignore
 
     def _create_int_param(self, eq: INT_PARAM = None, min_val: OPT_INT = None,
-        max_val: OPT_INT = None) -> INT_PARAM:
+        max_val: OPT_INT = None) -> afscgap.param.IntParam:
         """Create a new int parameter.
 
         Args:
@@ -1233,33 +1127,26 @@ class Query:
             Compatible param representation.
         """
         return self._create_param(eq, min_val, max_val)  # type: ignore
-
-    def _create_param(self, eq=None, min_val=None, max_val=None):
-        """Create a new parameter.
-
+    
+    def _get_param_type(self, eq: typing.Optional, min_val: typing.Optional,
+        max_val: typing.Optional) -> str:
+        """Determine how the parameter should be interpreted.
+        
         Args:
-            eq: The exact value that must be matched for a record to be
-                returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided.
-            min_val: The minimum allowed value, inclusive. Pass None if no
-                minimum value filter should be applied. Defaults to None. Error
-                thrown if eq also proivded.
-            max_val: The maximum allowed value, inclusive. Pass None if no
-                maximum value filter should be applied. Defaults to None. Error
-                thrown if eq also proivded.
+            eq: The value for equality or None if no equals filter.
+            min_val: The minimum value or None if no minimum filter.
+            max_val: The maximum value or None if no maximum filter.
+        
         Returns:
-            Compatible param representation.
+            One of the following as a string: empty, equals, range.
         """
-        eq_given = eq is not None
-        min_val_given = min_val is not None
-        max_val_given = max_val is not None
-
-        if eq_given and (min_val_given and max_val_given):
-            raise RuntimeError('Cannot query with both eq and min/max val.')
-
-        if eq_given:
-            return eq
-        elif min_val_given or max_val_given:
-            return [min_val, max_val]
+        if eq == None:
+            if min_val == None and max_val == None:
+                return 'empty'
+            else:
+                return 'range'
         else:
-            return None
+            if min_val != None or max_val != None:
+                raise RuntimeError('Both range and equality filters provided.')
+            else:
+                return 'equals'

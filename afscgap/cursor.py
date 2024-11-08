@@ -19,27 +19,11 @@ from afscgap.typesdef import OPT_INT
 class Cursor(typing.Iterable[afscgap.model.Record]):
     """Interface for objects allowing generation / retrieval of records."""
 
-    def get_base_url(self) -> str:
-        """Get the URL at which the first page of query results can be found.
-
-        Returns:
-            The URL for the query without pagination information.
-        """
-        raise NotImplementedError('Use implementor.')
-
     def get_limit(self) -> OPT_INT:
-        """Get the page size limit.
+        """Get the overall limit.
 
         Returns:
-            The maximum number of records to return per page.
-        """
-        raise NotImplementedError('Use implementor.')
-
-    def get_start_offset(self) -> OPT_INT:
-        """Get the number of inital records to ignore.
-
-        Returns:
-            The number of records being skipped at the start of the result set.
+            The maximum number of records to return.
         """
         raise NotImplementedError('Use implementor.')
 
