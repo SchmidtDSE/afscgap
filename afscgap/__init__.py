@@ -16,9 +16,8 @@ LICENSE.md.
 import typing
 import warnings
 
-import afscgap.client
-import afscgap.inference
-import afscgap.model
+import afscgap.cursor
+import afscgap.param
 
 from afscgap.typesdef import FLOAT_PARAM
 from afscgap.typesdef import INT_PARAM
@@ -28,8 +27,6 @@ from afscgap.typesdef import OPT_FLOAT
 from afscgap.typesdef import OPT_INT
 from afscgap.typesdef import OPT_STR
 from afscgap.typesdef import OPT_REQUESTOR
-
-from afscgap.inference import OPT_HAUL_LIST
 
 WARN_FUNCTION = typing.Optional[typing.Callable[[str], None]]
 
@@ -400,9 +397,9 @@ class Query:
             This object for chaining if desired.
         """
         self._latitude_dd = self._create_float_param(
-            afscgap.convert.unconvert_degrees(eq, units),
-            afscgap.convert.unconvert_degrees(min_val, units),
-            afscgap.convert.unconvert_degrees(max_val, units)
+            afscgap.convert.convert(eq, units, 'dd'),
+            afscgap.convert.convert(min_val, units, 'dd'),
+            afscgap.convert.convert(max_val, units, 'dd')
         )
         return self
 
@@ -431,9 +428,9 @@ class Query:
             This object for chaining if desired.
         """
         self._longitude_dd = self._create_float_param(
-            afscgap.convert.unconvert_degrees(eq, units),
-            afscgap.convert.unconvert_degrees(min_val, units),
-            afscgap.convert.unconvert_degrees(max_val, units)
+            afscgap.convert.convert(eq, units, 'dd'),
+            afscgap.convert.convert(min_val, units, 'dd'),
+            afscgap.convert.convert(max_val, units, 'dd')
         )
         return self
 
@@ -642,9 +639,9 @@ class Query:
             This object for chaining if desired.
         """
         self._weight_kg = self._create_float_param(
-            afscgap.convert.unconvert_weight(eq, units),
-            afscgap.convert.unconvert_weight(min_val, units),
-            afscgap.convert.unconvert_weight(max_val, units)
+            afscgap.convert.convert(eq, units, 'kg'),
+            afscgap.convert.convert(min_val, units, 'kg'),
+            afscgap.convert.convert(max_val, units, 'kg')
         )
         return self
 
@@ -699,9 +696,9 @@ class Query:
             This object for chaining if desired.
         """
         self._bottom_temperature_c = self._create_float_param(
-            afscgap.convert.unconvert_temperature(eq, units),
-            afscgap.convert.unconvert_temperature(min_val, units),
-            afscgap.convert.unconvert_temperature(max_val, units)
+            afscgap.convert.convert(eq, units, 'c'),
+            afscgap.convert.convert(min_val, units, 'c'),
+            afscgap.convert.convert(max_val, units, 'c')
         )
         return self
 
@@ -732,9 +729,9 @@ class Query:
             This object for chaining if desired.
         """
         self._surface_temperature_c = self._create_float_param(
-            afscgap.convert.unconvert_temperature(eq, units),
-            afscgap.convert.unconvert_temperature(min_val, units),
-            afscgap.convert.unconvert_temperature(max_val, units)
+            afscgap.convert.convert(eq, units ,'c'),
+            afscgap.convert.convert(min_val, units, 'c'),
+            afscgap.convert.convert(max_val, units, 'c')
         )
         return self
 
@@ -762,9 +759,9 @@ class Query:
             This object for chaining if desired.
         """
         self._depth_m = self._create_float_param(
-            afscgap.convert.unconvert_distance(eq, units),
-            afscgap.convert.unconvert_distance(min_val, units),
-            afscgap.convert.unconvert_distance(max_val, units)
+            afscgap.convert.convert(eq, units, 'm'),
+            afscgap.convert.convert(min_val, units, 'm'),
+            afscgap.convert.convert(max_val, units, 'm')
         )
         return self
 
@@ -793,8 +790,7 @@ class Query:
             This object for chaining if desired.
         """
         def convert_to_km(target, units):
-            in_meters = afscgap.convert.unconvert_distance(target, units)
-            return afscgap.convert.convert_distance(in_meters, 'km')
+            return afscgap.convert.convert(target, units, 'km')
 
         self._distance_fished_km = self._create_float_param(
             convert_to_km(eq, units),
@@ -828,9 +824,9 @@ class Query:
             This object for chaining if desired.
         """
         self._net_width_m = self._create_float_param(
-            afscgap.convert.unconvert_distance(eq, units),
-            afscgap.convert.unconvert_distance(min_val, units),
-            afscgap.convert.unconvert_distance(max_val, units)
+            afscgap.convert.convert(eq, units, 'm'),
+            afscgap.convert.convert(min_val, units, 'm'),
+            afscgap.convert.convert(max_val, units, 'm')
         )
         return self
 
@@ -859,9 +855,9 @@ class Query:
             This object for chaining if desired.
         """
         self._net_height_m = self._create_float_param(
-            afscgap.convert.unconvert_distance(eq, units),
-            afscgap.convert.unconvert_distance(min_val, units),
-            afscgap.convert.unconvert_distance(max_val, units)
+            afscgap.convert.convert(eq, units, 'm'),
+            afscgap.convert.convert(min_val, units, 'm'),
+            afscgap.convert.convert(max_val, units, 'm')
         )
         return self
 
@@ -890,9 +886,9 @@ class Query:
             This object for chaining if desired.
         """
         self._area_swept_ha = self._create_float_param(
-            afscgap.convert.unconvert_area(eq, units),
-            afscgap.convert.unconvert_area(min_val, units),
-            afscgap.convert.unconvert_area(max_val, units)
+            afscgap.convert.convert(eq, units, 'ha'),
+            afscgap.convert.convert(min_val, units, 'ha'),
+            afscgap.convert.convert(max_val, units, 'ha')
         )
         return self
 
@@ -921,9 +917,9 @@ class Query:
             This object for chaining if desired.
         """
         self._duration_hr = self._create_float_param(
-            afscgap.convert.unconvert_time(eq, units),
-            afscgap.convert.unconvert_time(min_val, units),
-            afscgap.convert.unconvert_time(max_val, units)
+            afscgap.convert.convert(eq, units, 'hr'),
+            afscgap.convert.convert(min_val, units, 'hr'),
+            afscgap.convert.convert(max_val, units, 'hr')
         )
         return self
 
@@ -1074,7 +1070,7 @@ class Query:
         raise NotImplementedError('Requires new implementation.')
 
     def _create_str_param(self, eq: STR_PARAM = None, min_val: OPT_STR = None,
-        max_val: OPT_STR = None) -> afscgap.param.StrParam:
+        max_val: OPT_STR = None) -> afscgap.param.Param:
         """Create a new string parameter.
 
         Args:
@@ -1087,13 +1083,21 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
-
+        
+        Returns:
+            Newly initalized parameter.
         """
-        return afscgap.param.StrParam()
+        param_type = self._get_param_type(eq, min_val, max_val)
+        strategy = {
+            'empty': lambda: afscgap.param.EmptyParam(),
+            'equals': lambda: afscgap.param.StrEqualsParam(eq),
+            'range': lambda: afscgap.param.StrRangeParam(min_val, max_val)
+        }[param_type]
+        return strategy()  # type: ignore
 
     def _create_float_param(self, eq: FLOAT_PARAM = None,
         min_val: FLOAT_PARAM = None,
-        max_val: FLOAT_PARAM = None) -> afscgap.param.FloatParam:
+        max_val: FLOAT_PARAM = None) -> afscgap.param.Param:
         """Create a new float parameter.
 
         Args:
@@ -1106,11 +1110,20 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        
+        Returns:
+            Newly initalized parameter.
         """
-        return self._create_param(eq, min_val, max_val)  # type: ignore
+        param_type = self._get_param_type(eq, min_val, max_val)
+        strategy = {
+            'empty': lambda: afscgap.param.EmptyParam(),
+            'equals': lambda: afscgap.param.FloatEqualsParam(eq),
+            'range': lambda: afscgap.param.FloatRangeParam(min_val, max_val)
+        }[param_type]
+        return strategy()  # type: ignore
 
     def _create_int_param(self, eq: INT_PARAM = None, min_val: OPT_INT = None,
-        max_val: OPT_INT = None) -> afscgap.param.IntParam:
+        max_val: OPT_INT = None) -> afscgap.param.Param:
         """Create a new int parameter.
 
         Args:
@@ -1123,10 +1136,17 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+        
         Returns:
-            Compatible param representation.
+            Newly initalized parameter.
         """
-        return self._create_param(eq, min_val, max_val)  # type: ignore
+        param_type = self._get_param_type(eq, min_val, max_val)
+        strategy = {
+            'empty': lambda: afscgap.param.EmptyParam(),
+            'equals': lambda: afscgap.param.IntEqualsParam(eq),
+            'range': lambda: afscgap.param.IntRangeParam(min_val, max_val)
+        }[param_type]
+        return strategy()  # type: ignore
     
     def _get_param_type(self, eq: typing.Optional, min_val: typing.Optional,
         max_val: typing.Optional) -> str:

@@ -102,7 +102,7 @@ def is_iso8601(target: str) -> bool:
     return ISO_8601_REGEX.match(target) is not None
 
 
-def convert_value(target: OPT_FLOAT, source: str, destination: str) -> OPT_FLOAT:
+def convert(target: OPT_FLOAT, source: str, destination: str) -> OPT_FLOAT:
     """Convert a value.
 
     Args:
