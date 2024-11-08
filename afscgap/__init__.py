@@ -121,8 +121,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -149,8 +148,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -174,8 +172,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -199,8 +196,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -224,8 +220,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -249,8 +244,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -274,8 +268,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -299,8 +292,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -324,8 +316,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -349,8 +340,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -378,8 +368,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -404,8 +393,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -413,8 +401,7 @@ class Query:
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
             units: The units in which the filter values are provided. Currently
-                only dd supported. Ignored if given eq value containing ORDS
-                query.
+                only dd supported.
 
         Returns:
             This object for chaining if desired.
@@ -437,8 +424,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -468,8 +454,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -493,8 +478,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -518,8 +502,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -543,8 +526,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -570,8 +552,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -579,8 +560,7 @@ class Query:
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
             units: The units for the catch per unit effort provided. Options:
-                kg/ha, kg/km2, kg1000/km2. Defaults to kg/ha. Ignored if given
-                eq value containing ORDS query.
+                kg/ha, kg/km2, kg1000/km2. Defaults to kg/ha.
 
         Returns:
             This object for chaining if desired.
@@ -614,8 +594,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -624,7 +603,6 @@ class Query:
                 thrown if eq also proivded.
             units: The units for the given catch per unit effort. Options:
                 count/ha, count/km2, and count1000/km2. Defaults to count/ha.
-                Ignored if given eq value containing ORDS query.
 
         Returns:
             This object for chaining if desired.
@@ -657,8 +635,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -667,7 +644,6 @@ class Query:
                 thrown if eq also proivded.
             units: The units in which the weight are given. Options are
                 g, kg for grams and kilograms respectively. Deafults to kg.
-                Ignored if given eq value containing ORDS query.
 
         Returns:
             This object for chaining if desired.
@@ -689,15 +665,13 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
-                thrown if eq also proivded. Ignored if given eq value containing
-                ORDS query.
+                thrown if eq also proivded.
 
         Returns:
             This object for chaining if desired.
@@ -717,8 +691,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -727,7 +700,7 @@ class Query:
                 thrown if eq also proivded.
             units: The units in which the temperature filter values are given.
                 Options: c or f for Celcius and Fahrenheit respectively.
-                Defaults to c. Ignored if given eq value containing ORDS query.
+                Defaults to c.
 
         Returns:
             This object for chaining if desired.
@@ -751,8 +724,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -761,7 +733,7 @@ class Query:
                 thrown if eq also proivded.
             units: The units in which the temperature filter values are given.
                 Options: c or f for Celcius and Fahrenheit respectively.
-                Defaults to c. Ignored if given eq value containing ORDS query.
+                Defaults to c.
 
         Returns:
             This object for chaining if desired.
@@ -783,8 +755,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -793,7 +764,6 @@ class Query:
                 thrown if eq also proivded.
             units: The units in which the distance are given. Options:
                 m or km for meters and kilometers respectively. Defaults to m.
-                Ignored if given eq value containing ORDS query.
 
         Returns:
             This object for chaining if desired.
@@ -816,8 +786,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -826,7 +795,6 @@ class Query:
                 thrown if eq also proivded.
             units: The units in which the distance values are given. Options:
                 m or km for meters and kilometers respectively. Defaults to m.
-                Ignored if given eq value containing ORDS query.
 
         Returns:
             This object for chaining if desired.
@@ -853,8 +821,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -885,8 +852,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -917,8 +883,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -949,8 +914,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -980,8 +944,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -1005,8 +968,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -1224,8 +1186,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -1244,8 +1205,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -1262,8 +1222,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -1281,8 +1240,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
