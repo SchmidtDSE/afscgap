@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Check python
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
@@ -34,7 +34,7 @@ jobs:
     name: Check js
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.3.4
+        uses: actions/checkout@v4
       - uses: actions/setup-node@v2
         with:
           node-version: 16
@@ -51,7 +51,7 @@ jobs:
     name: Check docs
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.3.4
+        uses: actions/checkout@v4
       - name: Build docs
         run: bash build_docs.sh
   joss:
@@ -59,7 +59,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Build draft PDF
         uses: openjournals/openjournals-draft-action@master
         with:
