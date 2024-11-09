@@ -43,13 +43,18 @@ CONVERTERS = {
     'degrees': {
         'dd': lambda x: x
     },
-    'effort': {
+    'effortWeight': {
         'kg/ha': lambda x: x / 100,
         'kg1000/km2': lambda x: x / 0.1,
-        'kg/km2': lambda x: x,
+        'kg/km2': lambda x: x
+    },
+    'effortCount': {
         'no/ha': lambda x: x / 100,
         'no1000/km2': lambda x: x / 0.1,
-        'no/km2': lambda x: x
+        'no/km2': lambda x: x,
+        'count/ha': lambda x: x / 100,
+        'count1000/km2': lambda x: x / 0.1,
+        'count/km2': lambda x: x
     }
 }
 
@@ -79,13 +84,18 @@ UNCONVERTERS = {
     'degrees': {
         'dd': lambda x: x
     },
-    'effort': {
+    'effortWeight': {
         'kg/ha': lambda x: x * 100,
         'kg1000/km2': lambda x: x * 0.1,
-        'kg/km2': lambda x: x,
+        'kg/km2': lambda x: x
+    },
+    'effortCount': {
         'no/ha': lambda x: x * 100,
         'no1000/km2': lambda x: x * 0.1,
-        'no/km2': lambda x: x
+        'no/km2': lambda x: x,
+        'count/ha': lambda x: x * 100,
+        'count1000/km2': lambda x: x * 0.1,
+        'count/km2': lambda x: x
     }
 }
 
@@ -108,7 +118,10 @@ UNIT_TYPES = {
     'kg/km2': 'effortWeight',
     'no/ha': 'effortCount',
     'no1000/km2': 'effortCount',
-    'no/km2': 'effortCount'
+    'no/km2': 'effortCount',
+    'count/ha': 'effortCount',
+    'count1000/km2': 'effortCount',
+    'count/km2': 'effortCount'
 }
 
 
