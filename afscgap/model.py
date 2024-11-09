@@ -8,7 +8,6 @@ This file is part of afscgap released under the BSD 3-Clause License. See
 LICENSE.md.
 """
 from afscgap.typesdef import OPT_FLOAT
-from afscgap.typesdef import OPT_INT
 
 OPT_RECORD = 'typing.Optional[Record]'
 

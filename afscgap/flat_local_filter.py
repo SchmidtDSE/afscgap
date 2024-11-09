@@ -1,4 +1,5 @@
 import functools
+import typing
 
 import afscgap.flat_model
 import afscgap.param
@@ -36,7 +37,7 @@ class RangeLocalFilter(LocalFilter):
     def matches(self, target: afscgap.flat_model.FlatRecord) -> bool:
         candidate = self._accessor(target)
         satisfies_low = (self._low_value is None) or (candidate >= self._low_value)
-        satisifes_high = (self._high_value is None) or (candidate <= self._high_value)
+        satisfies_high = (self._high_value is None) or (candidate <= self._high_value)
         return satisfies_low and satisfies_high
 
 
@@ -102,7 +103,13 @@ def build_individual_filter(field: str, param: afscgap.param.Param) -> LocalFilt
 def build_filter(params: PARAMS_DICT) -> LocalFilter:
     params_flat = params.items()
     params_keyed = map(lambda x: {'field': x[0], 'param': x[1]}, params_flat)
-    params_required = filter(lambda x: not x['param'].get_is_ignorable(), params_keyed)
-    individual_filters = map(build_individual_filter, params_required)
+    params_required = filter(
+        lambda x: not x['param'].get_is_ignorable(),  # type: ignore
+        params_keyed
+    )
+    individual_filters = map(
+        lambda x: build_individual_filter(x['field'], x['param']),
+        params_required
+    )
     individual_filters_realized = list(individual_filters)
     return LogicalAndLocalFilter(individual_filters_realized)

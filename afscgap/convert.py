@@ -9,9 +9,7 @@ LICENSE.md.
 """
 import re
 
-from afscgap.typesdef import FLOAT_PARAM
 from afscgap.typesdef import OPT_FLOAT
-from afscgap.typesdef import STR_PARAM
 
 ISO_8601_REGEX = re.compile('(?P<year>\\d{4})\\-(?P<month>\\d{2})\\-' + \
     '(?P<day>\\d{2})T(?P<hours>\\d{2})\\:(?P<minutes>\\d{2})\\:' + \

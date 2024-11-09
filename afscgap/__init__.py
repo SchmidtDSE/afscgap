@@ -14,13 +14,12 @@ This file is part of afscgap released under the BSD 3-Clause License. See
 LICENSE.md.
 """
 import typing
-import warnings
 
 import afscgap.cursor
 import afscgap.flat
 import afscgap.param
 
-from afscgap.typesdef import FLOAT_PARAM
+from afscgap.typesdef import OPT_FLOAT
 from afscgap.typesdef import INT_PARAM
 from afscgap.typesdef import STR_PARAM
 
@@ -30,6 +29,8 @@ from afscgap.typesdef import OPT_STR
 from afscgap.typesdef import OPT_REQUESTOR
 
 WARN_FUNCTION = typing.Optional[typing.Callable[[str], None]]
+
+DEFAULT_URL = ''
 
 
 class Query:
@@ -44,7 +45,7 @@ class Query:
 
         Args:
             base_url: The URL at which the flat files can be found. If None, will use
-                default. See afscgap.client.DEFAULT_URL.
+                default. See afscgap.DEFAULT_URL.
             requestor: Strategy to use for making HTTP requests. If None, will
                 use a default as defined by afscgap.client.Cursor.
         """
@@ -94,7 +95,7 @@ class Query:
         self._suppress_large_warning: bool = False
         self._warn_function: WARN_FUNCTION = None
 
-    def filter_year(self, eq: FLOAT_PARAM = None, min_val: OPT_FLOAT = None,
+    def filter_year(self, eq: OPT_FLOAT = None, min_val: OPT_FLOAT = None,
         max_val: OPT_FLOAT = None) -> 'Query':
         """Filter on year for the survey in which this observation was made.
 
@@ -170,7 +171,7 @@ class Query:
         self._survey = self._create_str_param(eq, min_val, max_val)
         return self
 
-    def filter_survey_id(self, eq: FLOAT_PARAM = None,
+    def filter_survey_id(self, eq: OPT_FLOAT = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None) -> 'Query':
         """Filter on unique numeric ID for the survey.
 
@@ -194,7 +195,7 @@ class Query:
         self._survey_id = self._create_float_param(eq, min_val, max_val)
         return self
 
-    def filter_cruise(self, eq: FLOAT_PARAM = None, min_val: OPT_FLOAT = None,
+    def filter_cruise(self, eq: OPT_FLOAT = None, min_val: OPT_FLOAT = None,
         max_val: OPT_FLOAT = None) -> 'Query':
         """Filter on cruise ID.
 
@@ -218,7 +219,7 @@ class Query:
         self._cruise = self._create_float_param(eq, min_val, max_val)
         return self
 
-    def filter_haul(self, eq: FLOAT_PARAM = None, min_val: OPT_FLOAT = None,
+    def filter_haul(self, eq: OPT_FLOAT = None, min_val: OPT_FLOAT = None,
         max_val: OPT_FLOAT = None) -> 'Query':
         """Filter on haul identifier.
 
@@ -242,7 +243,7 @@ class Query:
         self._haul = self._create_float_param(eq, min_val, max_val)
         return self
 
-    def filter_stratum(self, eq: FLOAT_PARAM = None, min_val: OPT_FLOAT = None,
+    def filter_stratum(self, eq: OPT_FLOAT = None, min_val: OPT_FLOAT = None,
         max_val: OPT_FLOAT = None) -> 'Query':
         """Filter on unique ID for statistical area / survey combination.
 
@@ -314,7 +315,7 @@ class Query:
         self._vessel_name = self._create_str_param(eq, min_val, max_val)
         return self
 
-    def filter_vessel_id(self, eq: FLOAT_PARAM = None,
+    def filter_vessel_id(self, eq: OPT_FLOAT = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None) -> 'Query':
         """Filter on name of the vessel at the time the observation was made.
 
@@ -366,7 +367,7 @@ class Query:
         self._date_time = self._create_str_param(eq, min_val, max_val)
         return self
 
-    def filter_latitude(self, eq: FLOAT_PARAM = None,
+    def filter_latitude(self, eq: OPT_FLOAT = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None,
         units: str = 'dd') -> 'Query':
         """Filter on latitude in decimal degrees associated with the haul.
@@ -397,7 +398,7 @@ class Query:
         )
         return self
 
-    def filter_longitude(self, eq: FLOAT_PARAM = None,
+    def filter_longitude(self, eq: OPT_FLOAT = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None,
         units: str = 'dd') -> 'Query':
         """Filter on longitude in decimal degrees associated with the haul.
@@ -428,7 +429,7 @@ class Query:
         )
         return self
 
-    def filter_species_code(self, eq: FLOAT_PARAM = None,
+    def filter_species_code(self, eq: OPT_FLOAT = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None) -> 'Query':
         """Filter on unique ID associated with the species observed.
 
@@ -524,7 +525,7 @@ class Query:
         self._taxon_confidence = self._create_str_param(eq, min_val, max_val)
         return self
 
-    def filter_cpue_weight(self, eq: FLOAT_PARAM = None,
+    def filter_cpue_weight(self, eq: OPT_FLOAT = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None,
         units: str = 'kg/ha') -> 'Query':
         """Filter on catch per unit effort.
@@ -551,9 +552,9 @@ class Query:
         """
         param = self._create_float_param(eq, min_val, max_val)
 
-        self._cpue_kgha = None
-        self._cpue_kgkm2 = None
-        self._cpue_kg1000km2 = None
+        self._cpue_kgha = afscgap.param.EmptyParam()
+        self._cpue_kgkm2 = afscgap.param.EmptyParam()
+        self._cpue_kg1000km2 = afscgap.param.EmptyParam()
 
         if units == 'kg/ha':
             self._cpue_kgha = param
@@ -566,7 +567,7 @@ class Query:
 
         return self
 
-    def filter_cpue_count(self, eq: FLOAT_PARAM = None,
+    def filter_cpue_count(self, eq: OPT_FLOAT = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None,
         units: str = 'count/ha') -> 'Query':
         """Filter catch per unit effort as count over area in hectares.
@@ -593,9 +594,9 @@ class Query:
         """
         param = self._create_float_param(eq, min_val, max_val)
 
-        self._cpue_noha = None
-        self._cpue_nokm2 = None
-        self._cpue_no1000km2 = None
+        self._cpue_noha = afscgap.param.EmptyParam()
+        self._cpue_nokm2 = afscgap.param.EmptyParam()
+        self._cpue_no1000km2 = afscgap.param.EmptyParam()
 
         if units == 'count/ha':
             self._cpue_noha = param
@@ -608,7 +609,7 @@ class Query:
 
         return self
 
-    def filter_weight(self, eq: FLOAT_PARAM = None,
+    def filter_weight(self, eq: OPT_FLOAT = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None,
         units: str = 'kg') -> 'Query':
         """Filter on taxon weight (kg) if available.
@@ -639,7 +640,7 @@ class Query:
         )
         return self
 
-    def filter_count(self, eq: FLOAT_PARAM = None, min_val: OPT_FLOAT = None,
+    def filter_count(self, eq: OPT_FLOAT = None, min_val: OPT_FLOAT = None,
         max_val: OPT_FLOAT = None) -> 'Query':
         """Filter on total number of organism individuals in haul.
 
@@ -663,7 +664,7 @@ class Query:
         self._count = self._create_float_param(eq, min_val, max_val)
         return self
 
-    def filter_bottom_temperature(self, eq: FLOAT_PARAM = None,
+    def filter_bottom_temperature(self, eq: OPT_FLOAT = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None,
         units: str = 'c') -> 'Query':
         """Filter on bottom temperature.
@@ -696,7 +697,7 @@ class Query:
         )
         return self
 
-    def filter_surface_temperature(self, eq: FLOAT_PARAM = None,
+    def filter_surface_temperature(self, eq: OPT_FLOAT = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None,
         units: str = 'c') -> 'Query':
         """Filter on surface temperature.
@@ -729,7 +730,7 @@ class Query:
         )
         return self
 
-    def filter_depth(self, eq: FLOAT_PARAM = None, min_val: OPT_FLOAT = None,
+    def filter_depth(self, eq: OPT_FLOAT = None, min_val: OPT_FLOAT = None,
         max_val: OPT_FLOAT = None, units: str = 'm') -> 'Query':
         """Filter on depth of the bottom in meters.
 
@@ -759,7 +760,7 @@ class Query:
         )
         return self
 
-    def filter_distance_fished(self, eq: FLOAT_PARAM = None,
+    def filter_distance_fished(self, eq: OPT_FLOAT = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None,
         units: str = 'm') -> 'Query':
         """Filter on distance of the net fished.
@@ -793,7 +794,7 @@ class Query:
         )
         return self
 
-    def filter_net_width(self, eq: FLOAT_PARAM = None,
+    def filter_net_width(self, eq: OPT_FLOAT = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None,
         units: str = 'm') -> 'Query':
         """Filter on distance of the net fished.
@@ -824,7 +825,7 @@ class Query:
         )
         return self
 
-    def filter_net_height(self, eq: FLOAT_PARAM = None,
+    def filter_net_height(self, eq: OPT_FLOAT = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None,
         units: str = 'm') -> 'Query':
         """Filter on height of the net fished.
@@ -855,7 +856,7 @@ class Query:
         )
         return self
 
-    def filter_area_swept(self, eq: FLOAT_PARAM = None,
+    def filter_area_swept(self, eq: OPT_FLOAT = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None,
         units: str = 'm') -> 'Query':
         """Filter on area covered by the net while fishing.
@@ -886,7 +887,7 @@ class Query:
         )
         return self
 
-    def filter_duration(self, eq: FLOAT_PARAM = None,
+    def filter_duration(self, eq: OPT_FLOAT = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None,
         units: str = 'hr') -> 'Query':
         """Filter on duration of the haul.
@@ -1049,8 +1050,8 @@ class Query:
             'duration_hr': self._duration_hr
         }
 
-        meta_params = afscgap.flat.ExecuteMetaParams(
-            self._base_url,
+        meta_params = afscgap.flat_model.ExecuteMetaParams(
+            self._base_url if self._base_url else DEFAULT_URL,
             self._requestor,
             self._limit,
             self._filter_incomplete,
@@ -1082,14 +1083,14 @@ class Query:
         param_type = self._get_param_type(eq, min_val, max_val)
         strategy = {
             'empty': lambda: afscgap.param.EmptyParam(),
-            'equals': lambda: afscgap.param.StrEqualsParam(eq),
-            'range': lambda: afscgap.param.StrRangeParam(min_val, max_val)
+            'equals': lambda: afscgap.param.StrEqualsParam(eq),  # type: ignore
+            'range': lambda: afscgap.param.StrRangeParam(min_val, max_val)  # type: ignore
         }[param_type]
         return strategy()  # type: ignore
 
-    def _create_float_param(self, eq: FLOAT_PARAM = None,
-        min_val: FLOAT_PARAM = None,
-        max_val: FLOAT_PARAM = None) -> afscgap.param.Param:
+    def _create_float_param(self, eq: OPT_FLOAT = None,
+        min_val: OPT_FLOAT = None,
+        max_val: OPT_FLOAT = None) -> afscgap.param.Param:
         """Create a new float parameter.
 
         Args:
@@ -1109,8 +1110,8 @@ class Query:
         param_type = self._get_param_type(eq, min_val, max_val)
         strategy = {
             'empty': lambda: afscgap.param.EmptyParam(),
-            'equals': lambda: afscgap.param.FloatEqualsParam(eq),
-            'range': lambda: afscgap.param.FloatRangeParam(min_val, max_val)
+            'equals': lambda: afscgap.param.FloatEqualsParam(eq),    # type: ignore
+            'range': lambda: afscgap.param.FloatRangeParam(min_val, max_val)   # type: ignore
         }[param_type]
         return strategy()  # type: ignore
 
@@ -1135,13 +1136,12 @@ class Query:
         param_type = self._get_param_type(eq, min_val, max_val)
         strategy = {
             'empty': lambda: afscgap.param.EmptyParam(),
-            'equals': lambda: afscgap.param.IntEqualsParam(eq),
-            'range': lambda: afscgap.param.IntRangeParam(min_val, max_val)
+            'equals': lambda: afscgap.param.IntEqualsParam(eq),  # type: ignore
+            'range': lambda: afscgap.param.IntRangeParam(min_val, max_val)  # type: ignore
         }[param_type]
         return strategy()  # type: ignore
     
-    def _get_param_type(self, eq: typing.Optional, min_val: typing.Optional,
-        max_val: typing.Optional) -> str:
+    def _get_param_type(self, eq, min_val, max_val) -> str:
         """Determine how the parameter should be interpreted.
         
         Args:

@@ -1,9 +1,12 @@
+import typing
+
 import afscgap.convert
 import afscgap.model
 import afscgap.param
 
+from afscgap.typesdef import OPT_FLOAT
 from afscgap.typesdef import OPT_REQUESTOR
-from afscgap.typdefs import OPT_INT
+from afscgap.typesdef import OPT_INT
 
 PARAMS_DICT = typing.Dict[str, afscgap.param.Param]
 RECORDS = typing.Iterable[afscgap.model.Record]
@@ -93,8 +96,8 @@ class HaulKey:
     def get_survey(self) -> str:
         return self._survey
     
-    def get_haul(self) -> str:
-        returns self._haul
+    def get_haul(self) -> int:
+        return self._haul
         
     def get_key(self) -> str:
         return '%d_%s_%d' % (self._year, self._survey, self._haul)
@@ -239,7 +242,7 @@ class FlatRecord(afscgap.model.Record):
         start = self._assert_float(self._inner['latitude_dd_start'])
         end = self._assert_float(self._inner['latitude_dd_end'])
         mid = (start + end) / 2
-        return afscgap.convert.convert(mid, 'dd', units)
+        return self._assert_float(afscgap.convert.convert(mid, 'dd', units))
 
     def get_longitude(self, units: str = 'dd') -> float:
         """Get the field labeled as longitude_dd in the API.
@@ -254,7 +257,7 @@ class FlatRecord(afscgap.model.Record):
         start = self._assert_float(self._inner['longitude_dd_start'])
         end = self._assert_float(self._inner['longitude_dd_end'])
         mid = (start + end) / 2
-        return afscgap.convert.convert(mid, 'dd', units)
+        return self._assert_float(afscgap.convert.convert(mid, 'dd', units))
 
     def get_species_code(self) -> float:
         """Get the field labeled as species_code in the API.
@@ -412,7 +415,7 @@ class FlatRecord(afscgap.model.Record):
             Depth of the bottom.
         """
         value = self._assert_float(self._inner['depth_m'])
-        return afscgap.convert.convert(value, 'm', units)
+        return self._assert_float(afscgap.convert.convert(value, 'm', units))
 
     def get_distance_fished(self, units: str = 'm') -> float:
         """Get the field labeled as distance_fished_km in the API.
@@ -425,7 +428,7 @@ class FlatRecord(afscgap.model.Record):
             Distance of the net fished.
         """
         value = self._assert_float(self._inner['distance_fished_km'])
-        return afscgap.convert.convert(value, 'km', units)
+        return self._assert_float(afscgap.convert.convert(value, 'km', units))
 
     def get_net_width(self, units: str = 'm') -> float:
         """Get the field labeled as net_width_m in the API.
@@ -438,7 +441,7 @@ class FlatRecord(afscgap.model.Record):
             Distance of the net fished after asserting it is given.
         """
         value = self._assert_float(self._inner['net_width_m'])
-        return afscgap.convert.convert(value, 'm', units)
+        return self._assert_float(afscgap.convert.convert(value, 'm', units))
 
     def get_net_height(self, units: str = 'm') -> float:
         """Get the field labeled as net_height_m in the API.
@@ -451,7 +454,7 @@ class FlatRecord(afscgap.model.Record):
             Height of the net fished after asserting it is given.
         """
         value = self._assert_float(self._inner['net_height_m'])
-        return afscgap.convert.convert(value, 'm', units)
+        return self._assert_float(afscgap.convert.convert(value, 'm', units))
 
     def get_net_width_maybe(self, units: str = 'm') -> OPT_FLOAT:
         """Get the field labeled as net_width_m in the API.
@@ -498,7 +501,7 @@ class FlatRecord(afscgap.model.Record):
             Area covered by the net while fishing in desired units.
         """
         value = self._assert_float(self._inner['area_swept_km2'])
-        return afscgap.convert.convert(value, 'km2', units)
+        return self._assert_float(afscgap.convert.convert(value, 'km2', units))
 
     def get_duration(self, units: str = 'hr') -> float:
         """Get the field labeled as duration_hr in the API.
@@ -511,7 +514,7 @@ class FlatRecord(afscgap.model.Record):
             Duration of the haul.
         """
         value = self._assert_float(self._inner['duration_hr'])
-        return afscgap.convert.convert(value, 'hr', units)
+        return self._assert_float(afscgap.convert.convert(value, 'hr', units))
 
     def get_cpue_weight(self, units: str = 'kg/ha') -> float:
         """Get the value of field cpue_kgha with validity assert.
@@ -529,7 +532,7 @@ class FlatRecord(afscgap.model.Record):
             metadata. Will be zero if a zero catch record.
         """
         value = self._assert_float(self._inner['cpue_kgkm2'])
-        return afscgap.convert.convert(value, 'kg/km2', units)
+        return self._assert_float(afscgap.convert.convert(value, 'kg/km2', units))
 
     def get_cpue_count(self, units: str = 'count/ha') -> float:
         """Get the value of field cpue_noha with validity assert.
@@ -547,7 +550,7 @@ class FlatRecord(afscgap.model.Record):
             hectares). See metadata. Will be zero if a zero catch record.
         """
         value = self._assert_float(self._inner['cpue_nokm2'])
-        return afscgap.convert.convert(value, 'no/km2', units)
+        return self._assert_float(afscgap.convert.convert(value, 'no/km2', units))
 
     def get_weight(self, units: str = 'kg') -> float:
         """Get the value of field weight_kg with validity assert.
@@ -565,7 +568,7 @@ class FlatRecord(afscgap.model.Record):
             catch record.
         """
         value = self._assert_float(self._inner['weight_kg'])
-        return afscgap.convert.convert(value, 'kg', units)
+        return self._assert_float(afscgap.convert.convert(value, 'kg', units))
 
     def get_count(self) -> float:
         """Get the value of field count with validity assert.
@@ -597,7 +600,7 @@ class FlatRecord(afscgap.model.Record):
             available.
         """
         value = self._assert_float(self._inner['bottom_temperature_c'])
-        return afscgap.convert.convert(value, 'c', units)
+        return self._assert_float(afscgap.convert.convert(value, 'c', units))
 
     def get_surface_temperature(self, units='c') -> float:
         """Get the value of field surface_temperature_c with validity assert.
@@ -616,7 +619,7 @@ class FlatRecord(afscgap.model.Record):
             available.
         """
         value = self._assert_float(self._inner['surface_temperature_c'])
-        return afscgap.convert.convert(value, 'c', units)
+        return self._assert_float(afscgap.convert.convert(value, 'c', units))
 
     def is_complete(self) -> bool:
         """Determine if this record has all of its values filled in.
@@ -634,3 +637,15 @@ class FlatRecord(afscgap.model.Record):
     
     def get_inner(self):
         return self._inner
+    
+    def _assert_float(self, target) -> float:
+        assert target is not None
+        return float(target)
+    
+    def _assert_str(self, target) -> str:
+        assert target is not None
+        return str(target)
+    
+    def _assert_int(self, target) -> int:
+        assert target is not None
+        return int(target)

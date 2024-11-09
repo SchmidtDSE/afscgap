@@ -1,8 +1,8 @@
 import itertools
 
 import fastavro
-import requests
 
+import afscgap.flat_index_util
 import afscgap.flat_model
 import afscgap.http_util
 
@@ -24,15 +24,15 @@ def build_requestor() -> REQUESTOR:
 def get_all_hauls(meta: afscgap.flat_model.ExecuteMetaParams) -> HAUL_KEYS:
     url = meta.get_base_url() + '/index/main.avro'
     
-    requestor_maybe = meta.get_reqestor()
+    requestor_maybe = meta.get_requestor()
     requestor = requestor_maybe if requestor_maybe else build_requestor()
     response = requestor(url)
     
     afscgap.http_util.check_result(response)
     
     stream = response.raw
-    dict_stream = fastavro.reader(stream)
-    obj_stream = map(build_haul_from_avro, dict_stream)
+    dict_stream = fastavro.reader(stream)  # type: ignore
+    obj_stream = map(build_haul_from_avro, dict_stream)  # type: ignore
     return obj_stream
 
 
@@ -41,14 +41,14 @@ def get_hauls_for_index_filter(meta: afscgap.flat_model.ExecuteMetaParams,
     path = '/index/%s.avro' % filter.get_index_name()
     url = meta.get_base_url() + path
     
-    requestor_maybe = meta.get_reqestor()
+    requestor_maybe = meta.get_requestor()
     requestor = requestor_maybe if requestor_maybe else build_requestor()
     response = requestor(url)
     
     afscgap.http_util.check_result(response)
     
     stream = response.raw
-    all_with_value = fastavro.reader(stream)
+    all_with_value = fastavro.reader(stream)  # type: ignore
     dict_stream_with_value = filter(lambda x: filter.get_matches(x['value']), all_with_value)
     dict_stream_nested = map(lambda x: x['keys'], dict_stream_with_value)
     dict_stream = itertools.chain(*dict_stream_nested)
@@ -62,13 +62,13 @@ def get_records_for_haul(meta: afscgap.flat_model.ExecuteMetaParams,
     path = haul.get_path()
     url = meta.get_base_url() + path
     
-    requestor_maybe = meta.get_reqestor()
+    requestor_maybe = meta.get_requestor()
     requestor = requestor_maybe if requestor_maybe else build_requestor()
     response = requestor(url)
     
     afscgap.http_util.check_result(response)
     
     stream = response.raw
-    dict_stream = fastavro.reader(stream)
-    obj_stream = map(lambda x: FlatRecord(x), dict_stream)
+    dict_stream = fastavro.reader(stream)  # type: ignore
+    obj_stream = map(lambda x: afscgap.flat_model.FlatRecord(x), dict_stream)
     return obj_stream

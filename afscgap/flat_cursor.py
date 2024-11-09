@@ -5,13 +5,14 @@ import afscgap.cursor
 import afscgap.model
 
 from afscgap.flat_model import RECORDS
+from afscgap.typesdef import OPT_INT
 
 
 class FlatCursor(afscgap.cursor.Cursor):
     
     def __init__(self, records: RECORDS):
         self._records = records
-        
+        self._records_iter = iter(self._records)
     
     def get_limit(self) -> OPT_INT:
         """Get the overall limit.
@@ -63,7 +64,7 @@ class FlatCursor(afscgap.cursor.Cursor):
             return None if no remain.
         """
         try:
-            return next(records)
+            return next(self._records_iter)
         except StopIteration:
             return None
 

@@ -1,5 +1,5 @@
-import copy
 import functools
+import typing
 
 import afscgap.convert
 import afscgap.param
@@ -16,7 +16,7 @@ class IndexFilter:
     def get_index_name(self) -> str:
         raise NotImplementedError('Use implementor.')
     
-    def get_matches(self, target: dict) -> bool:
+    def get_matches(self, target: typing.Union[float, int, str, None]) -> bool:
         raise NotImplementedError('Use implementor.')
 
 
@@ -129,7 +129,7 @@ class FloatRangeIndexFilter(IndexFilter):
         self._index_name = index_name
         self._param = param
         self._low_str = self._prep_string(self._param.get_low())
-        self._high_str = self._prep_stirng(self._param.get_high())
+        self._high_str = self._prep_string(self._param.get_high())
         
     def get_index_name(self) -> str:
         return self._index_name
@@ -190,7 +190,7 @@ class DatetimeRangeIndexFilter(IndexFilter):
         self._index_name = index_name
         self._param = param
         self._low_str = self._prep_string(self._param.get_low())
-        self._high_str = self._prep_stirng(self._param.get_high())
+        self._high_str = self._prep_string(self._param.get_high())
         
     def get_index_name(self) -> str:
         return self._index_name
@@ -329,15 +329,16 @@ def decorate_filter(field: str, original: IndexFilter) -> IndexFilter:
     conversion = FIELD_CONVERSIONS[field]
     user_units = conversion['user']
     system_units = conversion['system']
-    return UnitConversionIndexFilter(x, user_units, system_units)
+    return UnitConversionIndexFilter(original, user_units, system_units)
 
 
 def make_filters(field: str, param: afscgap.param.Param,
     presence_only: bool) -> typing.Iterable[IndexFilter]:
-    if param.get_is_ignoreable():
+    if param.get_is_ignorable():
         return []
     
-    if param.get_filter_type() == 'empty':
+    filter_type = param.get_filter_type()
+    if filter_type == 'empty':
         return []
     
     if (not presence_only) and (field in PRESENCE_ONLY_FIELDS):
@@ -360,7 +361,7 @@ def make_filters(field: str, param: afscgap.param.Param,
     if len(indicies) == 0:
         return []
 
-    undecorated_filters = map(lambda x: strategy(x, param), indicies)
+    undecorated_filters = map(lambda x: init_strategy(x, param), indicies)
     decorated_filters = map(lambda x: decorate_filter(field, x), undecorated_filters)
     decorated_filters_realized = list(decorated_filters)
-    return LogicalOrIndexFilter(decorated_filters_realized)
+    return [LogicalOrIndexFilter(decorated_filters_realized)]

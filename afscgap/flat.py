@@ -1,13 +1,13 @@
 import functools
 import itertools
-import typing
+import warnings
 
 import afscgap.cursor
 import afscgap.flat_http
 import afscgap.flat_model
 import afscgap.flat_cursor
 
-from afscgap.flat_model import HAUL_KEYS, PARAMS_DICT, RECORDS
+from afscgap.flat_model import HAUL_KEYS, PARAMS_DICT
 
 WARNING_THRESHOLD = 3000
 
@@ -20,7 +20,7 @@ LARGE_WARNING = ' '.join([
 def get_hauls(params: PARAMS_DICT, meta: afscgap.flat_model.ExecuteMetaParams) -> HAUL_KEYS:
     presence_only = meta.get_presence_only()
     
-    params_flat = param_dict.items()
+    params_flat = params.items()
     params_keyed = map(lambda x: {'field': x[0], 'param': x[1]}, params_flat)
     params_required = filter(lambda x: not x['param'].get_is_ignorable(), params_keyed)
     index_filters_nest = map(
@@ -39,17 +39,19 @@ def get_hauls(params: PARAMS_DICT, meta: afscgap.flat_model.ExecuteMetaParams) -
         index_filters_realized
     )
     haul_sets = map(lambda x: set(x), haul_iterables)
-    return functools.reduce(lambda a, b: a.intersection(b), haul_sets)
+    return functools.reduce(lambda a, b: a.intersection(b), haul_sets)  # type: ignore
 
 
 def check_warning(hauls: HAUL_KEYS, meta: afscgap.flat_model.ExecuteMetaParams):
-    if meta.get_suppress_large_warnin():
+    if meta.get_suppress_large_warning():
         return
     
     num_hauls = sum(map(lambda x: 1, hauls))
 
     if num_hauls > WARNING_THRESHOLD:
-        meta.get_warn_func(LARGE_WARNING)
+        warn_func = meta.get_warn_func()
+        warn_func_realized = warnings.warn if warn_func is None else warn_func
+        warn_func_realized(LARGE_WARNING)  # type: ignore
     
 
 def execute(param_dict: PARAMS_DICT,
@@ -61,7 +63,7 @@ def execute(param_dict: PARAMS_DICT,
     check_warning(hauls_realized, meta)
     
     candidate_records_nested = map(
-        lambda x: get_records_for_haul(meta, x),
+        lambda x: afscgap.flat_http.get_records_for_haul(meta, x),
         hauls_realized
     )
     candidate_records = itertools.chain(*candidate_records_nested)
@@ -74,6 +76,6 @@ def execute(param_dict: PARAMS_DICT,
     filter_cursor = afscgap.flat_cursor.CompleteCursor(raw_cursor) if no_incomplete else raw_cursor
     
     limit = meta.get_limit()
-    cursor = afscgap.flat_cursor.LimitCursor(limit, filter_cursor) if limit else filter_cursor
+    cursor = afscgap.flat_cursor.LimitCursor(filter_cursor, limit) if limit else filter_cursor
     
     return cursor
