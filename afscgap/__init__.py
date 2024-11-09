@@ -22,8 +22,6 @@ import afscgap.param
 from afscgap.typesdef import OPT_FLOAT
 from afscgap.typesdef import INT_PARAM
 from afscgap.typesdef import STR_PARAM
-
-from afscgap.typesdef import OPT_FLOAT
 from afscgap.typesdef import OPT_INT
 from afscgap.typesdef import OPT_STR
 from afscgap.typesdef import OPT_REQUESTOR

@@ -1,4 +1,5 @@
 import itertools
+import typing
 
 import fastavro
 
