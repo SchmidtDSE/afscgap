@@ -68,9 +68,12 @@ def execute(param_dict: PARAMS_DICT,
     records = filter(lambda x: local_filter.matches(x), candidate_records)
     
     limit = meta.get_limit()
-    filtering_incomplete = meta.get_filter_incomplete()
-    inner_cursor = afscgap.flat_cursor.FlatCursor(records, limit, filtering_incomplete)
+    raw_cursor = afscgap.flat_cursor.FlatCursor(records)
+    
+    no_incomplete = meta.get_filter_incomplete()
+    filter_cursor = afscgap.flat_cursor.CompleteCursor(raw_cursor) if no_incomplete else raw_cursor
     
     limit = meta.get_limit()
-    cursor = afscgap.flat_cursor.LimitCursor(limit, inner_cursor) if limit else inner_cursor
+    cursor = afscgap.flat_cursor.LimitCursor(limit, filter_cursor) if limit else filter_cursor
+    
     return cursor

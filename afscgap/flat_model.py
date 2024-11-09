@@ -9,6 +9,41 @@ PARAMS_DICT = typing.Dict[str, afscgap.param.Param]
 RECORDS = typing.Iterable[afscgap.model.Record]
 WARN_FUNCTION = typing.Optional[typing.Callable[[str], None]]
 
+RECORD_REQUIRED_FIELDS = [
+    'area_swept_km2',
+    'bottom_temperature_c',
+    'common_name',
+    'complete',
+    'count',
+    'cpue_kgkm2',
+    'cpue_nokm2',
+    'curise',
+    'date_time',
+    'depth_m',
+    'distance_fished_km',
+    'duration_hr',
+    'haul',
+    'latitude_dd_end',
+    'latitude_dd_start',
+    'longitude_dd_end',
+    'longitude_dd_start',
+    'net_height_m',
+    'net_width_m',
+    'scientific_name',
+    'species_code',
+    'srvy',
+    'station',
+    'stratum',
+    'surface_temperature_c',
+    'survey',
+    'survey_definition_id',
+    'taxon_confidence',
+    'vessel_id',
+    'vessel_name',
+    'weight_kg',
+    'year'
+]
+
 
 class ExecuteMetaParams:
     
@@ -593,4 +628,9 @@ class FlatRecord(afscgap.model.Record):
         if not self._inner['complete']:
             return False
         
-        
+        fields_missing = filter(lambda x: self._inner.get(x, None), RECORD_REQUIRED_FIELDS)
+        num_missing = sum(map(lambda x: 1, fields_missing))
+        return num_missing == 0
+    
+    def get_inner(self):
+        return self._inner
