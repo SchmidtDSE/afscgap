@@ -724,7 +724,7 @@ class Query:
             This object for chaining if desired.
         """
         self._surface_temperature_c = self._create_float_param(
-            afscgap.convert.convert(eq, units ,'c'),
+            afscgap.convert.convert(eq, units, 'c'),
             afscgap.convert.convert(min_val, units, 'c'),
             afscgap.convert.convert(max_val, units, 'c')
         )
@@ -1076,7 +1076,7 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
-        
+
         Returns:
             Newly initalized parameter.
         """
@@ -1103,7 +1103,7 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
-        
+
         Returns:
             Newly initalized parameter.
         """
@@ -1129,7 +1129,7 @@ class Query:
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
-        
+
         Returns:
             Newly initalized parameter.
         """
@@ -1140,25 +1140,25 @@ class Query:
             'range': lambda: afscgap.param.IntRangeParam(min_val, max_val)  # type: ignore
         }[param_type]
         return strategy()  # type: ignore
-    
+
     def _get_param_type(self, eq, min_val, max_val) -> str:
         """Determine how the parameter should be interpreted.
-        
+
         Args:
             eq: The value for equality or None if no equals filter.
             min_val: The minimum value or None if no minimum filter.
             max_val: The maximum value or None if no maximum filter.
-        
+
         Returns:
             One of the following as a string: empty, equals, range.
         """
-        if eq == None:
-            if min_val == None and max_val == None:
+        if eq is None:
+            if min_val is None and max_val is None:
                 return 'empty'
             else:
                 return 'range'
         else:
-            if min_val != None or max_val != None:
+            if min_val is not None or max_val is not None:
                 raise RuntimeError('Both range and equality filters provided.')
             else:
                 return 'equals'

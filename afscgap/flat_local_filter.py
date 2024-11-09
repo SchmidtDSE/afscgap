@@ -9,32 +9,32 @@ from afscgap.flat_model import PARAMS_DICT
 
 
 class LocalFilter:
-    
+
     def __init__(self):
         raise NotImplementedError('Use implementor.')
-    
+
     def matches(self, target: afscgap.model.Record) -> bool:
         raise NotImplementedError('Use implementor.')
 
 
 class EqualsLocalFilter(LocalFilter):
-    
+
     def __init__(self, accessor, value):
         self._accessor = accessor
         self._value = value
-    
+
     def matches(self, target: afscgap.model.Record) -> bool:
         candidate = self._accessor(target)
         return self._value == candidate
 
 
 class RangeLocalFilter(LocalFilter):
-    
+
     def __init__(self, accessor, low_value, high_value):
         self._accessor = accessor
         self._low_value = low_value
         self._high_value = high_value
-    
+
     def matches(self, target: afscgap.model.Record) -> bool:
         candidate = self._accessor(target)
         satisfies_low = (self._low_value is None) or (candidate >= self._low_value)
@@ -43,10 +43,10 @@ class RangeLocalFilter(LocalFilter):
 
 
 class LogicalAndLocalFilter(LocalFilter):
-    
+
     def __init__(self, inner_filters: typing.List[LocalFilter]):
         self._inner_filters = inner_filters
-    
+
     def matches(self, target: afscgap.model.Record) -> bool:
         individual_values = map(lambda x: x.matches(target), self._inner_filters)
         return functools.reduce(lambda a, b: a and b, individual_values, True)
@@ -106,7 +106,7 @@ def build_filter(params: PARAMS_DICT) -> LocalFilter:
 
 def build_individual_filter(field: str, param: afscgap.param.Param) -> LocalFilter:
     accessor = ACCESSORS[field]
-    
+
     filter_type = param.get_filter_type()
     if filter_type == 'equals':
         return EqualsLocalFilter(accessor, param.get_value())  # type: ignore

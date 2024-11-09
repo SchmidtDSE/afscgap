@@ -20,7 +20,7 @@ LARGE_WARNING = ' '.join([
 
 def get_hauls(params: PARAMS_DICT, meta: afscgap.flat_model.ExecuteMetaParams) -> HAUL_KEYS:
     presence_only = meta.get_presence_only()
-    
+
     params_flat = params.items()
     params_keyed = map(lambda x: afscgap.param.FieldParam(x[0], x[1]), params_flat)
     params_required = filter(lambda x: not x.get_param().get_is_ignorable(), params_keyed)
@@ -29,13 +29,13 @@ def get_hauls(params: PARAMS_DICT, meta: afscgap.flat_model.ExecuteMetaParams) -
         x.get_param(),
         presence_only
     ), params_required)
-    
+
     index_filters = itertools.chain(*index_filters_nest)
     index_filters_realized = list(index_filters)
-    
+
     if len(index_filters_realized) == 0:
         return afscgap.flat_http.get_all_hauls(meta)
-        
+
     haul_iterables = map(
         lambda x: afscgap.flat_http.get_hauls_for_index_filter(meta, x),
         index_filters_realized
@@ -47,37 +47,37 @@ def get_hauls(params: PARAMS_DICT, meta: afscgap.flat_model.ExecuteMetaParams) -
 def check_warning(hauls: HAUL_KEYS, meta: afscgap.flat_model.ExecuteMetaParams):
     if meta.get_suppress_large_warning():
         return
-    
+
     num_hauls = sum(map(lambda x: 1, hauls))
 
     if num_hauls > WARNING_THRESHOLD:
         warn_func = meta.get_warn_func()
         warn_func_realized = warnings.warn if warn_func is None else warn_func
         warn_func_realized(LARGE_WARNING)  # type: ignore
-    
+
 
 def execute(param_dict: PARAMS_DICT,
     meta: afscgap.flat_model.ExecuteMetaParams) -> afscgap.cursor.Cursor:
     local_filter = afscgap.flat_local_filter.build_filter(param_dict)
     hauls = get_hauls(param_dict, meta)
-    
+
     hauls_realized = list(hauls)
     check_warning(hauls_realized, meta)
-    
+
     candidate_records_nested = map(
         lambda x: afscgap.flat_http.get_records_for_haul(meta, x),
         hauls_realized
     )
     candidate_records: RECORDS = itertools.chain(*candidate_records_nested)
     records: RECORDS = filter(lambda x: local_filter.matches(x), candidate_records)
-    
+
     limit = meta.get_limit()
     raw_cursor = afscgap.flat_cursor.FlatCursor(records)
-    
+
     no_incomplete = meta.get_filter_incomplete()
     filter_cursor = afscgap.flat_cursor.CompleteCursor(raw_cursor) if no_incomplete else raw_cursor
-    
+
     limit = meta.get_limit()
     cursor = afscgap.flat_cursor.LimitCursor(filter_cursor, limit) if limit else filter_cursor
-    
+
     return cursor

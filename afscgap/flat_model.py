@@ -49,7 +49,7 @@ RECORD_REQUIRED_FIELDS = [
 
 
 class ExecuteMetaParams:
-    
+
     def __init__(self, base_url: str, requestor: OPT_REQUESTOR, limit: OPT_INT,
         filter_incomplete: bool, presence_only: bool, suppress_large_warning: bool,
         warn_func: WARN_FUNCTION):
@@ -60,63 +60,63 @@ class ExecuteMetaParams:
         self._presence_only = presence_only
         self._suppress_large_warning = suppress_large_warning
         self._warn_func = warn_func
-    
+
     def get_base_url(self) -> str:
         return self._base_url
-    
+
     def get_requestor(self) -> OPT_REQUESTOR:
         return self._requestor
-    
+
     def get_limit(self) -> OPT_INT:
         return self._limit
-    
+
     def get_filter_incomplete(self) -> bool:
         return self._filter_incomplete
-    
+
     def get_presence_only(self) -> bool:
         return self._presence_only
-    
+
     def get_suppress_large_warning(self) -> bool:
         return self._suppress_large_warning
-    
+
     def get_warn_func(self) -> WARN_FUNCTION:
         return self._warn_func
 
 
 class HaulKey:
-    
+
     def __init__(self, year: int, survey: str, haul: int):
         self._year = year
         self._survey = survey
         self._haul = haul
-    
+
     def get_year(self) -> int:
         return self._year
-    
+
     def get_survey(self) -> str:
         return self._survey
-    
+
     def get_haul(self) -> int:
         return self._haul
-        
+
     def get_key(self) -> str:
         return '%d_%s_%d' % (self._year, self._survey, self._haul)
-    
+
     def get_path(self) -> str:
         return '/joined/%s.avro' % self.get_key()
-    
+
     def __hash__(self):
         return hash(self.__repr__())
-        
+
     def __repr__(self):
         return self.get_key()
-    
+
     def __eq__(self, other):
         if isinstance(other, HaulKey):
             return self.get_key() == other.get_key()
         else:
             return False
-    
+
     def __ne__(self, other):
         return (not self.__eq__(other))
 
@@ -125,10 +125,10 @@ HAUL_KEYS = typing.Iterable[HaulKey]
 
 
 class FlatRecord(afscgap.model.Record):
-    
+
     def __init__(self, inner):
         self._inner = inner
-    
+
     def get_year(self) -> float:
         """Get the field labeled as year in the API.
 
@@ -308,10 +308,10 @@ class FlatRecord(afscgap.model.Record):
             zero catch record, will be zero.
         """
         value = self._inner['cpue_kgkm2']
-        
+
         if value is None:
             return None
-        
+
         return afscgap.convert.convert(value, 'kg/km2', units)
 
     def get_cpue_count_maybe(self, units: str = 'count/ha') -> OPT_FLOAT:
@@ -330,10 +330,10 @@ class FlatRecord(afscgap.model.Record):
             zero catch record, will be zero.
         """
         value = self._inner['cpue_nokm2']
-        
+
         if value is None:
             return None
-        
+
         return afscgap.convert.convert(value, 'no/km2', units)
 
     def get_weight_maybe(self, units: str = 'kg') -> OPT_FLOAT:
@@ -349,10 +349,10 @@ class FlatRecord(afscgap.model.Record):
             zero.
         """
         value = self._inner['weight_kg']
-        
+
         if value is None:
             return None
-        
+
         return afscgap.convert.convert(value, 'kg', units)
 
     def get_count_maybe(self) -> OPT_FLOAT:
@@ -379,10 +379,10 @@ class FlatRecord(afscgap.model.Record):
             as a float.
         """
         value = self._inner['bottom_temperature_c']
-        
+
         if value is None:
             return None
-        
+
         return afscgap.convert.convert(value, 'c', units)
 
     def get_surface_temperature_maybe(self, units: str = 'c') -> OPT_FLOAT:
@@ -398,10 +398,10 @@ class FlatRecord(afscgap.model.Record):
             available. None if not given or could not interpret as a float.
         """
         value = self._inner['surface_temperature_c']
-        
+
         if value is None:
             return None
-        
+
         return afscgap.convert.convert(value, 'c', units)
 
     def get_depth(self, units: str = 'm') -> float:
@@ -467,10 +467,10 @@ class FlatRecord(afscgap.model.Record):
             Distance of the net fished or None if not given.
         """
         value = self._inner['net_width_m']
-        
+
         if value is None:
             return None
-        
+
         return afscgap.convert.convert(value, 'm', units)
 
     def get_net_height_maybe(self, units: str = 'm') -> OPT_FLOAT:
@@ -484,10 +484,10 @@ class FlatRecord(afscgap.model.Record):
             Height of the net fished or None if not given.
         """
         value = self._inner['net_height_m']
-        
+
         if value is None:
             return None
-        
+
         return afscgap.convert.convert(value, 'm', units)
 
     def get_area_swept(self, units: str = 'ha') -> float:
@@ -630,22 +630,22 @@ class FlatRecord(afscgap.model.Record):
         """
         if not self._inner['complete']:
             return False
-        
+
         fields_missing = filter(lambda x: self._inner.get(x, None), RECORD_REQUIRED_FIELDS)
         num_missing = sum(map(lambda x: 1, fields_missing))
         return num_missing == 0
-    
+
     def get_inner(self):
         return self._inner
-    
+
     def _assert_float(self, target) -> float:
         assert target is not None
         return float(target)
-    
+
     def _assert_str(self, target) -> str:
         assert target is not None
         return str(target)
-    
+
     def _assert_int(self, target) -> int:
         assert target is not None
         return int(target)

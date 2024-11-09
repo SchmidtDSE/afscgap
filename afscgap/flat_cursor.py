@@ -9,11 +9,11 @@ from afscgap.typesdef import OPT_INT
 
 
 class FlatCursor(afscgap.cursor.Cursor):
-    
+
     def __init__(self, records: RECORDS):
         self._records = records
         self._records_iter = iter(self._records)
-    
+
     def get_limit(self) -> OPT_INT:
         """Get the overall limit.
 
@@ -70,11 +70,11 @@ class FlatCursor(afscgap.cursor.Cursor):
 
 
 class CompleteCursor(afscgap.cursor.Cursor):
-    
+
     def __init__(self, inner: afscgap.cursor.Cursor):
         self._inner = inner
         self._invalid: queue.Queue[dict] = queue.Queue()
-    
+
     def get_limit(self) -> OPT_INT:
         """Get the overall limit.
 
@@ -82,7 +82,7 @@ class CompleteCursor(afscgap.cursor.Cursor):
             The maximum number of records to return.
         """
         return self._inner.get_limit()
-    
+
     def get_filtering_incomplete(self) -> bool:
         """Determine if this cursor is silently filtering incomplete records.
 
@@ -93,7 +93,7 @@ class CompleteCursor(afscgap.cursor.Cursor):
             those incomplete records' get_complete() will return false.
         """
         return True
-    
+
     def to_dicts(self) -> typing.Iterable[dict]:
         """Create an iterator which converts Records to dicts.
 
@@ -103,7 +103,7 @@ class CompleteCursor(afscgap.cursor.Cursor):
             directly.
         """
         return self._inner.to_dicts()
-    
+
     def get_next(self) -> typing.Optional[afscgap.model.Record]:
         """Get the next value for this Cursor.
 
@@ -113,33 +113,33 @@ class CompleteCursor(afscgap.cursor.Cursor):
             return None if no remain.
         """
         done = False
-        
+
         next_candidate = None
 
         while not done:
             next_candidate = self._inner.get_next()
-            
+
             if next_candidate is None:
                 return None
-            
+
             is_complete = next_candidate.is_complete()
-            
+
             if not is_complete:
                 next_candidate_cast: afscgap.flat_model.FlatRecord = next_candidate  # type: ignore
                 self._invalid.put(next_candidate_cast.get_inner())
-            
+
             done = is_complete
-        
+
         return next_candidate
-            
-    
+
+
 class LimitCursor(afscgap.cursor.Cursor):
-    
+
     def __init__(self, inner: afscgap.cursor.Cursor, limit: int):
         self._inner = inner
         self._limit = limit
         self._remaining = limit
-    
+
     def get_limit(self) -> OPT_INT:
         """Get the overall limit.
 
@@ -147,7 +147,7 @@ class LimitCursor(afscgap.cursor.Cursor):
             The maximum number of records to return.
         """
         return self._limit
-    
+
     def get_filtering_incomplete(self) -> bool:
         """Determine if this cursor is silently filtering incomplete records.
 
@@ -158,7 +158,7 @@ class LimitCursor(afscgap.cursor.Cursor):
             those incomplete records' get_complete() will return false.
         """
         return self._inner.get_filtering_incomplete()
-    
+
     def to_dicts(self) -> typing.Iterable[dict]:
         """Create an iterator which converts Records to dicts.
 
@@ -168,7 +168,7 @@ class LimitCursor(afscgap.cursor.Cursor):
             directly.
         """
         return self._inner.to_dicts()
-    
+
     def get_next(self) -> typing.Optional[afscgap.model.Record]:
         """Get the next value for this Cursor.
 
@@ -181,7 +181,7 @@ class LimitCursor(afscgap.cursor.Cursor):
             return None
 
         next_candidate = self._inner.get_next()
-        
+
         if next_candidate is None:
             return None
         else:

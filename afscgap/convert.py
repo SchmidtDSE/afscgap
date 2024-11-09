@@ -148,13 +148,13 @@ def convert(target: OPT_FLOAT, source: str, destination: str) -> OPT_FLOAT:
     """
     if target is None:
         return None
-    
+
     if source not in UNIT_TYPES:
         raise RuntimeError('Unknown units: %s' % source)
-    
+
     if destination not in UNIT_TYPES:
         raise RuntimeError('Unknown units: %s' % destination)
-    
+
     source_type = UNIT_TYPES[source]
     destination_type = UNIT_TYPES[destination]
 

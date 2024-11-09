@@ -6,29 +6,29 @@ import afscgap.param
 
 
 class IndexFilter:
-    
+
     def __init__(self):
         raise NotImplementedError('Use implementor.')
-    
+
     def get_index_available(self) -> bool:
         raise NotImplementedError('Use implementor.')
-        
+
     def get_index_name(self) -> str:
         raise NotImplementedError('Use implementor.')
-    
+
     def get_matches(self, target: typing.Union[float, int, str, None]) -> bool:
         raise NotImplementedError('Use implementor.')
 
 
 class StringEqIndexFilter(IndexFilter):
-    
+
     def __init__(self, index_name: str, param: afscgap.param.StrEqualsParam):
         self._index_name = index_name
         self._param = param
-        
+
     def get_index_name(self) -> str:
         return self._index_name
-    
+
     def get_matches(self, value) -> bool:
         return value is not None and value == self._param.get_value()
 
@@ -38,10 +38,10 @@ class StringRangeIndexFilter(IndexFilter):
     def __init__(self, index_name: str, param: afscgap.param.StrRangeParam):
         self._index_name = index_name
         self._param = param
-        
+
     def get_index_name(self) -> str:
         return self._index_name
-    
+
     def get_matches(self, value) -> bool:
         if value is None:
             return False
@@ -50,24 +50,24 @@ class StringRangeIndexFilter(IndexFilter):
             satisfies_low = value >= self._param.get_low()
         else:
             satisfies_low = True
-        
+
         if self._param.get_high() is not None:
             satisfies_high = value <= self._param.get_high()
         else:
             satisfies_high = True
-        
+
         return satisfies_low and satisfies_high
 
 
 class IntEqIndexFilter(IndexFilter):
-    
+
     def __init__(self, index_name: str, param: afscgap.param.IntEqualsParam):
         self._index_name = index_name
         self._param = param
-        
+
     def get_index_name(self) -> str:
         return self._index_name
-    
+
     def get_matches(self, value) -> bool:
         return value is not None and value == self._param.get_value()
 
@@ -77,45 +77,45 @@ class IntRangeIndexFilter(IndexFilter):
     def __init__(self, index_name: str, param: afscgap.param.IntRangeParam):
         self._index_name = index_name
         self._param = param
-        
+
     def get_index_name(self) -> str:
         return self._index_name
-    
+
     def get_matches(self, value) -> bool:
         if value is None:
             return False
-        
+
         if self._param.get_low() is not None:
             satisfies_low = value >= self._param.get_low()
         else:
             satisfies_low = True
-        
+
         if self._param.get_high() is not None:
             satisfies_high = value <= self._param.get_high()
         else:
             satisfies_high = True
-        
+
         return satisfies_low and satisfies_high
 
 
 class FloatEqIndexFilter(IndexFilter):
-    
+
     def __init__(self, index_name: str, param: afscgap.param.FloatEqualsParam):
         self._index_name = index_name
         self._param = param
         self._param_str = self._prep_string(self._param.get_value())
-        
+
     def get_index_name(self) -> str:
         return self._index_name
-    
+
     def get_matches(self, target) -> bool:
         value = self._prep_string(target)
-        
+
         if value is None:
             return False
         else:
             return value == self._param_str
-    
+
     def _prep_string(self, target) -> typing.Optional[str]:
         if target is None:
             return None
@@ -130,53 +130,53 @@ class FloatRangeIndexFilter(IndexFilter):
         self._param = param
         self._low_str = self._prep_string(self._param.get_low())
         self._high_str = self._prep_string(self._param.get_high())
-        
+
     def get_index_name(self) -> str:
         return self._index_name
-    
+
     def get_matches(self, target) -> bool:
         value = self._prep_string(target)
-        
+
         if value is None:
             return False
-        
+
         if self._low_str is not None:
             satisfies_low = value >= self._low_str
         else:
             satisfies_low = True
-        
+
         if self._high_str is not None:
             satisfies_high = value <= self._high_str
         else:
             satisfies_high = True
-        
+
         return satisfies_low and satisfies_high
-    
+
     def _prep_string(self, target) -> typing.Optional[str]:
         if target is None:
             return None
         else:
             return '%.2f' % target  # type: ignore
 
-            
+
 class DatetimeEqIndexFilter(IndexFilter):
-    
+
     def __init__(self, index_name: str, param: afscgap.param.FloatEqualsParam):
         self._index_name = index_name
         self._param = param
         self._param_str = self._prep_string(self._param.get_value())
-        
+
     def get_index_name(self) -> str:
         return self._index_name
-    
+
     def get_matches(self, target) -> bool:
         value = self._prep_string(target)
-        
+
         if value is None:
             return False
         else:
             return value == self._param_str
-    
+
     def _prep_string(self, target) -> typing.Optional[str]:
         if target is None:
             return None
@@ -191,28 +191,28 @@ class DatetimeRangeIndexFilter(IndexFilter):
         self._param = param
         self._low_str = self._prep_string(self._param.get_low())
         self._high_str = self._prep_string(self._param.get_high())
-        
+
     def get_index_name(self) -> str:
         return self._index_name
-    
+
     def get_matches(self, target) -> bool:
         value = self._prep_string(target)
-        
+
         if value is None:
             return False
-        
+
         if self._low_str is not None:
             satisfies_low = value >= self._low_str
         else:
             satisfies_low = True
-        
+
         if self._high_str is not None:
             satisfies_high = value <= self._high_str
         else:
             satisfies_high = True
-        
+
         return satisfies_low and satisfies_high
-    
+
     def _prep_string(self, target) -> typing.Optional[str]:
         if target is None:
             return None
@@ -221,37 +221,37 @@ class DatetimeRangeIndexFilter(IndexFilter):
 
 
 class UnitConversionIndexFilter(IndexFilter):
-    
+
     def __init__(self, inner: IndexFilter, user_units: str, system_units: str):
         self._inner = inner
         self._user_units = user_units
         self._system_units = system_units
-        
+
     def get_index_name(self) -> str:
         return self._inner.get_index_name()
-    
+
     def get_matches(self, value) -> bool:
         original = float(value)
         converted = afscgap.convert.convert(original, self._system_units, self._user_units)
         return self._inner.get_matches(converted)
 
-        
+
 class LogicalOrIndexFilter(IndexFilter):
-    
+
     def __init__(self, inners: typing.List[IndexFilter]):
         self._inners = inners
-        
+
         names = map(lambda x: x.get_index_name(), self._inners)
         names_unique = set(names)
-        
+
         if len(names_unique) != 1:
             raise RuntimeError('Logical or index filter uses exactly one index.')
-        
+
         self._name = names_unique.pop()
-        
+
     def get_index_name(self) -> str:
         return self._name
-    
+
     def get_matches(self, value) -> bool:
         matches = map(lambda x: x.get_matches(value), self._inners)
         return functools.reduce(lambda a, b: a or b, matches)
@@ -336,27 +336,27 @@ def make_filters(field: str, param: afscgap.param.Param,
     presence_only: bool) -> typing.Iterable[IndexFilter]:
     if param.get_is_ignorable():
         return []
-    
+
     filter_type = param.get_filter_type()
     if filter_type == 'empty':
         return []
-    
+
     if (not presence_only) and (field in PRESENCE_ONLY_FIELDS):
         return []
-    
+
     if field in FIELD_DATA_TYPE_OVERRIDES:
         data_type = FIELD_DATA_TYPE_OVERRIDES[field]
     else:
         data_type = param.get_data_type()
-    
+
     data_type_strategies = STRATEGIES.get(data_type, None)
     if data_type_strategies is None:
         raise RuntimeError('Could not find filter strategy for type %s.' % data_type)
-    
+
     init_strategy = data_type_strategies.get(filter_type, None)
     if init_strategy is None:
         raise RuntimeError('Could not find filter strategy for type %s.' % filter_type)
-    
+
     indicies = INDICIES.get(field, [])
     if len(indicies) == 0:
         return []
