@@ -25,7 +25,7 @@ def check_result(target: requests.Response):
             unexpected status code.
     """
     status_ok = target.status_code >= 100 and target.status_code < 400
-    if status_ok:
+    if not status_ok:
         message = 'Got non-OK response from remote: %d (%s)' % (
             target.status_code,
             target.text
