@@ -362,39 +362,6 @@ class Record:
         """
         raise NotImplementedError('Use implementor.')
 
-    def get_tsn(self) -> int:
-        """Get the field labeled as tsn in the API.
-
-        Returns:
-            Taxonomic information system species code.
-        """
-        raise NotImplementedError('Use implementor.')
-
-    def get_tsn_maybe(self) -> OPT_INT:
-        """Get the field labeled as tsn in the API or None.
-
-        Returns:
-            Taxonomic information system species code if it could be parsed as
-            an int and None otherwise.
-        """
-        raise NotImplementedError('Use implementor.')
-
-    def get_ak_survey_id(self) -> int:
-        """Get the field labeled as ak_survey_id in the API.
-
-        Returns:
-            AK identifier for the survey.
-        """
-        raise NotImplementedError('Use implementor.')
-
-    def get_ak_survey_id_maybe(self) -> OPT_INT:
-        """Get the field labeled as ak_survey_id in the API.
-
-        Returns:
-            AK identifier for the survey or None if not given.
-        """
-        raise NotImplementedError('Use implementor.')
-
     def get_cpue_weight(self, units: str = 'kg/ha') -> float:
         """Get the value of field cpue_kgha with validity assert.
 
@@ -551,7 +518,5 @@ class Record:
             'net_width_m': self.get_net_width(units='m'),
             'net_height_m': self.get_net_height(units='m'),
             'area_swept_ha': self.get_area_swept(units='ha'),
-            'duration_hr': self.get_duration(units='hr'),
-            'tsn': self.get_tsn_maybe(),
-            'ak_survey_id': self.get_ak_survey_id()
+            'duration_hr': self.get_duration(units='hr')
         }

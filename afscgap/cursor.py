@@ -38,37 +38,6 @@ class Cursor(typing.Iterable[afscgap.model.Record]):
         """
         raise NotImplementedError('Use implementor.')
 
-    def get_page_url(self, offset: OPT_INT = None,
-        limit: OPT_INT = None) -> str:
-        """Get a URL at which a page can be found using this cursor's base url.
-
-        Args:
-            offset: The number of records to skip prior to the page.
-            limit: The maximum number of records to return in the page.
-        Returns:
-            URL at which the requested page can be found.
-        """
-        raise NotImplementedError('Use implementor.')
-
-    def get_page(self, offset: OPT_INT = None,
-        limit: OPT_INT = None,
-        ignore_invalid: bool = False) -> typing.List[afscgap.model.Record]:
-        """Get a page using this cursor's base url.
-
-        Args:
-            offset: The number of records to skip prior to the page.
-            limit: The maximum number of records to return in the page.
-            ignore_invalid: Flag indicating how to handle invalid records. If
-                true, will silently throw away records which could not be
-                parsed. If false, will raise an exception if a record can not
-                be parsed.
-
-        Returns:
-            Results from the page which, regardless of ignore_invalid, may
-            contain a mixture of complete and incomplete records.
-        """
-        raise NotImplementedError('Use implementor.')
-
     def get_invalid(self) -> 'queue.Queue[dict]':
         """Get a queue of invalid / incomplete records found so far.
 

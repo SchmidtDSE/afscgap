@@ -42,6 +42,14 @@ CONVERTERS = {
     },
     'degrees': {
         'dd': lambda x: x
+    },
+    'effort': {
+        'kg/ha': lambda x: x / 100,
+        'kg1000/km2': lambda x: x / 0.1,
+        'kg/km2': lambda x: x,
+        'no/ha': lambda x: x / 100,
+        'no1000/km2': lambda x: x / 0.1,
+        'no/km2': lambda x: x
     }
 }
 
@@ -70,6 +78,14 @@ UNCONVERTERS = {
     },
     'degrees': {
         'dd': lambda x: x
+    },
+    'effort': {
+        'kg/ha': lambda x: x * 100,
+        'kg1000/km2': lambda x: x * 0.1,
+        'kg/km2': lambda x: x,
+        'no/ha': lambda x: x * 100,
+        'no1000/km2': lambda x: x * 0.1,
+        'no/km2': lambda x: x
     }
 }
 
@@ -86,7 +102,13 @@ UNIT_TYPES = {
     'min': 'time',
     'g': 'weight',
     'kg': 'weight',
-    'dd': 'degrees'
+    'dd': 'degrees',
+    'kg/ha': 'effortWeight',
+    'kg1000/km2': 'effortWeight',
+    'kg/km2': 'effortWeight',
+    'no/ha': 'effortCount',
+    'no1000/km2': 'effortCount',
+    'no/km2': 'effortCount'
 }
 
 

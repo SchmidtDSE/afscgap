@@ -17,6 +17,7 @@ import typing
 import warnings
 
 import afscgap.cursor
+import afscgap.flat
 import afscgap.param
 
 from afscgap.typesdef import FLOAT_PARAM
@@ -29,11 +30,6 @@ from afscgap.typesdef import OPT_STR
 from afscgap.typesdef import OPT_REQUESTOR
 
 WARN_FUNCTION = typing.Optional[typing.Callable[[str], None]]
-
-LARGE_WARNING = ' '.join([
-    'Your query may return a very large amount of records.',
-    'Be sure to interact with results in a memory efficient way.'
-])
 
 
 class Query:
@@ -90,8 +86,6 @@ class Query:
         self._net_height_m: afscgap.param.Param = afscgap.param.EmptyParam()
         self._area_swept_ha: afscgap.param.Param = afscgap.param.EmptyParam()
         self._duration_hr: afscgap.param.Param = afscgap.param.EmptyParam()
-        self._tsn: afscgap.param.Param = afscgap.param.EmptyParam()
-        self._ak_survey_id: afscgap.param.Param = afscgap.param.EmptyParam()
 
         # Query pararmeters
         self._limit: OPT_INT = None
@@ -923,54 +917,6 @@ class Query:
         )
         return self
 
-    def filter_tsn(self, eq: INT_PARAM = None, min_val: OPT_INT = None,
-        max_val: OPT_INT = None) -> 'Query':
-        """Filter on taxonomic information system species code.
-
-        Filter on taxonomic information system species code, overwritting all
-        prior TSN filters applied to this Query.
-
-        Args:
-            eq: The exact value that must be matched for a record to be
-                returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided.
-            min_val: The minimum allowed value, inclusive. Pass None if no
-                minimum value filter should be applied. Defaults to None. Error
-                thrown if eq also proivded.
-            max_val: The maximum allowed value, inclusive. Pass None if no
-                maximum value filter should be applied. Defaults to None. Error
-                thrown if eq also proivded.
-
-        Returns:
-            This object for chaining if desired.
-        """
-        self._tsn = self._create_int_param(eq, min_val, max_val)
-        return self
-
-    def filter_ak_survey_id(self, eq: INT_PARAM = None, min_val: OPT_INT = None,
-        max_val: OPT_INT = None) -> 'Query':
-        """Filter on AK identifier for the survey.
-
-        Filter on AK identifier for the survey, overwritting all prior AK ID
-        filters applied to this Query.
-
-        Args:
-            eq: The exact value that must be matched for a record to be
-                returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided.
-            min_val: The minimum allowed value, inclusive. Pass None if no
-                minimum value filter should be applied. Defaults to None. Error
-                thrown if eq also proivded.
-            max_val: The maximum allowed value, inclusive. Pass None if no
-                maximum value filter should be applied. Defaults to None. Error
-                thrown if eq also proivded.
-
-        Returns:
-            This object for chaining if desired.
-        """
-        self._ak_survey_id = self._create_int_param(eq, min_val, max_val)
-        return self
-
     def set_limit(self, limit: OPT_INT) -> 'Query':
         """Set the max number of results.
 
@@ -1100,11 +1046,20 @@ class Query:
             'net_width_m': self._net_width_m,
             'net_height_m': self._net_height_m,
             'area_swept_ha': self._area_swept_ha,
-            'duration_hr': self._duration_hr,
-            'tsn': self._tsn,
-            'ak_survey_id': self._ak_survey_id
+            'duration_hr': self._duration_hr
         }
-        return afscgap.flat.execute(params_dict)
+
+        meta_params = afscgap.flat.ExecuteMetaParams(
+            self._base_url,
+            self._requestor,
+            self._limit,
+            self._filter_incomplete,
+            self._presence_only,
+            self._suppress_large_warning,
+            self._warn_function
+        )
+
+        return afscgap.flat.execute(params_dict, meta_params)
 
     def _create_str_param(self, eq: STR_PARAM = None, min_val: OPT_STR = None,
         max_val: OPT_STR = None) -> afscgap.param.Param:
