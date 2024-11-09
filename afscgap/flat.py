@@ -4,10 +4,11 @@ import warnings
 
 import afscgap.cursor
 import afscgap.flat_http
+import afscgap.flat_local_filter
 import afscgap.flat_model
 import afscgap.flat_cursor
 
-from afscgap.flat_model import HAUL_KEYS, PARAMS_DICT
+from afscgap.flat_model import HAUL_KEYS, PARAMS_DICT, RECORDS
 
 WARNING_THRESHOLD = 3000
 
@@ -21,12 +22,13 @@ def get_hauls(params: PARAMS_DICT, meta: afscgap.flat_model.ExecuteMetaParams) -
     presence_only = meta.get_presence_only()
     
     params_flat = params.items()
-    params_keyed = map(lambda x: {'field': x[0], 'param': x[1]}, params_flat)
-    params_required = filter(lambda x: not x['param'].get_is_ignorable(), params_keyed)
-    index_filters_nest = map(
-        lambda x: afscgap.flat_index_util.make_filters(x['field'], x['param'], presence_only),
-        params_required
-    )
+    params_keyed = map(lambda x: afscgap.param.FieldParam(x[0], x[1]), params_flat)
+    params_required = filter(lambda x: not x.get_param().get_is_ignorable(), params_keyed)
+    index_filters_nest = map(lambda x: afscgap.flat_index_util.make_filters(
+        x.get_field(),
+        x.get_param(),
+        presence_only
+    ), params_required)
     
     index_filters = itertools.chain(*index_filters_nest)
     index_filters_realized = list(index_filters)
@@ -66,8 +68,8 @@ def execute(param_dict: PARAMS_DICT,
         lambda x: afscgap.flat_http.get_records_for_haul(meta, x),
         hauls_realized
     )
-    candidate_records = itertools.chain(*candidate_records_nested)
-    records = filter(lambda x: local_filter.matches(x), candidate_records)
+    candidate_records: RECORDS = itertools.chain(*candidate_records_nested)
+    records: RECORDS = filter(lambda x: local_filter.matches(x), candidate_records)
     
     limit = meta.get_limit()
     raw_cursor = afscgap.flat_cursor.FlatCursor(records)

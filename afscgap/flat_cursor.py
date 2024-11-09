@@ -73,7 +73,7 @@ class CompleteCursor(afscgap.cursor.Cursor):
     
     def __init__(self, inner: afscgap.cursor.Cursor):
         self._inner = inner
-        self._invalid = queue.Queue()
+        self._invalid: queue.Queue[dict] = queue.Queue()
     
     def get_limit(self) -> OPT_INT:
         """Get the overall limit.
@@ -125,7 +125,8 @@ class CompleteCursor(afscgap.cursor.Cursor):
             is_complete = next_candidate.is_complete()
             
             if not is_complete:
-                self._invalid.add(next_candidate)
+                next_candidate_cast: afscgap.flat_model.FlatRecord = next_candidate  # type: ignore
+                self._invalid.put(next_candidate_cast.get_inner())
             
             done = is_complete
         
@@ -136,6 +137,7 @@ class LimitCursor(afscgap.cursor.Cursor):
     
     def __init__(self, inner: afscgap.cursor.Cursor, limit: int):
         self._inner = inner
+        self._limit = limit
         self._remaining = limit
     
     def get_limit(self) -> OPT_INT:
@@ -175,7 +177,7 @@ class LimitCursor(afscgap.cursor.Cursor):
             as just retrieved from a new page gathered by HTTP request. Will
             return None if no remain.
         """
-        if self._remining == 0:
+        if self._remaining == 0:
             return None
 
         next_candidate = self._inner.get_next()

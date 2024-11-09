@@ -37,8 +37,8 @@ def get_all_hauls(meta: afscgap.flat_model.ExecuteMetaParams) -> HAUL_KEYS:
 
 
 def get_hauls_for_index_filter(meta: afscgap.flat_model.ExecuteMetaParams,
-    filter: afscgap.flat_index_util.IndexFilter) -> HAUL_KEYS:
-    path = '/index/%s.avro' % filter.get_index_name()
+    index_filter: afscgap.flat_index_util.IndexFilter) -> HAUL_KEYS:
+    path = '/index/%s.avro' % index_filter.get_index_name()
     url = meta.get_base_url() + path
     
     requestor_maybe = meta.get_requestor()
@@ -48,8 +48,8 @@ def get_hauls_for_index_filter(meta: afscgap.flat_model.ExecuteMetaParams,
     afscgap.http_util.check_result(response)
     
     stream = response.raw
-    all_with_value = fastavro.reader(stream)  # type: ignore
-    dict_stream_with_value = filter(lambda x: filter.get_matches(x['value']), all_with_value)
+    all_with_value: typing.Iterable[dict] = fastavro.reader(stream)  # type: ignore
+    dict_stream_with_value = filter(lambda x: index_filter.get_matches(x['value']), all_with_value)
     dict_stream_nested = map(lambda x: x['keys'], dict_stream_with_value)
     dict_stream = itertools.chain(*dict_stream_nested)
     

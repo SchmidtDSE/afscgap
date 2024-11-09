@@ -2,6 +2,7 @@ import functools
 import typing
 
 import afscgap.flat_model
+import afscgap.model
 import afscgap.param
 
 from afscgap.flat_model import PARAMS_DICT
@@ -12,7 +13,7 @@ class LocalFilter:
     def __init__(self):
         raise NotImplementedError('Use implementor.')
     
-    def matches(self, target: afscgap.flat_model.FlatRecord) -> bool:
+    def matches(self, target: afscgap.model.Record) -> bool:
         raise NotImplementedError('Use implementor.')
 
 
@@ -22,7 +23,7 @@ class EqualsLocalFilter(LocalFilter):
         self._accessor = accessor
         self._value = value
     
-    def matches(self, target: afscgap.flat_model.FlatRecord) -> bool:
+    def matches(self, target: afscgap.model.Record) -> bool:
         candidate = self._accessor(target)
         return self._value == candidate
 
@@ -34,7 +35,7 @@ class RangeLocalFilter(LocalFilter):
         self._low_value = low_value
         self._high_value = high_value
     
-    def matches(self, target: afscgap.flat_model.FlatRecord) -> bool:
+    def matches(self, target: afscgap.model.Record) -> bool:
         candidate = self._accessor(target)
         satisfies_low = (self._low_value is None) or (candidate >= self._low_value)
         satisfies_high = (self._high_value is None) or (candidate <= self._high_value)
@@ -46,7 +47,7 @@ class LogicalAndLocalFilter(LocalFilter):
     def __init__(self, inner_filters: typing.List[LocalFilter]):
         self._inner_filters = inner_filters
     
-    def matches(self, target: afscgap.flat_model.FlatRecord) -> bool:
+    def matches(self, target: afscgap.model.Record) -> bool:
         individual_values = map(lambda x: x.matches(target), self._inner_filters)
         return functools.reduce(lambda a, b: a and b, individual_values, True)
 
@@ -88,6 +89,21 @@ ACCESSORS = {
 }
 
 
+def build_filter(params: PARAMS_DICT) -> LocalFilter:
+    params_flat = params.items()
+    params_keyed = map(lambda x: afscgap.param.FieldParam(x[0], x[1]), params_flat)
+    params_required = filter(
+        lambda x: not x.get_param().get_is_ignorable(),
+        params_keyed
+    )
+    individual_filters = map(
+        lambda x: build_individual_filter(x.get_field(), x.get_param()),
+        params_required
+    )
+    individual_filters_realized = list(individual_filters)
+    return LogicalAndLocalFilter(individual_filters_realized)
+
+
 def build_individual_filter(field: str, param: afscgap.param.Param) -> LocalFilter:
     accessor = ACCESSORS[field]
     
@@ -98,18 +114,3 @@ def build_individual_filter(field: str, param: afscgap.param.Param) -> LocalFilt
         return EqualsLocalFilter(accessor, param.get_low(), param.get_high())   # type: ignore
     else:
         raise RuntimeError('Unsupported filter type: %s' % filter_type)
-
-
-def build_filter(params: PARAMS_DICT) -> LocalFilter:
-    params_flat = params.items()
-    params_keyed = map(lambda x: {'field': x[0], 'param': x[1]}, params_flat)
-    params_required = filter(
-        lambda x: not x['param'].get_is_ignorable(),  # type: ignore
-        params_keyed
-    )
-    individual_filters = map(
-        lambda x: build_individual_filter(x['field'], x['param']),
-        params_required
-    )
-    individual_filters_realized = list(individual_filters)
-    return LogicalAndLocalFilter(individual_filters_realized)

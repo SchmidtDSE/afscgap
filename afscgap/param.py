@@ -18,6 +18,19 @@ class Param:
         raise NotImplementedError('Use implementor.')
 
 
+class FieldParam:
+
+    def __init__(self, field: str, param: Param):
+        self._field = field
+        self._param = param
+    
+    def get_field(self) -> str:
+        return self._field
+    
+    def get_param(self) -> Param:
+        return self._param
+
+
 class EmptyParam(Param):
     
     def get_is_ignorable(self) -> bool:
