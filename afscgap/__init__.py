@@ -28,7 +28,7 @@ from afscgap.typesdef import OPT_REQUESTOR
 
 WARN_FUNCTION = typing.Optional[typing.Callable[[str], None]]
 
-DEFAULT_URL = ''
+DEFAULT_URL = 'https://data.pyafscgap.org'
 
 
 class Query:

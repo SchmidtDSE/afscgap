@@ -1,3 +1,5 @@
+venv
+checks
 .gitpod.yml
 settings.json
 *.pyc

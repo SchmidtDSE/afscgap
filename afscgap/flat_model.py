@@ -277,14 +277,19 @@ class FlatRecord(afscgap.model.Record):
         """
         return self._assert_str(self._inner['common_name'])
 
-    def get_scientific_name(self) -> str:
+    def get_scientific_name(self) -> typing.Optional[str]:
         """Get the field labeled as scientific_name in the API.
 
         Returns:
             The “scientific name” associated with the species observed or for
             which a zero catch record was inferred. Example: Pasiphaea pacifica.
         """
-        return self._assert_str(self._inner['scientific_name'])
+        value = self._inner['scientific_name']
+
+        if value is None:
+            return None
+
+        return self._assert_str(value)
 
     def get_taxon_confidence(self) -> str:
         """Get the field labeled as taxon_confidence in the API.
