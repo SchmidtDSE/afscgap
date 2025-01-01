@@ -120,11 +120,17 @@ def simplify_record(target: afscgap.model.Record,
     if count_maybe is None:
         return None
 
+    scientific_name = target.get_scientific_name()
+    common_name = target.get_common_name()
+
+    if scientific_name is None or common_name is None:
+        return None
+
     return model.SimplifiedRecord(
         round(target.get_year()),
         target.get_srvy(),
-        target.get_scientific_name(),
-        target.get_common_name(),
+        scientific_name,
+        common_name,
         geohash,
         surface_temperature_c_maybe,
         bottom_temperature_c_maybe,
