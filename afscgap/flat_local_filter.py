@@ -1,3 +1,15 @@
+"""
+Utilities to describe and execute filters over downloaded results.
+
+Utilities to describe and execute filters over downloaded results, typically after approximate
+filters on precomputed indicies.
+
+(c) 2025 Regents of University of California / The Eric and Wendy Schmidt Center
+for Data Science and the Environment at UC Berkeley.
+
+This file is part of afscgap released under the BSD 3-Clause License. See
+LICENSE.md.
+"""
 import functools
 import typing
 
@@ -9,17 +21,37 @@ from afscgap.flat_model import PARAMS_DICT
 
 
 class LocalFilter:
+    """Interface for a locally applied filter."""
 
     def __init__(self):
+        """Create a new local filter."""
         raise NotImplementedError('Use implementor.')
 
     def matches(self, target: afscgap.model.Record) -> bool:
+        """Determine if a value matches this filter.
+
+        Args:
+            target: The record to check for inclusion in results given this filter.
+
+        Returns:
+            True if the given record matches this filter so should be included in the results set
+            and false otherwise.
+        """
         raise NotImplementedError('Use implementor.')
 
 
 class EqualsLocalFilter(LocalFilter):
+    """A locally applied filter to check if an attribute matches an expected value."""
 
     def __init__(self, accessor, value):
+        """Create a new equality filter which is applied locally.
+
+        Args:
+            accessor: Strategy (function) which, when given a afscgap.model.Record, returns the
+                value to be tested.
+            value: The expected value such that matching this value means that the record is
+                included in the results.
+        """
         self._accessor = accessor
         self._value = value
 
@@ -29,8 +61,19 @@ class EqualsLocalFilter(LocalFilter):
 
 
 class RangeLocalFilter(LocalFilter):
+    """A locally applied filter to check if an attribute falls within a range."""
 
     def __init__(self, accessor, low_value, high_value):
+        """Create a new locally applied range filter.
+
+        Args:
+            accessor: Strategy (function) which, when given a afscgap.model.Record, returns the
+                value to be tested.
+            low_value: The minimum value such that values lower are excluded from the results set or
+                None if no minimum should be enforced.
+            high_value: The maximum value such that values lower are excluded from the results set
+                or None if no maximum should be enforced.
+        """
         self._accessor = accessor
         self._low_value = low_value
         self._high_value = high_value
@@ -47,8 +90,16 @@ class RangeLocalFilter(LocalFilter):
 
 
 class LogicalAndLocalFilter(LocalFilter):
+    """Filter which applies a logical and across one or more filters."""
 
     def __init__(self, inner_filters: typing.List[LocalFilter]):
+        """Create a new logical and local filter.
+
+        Create a new logical and local filter such that
+
+        Args:
+            inner_filters: The filter to place into a logical and relationship.
+        """
         self._inner_filters = inner_filters
 
     def matches(self, target: afscgap.model.Record) -> bool:
@@ -94,6 +145,14 @@ ACCESSORS = {
 
 
 def build_filter(params: PARAMS_DICT) -> LocalFilter:
+    """Build a filter which describes a set of parameters.
+
+    Args:
+        params: The parameters dictionary for which to build a local filter.
+
+    Returns:
+        New filter which implements the given parameters into a local filter.
+    """
     params_flat = params.items()
     params_keyed = map(lambda x: afscgap.param.FieldParam(x[0], x[1]), params_flat)
     params_required = filter(
@@ -109,6 +168,18 @@ def build_filter(params: PARAMS_DICT) -> LocalFilter:
 
 
 def build_individual_filter(field: str, param: afscgap.param.Param) -> LocalFilter:
+    """Create a single filter which helps implement a param dict into a local index filter.
+
+    Create a single filter which helps implement a param dict into a local index filter by operating
+    on a single attribute.
+
+    Args:
+        field: The name of the field for which a filter is being bulit.
+        param: The parameter to implement into a local filter.
+
+    Returns:
+        A local filter handling the given field.
+    """
     accessor = ACCESSORS[field]
 
     filter_type = param.get_filter_type()

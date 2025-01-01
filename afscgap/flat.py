@@ -1,3 +1,12 @@
+"""
+Entrypoint for logic to use prejoined Avro flat files.
+
+(c) 2025 Regents of University of California / The Eric and Wendy Schmidt Center
+for Data Science and the Environment at UC Berkeley.
+
+This file is part of afscgap released under the BSD 3-Clause License. See
+LICENSE.md.
+"""
 import functools
 import itertools
 import warnings
@@ -19,6 +28,17 @@ LARGE_WARNING = ' '.join([
 
 
 def get_hauls(params: PARAMS_DICT, meta: afscgap.flat_model.ExecuteMetaParams) -> HAUL_KEYS:
+    """Get the hauls matching a set of parameters.
+
+    Args:
+        params: Set of parameters to apply when determining which records should be included in the
+            results set.
+        meta: Set of configuration parameters to use when making requests for Avro flat files.
+
+    Returns:
+        Iterable over matching hauls. All relevant results will be included in this iterable but it
+        may also include irrelevant results, requiring further local filtering.
+    """
     presence_only = meta.get_presence_only()
 
     params_flat = params.items()
@@ -45,6 +65,15 @@ def get_hauls(params: PARAMS_DICT, meta: afscgap.flat_model.ExecuteMetaParams) -
 
 
 def check_warning(hauls: HAUL_KEYS, meta: afscgap.flat_model.ExecuteMetaParams):
+    """Check if a large payload warning should be emitted.
+
+    Check if a large payload warning should be emitted, creating that warning through the method
+    indicated by the provided meta parameter if meeting criteria specified by that same parameter.
+
+    Args:
+        hauls: Iterable over haul keys to be downloaded.
+        meta: Set of configuration parameters to use when making requests for Avro flat files.
+    """
     if meta.get_suppress_large_warning():
         return
 
@@ -58,6 +87,15 @@ def check_warning(hauls: HAUL_KEYS, meta: afscgap.flat_model.ExecuteMetaParams):
 
 def execute(param_dict: PARAMS_DICT,
     meta: afscgap.flat_model.ExecuteMetaParams) -> afscgap.cursor.Cursor:
+    """Execute a AFSC GAP request using prejoined flat Avro files.
+
+    Args:
+        param_dict: Dictionary describing the parameters with which to execute this request.
+        meta: Set of configuration parameters to use when making requests for Avro flat files.
+
+    Returns:
+        Iterable over matching results.
+    """
     local_filter = afscgap.flat_local_filter.build_filter(param_dict)
     hauls = get_hauls(param_dict, meta)
 

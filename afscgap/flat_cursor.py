@@ -1,3 +1,15 @@
+"""
+Interfaces for cursor objects which iterate over records from prejoined flat records.
+
+Interfaces for cursor objects which iterate over records from prejoined flat records, either those
+appearing in the underlying unjoined dataset or zero catch inferred records.
+
+(c) 2025 Regents of University of California / The Eric and Wendy Schmidt Center
+for Data Science and the Environment at UC Berkeley.
+
+This file is part of afscgap released under the BSD 3-Clause License. See
+LICENSE.md.
+"""
 import queue
 import typing
 
@@ -9,8 +21,17 @@ from afscgap.typesdef import OPT_INT
 
 
 class FlatCursor(afscgap.cursor.Cursor):
+    """Cursor over flat avro "prejoined" results."""
 
     def __init__(self, records: RECORDS):
+        """Create a new prejoined cursor.
+
+        Create a new cursor over prejoined flat files which have already been parsed or which are
+        emitted prejoined.
+
+        Args:
+            records: The inner iterator that should be decorated by this cursor.
+        """
         self._records = records
         self._records_iter = iter(self._records)
 
@@ -70,8 +91,14 @@ class FlatCursor(afscgap.cursor.Cursor):
 
 
 class CompleteCursor(afscgap.cursor.Cursor):
+    """Cursor decorator which only yields complete records."""
 
     def __init__(self, inner: afscgap.cursor.Cursor):
+        """Create a new decorator for another cursor which filters for complete records.
+
+        Args:
+            inner: The cursor to decorate.
+        """
         self._inner = inner
         self._invalid: queue.Queue[dict] = queue.Queue()
 
@@ -134,8 +161,18 @@ class CompleteCursor(afscgap.cursor.Cursor):
 
 
 class LimitCursor(afscgap.cursor.Cursor):
+    """Create a decorator which limits cursor iteration to a certain count of returned records."""
 
     def __init__(self, inner: afscgap.cursor.Cursor, limit: int):
+        """Create a new limit decorator around an existing cursor.
+
+        Create a new limit decorator around an existing cursor which terminates iteration either
+        after a limit is reached or no additional records are available.
+
+        Args:
+            inner: The cursor to decorate.
+            limit: The integer count of records after which iteration will be terminated.
+        """
         self._inner = inner
         self._limit = limit
         self._remaining = limit

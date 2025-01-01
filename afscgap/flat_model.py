@@ -1,3 +1,12 @@
+"""
+Model implementation for prejoined Avro flat files.
+
+(c) 2025 Regents of University of California / The Eric and Wendy Schmidt Center
+for Data Science and the Environment at UC Berkeley.
+
+This file is part of afscgap released under the BSD 3-Clause License. See
+LICENSE.md.
+"""
 import typing
 
 import afscgap.convert
@@ -50,10 +59,32 @@ RECORD_REQUIRED_FIELDS = [
 
 
 class ExecuteMetaParams:
+    """Description of how to execute requests for prejoined Avro flat files.
+
+    Collection of configuration parameters of how to execute requests for pre-joined Avro flat files
+    such as changing the server from which to request those files.
+    """
 
     def __init__(self, base_url: str, requestor: OPT_REQUESTOR, limit: OPT_INT,
         filter_incomplete: bool, presence_only: bool, suppress_large_warning: bool,
         warn_func: WARN_FUNCTION):
+        """Create a new set of configuration values.
+        
+        Args:
+            base_url: The URL at which the flat files can be found over HTTPS.
+            requestor: A requests-like requestor object to use in executing GET requests or None if
+                to use a default.
+            limit: The maximum number of records to return or None if all matching records should be
+                returned.
+            filter_incomplete: Indicate if incomplete records should be filtered out from the
+                results set.
+            presence_only: Indicate if only presence values are required such that zero catch
+                inference records can be ignored.
+            suppress_large_warning: Indiciate if the large results set warning should be suppressed,
+                False if the user should be warned about downloading a very large dataset or True
+                otherwise.
+            warn_func: Function to call with a string to emit a warning.
+        """
         self._base_url = base_url
         self._requestor = requestor
         self._limit = limit
@@ -63,47 +94,126 @@ class ExecuteMetaParams:
         self._warn_func = warn_func
 
     def get_base_url(self) -> str:
+        """Get the URL at which prejoined flat files can be found.
+
+        Returns:
+            The URL at which the flat files can be found over HTTPS.
+        """
         return self._base_url
 
     def get_requestor(self) -> OPT_REQUESTOR:
+        """Get the requests-like requestor object with which to retrieve records.
+
+        Returns:
+            A requests-like requestor object to use in executing GET requests or None if to use a
+            default.
+        """
         return self._requestor
 
     def get_limit(self) -> OPT_INT:
+        """Get the maximum number of matching records to return.
+
+        Returns:
+            The maximum number of records to return or None if all matching records should be
+            returned.
+        """
         return self._limit
 
     def get_filter_incomplete(self) -> bool:
+        """Get if "incomplete" records should be filtered out.
+
+        Returns:
+            Flag indicating if incomplete records should be filtered out from the results set.
+        """
         return self._filter_incomplete
 
     def get_presence_only(self) -> bool:
+        """Determine if zero catch inference records should be included.
+
+        Returns:
+            Indicate if only presence values are required such that zero catch inference records can
+            be ignored.
+        """
         return self._presence_only
 
     def get_suppress_large_warning(self) -> bool:
+        """Determine if the user should see large dataset warnings.
+
+        Returns:
+            Indiciate if the large results set warning should be suppressed, False if the user
+            should be warned about downloading a very large dataset or True otherwise.
+        """
         return self._suppress_large_warning
 
     def get_warn_func(self) -> WARN_FUNCTION:
+        """Get the function with which warnings may be emitted.
+
+        Returns:
+            Function to call with a string to emit a warning.
+        """
         return self._warn_func
 
 
 class HaulKey:
+    """Record describing the key for a flat file haul.
+
+    Record describing the key for a haul within prejoined flat files which can be used in referring
+    to sets of records from a haul (catches) prior to retrieving the collection in its entirety.
+    """
 
     def __init__(self, year: int, survey: str, haul: int):
+        """Create a new haul key record.
+
+        Args:
+            year: The year of the haul.
+            survey: The name of the survey for which the haul was conducted. This should be the full
+                name like Gulf of Alaska.
+            haul: The haul ID.
+        """
         self._year = year
         self._survey = survey
         self._haul = haul
 
     def get_year(self) -> int:
+        """Get the year in which the haul was conducted.
+
+        Returns:
+            The year of the haul.
+        """
         return self._year
 
     def get_survey(self) -> str:
+        """Get the name of the survey for which this haul was conducted.
+
+        Returns:
+            The name of the survey for which the haul was conducted. This should be the full name
+            like Gulf of Alaska.
+        """
         return self._survey
 
     def get_haul(self) -> int:
+        """Get the ID of the haul.
+        
+        Returns:
+            The haul ID.
+        """
         return self._haul
 
     def get_key(self) -> str:
+        """Get a string uniquely identifying a haul.
+
+        Returns:
+            Unique string describing this haul.
+        """
         return '%d_%s_%d' % (self._year, self._survey, self._haul)
 
     def get_path(self) -> str:
+        """Get the path at which the flat file for this haul is expected.
+
+        Returns:
+            Get the URL at which the joined Avro flat file is expected to be found at the flat file
+            server.
+        """
         return '/joined/%s.avro' % self.get_key()
 
     def __hash__(self):
@@ -126,8 +236,15 @@ HAUL_KEYS = typing.Iterable[HaulKey]
 
 
 class FlatRecord(afscgap.model.Record):
+    """Object describing the contents of a pre-joined flat Avro file."""
 
     def __init__(self, inner):
+        """Create a new object decorating a raw parsed Avro record.
+
+        Args:
+            inner: The Avro record to decorate into a FlatRecord object, conforming to the interface
+                put forward by afscgap.model.Record.
+        """
         self._inner = inner
 
     def get_year(self) -> float:
@@ -638,6 +755,11 @@ class FlatRecord(afscgap.model.Record):
         return num_missing == 0
 
     def get_inner(self):
+        """Get the raw parsed Avro payload.
+
+        Returns:
+            The raw parsed Avro payload.
+        """
         return self._inner
 
     def _assert_float(self, target) -> float:

@@ -1,48 +1,89 @@
+"""
+Utilities to describe and execute filters over precomputed indicies.
+
+Utilities to describe and execute filters over precomputed indicies which, provided in Avro, may
+help avoid requesting unnecessary catches.
+
+(c) 2025 Regents of University of California / The Eric and Wendy Schmidt Center
+for Data Science and the Environment at UC Berkeley.
+
+This file is part of afscgap released under the BSD 3-Clause License. See
+LICENSE.md.
+"""
 import functools
 import typing
 
 import afscgap.convert
 import afscgap.param
 
+MATCH_TARGET = typing.Union[float, int, str, None]
+
 
 class IndexFilter:
+    """Interface for a filter against a precomupted index."""
 
     def __init__(self):
-        raise NotImplementedError('Use implementor.')
-
-    def get_index_available(self) -> bool:
+        """Create a new index filter."""
         raise NotImplementedError('Use implementor.')
 
     def get_index_name(self) -> str:
+        """Get the name of the precomputed index to use to filter results.
+
+        Returns:
+            The name of the precomputed index which can be used to execute this filter.
+        """
         raise NotImplementedError('Use implementor.')
 
-    def get_matches(self, target: typing.Union[float, int, str, None]) -> bool:
+    def get_matches(self, target: MATCH_TARGET) -> bool:
+        """Determine a value matches this filter.
+
+        Args:
+            target: The value to test if matches this filter.
+
+        Returns:
+            True if this matches this filter's critera for being included in results for False
+            otherwise.
+        """
         raise NotImplementedError('Use implementor.')
 
 
 class StringEqIndexFilter(IndexFilter):
+    """Precomputed index filter that checks for string equality."""
 
     def __init__(self, index_name: str, param: afscgap.param.StrEqualsParam):
+        """Create a new string equals filter.
+
+        Args:
+            index_name: The name of the precomputed index filter to use for finding results.
+            param: The string equals parameter to apply to the precomputed index.
+        """
         self._index_name = index_name
         self._param = param
 
     def get_index_name(self) -> str:
         return self._index_name
 
-    def get_matches(self, value) -> bool:
+    def get_matches(self, value: MATCH_TARGET) -> bool:
         return value is not None and value == self._param.get_value()
 
 
 class StringRangeIndexFilter(IndexFilter):
+    """Precomputed index filter that checks for string within alphanumeric range."""
 
     def __init__(self, index_name: str, param: afscgap.param.StrRangeParam):
+        """Create a new string range filter.
+
+        Args:
+            index_name: The name of the precomputed index filter to use for finding results.
+            param: The string range parameter to apply to the precomputed index.
+        """
         self._index_name = index_name
         self._param = param
 
     def get_index_name(self) -> str:
         return self._index_name
 
-    def get_matches(self, value) -> bool:
+    def get_matches(self, value: MATCH_TARGET) -> bool:
         if value is None:
             return False
 
@@ -60,28 +101,42 @@ class StringRangeIndexFilter(IndexFilter):
 
 
 class IntEqIndexFilter(IndexFilter):
+    """Precomputed index filter that checks for integer equality."""
 
     def __init__(self, index_name: str, param: afscgap.param.IntEqualsParam):
+        """Create a new integer equals filter.
+
+        Args:
+            index_name: The name of the precomputed index filter to use for finding results.
+            param: The integer equals parameter to apply to the precomputed index.
+        """
         self._index_name = index_name
         self._param = param
 
     def get_index_name(self) -> str:
         return self._index_name
 
-    def get_matches(self, value) -> bool:
+    def get_matches(self, value: MATCH_TARGET) -> bool:
         return value is not None and value == self._param.get_value()
 
 
 class IntRangeIndexFilter(IndexFilter):
+    """Precomputed index filter that checks for an integer in a range."""
 
     def __init__(self, index_name: str, param: afscgap.param.IntRangeParam):
+        """Create a new integer range filter.
+
+        Args:
+            index_name: The name of the precomputed index filter to use for finding results.
+            param: The integer range parameter to apply to the precomputed index.
+        """
         self._index_name = index_name
         self._param = param
 
     def get_index_name(self) -> str:
         return self._index_name
 
-    def get_matches(self, value) -> bool:
+    def get_matches(self, value: MATCH_TARGET) -> bool:
         if value is None:
             return False
 
@@ -99,8 +154,15 @@ class IntRangeIndexFilter(IndexFilter):
 
 
 class FloatEqIndexFilter(IndexFilter):
+    """Precomputed index filter that checks for float approximate equality."""
 
     def __init__(self, index_name: str, param: afscgap.param.FloatEqualsParam):
+        """Create a new float approximate equals filter.
+
+        Args:
+            index_name: The name of the precomputed index filter to use for finding results.
+            param: The float equals parameter to apply to the precomputed index.
+        """
         self._index_name = index_name
         self._param = param
         self._param_str = self._prep_string(self._param.get_value())
@@ -108,7 +170,7 @@ class FloatEqIndexFilter(IndexFilter):
     def get_index_name(self) -> str:
         return self._index_name
 
-    def get_matches(self, target) -> bool:
+    def get_matches(self, target: MATCH_TARGET) -> bool:
         value = self._prep_string(target)
 
         if value is None:
@@ -124,8 +186,19 @@ class FloatEqIndexFilter(IndexFilter):
 
 
 class FloatRangeIndexFilter(IndexFilter):
+    """Precomputed index filter that checks for an floating point value in a range.
+
+    Precomputed index filter that checks for an floating point value in a range, using an
+    approximation. This will require local filtering to apply precision.
+    """
 
     def __init__(self, index_name: str, param: afscgap.param.FloatRangeParam):
+        """Create a new float approximate range filter.
+
+        Args:
+            index_name: The name of the precomputed index filter to use for finding results.
+            param: The float range parameter to apply to the precomputed index.
+        """
         self._index_name = index_name
         self._param = param
         self._low_str = self._prep_string(self._param.get_low())
@@ -134,7 +207,7 @@ class FloatRangeIndexFilter(IndexFilter):
     def get_index_name(self) -> str:
         return self._index_name
 
-    def get_matches(self, target) -> bool:
+    def get_matches(self, target: MATCH_TARGET) -> bool:
         value = self._prep_string(target)
 
         if value is None:
@@ -153,6 +226,15 @@ class FloatRangeIndexFilter(IndexFilter):
         return satisfies_low and satisfies_high
 
     def _prep_string(self, target) -> typing.Optional[str]:
+        """Get a string which matches approximation / rounding used in the precomputed index.
+
+        Args:
+            target: The value to be converted to the index approximation / rounding.
+
+        Returns:
+            String describing the approximation / rounding of the input value which would be found
+            in the precomputed index.
+        """
         if target is None:
             return None
         else:
@@ -160,8 +242,15 @@ class FloatRangeIndexFilter(IndexFilter):
 
 
 class DatetimeEqIndexFilter(IndexFilter):
+    """Precomputed index filter that checks for approximate datetime equality."""
 
     def __init__(self, index_name: str, param: afscgap.param.FloatEqualsParam):
+        """Create a new datetime approximate equals filter.
+
+        Args:
+            index_name: The name of the precomputed index filter to use for finding results.
+            param: The float equals parameter to apply to the precomputed index.
+        """
         self._index_name = index_name
         self._param = param
         self._param_str = self._prep_string(self._param.get_value())
@@ -169,7 +258,7 @@ class DatetimeEqIndexFilter(IndexFilter):
     def get_index_name(self) -> str:
         return self._index_name
 
-    def get_matches(self, target) -> bool:
+    def get_matches(self, target: MATCH_TARGET) -> bool:
         value = self._prep_string(target)
 
         if value is None:
@@ -178,6 +267,15 @@ class DatetimeEqIndexFilter(IndexFilter):
             return value == self._param_str
 
     def _prep_string(self, target) -> typing.Optional[str]:
+        """Get a string which matches approximation / rounding used in the precomputed index.
+
+        Args:
+            target: The value to be converted to the index approximation / rounding.
+
+        Returns:
+            String describing the approximation / rounding of the input value which would be found
+            in the precomputed index.
+        """
         if target is None:
             return None
         else:
@@ -185,8 +283,19 @@ class DatetimeEqIndexFilter(IndexFilter):
 
 
 class DatetimeRangeIndexFilter(IndexFilter):
+    """Precomputed index filter that checks for a datetime value in a range.
+
+    Precomputed index filter that checks for an datetime value in a range, using an approximation.
+    This will require local filtering to apply precision.
+    """
 
     def __init__(self, index_name: str, param: afscgap.param.FloatRangeParam):
+        """Create a new datetime approximate range filter.
+
+        Args:
+            index_name: The name of the precomputed index filter to use for finding results.
+            param: The datetime range parameter to apply to the precomputed index.
+        """
         self._index_name = index_name
         self._param = param
         self._low_str = self._prep_string(self._param.get_low())
@@ -195,7 +304,7 @@ class DatetimeRangeIndexFilter(IndexFilter):
     def get_index_name(self) -> str:
         return self._index_name
 
-    def get_matches(self, target) -> bool:
+    def get_matches(self, target: MATCH_TARGET) -> bool:
         value = self._prep_string(target)
 
         if value is None:
@@ -214,6 +323,15 @@ class DatetimeRangeIndexFilter(IndexFilter):
         return satisfies_low and satisfies_high
 
     def _prep_string(self, target) -> typing.Optional[str]:
+        """Get a string which matches approximation / rounding used in the precomputed index.
+
+        Args:
+            target: The value to be converted to the index approximation / rounding.
+
+        Returns:
+            String describing the approximation / rounding of the input value which would be found
+            in the precomputed index.
+        """
         if target is None:
             return None
         else:
@@ -221,8 +339,16 @@ class DatetimeRangeIndexFilter(IndexFilter):
 
 
 class UnitConversionIndexFilter(IndexFilter):
+    """Index filter decorator which performs a unit conversion prior to applying an inner filter."""
 
     def __init__(self, inner: IndexFilter, user_units: str, system_units: str):
+        """Create a new decorator which applies a unit conversion prior to calling an inner filter.
+
+        Args:
+            inner: The underlying filter to decorate.
+            user_units: Units exepected by the inner filter.
+            system_units: Original units within the underlying data.
+        """
         self._inner = inner
         self._user_units = user_units
         self._system_units = system_units
@@ -230,15 +356,21 @@ class UnitConversionIndexFilter(IndexFilter):
     def get_index_name(self) -> str:
         return self._inner.get_index_name()
 
-    def get_matches(self, value) -> bool:
+    def get_matches(self, value: MATCH_TARGET) -> bool:
         original = float(value)
         converted = afscgap.convert.convert(original, self._system_units, self._user_units)
         return self._inner.get_matches(converted)
 
 
 class LogicalOrIndexFilter(IndexFilter):
+    """A composite index filter which applies a logical or between multiple inner filters."""
 
     def __init__(self, inners: typing.List[IndexFilter]):
+        """Create a new logical or index filter.
+        
+        Args:
+            inners: The filters to apply, reporting True if any match or False if none match.
+        """
         self._inners = inners
 
         names = map(lambda x: x.get_index_name(), self._inners)
@@ -252,7 +384,7 @@ class LogicalOrIndexFilter(IndexFilter):
     def get_index_name(self) -> str:
         return self._name
 
-    def get_matches(self, value) -> bool:
+    def get_matches(self, value: MATCH_TARGET) -> bool:
         matches = map(lambda x: x.get_matches(value), self._inners)
         return functools.reduce(lambda a, b: a or b, matches)
 
@@ -323,6 +455,15 @@ PRESENCE_ONLY_FIELDS = {'species_code', 'common_name', 'scientific_name'}
 
 
 def decorate_filter(field: str, original: IndexFilter) -> IndexFilter:
+    """Decorate a filter for unit conversion or other preprocessing if required.
+
+    Args:
+        field: The name of the underlying field for which decoration should be applied.
+        original: The undeocrated index filter.
+
+    Returns:
+        Decorated filter if decoration was required or original if not.
+    """
     if field not in FIELD_CONVERSIONS:
         return original
 
@@ -334,6 +475,19 @@ def decorate_filter(field: str, original: IndexFilter) -> IndexFilter:
 
 def make_filters(field: str, param: afscgap.param.Param,
     presence_only: bool) -> typing.Iterable[IndexFilter]:
+    """Make filters for a field describing a backend-agnostic parameter.
+
+    Args:
+        field: The name of the field for which filters should be made.
+        param: The parameter to apply for the field.
+        presence_only: Flag indicating if the query is for presence so zero inference records can be
+            excluded.
+
+    Returns:
+        Iterable over filters which implement the given parameter for precomputed indicies. This may
+        be approximated such that all matching results are included in results but some results may
+        included may not match, requiring re-evaluation locally.
+    """
     if param.get_is_ignorable():
         return []
 
