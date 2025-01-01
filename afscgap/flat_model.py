@@ -660,4 +660,3 @@ class FlatRecord(afscgap.model.Record):
 
     def _assert_int_maybe(self, target) -> OPT_INT:
         return None if target is None else int(target)
-
