@@ -644,7 +644,7 @@ class FlatRecord(afscgap.model.Record):
         assert target is not None
         return float(target)
 
-    def _assert_float_maybe(self, target) -> float:
+    def _assert_float_maybe(self, target) -> OPT_FLOAT:
         return None if target is None else float(target)
 
     def _assert_str(self, target) -> str:
@@ -658,6 +658,6 @@ class FlatRecord(afscgap.model.Record):
         assert target is not None
         return int(target)
 
-    def _assert_int_maybe(self, target) -> int:
+    def _assert_int_maybe(self, target) -> OPT_INT:
         return None if target is None else int(target)
 
