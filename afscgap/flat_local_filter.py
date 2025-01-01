@@ -37,6 +37,10 @@ class RangeLocalFilter(LocalFilter):
 
     def matches(self, target: afscgap.model.Record) -> bool:
         candidate = self._accessor(target)
+
+        if candidate is None:
+            return False
+
         satisfies_low = (self._low_value is None) or (candidate >= self._low_value)
         satisfies_high = (self._high_value is None) or (candidate <= self._high_value)
         return satisfies_low and satisfies_high
@@ -111,6 +115,6 @@ def build_individual_filter(field: str, param: afscgap.param.Param) -> LocalFilt
     if filter_type == 'equals':
         return EqualsLocalFilter(accessor, param.get_value())  # type: ignore
     elif filter_type == 'range':
-        return EqualsLocalFilter(accessor, param.get_low(), param.get_high())   # type: ignore
+        return RangeLocalFilter(accessor, param.get_low(), param.get_high())   # type: ignore
     else:
         raise RuntimeError('Unsupported filter type: %s' % filter_type)
