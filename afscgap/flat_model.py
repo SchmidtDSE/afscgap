@@ -7,6 +7,7 @@ import afscgap.param
 from afscgap.typesdef import OPT_FLOAT
 from afscgap.typesdef import OPT_REQUESTOR
 from afscgap.typesdef import OPT_INT
+from afscgap.typesdef import OPT_STR
 
 PARAMS_DICT = typing.Dict[str, afscgap.param.Param]
 RECORDS = typing.Iterable[afscgap.model.Record]
@@ -259,25 +260,25 @@ class FlatRecord(afscgap.model.Record):
         mid = (start + end) / 2
         return self._assert_float(afscgap.convert.convert(mid, 'dd', units))
 
-    def get_species_code(self) -> float:
+    def get_species_code(self) -> OPT_FLOAT:
         """Get the field labeled as species_code in the API.
 
         Returns:
             Unique ID associated with the species observed or for which a zero
             catch record was inferred.
         """
-        return self._assert_int(self._inner['species_code'])
+        return self._assert_int_maybe(self._inner['species_code'])
 
-    def get_common_name(self) -> str:
+    def get_common_name(self) -> OPT_STR:
         """Get the field labeled as common_name in the API.
 
         Returns:
             The “common name” associated with the species observed or for which
             a zero catch record was inferred. Example: Pacific glass shrimp.
         """
-        return self._assert_str(self._inner['common_name'])
+        return self._assert_str_maybe(self._inner['common_name'])
 
-    def get_scientific_name(self) -> typing.Optional[str]:
+    def get_scientific_name(self) -> OPT_STR:
         """Get the field labeled as scientific_name in the API.
 
         Returns:
@@ -285,20 +286,16 @@ class FlatRecord(afscgap.model.Record):
             which a zero catch record was inferred. Example: Pasiphaea pacifica.
         """
         value = self._inner['scientific_name']
+        return self._assert_str_maybe(value)
 
-        if value is None:
-            return None
-
-        return self._assert_str(value)
-
-    def get_taxon_confidence(self) -> str:
+    def get_taxon_confidence(self) -> OPT_STR:
         """Get the field labeled as taxon_confidence in the API.
 
         Returns:
             Confidence flag regarding ability to identify species (High,
             Moderate, Low). In practice, this can also be Unassessed.
         """
-        return self._assert_str(self._inner['taxon_confidence'])
+        return self._assert_str_maybe(self._inner['taxon_confidence'])
 
     def get_cpue_weight_maybe(self, units: str = 'kg/ha') -> OPT_FLOAT:
         """Get a field labeled as cpue_* in the API.
@@ -647,10 +644,20 @@ class FlatRecord(afscgap.model.Record):
         assert target is not None
         return float(target)
 
+    def _assert_float_maybe(self, target) -> float:
+        return None if target is None else float(target)
+
     def _assert_str(self, target) -> str:
         assert target is not None
         return str(target)
 
+    def _assert_str_maybe(self, target) -> OPT_STR:
+        return None if target is None else str(target)
+
     def _assert_int(self, target) -> int:
         assert target is not None
         return int(target)
+
+    def _assert_int_maybe(self, target) -> int:
+        return None if target is None else int(target)
+

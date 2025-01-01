@@ -145,7 +145,7 @@ class Record:
         """
         raise NotImplementedError('Use implementor.')
 
-    def get_species_code(self) -> float:
+    def get_species_code(self) -> OPT_FLOAT:
         """Get the field labeled as species_code in the API.
 
         Returns:
@@ -154,7 +154,7 @@ class Record:
         """
         raise NotImplementedError('Use implementor.')
 
-    def get_common_name(self) -> str:
+    def get_common_name(self) -> OPT_STR:
         """Get the field labeled as common_name in the API.
 
         Returns:
@@ -163,7 +163,7 @@ class Record:
         """
         raise NotImplementedError('Use implementor.')
 
-    def get_scientific_name(self) -> str:
+    def get_scientific_name(self) -> OPT_STR:
         """Get the field labeled as scientific_name in the API.
 
         Returns:
@@ -172,7 +172,7 @@ class Record:
         """
         raise NotImplementedError('Use implementor.')
 
-    def get_taxon_confidence(self) -> str:
+    def get_taxon_confidence(self) -> OPT_STR:
         """Get the field labeled as taxon_confidence in the API.
 
         Returns:
