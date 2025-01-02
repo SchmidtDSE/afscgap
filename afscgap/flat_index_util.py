@@ -63,7 +63,7 @@ class StringEqIndexFilter(IndexFilter):
     def get_index_name(self) -> str:
         return self._index_name
 
-    def get_matches(self, value: MATCH_TARGET) -> bool:
+    def get_matches(self, value) -> bool:
         return value is not None and value == self._param.get_value()
 
 
@@ -83,7 +83,7 @@ class StringRangeIndexFilter(IndexFilter):
     def get_index_name(self) -> str:
         return self._index_name
 
-    def get_matches(self, value: MATCH_TARGET) -> bool:
+    def get_matches(self, value) -> bool:
         if value is None:
             return False
 
@@ -116,7 +116,7 @@ class IntEqIndexFilter(IndexFilter):
     def get_index_name(self) -> str:
         return self._index_name
 
-    def get_matches(self, value: MATCH_TARGET) -> bool:
+    def get_matches(self, value) -> bool:
         return value is not None and value == self._param.get_value()
 
 
@@ -136,7 +136,7 @@ class IntRangeIndexFilter(IndexFilter):
     def get_index_name(self) -> str:
         return self._index_name
 
-    def get_matches(self, value: MATCH_TARGET) -> bool:
+    def get_matches(self, value) -> bool:
         if value is None:
             return False
 
