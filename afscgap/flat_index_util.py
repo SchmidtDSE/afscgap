@@ -450,7 +450,7 @@ FIELD_CONVERSIONS = {
     'cpue_kg1000km2': {'user': 'kg1000/km2', 'system': 'kg/km2'},
     'cpue_noha': {'user': 'no/ha', 'system': 'no/km2'},
     'cpue_no1000km2': {'user': 'no1000/km2', 'system': 'no/km2'},
-    'area_swept_ha': {'user': 'ha', 'system': 'km'}
+    'area_swept_ha': {'user': 'ha', 'system': 'km2'}
 }
 
 FIELD_DATA_TYPE_OVERRIDES = {'date_time': 'datetime'}

@@ -314,8 +314,30 @@ class LogicalOrIndexFilterTests(unittest.TestCase):
 
 class DecorateFilterTests(unittest.TestCase):
 
+    def setUp(self):
+        self._inner = unittest.mock.MagicMock()
+        self._inner.get_matches = lambda x: x is not None and abs(x - 123) < 0.001
+
     def test_decorate_filter_active_true(self):
-        inner = unittest.mock.MagicMock()
-        inner.get_matches = lambda x: x == 123
-        decorated = afscgap.flat_index_util.decorate_filter('area_swept_ha', inner)
-        decorated.
+        decorated = afscgap.flat_index_util.decorate_filter('area_swept_ha', self._inner)
+        self.assertTrue(decorated.get_matches(12300))
+    
+    def test_decorate_filter_active_false(self):
+        decorated = afscgap.flat_index_util.decorate_filter('area_swept_ha', self._inner)
+        self.assertFalse(decorated.get_matches(12400))
+    
+    def test_decorate_filter_active_none(self):
+        decorated = afscgap.flat_index_util.decorate_filter('area_swept_ha', self._inner)
+        self.assertFalse(decorated.get_matches(None))
+
+    def test_decorate_filter_active_true(self):
+        decorated = afscgap.flat_index_util.decorate_filter('other', self._inner)
+        self.assertTrue(decorated.get_matches(123))
+
+    def test_decorate_filter_active_true(self):
+        decorated = afscgap.flat_index_util.decorate_filter('other', self._inner)
+        self.assertFalse(decorated.get_matches(124))
+    
+    def test_decorate_filter_active_none(self):
+        decorated = afscgap.flat_index_util.decorate_filter('other', self._inner)
+        self.assertFalse(decorated.get_matches(None))
