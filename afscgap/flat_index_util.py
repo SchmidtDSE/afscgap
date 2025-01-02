@@ -357,7 +357,7 @@ class UnitConversionIndexFilter(IndexFilter):
         return self._inner.get_index_name()
 
     def get_matches(self, value: MATCH_TARGET) -> bool:
-        original = float(value)
+        original = float(value)  # type: ignore
         converted = afscgap.convert.convert(original, self._system_units, self._user_units)
         return self._inner.get_matches(converted)
 
