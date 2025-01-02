@@ -69,7 +69,7 @@ class ExecuteMetaParams:
         filter_incomplete: bool, presence_only: bool, suppress_large_warning: bool,
         warn_func: WARN_FUNCTION):
         """Create a new set of configuration values.
-        
+
         Args:
             base_url: The URL at which the flat files can be found over HTTPS.
             requestor: A requests-like requestor object to use in executing GET requests or None if
@@ -193,7 +193,7 @@ class HaulKey:
 
     def get_haul(self) -> int:
         """Get the ID of the haul.
-        
+
         Returns:
             The haul ID.
         """

@@ -29,7 +29,7 @@ class Param:
 
     def get_data_type(self) -> str:
         """Get the data type of field on which this parameter operates.
-        
+
         Returns:
             Data type of the field like "str".
         """
@@ -121,7 +121,7 @@ class StrRangeParam(Param):
 
     def __init__(self, low: OPT_STR, high: OPT_STR):
         """Create a new string range parameter.
-        
+
         Args:
             low: The minimum value that a field may have for its record to be included or None if
                 no minimum to be enforced.
@@ -133,7 +133,7 @@ class StrRangeParam(Param):
 
     def get_low(self) -> OPT_STR:
         """Get the minimum allowed value.
-        
+
         Returns:
             The minimum value that a field may have for its record to be included or None if no
             minimum to be enforced.
@@ -194,7 +194,7 @@ class IntRangeParam(Param):
 
     def __init__(self, low: OPT_INT, high: OPT_INT):
         """Create a new integer range parameter.
-        
+
         Args:
             low: The minimum value that a field may have for its record to be included or None if
                 no minimum to be enforced.
@@ -206,7 +206,7 @@ class IntRangeParam(Param):
 
     def get_low(self) -> OPT_INT:
         """Get the minimum allowed value.
-        
+
         Returns:
             The minimum value that a field may have for its record to be included or None if no
             minimum to be enforced.
@@ -267,7 +267,7 @@ class FloatRangeParam(Param):
 
     def __init__(self, low: OPT_FLOAT, high: OPT_FLOAT):
         """Create a new float range parameter.
-        
+
         Args:
             low: The minimum value that a field may have for its record to be included or None if
                 no minimum to be enforced.
@@ -279,7 +279,7 @@ class FloatRangeParam(Param):
 
     def get_low(self) -> OPT_FLOAT:
         """Get the minimum allowed value.
-        
+
         Returns:
             The minimum value that a field may have for its record to be included or None if no
             minimum to be enforced.

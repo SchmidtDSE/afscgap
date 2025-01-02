@@ -367,7 +367,7 @@ class LogicalOrIndexFilter(IndexFilter):
 
     def __init__(self, inners: typing.List[IndexFilter]):
         """Create a new logical or index filter.
-        
+
         Args:
             inners: The filters to apply, reporting True if any match or False if none match.
         """
