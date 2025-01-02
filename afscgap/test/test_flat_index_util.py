@@ -226,3 +226,96 @@ class DatetimeRangeIndexFilterTests(unittest.TestCase):
 
     def test_none(self):
         self.assertFalse(self._index_filter.get_matches(None))
+
+
+class UnitConversionIndexFilterTests(unittest.TestCase):
+
+    def setUp(self):
+        self._inner = unittest.mock.MagicMock()
+        self._inner.get_matches = lambda x: x is not None and abs(x - 10000) < 0.001
+
+    def test_noop_true(self):
+        index_filter = afscgap.flat_index_util.UnitConversionIndexFilter(self._inner, 'ha', 'ha')
+        self.assertTrue(index_filter.get_matches(10000))
+    
+    def test_noop_false(self):
+        index_filter = afscgap.flat_index_util.UnitConversionIndexFilter(self._inner, 'ha', 'ha')
+        self.assertFalse(index_filter.get_matches(20000))
+    
+    def test_noop_none(self):
+        index_filter = afscgap.flat_index_util.UnitConversionIndexFilter(self._inner, 'ha', 'ha')
+        self.assertFalse(index_filter.get_matches(None))
+    
+    def test_convert_true(self):
+        index_filter = afscgap.flat_index_util.UnitConversionIndexFilter(self._inner, 'm2', 'ha')
+        self.assertTrue(index_filter.get_matches(1))
+    
+    def test_convert_false(self):
+        index_filter = afscgap.flat_index_util.UnitConversionIndexFilter(self._inner, 'm2', 'ha')
+        self.assertFalse(index_filter.get_matches(2))
+    
+    def test_convert_none(self):
+        index_filter = afscgap.flat_index_util.UnitConversionIndexFilter(self._inner, 'm2', 'ha')
+        self.assertFalse(index_filter.get_matches(None))
+
+
+class LogicalOrIndexFilterTests(unittest.TestCase):
+
+    def test_true_single(self):
+        index_filter = afscgap.flat_index_util.LogicalOrIndexFilter([
+            self._make_inner_filter(1, 'test')
+        ])
+        self.assertTrue(index_filter.get_matches(1))
+
+    def test_true_multiple(self):
+        index_filter = afscgap.flat_index_util.LogicalOrIndexFilter([
+            self._make_inner_filter(1, 'test'),
+            self._make_inner_filter(1, 'test')
+        ])
+        self.assertTrue(index_filter.get_matches(1))
+
+    def test_true_multiple_different(self):
+        index_filter = afscgap.flat_index_util.LogicalOrIndexFilter([
+            self._make_inner_filter(1, 'test'),
+            self._make_inner_filter(2, 'test')
+        ])
+        self.assertTrue(index_filter.get_matches(1))
+
+    def test_false_single(self):
+        index_filter = afscgap.flat_index_util.LogicalOrIndexFilter([
+            self._make_inner_filter(1, 'test')
+        ])
+        self.assertFalse(index_filter.get_matches(2))
+
+    def test_false_multiple(self):
+        index_filter = afscgap.flat_index_util.LogicalOrIndexFilter([
+            self._make_inner_filter(1, 'test'),
+            self._make_inner_filter(1, 'test')
+        ])
+        self.assertFalse(index_filter.get_matches(2))
+
+    def test_empty(self):
+        with self.assertRaises(RuntimeError):
+            afscgap.flat_index_util.LogicalOrIndexFilter([])
+    
+    def test_unmatched(self):
+        with self.assertRaises(RuntimeError):
+            afscgap.flat_index_util.LogicalOrIndexFilter([
+                self._make_inner_filter(1, 'test1'),
+                self._make_inner_filter(2, 'test2')
+            ])
+
+    def _make_inner_filter(self, value, index):
+        mock = unittest.mock.MagicMock()
+        mock.get_matches = lambda x: x == value
+        mock.get_index_name = unittest.mock.MagicMock(return_value=index)
+        return mock
+
+
+class DecorateFilterTests(unittest.TestCase):
+
+    def test_decorate_filter_active_true(self):
+        inner = unittest.mock.MagicMock()
+        inner.get_matches = lambda x: x == 123
+        decorated = afscgap.flat_index_util.decorate_filter('area_swept_ha', inner)
+        decorated.
