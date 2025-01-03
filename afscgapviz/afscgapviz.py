@@ -265,7 +265,7 @@ def build_app(app: flask.Flask, db_str: typing.Optional[str] = None,
         with conn_generator() as con:
             return flask.render_template(
                 'viz.html',
-                displays=get_display_info(con, state)['state'],
+                displays=get_display_info(con, state)['state'],  # type: ignore
                 get_species_select_content=get_species_select_content
             )
 
@@ -387,7 +387,7 @@ def build_app(app: flask.Flask, db_str: typing.Optional[str] = None,
         else:
             base_sql = sql_util.get_sql('query')
             query_sql = base_sql % (geohash_size + 1, species_filter[0])
-            query_args = (year, survey, species_filter[1])
+            query_args = (year, survey, species_filter[1])  # type: ignore
 
         output_io = io.StringIO()
         writer = csv.DictWriter(
@@ -416,7 +416,7 @@ def build_app(app: flask.Flask, db_str: typing.Optional[str] = None,
         writer.writerows(results_dict_final)
 
         full_filename_pieces = comparison_filename_pieces + filename_pieces
-        filename_spaces = '_'.join(full_filename_pieces)
+        filename_spaces = '_'.join(full_filename_pieces)  # type: ignore
         filename = filename_spaces.replace(' ', '_')
 
         if FILENAME_REGEX.match(filename) is None:
@@ -556,7 +556,7 @@ def build_app(app: flask.Flask, db_str: typing.Optional[str] = None,
                 species_filter[0],
                 geohash_size + 1
             )
-            query_args = (year, survey, species_filter[1])
+            query_args = (year, survey, species_filter[1])  # type: ignore
 
         with conn_generator() as connection:
             cursor = connection.cursor()
@@ -586,7 +586,7 @@ def build_app(app: flask.Flask, db_str: typing.Optional[str] = None,
                 max_temp,
                 first_cpue,
                 second_cpue
-            ) = result_float
+            ) = result_float  # type: ignore
 
         ret_object = {
             'cpue': {
@@ -602,7 +602,7 @@ def build_app(app: flask.Flask, db_str: typing.Optional[str] = None,
         }
 
         if is_comparison:
-            ret_object['cpue']['second'] = {
+            ret_object['cpue']['second'] = {  # type: ignore
                 'name': other_species_filter[1],
                 'year': other_year,
                 'value': second_cpue
