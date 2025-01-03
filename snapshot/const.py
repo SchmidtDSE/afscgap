@@ -26,3 +26,5 @@ REQUIRES_ROUNDING = {
 }
 
 REQUIRES_DATE_ROUND = {'date_time'}
+
+ZEROABLE_FIELDS = ['cpue_kgkm2', 'cpue_nokm2', 'weight_kg', 'count']
