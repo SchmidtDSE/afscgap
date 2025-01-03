@@ -14,7 +14,7 @@ import const
 T = typing.TypeVar('T')
 
 
-def normalize_value(key: str, value: T) -> T:
+def normalize_value(key: str, value: typing.Optional[T]) -> typing.Optional[T]:
     """Normalize a record value.
 
     Normalize a record value so that it can be used to generate bins of haul keys, rounding or

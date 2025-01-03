@@ -99,7 +99,7 @@ def main():
         target_buffer = io.BytesIO()
         s3_client.download_fileobj(bucket, full_loc, target_buffer)
         target_buffer.seek(0)
-        return list(fastavro.reader(target_buffer))
+        return list(fastavro.reader(target_buffer))  # type: ignore
 
     batch_locs = map(lambda x: 'index_sharded/%s_%d.avro' % (key, x), batches)
     shards = map(get_avro, batch_locs)
