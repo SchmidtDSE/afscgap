@@ -30,12 +30,12 @@ class NormUtilTests(unittest.TestCase):
     def test_rounded_float_same(self):
         normalized_1 = combine_shards.normalize_record('depth_m', {'value': 1.236})
         normalized_2 = combine_shards.normalize_record('depth_m', {'value': 1.237})
-        self.assertAlmostEqual(normalized_1['value'], normalized_2['value'])
+        self.assertAlmostEqual(float(normalized_1['value']), float(normalized_2['value']))
 
     def test_rounded_float_different(self):
         normalized_1 = combine_shards.normalize_record('depth_m', {'value': 1.234})
         normalized_2 = combine_shards.normalize_record('depth_m', {'value': 1.236})
-        self.assertNotAlmostEqual(normalized_1['value'], normalized_2['value'])
+        self.assertNotAlmostEqual(float(normalized_1['value']), float(normalized_2['value']))
 
     def test_rounded_datetime_same(self):
         normalized_1 = combine_shards.normalize_record(
@@ -46,7 +46,7 @@ class NormUtilTests(unittest.TestCase):
             'date_time',
             {'value': '2025-12-31T14:25:50Z'}
         )
-        self.assertAlmostEqual(normalized_1['value'], normalized_2['value'])
+        self.assertEqual(normalized_1['value'], normalized_2['value'])
 
     def test_rounded_datetime_different(self):
         normalized_1 = combine_shards.normalize_record(
@@ -57,4 +57,4 @@ class NormUtilTests(unittest.TestCase):
             'date_time',
             {'value': '2025-12-30T14:25:50Z'}
         )
-        self.assertNotAlmostEqual(normalized_1['value'], normalized_2['value'])
+        self.assertNotEqual(normalized_1['value'], normalized_2['value'])

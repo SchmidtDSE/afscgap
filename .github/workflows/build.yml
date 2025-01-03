@@ -17,6 +17,8 @@ jobs:
         run: pip install -e .[dev]
       - name: Install dev dependencies for app
         run: pip install -r afscgapviz/requirements.txt
+      - name: Install dev dependencies for snapshot
+        run: pip install -r snapshot/requirements.txt
       - name: Install afscgap
         run: pip install .
       - name: Unit tests main
