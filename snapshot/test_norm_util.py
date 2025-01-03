@@ -18,7 +18,7 @@ class NormUtilTests(unittest.TestCase):
     def test_normalize_record_unknown_none(self):
         normalized = norm_util.normalize_value('test attr', 'test val')
         self.assertEqual(normalized, 'test val')
-    
+
     def test_normalize_record_known_none(self):
         normalized = norm_util.normalize_value('depth_m', None)
         self.assertEqual(normalized, None)
@@ -40,7 +40,7 @@ class NormUtilTests(unittest.TestCase):
         normalized_1 = self._force_float(norm_util.normalize_value('depth_m', 1.231))
         normalized_2 = self._force_float(norm_util.normalize_value('depth_m', 1.229))
         self.assertAlmostEqual(normalized_1, normalized_2)
-    
+
     def test_normalize_record_round_float_different(self):
         normalized_1 = self._force_float(norm_util.normalize_value('depth_m', 1.236))
         normalized_2 = self._force_float(norm_util.normalize_value('depth_m', 1.234))

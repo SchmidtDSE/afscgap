@@ -22,7 +22,7 @@ class NormUtilTests(unittest.TestCase):
     def test_none(self):
         normalized = combine_shards.normalize_record('depth_m', {'value': None})
         self.assertEqual(normalized['value'], None)
-    
+
     def test_changed(self):
         normalized = combine_shards.normalize_record('depth_m', {'value': 1.236})
         self.assertAlmostEqual(float(normalized['value']), 1.24)
