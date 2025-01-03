@@ -179,23 +179,27 @@ class FlatRecordTests(unittest.TestCase):
     def test_get_date_time(self):
         self._test_getter('date_time', '2025-12-31', lambda x: x.get_date_time())
 
-    # def test_get_latitude_start(self):
-    #     pass
+    def test_get_latitude_start(self):
+        self._test_getter('latitude_dd_start', 1.23, lambda x: x.get_latitude_start())
 
-    # def test_get_longitude_start(self):
-    #     pass
+    def test_get_longitude_start(self):
+        self._test_getter('longitude_dd_start', 1.23, lambda x: x.get_longitude_start())
 
-    # def test_get_latitude(self):
-    #     pass
+    def test_get_latitude(self):
+        inner = {'latitude_dd_start': 1, 'latitude_dd_end': 3}
+        record = afscgap.flat_model.FlatRecord(inner)
+        self.assertAlmostEqual(record.get_latitude(), 2)
 
-    # def test_get_longitude(self):
-    #     pass
+    def test_get_longitude(self):
+        inner = {'longitude_dd_start': 1, 'longitude_dd_end': 3}
+        record = afscgap.flat_model.FlatRecord(inner)
+        self.assertAlmostEqual(record.get_longitude(), 2)
 
-    # def test_get_latitude_end(self):
-    #     pass
+    def test_get_latitude_end(self):
+        self._test_getter('latitude_dd_end', 1.23, lambda x: x.get_latitude_end())
 
-    # def test_get_longitude_end(self):
-    #     pass
+    def test_get_longitude_end(self):
+        self._test_getter('longitude_dd_end', 1.23, lambda x: x.get_longitude_end())
 
     def test_get_species_code(self):
         self._test_getter('species_code', 123, lambda x: x.get_species_code())
