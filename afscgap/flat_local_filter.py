@@ -143,6 +143,12 @@ ACCESSORS = {
     'duration_hr': lambda x: x.get_duration(units='hr')
 }
 
+FILTER_STRATEGIES = {
+    'empty': lambda accessor, param: None,
+    'equals': lambda accessor, param: EqualsLocalFilter(accessor, param.get_value()),
+    'range': lambda accessor, param: RangeLocalFilter(accessor, param.get_low(), param.get_high())
+}
+
 
 def build_filter(params: PARAMS_DICT) -> LocalFilter:
     """Build a filter which describes a set of parameters.
@@ -159,15 +165,16 @@ def build_filter(params: PARAMS_DICT) -> LocalFilter:
         lambda x: not x.get_param().get_is_ignorable(),
         params_keyed
     )
-    individual_filters = map(
+    individual_filters_maybe = map(
         lambda x: build_individual_filter(x.get_field(), x.get_param()),
         params_required
     )
+    individual_filters = filter(lambda x: x is not None, individual_filters_maybe)
     individual_filters_realized = list(individual_filters)
-    return LogicalAndLocalFilter(individual_filters_realized)
+    return LogicalAndLocalFilter(individual_filters_realized)  # type: ignore
 
 
-def build_individual_filter(field: str, param: afscgap.param.Param) -> LocalFilter:
+def build_individual_filter(field: str, param: afscgap.param.Param) -> typing.Optional[LocalFilter]:
     """Create a single filter which helps implement a param dict into a local index filter.
 
     Create a single filter which helps implement a param dict into a local index filter by operating
@@ -180,12 +187,14 @@ def build_individual_filter(field: str, param: afscgap.param.Param) -> LocalFilt
     Returns:
         A local filter handling the given field.
     """
-    accessor = ACCESSORS[field]
-
     filter_type = param.get_filter_type()
-    if filter_type == 'equals':
-        return EqualsLocalFilter(accessor, param.get_value())  # type: ignore
-    elif filter_type == 'range':
-        return RangeLocalFilter(accessor, param.get_low(), param.get_high())   # type: ignore
-    else:
+
+    if field not in ACCESSORS:
+        raise RuntimeError('Unsupported or unknown field: %s' % field)
+
+    if filter_type not in FILTER_STRATEGIES:
         raise RuntimeError('Unsupported filter type: %s' % filter_type)
+
+    accessor = ACCESSORS[field]
+    strategy = FILTER_STRATEGIES[filter_type]
+    return strategy(accessor, param)

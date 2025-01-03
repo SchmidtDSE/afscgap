@@ -89,7 +89,7 @@ class Query:
         # Query pararmeters
         self._limit: OPT_INT = None
         self._filter_incomplete: bool = False
-        self._presence_only: bool = True
+        self._presence_only: bool = False
         self._suppress_large_warning: bool = False
         self._warn_function: WARN_FUNCTION = None
 

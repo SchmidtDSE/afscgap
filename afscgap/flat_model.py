@@ -290,7 +290,7 @@ class FlatRecord(afscgap.model.Record):
             An ID uniquely identifying the cruise in which the observation or
             inferrence was made. Multiple cruises in a survey.
         """
-        return self._assert_int(self._inner['curise'])
+        return self._assert_int(self._inner['cruise'])
 
     def get_haul(self) -> float:
         """Get the field labeled as haul in the API.
@@ -347,8 +347,8 @@ class FlatRecord(afscgap.model.Record):
         """
         return self._assert_str(self._inner['date_time'])
 
-    def get_latitude(self, units: str = 'dd') -> float:
-        """Get the field labeled as latitude_dd in the API.
+    def get_latitude_start(self, units: str = 'dd') -> float:
+        """Get the field labeled as latitude_dd_start in the API.
 
         Args:
             units: The units to return this value in. Only supported is dd for
@@ -357,13 +357,11 @@ class FlatRecord(afscgap.model.Record):
         Returns:
             Latitude in decimal degrees associated with the haul.
         """
-        start = self._assert_float(self._inner['latitude_dd_start'])
-        end = self._assert_float(self._inner['latitude_dd_end'])
-        mid = (start + end) / 2
-        return self._assert_float(afscgap.convert.convert(mid, 'dd', units))
+        value = self._assert_float(self._inner['latitude_dd_start'])
+        return self._assert_float(afscgap.convert.convert(value, 'dd', units))
 
-    def get_longitude(self, units: str = 'dd') -> float:
-        """Get the field labeled as longitude_dd in the API.
+    def get_longitude_start(self, units: str = 'dd') -> float:
+        """Get the field labeled as longitude_dd_start in the API.
 
         Args:
             units: The units to return this value in. Only supported is dd for
@@ -372,10 +370,64 @@ class FlatRecord(afscgap.model.Record):
         Returns:
             Longitude in decimal degrees associated with the haul.
         """
-        start = self._assert_float(self._inner['longitude_dd_start'])
-        end = self._assert_float(self._inner['longitude_dd_end'])
+        value = self._assert_float(self._inner['longitude_dd_start'])
+        return self._assert_float(afscgap.convert.convert(value, 'dd', units))
+
+    def get_latitude(self, units: str = 'dd') -> float:
+        """Get midpoint of the haul, approximating deprecated latitude_dd field in the API.
+
+        Args:
+            units: The units to return this value in. Only supported is dd for
+                degrees. Deafults to dd.
+
+        Returns:
+            Latitude in decimal degrees associated with the haul.
+        """
+        start = self.get_latitude_start()
+        end = self.get_latitude_end()
         mid = (start + end) / 2
         return self._assert_float(afscgap.convert.convert(mid, 'dd', units))
+
+    def get_longitude(self, units: str = 'dd') -> float:
+        """Get midpoint of the haul, approximating deprecated longitude_dd field in the API.
+
+        Args:
+            units: The units to return this value in. Only supported is dd for
+                degrees. Deafults to dd.
+
+        Returns:
+            Longitude in decimal degrees associated with the haul.
+        """
+        start = self.get_longitude_start()
+        end = self.get_longitude_end()
+        mid = (start + end) / 2
+        return self._assert_float(afscgap.convert.convert(mid, 'dd', units))
+
+    def get_latitude_end(self, units: str = 'dd') -> float:
+        """Get the field labeled as latitude_dd_end in the API.
+
+        Args:
+            units: The units to return this value in. Only supported is dd for
+                degrees. Deafults to dd.
+
+        Returns:
+            Latitude in decimal degrees associated with the haul.
+        """
+        value = self._assert_float(self._inner['latitude_dd_end'])
+        return self._assert_float(afscgap.convert.convert(value, 'dd', units))
+
+    def get_longitude_end(self, units: str = 'dd') -> float:
+        """Get the field labeled as longitude_dd_end in the API.
+
+        Args:
+            units: The units to return this value in. Only supported is dd for
+                degrees. Deafults to dd.
+
+        Returns:
+            Longitude in decimal degrees associated with the haul.
+        """
+        value = self._assert_float(self._inner['longitude_dd_end'])
+        return self._assert_float(afscgap.convert.convert(value, 'dd', units))
 
     def get_species_code(self) -> OPT_FLOAT:
         """Get the field labeled as species_code in the API.
@@ -750,7 +802,7 @@ class FlatRecord(afscgap.model.Record):
         if not self._inner['complete']:
             return False
 
-        fields_missing = filter(lambda x: self._inner.get(x, None), RECORD_REQUIRED_FIELDS)
+        fields_missing = filter(lambda x: self._inner.get(x, None) is None, RECORD_REQUIRED_FIELDS)
         num_missing = sum(map(lambda x: 1, fields_missing))
         return num_missing == 0
 

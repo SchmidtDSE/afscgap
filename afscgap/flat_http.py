@@ -23,6 +23,7 @@ from afscgap.flat_model import HAUL_KEYS, RECORDS
 from afscgap.typesdef import REQUESTOR
 
 MAIN_INDEX_PATH = '/index/main.avro'
+OPT_FILTER = typing.Optional[afscgap.flat_index_util.IndexFilter]
 
 
 def build_haul_from_avro(target: dict) -> afscgap.flat_model.HaulKey:
@@ -50,6 +51,43 @@ def build_requestor() -> REQUESTOR:
     return afscgap.http_util.build_requestor(stream=True)
 
 
+def get_index_urls(meta: afscgap.flat_model.ExecuteMetaParams,
+    index_filter: OPT_FILTER = None) -> typing.Iterable[str]:
+    """Get the URL at which an index can be found.
+
+    Args:
+        meta: Configuration object which indicates how the all hauls index should be requested. This
+            can, for example, be used to configure the server from which data are streamed.
+        index_filter: Information about the filter to be applied against a precomputed index. If
+            None, the URL for the all hauls index is returned. Defaults to NOne.
+
+    Returns:
+        String URL at which the index can be found.
+    """
+    if index_filter is None:
+        return [meta.get_base_url() + MAIN_INDEX_PATH]
+    else:
+        paths = map(lambda x: '/index/%s.avro' % x, index_filter.get_index_names())
+        return map(lambda x: meta.get_base_url() + x, paths)
+
+
+def determine_matching_hauls_from_index(options: typing.Iterable[dict],
+    index_filter: afscgap.flat_index_util.IndexFilter) -> typing.Iterable[dict]:
+    """Determine which haul keys match an index filter.
+
+    Args:
+        options: The haul keys matching different values.
+        index_filter: The index filter to apply to the available hauls.
+
+    Returns:
+        Iterable of haul keys matching the filter.
+    """
+    dict_stream_with_value = filter(lambda x: index_filter.get_matches(x['value']), options)
+    dict_stream_nested = map(lambda x: x['keys'], dict_stream_with_value)
+    dict_stream = itertools.chain(*dict_stream_nested)
+    return dict_stream
+
+
 def get_all_hauls(meta: afscgap.flat_model.ExecuteMetaParams) -> HAUL_KEYS:
     """Get information about all hauls currently available.
 
@@ -60,7 +98,9 @@ def get_all_hauls(meta: afscgap.flat_model.ExecuteMetaParams) -> HAUL_KEYS:
     Returns:
         Iterator over haul information as requested from the remote server.
     """
-    url = meta.get_base_url() + MAIN_INDEX_PATH
+    urls = list(get_index_urls(meta))
+    assert len(urls) == 1
+    url = urls[0]
 
     requestor_maybe = meta.get_requestor()
     requestor = requestor_maybe if requestor_maybe else build_requestor()
@@ -89,23 +129,23 @@ def get_hauls_for_index_filter(meta: afscgap.flat_model.ExecuteMetaParams,
     Returns:
         Iterable over haul keys which may match the specified filter.
     """
-    path = '/index/%s.avro' % index_filter.get_index_name()
-    url = meta.get_base_url() + path
+    urls = get_index_urls(meta, index_filter)
 
-    requestor_maybe = meta.get_requestor()
-    requestor = requestor_maybe if requestor_maybe else build_requestor()
-    response = requestor(url)
+    def get_for_url(url):
+        requestor_maybe = meta.get_requestor()
+        requestor = requestor_maybe if requestor_maybe else build_requestor()
+        response = requestor(url)
 
-    afscgap.http_util.check_result(response)
+        afscgap.http_util.check_result(response)
 
-    stream = response.raw
-    all_with_value: typing.Iterable[dict] = fastavro.reader(stream)  # type: ignore
-    dict_stream_with_value = filter(lambda x: index_filter.get_matches(x['value']), all_with_value)
-    dict_stream_nested = map(lambda x: x['keys'], dict_stream_with_value)
-    dict_stream = itertools.chain(*dict_stream_nested)
+        stream = response.raw
+        all_with_value: typing.Iterable[dict] = fastavro.reader(stream)  # type: ignore
+        dict_stream = determine_matching_hauls_from_index(all_with_value, index_filter)
 
-    obj_stream = map(build_haul_from_avro, dict_stream)
-    return obj_stream
+        obj_stream = map(build_haul_from_avro, dict_stream)
+        return obj_stream
+
+    return itertools.chain(*map(get_for_url, urls))
 
 
 def get_records_for_haul(meta: afscgap.flat_model.ExecuteMetaParams,

@@ -256,7 +256,7 @@ class FloatEqualsParam(Param):
         return False
 
     def get_data_type(self) -> str:
-        return 'int'
+        return 'float'
 
     def get_filter_type(self) -> str:
         return 'equals'

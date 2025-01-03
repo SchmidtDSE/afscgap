@@ -129,7 +129,7 @@ class CompleteCursor(afscgap.cursor.Cursor):
             has otherwise the same beahavior as iterating in this Cursor
             directly.
         """
-        return self._inner.to_dicts()
+        return map(lambda x: x.to_dict(), self)
 
     def get_next(self) -> typing.Optional[afscgap.model.Record]:
         """Get the next value for this Cursor.
@@ -204,7 +204,7 @@ class LimitCursor(afscgap.cursor.Cursor):
             has otherwise the same beahavior as iterating in this Cursor
             directly.
         """
-        return self._inner.to_dicts()
+        return map(lambda x: x.to_dict(), self)
 
     def get_next(self) -> typing.Optional[afscgap.model.Record]:
         """Get the next value for this Cursor.

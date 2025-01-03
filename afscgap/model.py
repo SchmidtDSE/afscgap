@@ -122,8 +122,32 @@ class Record:
         """
         raise NotImplementedError('Use implementor.')
 
+    def get_latitude_start(self, units: str = 'dd') -> float:
+        """Get the field labeled as latitude_dd_start in the API.
+
+        Args:
+            units: The units to return this value in. Only supported is dd for
+                degrees. Deafults to dd.
+
+        Returns:
+            Latitude in decimal degrees associated with the haul.
+        """
+        raise NotImplementedError('Use implementor.')
+
+    def get_longitude_start(self, units: str = 'dd') -> float:
+        """Get the field labeled as longitude_dd_start in the API.
+
+        Args:
+            units: The units to return this value in. Only supported is dd for
+                degrees. Deafults to dd.
+
+        Returns:
+            Longitude in decimal degrees associated with the haul.
+        """
+        raise NotImplementedError('Use implementor.')
+
     def get_latitude(self, units: str = 'dd') -> float:
-        """Get the field labeled as latitude_dd in the API.
+        """Get midpoint of the haul, approximating deprecated latitude_dd field in the API.
 
         Args:
             units: The units to return this value in. Only supported is dd for
@@ -135,7 +159,31 @@ class Record:
         raise NotImplementedError('Use implementor.')
 
     def get_longitude(self, units: str = 'dd') -> float:
-        """Get the field labeled as longitude_dd in the API.
+        """Get midpoint of the haul, approximating deprecated longitude_dd field in the API.
+
+        Args:
+            units: The units to return this value in. Only supported is dd for
+                degrees. Deafults to dd.
+
+        Returns:
+            Longitude in decimal degrees associated with the haul.
+        """
+        raise NotImplementedError('Use implementor.')
+
+    def get_latitude_end(self, units: str = 'dd') -> float:
+        """Get the field labeled as latitude_dd_end in the API.
+
+        Args:
+            units: The units to return this value in. Only supported is dd for
+                degrees. Deafults to dd.
+
+        Returns:
+            Latitude in decimal degrees associated with the haul.
+        """
+        raise NotImplementedError('Use implementor.')
+
+    def get_longitude_end(self, units: str = 'dd') -> float:
+        """Get the field labeled as longitude_dd_end in the API.
 
         Args:
             units: The units to return this value in. Only supported is dd for
