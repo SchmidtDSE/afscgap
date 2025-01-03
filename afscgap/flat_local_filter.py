@@ -171,7 +171,7 @@ def build_filter(params: PARAMS_DICT) -> LocalFilter:
     )
     individual_filters = filter(lambda x: x is not None, individual_filters_maybe)
     individual_filters_realized = list(individual_filters)
-    return LogicalAndLocalFilter(individual_filters_realized)
+    return LogicalAndLocalFilter(individual_filters_realized)  # type: ignore
 
 
 def build_individual_filter(field: str, param: afscgap.param.Param) -> typing.Optional[LocalFilter]:
