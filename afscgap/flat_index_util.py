@@ -498,6 +498,8 @@ def make_filters(field: str, param: afscgap.param.Param,
     if param.get_is_ignorable():
         return []
 
+    # If the field index is presence only and this isn't a presence only request, the index must be
+    # ignored (cannot be used to pre-filter results).
     if (not presence_only) and (field in PRESENCE_ONLY_FIELDS):
         return []
 
