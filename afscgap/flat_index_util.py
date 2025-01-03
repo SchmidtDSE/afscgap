@@ -355,7 +355,7 @@ class UnitConversionIndexFilter(IndexFilter):
         self._user_units = user_units
         self._system_units = system_units
 
-    def get_index_names(self) -> str:
+    def get_index_names(self) -> typing.Iterable[str]:
         return self._inner.get_index_names()
 
     def get_matches(self, value: MATCH_TARGET) -> bool:

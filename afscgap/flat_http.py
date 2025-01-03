@@ -129,7 +129,7 @@ def get_hauls_for_index_filter(meta: afscgap.flat_model.ExecuteMetaParams,
     Returns:
         Iterable over haul keys which may match the specified filter.
     """
-    urls = get_index_url(meta, index_filter)
+    urls = get_index_urls(meta, index_filter)
 
     def get_for_url(url):
         requestor_maybe = meta.get_requestor()
