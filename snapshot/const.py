@@ -28,3 +28,17 @@ REQUIRES_ROUNDING = {
 REQUIRES_DATE_ROUND = {'date_time'}
 
 ZEROABLE_FIELDS = ['cpue_kgkm2', 'cpue_nokm2', 'weight_kg', 'count']
+
+REQUIRES_FLAT = {
+    'performance',
+    'cruise',
+    'cruisejoin',
+    'hauljoin',
+    'haul'
+}
+
+IGNORE_ZEROS = {
+    'species_code',
+    'scientific_name',
+    'common_name'
+}

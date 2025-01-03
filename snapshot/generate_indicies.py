@@ -23,20 +23,6 @@ import norm_util
 USAGE_STR = 'python render_flat.py [bucket] [keys] [terminate]'
 NUM_ARGS = 3
 
-REQUIRES_FLAT = {
-    'performance',
-    'cruise',
-    'cruisejoin',
-    'hauljoin',
-    'haul'
-}
-
-IGNORE_ZEROS = {
-    'species_code',
-    'scientific_name',
-    'common_name'
-}
-
 T = typing.TypeVar('T')
 
 
@@ -360,7 +346,7 @@ def get_flat_records_allowed(records: typing.Iterable[dict], key: str) -> typing
     Returns:
         Records which can be indexed, excluding zero catch records in some circumstances.
     """
-    if key in IGNORE_ZEROS:
+    if key in const.IGNORE_ZEROS:
         return filter(is_non_zero, records)
     else:
         return records
@@ -421,7 +407,7 @@ def main():
             """
             return normalize_value(target, key)
 
-        if key in REQUIRES_FLAT:
+        if key in const.REQUIRES_FLAT:
             index_records_output = index_records.map(build_output_record)
         else:
             index_records_grouped_nest = index_records.foldby(
