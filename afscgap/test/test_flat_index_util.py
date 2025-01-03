@@ -365,6 +365,11 @@ class MakeFilterTests(unittest.TestCase):
         filters = afscgap.flat_index_util.make_filters('common_name', param, True)
         self.assertEqual(len(filters), 1)
         self.assertFalse(filters[0].get_matches('other'))
+    
+    def test_presence_only(self):
+        param = afscgap.param.StrEqualsParam('test')
+        filters = afscgap.flat_index_util.make_filters('common_name', param, False)
+        self.assertEqual(len(filters), 0)
 
     def test_int_true(self):
         param = afscgap.param.IntEqualsParam(1)
