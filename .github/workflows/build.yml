@@ -23,8 +23,10 @@ jobs:
         run: nose2
       - name: Unit test app
         run: nose2 --start-dir=afscgapviz
+      - name: Unit test snapshot
+        run: nose2 --start-dir=snapshot
       - name: Check types
-        run: mypy **/*.py
+        run: mypy **/*.py --check-untyped-defs
       - name: Check errors
         run: pyflakes **/*.py
       - name: Check style
