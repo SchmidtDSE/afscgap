@@ -25,7 +25,7 @@ class NormUtilTests(unittest.TestCase):
     
     def test_changed(self):
         normalized = combine_shards.normalize_record('depth_m', {'value': 1.236})
-        self.assertAlmostEqual(normalized, 1.24)
+        self.assertAlmostEqual(float(normalized), 1.24)
 
     def test_rounded_float_same(self):
         normalized_1 = combine_shards.normalize_record('depth_m', {'value': 1.236})
