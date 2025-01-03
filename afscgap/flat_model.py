@@ -290,7 +290,7 @@ class FlatRecord(afscgap.model.Record):
             An ID uniquely identifying the cruise in which the observation or
             inferrence was made. Multiple cruises in a survey.
         """
-        return self._assert_int(self._inner['curise'])
+        return self._assert_int(self._inner['cruise'])
 
     def get_haul(self) -> float:
         """Get the field labeled as haul in the API.
@@ -750,7 +750,7 @@ class FlatRecord(afscgap.model.Record):
         if not self._inner['complete']:
             return False
 
-        fields_missing = filter(lambda x: self._inner.get(x, None), RECORD_REQUIRED_FIELDS)
+        fields_missing = filter(lambda x: self._inner.get(x, None) is None, RECORD_REQUIRED_FIELDS)
         num_missing = sum(map(lambda x: 1, fields_missing))
         return num_missing == 0
 
