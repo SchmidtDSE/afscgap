@@ -457,6 +457,7 @@ FIELD_CONVERSIONS = {
 
 FIELD_DATA_TYPE_OVERRIDES = {'date_time': 'datetime'}
 
+# These fields, when indexed, ignore zero values. If not presence only, these need to be included.
 PRESENCE_ONLY_FIELDS = {'species_code', 'common_name', 'scientific_name'}
 
 
@@ -497,7 +498,7 @@ def make_filters(field: str, param: afscgap.param.Param,
     if param.get_is_ignorable():
         return []
 
-    if presence_only and field in PRESENCE_ONLY_FIELDS:
+    if (not presence_only) and (field in PRESENCE_ONLY_FIELDS):
         return []
 
     filter_type = param.get_filter_type()
