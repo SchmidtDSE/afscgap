@@ -497,6 +497,9 @@ def make_filters(field: str, param: afscgap.param.Param,
     if param.get_is_ignorable():
         return []
 
+    if presence_only and field in PRESENCE_ONLY_FIELDS:
+        return []
+
     filter_type = param.get_filter_type()
     if filter_type == 'empty':
         return []
