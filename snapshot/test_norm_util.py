@@ -24,7 +24,7 @@ class NormUtilTests(unittest.TestCase):
         self.assertEqual(normalized, None)
 
     def test_normalize_record_pass_float(self):
-        normalized = float(norm_util.normalize_value('depth_m', 1.23))
+        normalized = self._force_float(norm_util.normalize_value('depth_m', 1.23))
         self.assertAlmostEqual(normalized, 1.23)
 
     def test_normalize_record_pass_datetime(self):
@@ -32,18 +32,18 @@ class NormUtilTests(unittest.TestCase):
         self.assertEqual(normalized, '2025-01-13')
 
     def test_normalize_record_round_float_same_up(self):
-        normalized_1 = float(norm_util.normalize_value('depth_m', 1.237))
-        normalized_2 = float(norm_util.normalize_value('depth_m', 1.236))
+        normalized_1 = self._force_float(norm_util.normalize_value('depth_m', 1.237))
+        normalized_2 = self._force_float(norm_util.normalize_value('depth_m', 1.236))
         self.assertAlmostEqual(normalized_1, normalized_2)
 
     def test_normalize_record_round_float_same_down(self):
-        normalized_1 = float(norm_util.normalize_value('depth_m', 1.231))
-        normalized_2 = float(norm_util.normalize_value('depth_m', 1.229))
+        normalized_1 = self._force_float(norm_util.normalize_value('depth_m', 1.231))
+        normalized_2 = self._force_float(norm_util.normalize_value('depth_m', 1.229))
         self.assertAlmostEqual(normalized_1, normalized_2)
     
     def test_normalize_record_round_float_different(self):
-        normalized_1 = float(norm_util.normalize_value('depth_m', 1.236))
-        normalized_2 = float(norm_util.normalize_value('depth_m', 1.234))
+        normalized_1 = self._force_float(norm_util.normalize_value('depth_m', 1.236))
+        normalized_2 = self._force_float(norm_util.normalize_value('depth_m', 1.234))
         self.assertNotAlmostEqual(normalized_1, normalized_2)
 
     def test_normalize_record_round_datetime_valid_same(self):
@@ -65,3 +65,7 @@ class NormUtilTests(unittest.TestCase):
         normalized_1 = norm_util.normalize_value('date_time', 'test')
         normalized_2 = norm_util.normalize_value('date_time', 'other')
         self.assertNotEqual(normalized_1, normalized_2)
+
+    def _force_float(self, value) -> float:
+        assert value is not None
+        return float(value)

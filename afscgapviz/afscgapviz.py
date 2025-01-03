@@ -14,7 +14,7 @@ import re
 import sqlite3
 import typing
 
-import flask
+import flask  # type: ignore
 
 import data_util
 import model

@@ -13,7 +13,7 @@ import os
 import sys
 import typing
 
-import boto3
+import boto3  # type: ignore
 import fastavro
 
 import norm_util
