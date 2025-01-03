@@ -11,12 +11,14 @@ This file is part of afscgap released under the BSD 3-Clause License. See
 LICENSE.md.
 """
 import functools
+import itertools
 import typing
 
 import afscgap.convert
 import afscgap.param
 
 MATCH_TARGET = typing.Union[float, int, str, None]
+STRS = typing.Iterable[str]
 
 
 class IndexFilter:
@@ -26,7 +28,7 @@ class IndexFilter:
         """Create a new index filter."""
         raise NotImplementedError('Use implementor.')
 
-    def get_index_name(self) -> str:
+    def get_index_names(self) -> STRS:
         """Get the name of the precomputed index to use to filter results.
 
         Returns:
@@ -60,8 +62,8 @@ class StringEqIndexFilter(IndexFilter):
         self._index_name = index_name
         self._param = param
 
-    def get_index_name(self) -> str:
-        return self._index_name
+    def get_index_names(self) -> STRS:
+        return [self._index_name]
 
     def get_matches(self, value) -> bool:
         return value is not None and value == self._param.get_value()
@@ -80,8 +82,8 @@ class StringRangeIndexFilter(IndexFilter):
         self._index_name = index_name
         self._param = param
 
-    def get_index_name(self) -> str:
-        return self._index_name
+    def get_index_names(self) -> STRS:
+        return [self._index_name]
 
     def get_matches(self, value) -> bool:
         if value is None:
@@ -113,8 +115,8 @@ class IntEqIndexFilter(IndexFilter):
         self._index_name = index_name
         self._param = param
 
-    def get_index_name(self) -> str:
-        return self._index_name
+    def get_index_names(self) -> STRS:
+        return [self._index_name]
 
     def get_matches(self, value) -> bool:
         return value is not None and value == self._param.get_value()
@@ -133,8 +135,8 @@ class IntRangeIndexFilter(IndexFilter):
         self._index_name = index_name
         self._param = param
 
-    def get_index_name(self) -> str:
-        return self._index_name
+    def get_index_names(self) -> STRS:
+        return [self._index_name]
 
     def get_matches(self, value) -> bool:
         if value is None:
@@ -167,8 +169,8 @@ class FloatEqIndexFilter(IndexFilter):
         self._param = param
         self._param_str = self._prep_string(self._param.get_value())
 
-    def get_index_name(self) -> str:
-        return self._index_name
+    def get_index_names(self) -> STRS:
+        return [self._index_name]
 
     def get_matches(self, target: MATCH_TARGET) -> bool:
         value = self._prep_string(target)
@@ -204,8 +206,8 @@ class FloatRangeIndexFilter(IndexFilter):
         self._low_str = self._prep_string(self._param.get_low())
         self._high_str = self._prep_string(self._param.get_high())
 
-    def get_index_name(self) -> str:
-        return self._index_name
+    def get_index_names(self) -> STRS:
+        return [self._index_name]
 
     def get_matches(self, target: MATCH_TARGET) -> bool:
         value = self._prep_string(target)
@@ -255,8 +257,8 @@ class DatetimeEqIndexFilter(IndexFilter):
         self._param = param
         self._param_str = self._prep_string(self._param.get_value())
 
-    def get_index_name(self) -> str:
-        return self._index_name
+    def get_index_names(self) -> STRS:
+        return [self._index_name]
 
     def get_matches(self, target: MATCH_TARGET) -> bool:
         value = self._prep_string(target)
@@ -301,8 +303,8 @@ class DatetimeRangeIndexFilter(IndexFilter):
         self._low_str = self._prep_string(self._param.get_low())
         self._high_str = self._prep_string(self._param.get_high())
 
-    def get_index_name(self) -> str:
-        return self._index_name
+    def get_index_names(self) -> STRS:
+        return [self._index_name]
 
     def get_matches(self, target: MATCH_TARGET) -> bool:
         value = self._prep_string(target)
@@ -353,8 +355,8 @@ class UnitConversionIndexFilter(IndexFilter):
         self._user_units = user_units
         self._system_units = system_units
 
-    def get_index_name(self) -> str:
-        return self._inner.get_index_name()
+    def get_index_names(self) -> str:
+        return self._inner.get_index_names()
 
     def get_matches(self, value: MATCH_TARGET) -> bool:
         if value is None:
@@ -377,16 +379,16 @@ class LogicalOrIndexFilter(IndexFilter):
         """
         self._inners = inners
 
-        names = map(lambda x: x.get_index_name(), self._inners)
+        names = itertools.chain(*map(lambda x: x.get_index_names(), self._inners))
         names_unique = set(names)
 
-        if len(names_unique) != 1:
-            raise RuntimeError('Logical or index filter uses exactly one index.')
+        if len(names_unique) == 0:
+            raise RuntimeError('Logical or index filter requires one or more index.')
 
-        self._name = names_unique.pop()
+        self._names = list(names_unique)
 
-    def get_index_name(self) -> str:
-        return self._name
+    def get_index_names(self) -> STRS:
+        return self._names
 
     def get_matches(self, value: MATCH_TARGET) -> bool:
         matches = map(lambda x: x.get_matches(value), self._inners)
@@ -497,9 +499,6 @@ def make_filters(field: str, param: afscgap.param.Param,
 
     filter_type = param.get_filter_type()
     if filter_type == 'empty':
-        return []
-
-    if (not presence_only) and (field in PRESENCE_ONLY_FIELDS):
         return []
 
     if field in FIELD_DATA_TYPE_OVERRIDES:

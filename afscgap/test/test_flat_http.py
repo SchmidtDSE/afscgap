@@ -28,7 +28,7 @@ class FlatHttpTests(unittest.TestCase):
         )
 
         self._index_filter = unittest.mock.MagicMock()
-        self._index_filter.get_index_name = unittest.mock.MagicMock(return_value='test_index')
+        self._index_filter.get_index_names = unittest.mock.MagicMock(return_value=['test_index'])
         self._index_filter.get_matches = lambda x: x % 2 == 1
 
     def test_build_haul_from_avro(self):
@@ -43,12 +43,16 @@ class FlatHttpTests(unittest.TestCase):
         self.assertIsNotNone(requestor)
 
     def test_get_index_url_all(self):
-        url = afscgap.flat_http.get_index_url(self._meta_params)
+        urls = list(afscgap.flat_http.get_index_urls(self._meta_params))
+        self.assertEqual(len(urls), 1)
+        url = urls[0]
         self.assertTrue('base_url:' in url)
         self.assertTrue('.avro' in url)
 
     def test_get_index_url_subset(self):
-        url = afscgap.flat_http.get_index_url(self._meta_params, self._index_filter)
+        urls = list(afscgap.flat_http.get_index_urls(self._meta_params, self._index_filter))
+        self.assertEqual(len(urls), 1)
+        url = urls[0]
         self.assertTrue('base_url:' in url)
         self.assertTrue('test_index' in url)
         self.assertTrue('.avro' in url)
