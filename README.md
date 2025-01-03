@@ -133,9 +133,10 @@ at UC Berkeley](https://dse.berkeley.edu) where [Kevin Koy](https://github.com/k
 <br>
 
 ## Open Source
-We are happy to be part of the open source community.
+We are happy to be part of the open source community. We use the following:
 
-At this time, the only open source dependency used by this microlibrary is [Requests](https://docs.python-requests.org/en/latest/index.html) which is available under the [Apache v2 License](https://github.com/psf/requests/blob/main/LICENSE) from [Kenneth Reitz and other contributors](https://github.com/psf/requests/graphs/contributors).
+ - [Requests](https://docs.python-requests.org/en/latest/index.html) which is available under the [Apache v2 License](https://github.com/psf/requests/blob/main/LICENSE) from [Kenneth Reitz and other contributors](https://github.com/psf/requests/graphs/contributors).
+ - [fastavro](https://fastavro.readthedocs.io/en/latest/) by Miki Tebeka and Contributors under the [MIT License](https://github.com/fastavro/fastavro/blob/master/LICENSE).
 
 In addition to Github-provided [Github Actions](https://docs.github.com/en/actions), our build and documentation systems also use the following but are not distributed with or linked to the project itself:
 
