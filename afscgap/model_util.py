@@ -61,7 +61,9 @@ def assert_float_present(target: OPT_FLOAT) -> float:
     Returns:
         The value of target if not None.
     """
-    assert target is not None
+    if target is None:
+        raise ValueError('Encountered unexpected None.')
+
     return target
 
 
@@ -77,5 +79,7 @@ def assert_int_present(target: OPT_INT) -> int:
     Returns:
         The value of target if not None.
     """
-    assert target is not None
+    if target is None:
+        raise ValueError('Encountered unexpected None.')
+
     return target
