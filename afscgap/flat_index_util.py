@@ -482,10 +482,10 @@ def decorate_filter(field: str, original: IndexFilter) -> IndexFilter:
 
 def determine_if_ignorable(field: str, param: afscgap.param.Param, presence_only: bool) -> bool:
     """Determine if a field parameter is ignored for pre-filtering.
-    
+
     Determine if a field parameter is ignored for pre-filtering, turning it into a noop because
     pre-filtering isn't possible or precomputed indicies are not available.
-    
+
     Args:
         field: The name of the field for which filters should be made.
         param: The parameter to apply for the field.
@@ -493,7 +493,7 @@ def determine_if_ignorable(field: str, param: afscgap.param.Param, presence_only
             excluded.
 
     Returns:
-        True if 
+        True if ignorable and false otherwise.
     """
     if param.get_is_ignorable():
         return True
