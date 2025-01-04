@@ -103,7 +103,7 @@ SCHEMAS = {
     'species': SPECIES_SCHEMA
 }
 
-DEFAULT_LIMIT = 100000
+DEFAULT_LIMIT = 10000
 
 
 def get_api_request_url(type_name: str, year: typing.Optional[int], offset: int,
@@ -234,7 +234,7 @@ def dump_to_s3(year: typing.Optional[int], bucket: str, loc: str, type_name: str
 
     def execute_request(offset: int):
         """Execute a single request for records given an offset into the result set.
-        
+
         Args:
             offset: The number of records to skip at the start of the result set. Used for
                 pagination.
@@ -247,7 +247,7 @@ def dump_to_s3(year: typing.Optional[int], bucket: str, loc: str, type_name: str
         return response
 
     while not done:
-        if offset % DEFAULT_LIMIT == 0:
+        if offset % (DEFAULT_LIMIT * 10) == 0:
             print('Offset: %d' % offset)
 
         response = execute_request(offset)
