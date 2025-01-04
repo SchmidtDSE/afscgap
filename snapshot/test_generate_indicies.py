@@ -165,13 +165,13 @@ class BuildOutputRecordTests(unittest.TestCase):
     def test_build_output_record(self):
         self.assertEqual(self._output_record['value'], 'test value')
 
-    def test_build_key_meta(self):
+    def test_build_key_meta_check_first(self):
         key = self._output_record['keys'][0]
         self.assertEqual(key['year'], 2025)
         self.assertEqual(key['survey'], 'GOA')
         self.assertEqual(key['haul'], 124)
 
-    def test_build_key_meta(self):
+    def test_build_key_meta_check_hauls(self):
         key_1 = self._output_record['keys'][0]
         self.assertEqual(key_1['haul'], 123)
 
