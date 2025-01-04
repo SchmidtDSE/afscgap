@@ -14,10 +14,10 @@ import sys
 import time
 import typing
 
-import boto3
+import boto3  # type: ignore
 import fastavro
 import requests
-import toolz.itertoolz
+import toolz.itertoolz  # type: ignore
 
 MIN_ARGS = 3
 MAX_ARGS = 4
@@ -103,7 +103,7 @@ SCHEMAS = {
 }
 
 
-def get_api_request_url(type_name: str, year: int, offset: int) -> str:
+def get_api_request_url(type_name: str, year: typing.Optional[int], offset: int) -> str:
     endpoint = ENDPOINTS[type_name]
 
     if year:
@@ -115,7 +115,7 @@ def get_api_request_url(type_name: str, year: int, offset: int) -> str:
     return full_url
 
 
-def dump_to_s3(year: int, bucket: str, loc: str, type_name: str):
+def dump_to_s3(year: typing.Optional[int], bucket: str, loc: str, type_name: str):
     offset = 0
     done = False
 
@@ -135,6 +135,7 @@ def dump_to_s3(year: int, bucket: str, loc: str, type_name: str):
         sample_record = records[0]
 
         if type_name == 'haul':
+            assert year is not None
             template_vals = (
                 year,
                 sample_record['survey'],
@@ -146,14 +147,16 @@ def dump_to_s3(year: int, bucket: str, loc: str, type_name: str):
         elif type_name == 'species':
             full_loc = loc + '/%d.avro' % sample_record['species_code']
 
-        try:
-            target_buffer = io.BytesIO()
-            s3_client.download_fileobj(bucket, full_loc, target_buffer)
-            target_buffer.seek(0)
-            prior_records = fastavro.reader(target_buffer)
-        except s3_client.exceptions.ClientError:
-            prior_records = []
+        def read_prior_records() -> typing.Iterable[dict]:
+            try:
+                target_buffer = io.BytesIO()
+                s3_client.download_fileobj(bucket, full_loc, target_buffer)
+                target_buffer.seek(0)
+                return fastavro.reader(target_buffer)  # type: ignore
+            except s3_client.exceptions.ClientError:
+                return []
 
+        prior_records = read_prior_records()
         records_avro = convert_to_avro(itertools.chain(prior_records, records))
         s3_client.upload_fileobj(records_avro, bucket, full_loc)
 
