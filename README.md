@@ -133,9 +133,10 @@ at UC Berkeley](https://dse.berkeley.edu) where [Kevin Koy](https://github.com/k
 <br>
 
 ## Open Source
-We are happy to be part of the open source community.
+We are happy to be part of the open source community. We use the following:
 
-At this time, the only open source dependency used by this microlibrary is [Requests](https://docs.python-requests.org/en/latest/index.html) which is available under the [Apache v2 License](https://github.com/psf/requests/blob/main/LICENSE) from [Kenneth Reitz and other contributors](https://github.com/psf/requests/graphs/contributors).
+ - [Requests](https://docs.python-requests.org/en/latest/index.html) which is available under the [Apache v2 License](https://github.com/psf/requests/blob/main/LICENSE) from [Kenneth Reitz and other contributors](https://github.com/psf/requests/graphs/contributors).
+ - [fastavro](https://fastavro.readthedocs.io/en/latest/) by Miki Tebeka and Contributors under the [MIT License](https://github.com/fastavro/fastavro/blob/master/LICENSE).
 
 In addition to Github-provided [Github Actions](https://docs.github.com/en/actions), our build and documentation systems also use the following but are not distributed with or linked to the project itself:
 
@@ -149,7 +150,7 @@ In addition to Github-provided [Github Actions](https://docs.github.com/en/actio
  - [sftp-action](https://github.com/Creepios/sftp-action) under the [MIT License](https://github.com/Creepios/sftp-action/blob/master/LICENSE) from Niklas Creepios.
  - [ssh-action](https://github.com/appleboy/ssh-action) under the [MIT License](https://github.com/appleboy/ssh-action/blob/master/LICENSE) from Bo-Yi Wu.
 
-Next, the visualization tool has additional dependencies as documented in the [visualization readme](https://github.com/SchmidtDSE/afscgap/blob/main/afscgapviz/README.md).
+Next, the visualization tool has additional dependencies as documented in the [visualization readme](https://github.com/SchmidtDSE/afscgap/blob/main/afscgapviz/README.md). Similarly, the community flat files snapshot updater has additional dependencies as documented in the [snapshot readme](https://github.com/SchmidtDSE/afscgap/blob/main/snapshot/README.md).
 
 Finally, note that the website uses assets from [The Noun Project](thenounproject.com/) under the NounPro plan. If used outside of https://pyafscgap.org, they may be subject to a [different license](https://thenounproject.com/pricing/#icons).
 

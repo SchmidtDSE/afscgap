@@ -17,14 +17,18 @@ jobs:
         run: pip install -e .[dev]
       - name: Install dev dependencies for app
         run: pip install -r afscgapviz/requirements.txt
+      - name: Install dev dependencies for snapshot
+        run: pip install -r snapshot/requirements.txt
       - name: Install afscgap
         run: pip install .
       - name: Unit tests main
         run: nose2
       - name: Unit test app
         run: nose2 --start-dir=afscgapviz
+      - name: Unit test snapshot
+        run: nose2 --start-dir=snapshot
       - name: Check types
-        run: mypy **/*.py
+        run: mypy **/*.py --check-untyped-defs
       - name: Check errors
         run: pyflakes **/*.py
       - name: Check style

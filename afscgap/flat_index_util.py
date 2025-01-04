@@ -457,6 +457,7 @@ FIELD_CONVERSIONS = {
 
 FIELD_DATA_TYPE_OVERRIDES = {'date_time': 'datetime'}
 
+# These fields, when indexed, ignore zero values. If not presence only, these need to be included.
 PRESENCE_ONLY_FIELDS = {'species_code', 'common_name', 'scientific_name'}
 
 
@@ -479,6 +480,38 @@ def decorate_filter(field: str, original: IndexFilter) -> IndexFilter:
     return UnitConversionIndexFilter(original, user_units, system_units)
 
 
+def determine_if_ignorable(field: str, param: afscgap.param.Param, presence_only: bool) -> bool:
+    """Determine if a field parameter is ignored for pre-filtering.
+
+    Determine if a field parameter is ignored for pre-filtering, turning it into a noop because
+    pre-filtering isn't possible or precomputed indicies are not available.
+
+    Args:
+        field: The name of the field for which filters should be made.
+        param: The parameter to apply for the field.
+        presence_only: Flag indicating if the query is for presence so zero inference records can be
+            excluded.
+
+    Returns:
+        True if ignorable and false otherwise.
+    """
+    if param.get_is_ignorable():
+        return True
+
+    # If the field index is presence only and this isn't a presence only request, the index must be
+    # ignored (cannot be used to pre-filter results).
+    zero_inference_required = not presence_only
+    field_index_excludes_zeros = field in PRESENCE_ONLY_FIELDS
+    if zero_inference_required and field_index_excludes_zeros:
+        return True
+
+    filter_type = param.get_filter_type()
+    if filter_type == 'empty':
+        return True
+
+    return False
+
+
 def make_filters(field: str, param: afscgap.param.Param,
     presence_only: bool) -> typing.Iterable[IndexFilter]:
     """Make filters for a field describing a backend-agnostic parameter.
@@ -494,12 +527,10 @@ def make_filters(field: str, param: afscgap.param.Param,
         be approximated such that all matching results are included in results but some results may
         included may not match, requiring re-evaluation locally.
     """
-    if param.get_is_ignorable():
+    if determine_if_ignorable(field, param, presence_only):
         return []
 
     filter_type = param.get_filter_type()
-    if filter_type == 'empty':
-        return []
 
     if field in FIELD_DATA_TYPE_OVERRIDES:
         data_type = FIELD_DATA_TYPE_OVERRIDES[field]

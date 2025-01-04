@@ -327,8 +327,8 @@ def download_main(args):
     for year in years:
         for survey in SURVEYS:
 
-            with connection as cursor:
-                download_and_persist_year(survey, year, cursor, geohash_size)
+            with connection as cursor:  # type: ignore
+                download_and_persist_year(survey, year, cursor, geohash_size)  # type: ignore
 
             print('Completed %d for %s.' % (year, survey))
             time.sleep(SLEEP_TIME)
