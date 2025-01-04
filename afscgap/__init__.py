@@ -1,11 +1,10 @@
 """Library which allows for Pythonic access to the interacting with AFSC GAP.
 
-This library supports Pythonic utilization of the API for the Ground
-Fish Assessment Program (GAP), a dataset produced by the Resource Assessment
-and Conservation Engineering (RACE) Division of the Alaska Fisheries Science
-Center (AFSC) as part of the National Oceanic and Atmospheric Administration
-(NOAA Fisheries). Note that this is a community-provided library and is not
-officially endorsed by NOAA.
+This library supports Pythonic utilization of the Ground Fish Assessment Program (GAP) datasets
+produced by the Resource Assessment and Conservation Engineering (RACE) Division of the Alaska
+Fisheries Science Center (AFSC) as part of the National Oceanic and Atmospheric Administration
+(NOAA Fisheries). Note that this is a community-provided library and is not officially endorsed by
+NOAA.
 
 (c) 2024 Regents of University of California / The Eric and Wendy Schmidt Center
 for Data Science and the Environment at UC Berkeley.

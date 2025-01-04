@@ -59,7 +59,7 @@ class FlatCursor(afscgap.cursor.Cursor):
 
         Returns:
             Queue with dictionaries containing the raw data returned from the
-            API that did not have valid values for all required fields. Note
+            remote that did not have valid values for all required fields. Note
             that this will include incomplete records as well if
             get_filtering_incomplete() is true and will not contain incomplete
             records otherwise.

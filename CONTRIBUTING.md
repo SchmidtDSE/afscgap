@@ -40,7 +40,7 @@ There are reasonable differences of opinion in the community about the ideal imp
 #### Library
 Starting with the `afscgap` library itself:
 
- - It is an explicit goal to provide a class that offers type hints for all record fields for the data returned by the API. See `afscgap.model.Record`.
+ - It is an explicit goal to provide a class that offers type hints for all record fields for the data returned. See `afscgap.model.Record`.
  - For data structures, getters on an immutable record object are encouraged as to enable use of the type system and docstrings for understanding the data structures. This is important to provide contextual information in IDEs.
  - Object attributes should be private and immutable whenever possible.
  - Object immutable attributes should be prefixed by a single underscore available via getters.
