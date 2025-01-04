@@ -152,7 +152,7 @@ def make_get_avro(bucket: str, s3_client) -> typing.Callable[[str], typing.List[
         s3_client.download_fileobj(bucket, full_loc, target_buffer)
         target_buffer.seek(0)
         return list(fastavro.reader(target_buffer))
-    
+
     return get_avro
 
 
@@ -239,7 +239,7 @@ def combine_catch_and_haul(haul_record: dict,
             catch_no_species
         )
         catch_records_out = map(mark_complete, catch_with_species)
-    
+
     return catch_records_out
 
 
@@ -404,7 +404,7 @@ def process_haul(bucket: str, year: int, survey: str, haul: int,
         assert len(haul_records) == 1
         haul_record = haul_records[0]
         return haul_record
-    
+
     def get_catch_records(haul: int) -> typing.Optional[typing.Iterable[dict]]:
         """Get the catch records associated with a haul.
 

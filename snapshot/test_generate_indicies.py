@@ -142,7 +142,7 @@ class IsNonZeroTests(unittest.TestCase):
     def test_is_non_zero_zeroable_none_partial(self):
         self._target['count'] = None  # type: ignore
         self.assertTrue(generate_indicies.is_non_zero(self._target))
-    
+
     def test_is_non_zero_zeroable_zero_all(self):
         for field in const.ZEROABLE_FIELDS:
             self._target[field] = 0
