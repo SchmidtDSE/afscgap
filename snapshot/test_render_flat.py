@@ -45,7 +45,7 @@ class ZeroRecordTests(unittest.TestCase):
     def test_make_zero_catch_records_no_infer(self):
         output_records_iter = render_flat.make_zero_catch_records(
             [{'species_code': 1, 'haul_field': 456}],
-            self._species_by_code,
+            self._species_by_code,  # type: ignore
             self._haul_record
         )
         output_records = list(output_records_iter)
@@ -54,7 +54,7 @@ class ZeroRecordTests(unittest.TestCase):
     def test_make_zero_catch_records_infer(self):
         output_records_iter = render_flat.make_zero_catch_records(
             [{'species_code': 2, 'haul_field': 456}],
-            self._species_by_code,
+            self._species_by_code,  # type: ignore
             self._haul_record
         )
         output_records = list(output_records_iter)
@@ -74,27 +74,45 @@ class JoinTests(unittest.TestCase):
         self._haul_record = {'haul_field': 45}
 
     def test_append_complete_catch_field(self):
-        result = render_flat.append_species_from_species_list(self._known, self._species_by_code)
+        result = render_flat.append_species_from_species_list(
+            self._known,
+            self._species_by_code  # type: ignore
+        )
         self.assertEqual(result['catch_field'], 12)
 
     def test_append_complete_species_field(self):
-        result = render_flat.append_species_from_species_list(self._known, self._species_by_code)
+        result = render_flat.append_species_from_species_list(
+            self._known,
+            self._species_by_code  # type: ignore
+        )
         self.assertEqual(result['species_field'], 34)
 
     def test_append_complete_flag(self):
-        result = render_flat.append_species_from_species_list(self._known, self._species_by_code)
+        result = render_flat.append_species_from_species_list(
+            self._known,
+            self._species_by_code  # type: ignore
+        )
         self.assertTrue(result['complete'])
 
     def test_append_incomplete_catch_field(self):
-        result = render_flat.append_species_from_species_list(self._unknown, self._species_by_code)
+        result = render_flat.append_species_from_species_list(
+            self._unknown,
+            self._species_by_code  # type: ignore
+        )
         self.assertEqual(result['catch_field'], 23)
 
     def test_append_incomplete_species_field(self):
-        result = render_flat.append_species_from_species_list(self._unknown, self._species_by_code)
+        result = render_flat.append_species_from_species_list(
+            self._unknown,
+            self._species_by_code  # type: ignore
+        )
         self.assertFalse('species_field' in result)
 
     def test_append_incomplete_flag(self):
-        result = render_flat.append_species_from_species_list(self._unknown, self._species_by_code)
+        result = render_flat.append_species_from_species_list(
+            self._unknown,
+            self._species_by_code  # type: ignore
+        )
         self.assertFalse(result['complete'])
 
     def test_full_join_execution(self):
@@ -106,7 +124,7 @@ class JoinTests(unittest.TestCase):
         result = render_flat.execute_full_join(
             self._haul_record,
             None,
-            self._species_by_code
+            self._species_by_code  # type: ignore
         )
 
         result_realized = list(result)
@@ -132,7 +150,7 @@ class JoinTests(unittest.TestCase):
         return render_flat.execute_full_join(
             self._haul_record,
             self._catch_records,
-            self._species_by_code
+            self._species_by_code  # type: ignore
         )
 
     def _get_species_code_from_join(self, species_code):
