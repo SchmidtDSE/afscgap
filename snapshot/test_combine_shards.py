@@ -13,7 +13,7 @@ import unittest.mock
 import combine_shards
 
 
-class NormUtilTests(unittest.TestCase):
+class NormTests(unittest.TestCase):
 
     def test_unchanged(self):
         normalized = combine_shards.normalize_record('test attr', {'value': 'test val'})
