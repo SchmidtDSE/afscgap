@@ -18,8 +18,8 @@ import os
 import sys
 import typing
 
-import boto3
-import coiled
+import boto3  # type: ignore
+import coiled  # type: ignore
 import fastavro
 
 USAGE_STR = 'python render_flat.py [bucket] [filenames]'
@@ -151,7 +151,7 @@ def make_get_avro(bucket: str, s3_client) -> typing.Callable[[str], typing.List[
         target_buffer = io.BytesIO()
         s3_client.download_fileobj(bucket, full_loc, target_buffer)
         target_buffer.seek(0)
-        return list(fastavro.reader(target_buffer))
+        return list(fastavro.reader(target_buffer))  # type: ignore
 
     return get_avro
 
@@ -179,7 +179,7 @@ def complete_record(target: dict) -> dict:
     Returns:
         Record with any missing fields set to None.
     """
-    keys = map(lambda x: x['name'], OBSERVATION_SCHEMA['fields'])
+    keys = map(lambda x: x['name'], OBSERVATION_SCHEMA['fields'])  # type: ignore
     keys_realized = list(keys)
     values = map(lambda x: target.get(x, None), keys_realized)
     return dict(zip(keys_realized, values))
@@ -334,7 +334,7 @@ def process_haul(bucket: str, year: int, survey: str, haul: int,
     import io
     import os
 
-    import botocore
+    import botocore  # type: ignore
     import boto3
     import fastavro
 
@@ -422,7 +422,9 @@ def process_haul(bucket: str, year: int, survey: str, haul: int,
             return None
 
     haul_record = get_haul_record(year, survey, haul)
-    if haul_record is None:
+    catch_records_maybe = get_catch_records(haul)
+
+    if haul_record is None or catch_records_maybe is None:
         return {
             'complete': 0,
             'incomplete': 0,
@@ -430,7 +432,7 @@ def process_haul(bucket: str, year: int, survey: str, haul: int,
             'path': None
         }
 
-    catch_records = list(get_catch_records(haul))
+    catch_records = list(catch_records_maybe)
     catch_records_out = combine_catch_and_haul(haul_record, catch_records, species_by_code)
     catch_records_out_realized = list(catch_records_out)
     catch_records_zero = make_zero_catch_records(
@@ -459,7 +461,7 @@ def process_haul(bucket: str, year: int, survey: str, haul: int,
         },
         catch_records_out_realized
     )
-    output_dict = functools.reduce(
+    output_dict: typing.Dict[str, int] = functools.reduce(
         lambda a, b: {
             'complete': a['complete'] + b['complete'],
             'incomplete': a['incomplete'] + b['incomplete'],
@@ -467,8 +469,10 @@ def process_haul(bucket: str, year: int, survey: str, haul: int,
         },
         outputs_dicts
     )
-    output_dict['loc'] = output_loc
-    return output_dict
+
+    output_dict_with_loc: typing.Dict[str, typing.Union[str, int]] = output_dict  # type: ignore
+    output_dict_with_loc['loc'] = output_loc
+    return output_dict_with_loc
 
 
 def make_haul_metadata_record(path: str) -> dict:
