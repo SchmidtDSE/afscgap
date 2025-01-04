@@ -457,6 +457,26 @@ def process_haul(bucket: str, year: int, survey: str, haul: int,
     return output_dict
 
 
+def make_haul_metadata_record(path: str) -> dict:
+    """Parse a path into a metadata record.
+
+    Args:
+        path: The path to be parsed as a metadata record.
+
+    Returns:
+        Dictionary describing metadata for a haul.
+    """
+    filename_with_path = path.split('/')[-1]
+    filename = filename_with_path.split('.')[0]
+    components = filename.split('_')
+    return {
+        'path': path,
+        'year': int(components[0]),
+        'survey': components[1],
+        'haul': int(components[2])
+    }
+
+
 def get_hauls_meta(bucket: str) -> typing.Iterable[dict]:
     """Get metadata for all available hauls.
 
@@ -475,17 +495,6 @@ def get_hauls_meta(bucket: str) -> typing.Iterable[dict]:
         aws_secret_access_key=access_secret
     )
 
-    def make_haul_metadata_record(path):
-        filename_with_path = path.split('/')[-1]
-        filename = filename_with_path.split('.')[0]
-        components = filename.split('_')
-        return {
-            'path': path,
-            'year': int(components[0]),
-            'survey': components[1],
-            'haul': int(components[2])
-        }
-
     paginator = s3_client.get_paginator('list_objects_v2')
     iterator = paginator.paginate(Bucket=bucket, Prefix='haul/')
     pages = filter(lambda x: 'Contents' in x, iterator)
@@ -495,7 +504,15 @@ def get_hauls_meta(bucket: str) -> typing.Iterable[dict]:
     return map(make_haul_metadata_record, keys)
 
 
-def get_all_species(bucket):
+def get_all_species(bucket: str) -> SPECIES_DICT:
+    """Get information about all species formally tracked.
+
+    Args:
+        bucket: The S3 bucket name where species information can be found.
+
+    Returns:
+        Dictionary mapping from species code to information about that species.
+    """
     access_key = os.environ['AWS_ACCESS_KEY']
     access_secret = os.environ['AWS_ACCESS_SECRET']
 
@@ -520,6 +537,7 @@ def get_all_species(bucket):
 
 
 def main():
+    """Entry point for the join script."""
     if len(sys.argv) != NUM_ARGS + 1:
         print(USAGE_STR)
         sys.exit(1)
