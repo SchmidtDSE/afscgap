@@ -105,6 +105,33 @@ def make_zero_record(species: dict, haul_record: dict) -> dict:
     return haul_copy
 
 
+def make_zero_catch_records(catch_records_out_realized: typing.List[dict],
+    species_by_code: SPECIES_DICT, haul_record: dict) -> typing.Iterable[dict]:
+    """Generate zero catch records for species not found in catches for a haul.
+
+    Args:
+        catch_records_out_realized: All catch records for a haul.
+        species_by_code: Mapping from species code to information about the species such that all
+            formally tracked species are in this dictionary.
+        haul_record: Base record to use in generating zero catch records.
+
+    Returns:
+        Inferred zero catch records.
+    """
+    species_codes_found = set(map(
+        lambda x: x.get('species_code', None),
+        catch_records_out_realized
+    ))
+    species_codes_all = set(species_by_code.keys())
+    speices_codes_missing = species_codes_all - species_codes_found
+    speices_missing = map(lambda x: species_by_code[x], speices_codes_missing)
+    catch_records_zero = map(
+        lambda x: make_zero_record(x, haul_record),
+        speices_missing
+    )
+    return catch_records_zero
+
+
 def append_species_from_species_list(target: dict, species_by_code: SPECIES_DICT) -> dict:
     """Add information about a species found within a catch.
 
@@ -119,8 +146,9 @@ def append_species_from_species_list(target: dict, species_by_code: SPECIES_DICT
     species_code = target['species_code']
 
     if species_code not in species_by_code:
-        target['complete'] = False
-        return target
+        return mark_incomplete(target)
+    else:
+        target = mark_complete(target)
 
     species_record = species_by_code[species_code]
     target.update(species_record)
@@ -213,7 +241,7 @@ def mark_complete(target: dict) -> dict:
     return target
 
 
-def combine_catch_and_haul(haul_record: dict,
+def execute_full_join(haul_record: dict,
     catch_records: typing.Optional[typing.List[dict]],
     species_by_code: SPECIES_DICT) -> typing.Iterable[dict]:
     """Combine catch information with information about the haul in which that catch happened.
@@ -234,40 +262,12 @@ def combine_catch_and_haul(haul_record: dict,
             lambda x: append_catch_haul(x, haul_record),
             catch_records
         )
-        catch_with_species = map(
+        catch_records_out = map(
             lambda x: append_species_from_species_list(x, species_by_code),
             catch_no_species
         )
-        catch_records_out = map(mark_complete, catch_with_species)
 
     return catch_records_out
-
-
-def make_zero_catch_records(catch_records_out_realized: typing.List[dict],
-    species_by_code: SPECIES_DICT, haul_record: dict) -> typing.Iterable[dict]:
-    """Generate zero catch records for species not found in catches for a haul.
-
-    Args:
-        catch_records_out_realized: All catch records for a haul.
-        species_by_code: Mapping from species code to information about the species such that all
-            formally tracked species are in this dictionary.
-        haul_record: Base record to use in generating zero catch records.
-
-    Returns:
-        Inferred zero catch records.
-    """
-    species_codes_found = set(map(
-        lambda x: x.get('species_code', None),
-        catch_records_out_realized
-    ))
-    species_codes_all = set(species_by_code.keys())
-    speices_codes_missing = species_codes_all - species_codes_found
-    speices_missing = map(lambda x: species_by_code[x], speices_codes_missing)
-    catch_records_zero = map(
-        lambda x: make_zero_record(x, haul_record),
-        speices_missing
-    )
-    return catch_records_zero
 
 
 def get_path_for_catches_in_haul(haul: int) -> str:
@@ -311,6 +311,26 @@ def get_joined_path(year: int, survey: str, haul: int) -> str:
     """
     template_vals = (year, survey, haul)
     return 'joined/%d_%s_%d.avro' % template_vals
+
+
+def make_haul_metadata_record(path: str) -> dict:
+    """Parse a path into a metadata record.
+
+    Args:
+        path: The path to be parsed as a metadata record.
+
+    Returns:
+        Dictionary describing metadata for a haul.
+    """
+    filename_with_path = path.split('/')[-1]
+    filename = filename_with_path.split('.')[0]
+    components = filename.split('_')
+    return {
+        'path': path,
+        'year': int(components[0]),
+        'survey': components[1],
+        'haul': int(components[2])
+    }
 
 
 def process_haul(bucket: str, year: int, survey: str, haul: int,
@@ -433,7 +453,7 @@ def process_haul(bucket: str, year: int, survey: str, haul: int,
         }
 
     catch_records = list(catch_records_maybe)
-    catch_records_out = combine_catch_and_haul(haul_record, catch_records, species_by_code)
+    catch_records_out = execute_full_join(haul_record, catch_records, species_by_code)
     catch_records_out_realized = list(catch_records_out)
     catch_records_zero = make_zero_catch_records(
         catch_records_out_realized,
@@ -473,26 +493,6 @@ def process_haul(bucket: str, year: int, survey: str, haul: int,
     output_dict_with_loc: typing.Dict[str, typing.Union[str, int]] = output_dict  # type: ignore
     output_dict_with_loc['loc'] = output_loc
     return output_dict_with_loc
-
-
-def make_haul_metadata_record(path: str) -> dict:
-    """Parse a path into a metadata record.
-
-    Args:
-        path: The path to be parsed as a metadata record.
-
-    Returns:
-        Dictionary describing metadata for a haul.
-    """
-    filename_with_path = path.split('/')[-1]
-    filename = filename_with_path.split('.')[0]
-    components = filename.split('_')
-    return {
-        'path': path,
-        'year': int(components[0]),
-        'survey': components[1],
-        'haul': int(components[2])
-    }
 
 
 def get_hauls_meta(bucket: str) -> typing.Iterable[dict]:
