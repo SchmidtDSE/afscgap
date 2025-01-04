@@ -347,6 +347,50 @@ class DecorateFilterTests(unittest.TestCase):
         self.assertFalse(decorated.get_matches(None))
 
 
+class DetermineIfIgnorableTests(unittest.TestCase):
+
+    def test_explicit_ignorable_require_zero(self):
+        param = self._make_test_param(True, 'int')
+        ignorable = afscgap.flat_index_util.determine_if_ignorable('test', param, False)
+        self.assertTrue(ignorable)
+
+    def test_explicit_ignorable_presence_only(self):
+        param = self._make_test_param(True, 'int')
+        ignorable = afscgap.flat_index_util.determine_if_ignorable('test', param, True)
+        self.assertTrue(ignorable)
+
+    def test_require_zero_supported(self):
+        param = self._make_test_param(False, 'int')
+        ignorable = afscgap.flat_index_util.determine_if_ignorable('count', param, False)
+        self.assertFalse(ignorable)
+
+    def test_require_zero_unsupported(self):
+        param = self._make_test_param(False, 'str')
+        ignorable = afscgap.flat_index_util.determine_if_ignorable('species_code', param, False)
+        self.assertTrue(ignorable)
+
+    def test_presence_only_unsupported(self):
+        param = self._make_test_param(False, 'str')
+        ignorable = afscgap.flat_index_util.determine_if_ignorable('species_code', param, True)
+        self.assertFalse(ignorable)
+
+    def test_empty(self):
+        param = afscgap.param.EmptyParam()
+        ignorable = afscgap.flat_index_util.determine_if_ignorable('count', param, True)
+        self.assertTrue(ignorable)
+
+    def test_plain_not_ignorable(self):
+        param = afscgap.param.IntRangeParam(1, None)
+        ignorable = afscgap.flat_index_util.determine_if_ignorable('count', param, True)
+        self.assertFalse(ignorable)
+
+    def _make_test_param(self, ignorable, filter_type):
+        param = unittest.mock.MagicMock()
+        param.get_is_ignorable = unittest.mock.MagicMock(return_value=ignorable)
+        param.get_filter_type = unittest.mock.MagicMock(return_value=filter_type)
+        return param
+
+
 class MakeFilterTests(unittest.TestCase):
 
     def test_empty(self):
