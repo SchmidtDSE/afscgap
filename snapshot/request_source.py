@@ -28,7 +28,7 @@ ENDPOINTS = {
     'catch': '/ods/foss/afsc_groundfish_survey_catch/',
     'species': '/ods/foss/afsc_groundfish_survey_species/'
 }
-YEAR_ENDPOINTS = {'catch'}
+YEAR_ENDPOINTS = {'haul'}
 
 HAUL_SCHEMA = {
     'doc': 'Description of a haul',
@@ -103,7 +103,7 @@ SCHEMAS = {
     'species': SPECIES_SCHEMA
 }
 
-DEFAULT_LIMIT = 10000
+DEFAULT_LIMIT = 5000
 
 
 def get_api_request_url(type_name: str, year: typing.Optional[int], offset: int,
@@ -247,7 +247,7 @@ def dump_to_s3(year: typing.Optional[int], bucket: str, loc: str, type_name: str
         return response
 
     while not done:
-        if offset % (DEFAULT_LIMIT * 10) == 0:
+        if offset % (DEFAULT_LIMIT * 5) == 0:
             print('Offset: %d' % offset)
 
         response = execute_request(offset)

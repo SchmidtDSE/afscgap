@@ -36,11 +36,11 @@ class ApiUrlGenerationTests(unittest.TestCase):
 
     def test_year_provide_not_support(self):
         with self.assertRaises(RuntimeError):
-            request_source.get_api_request_url('haul', 2025, 12, 34)
+            request_source.get_api_request_url('catch', 2025, 12, 34)
 
         with self.assertRaises(RuntimeError):
             request_source.get_api_request_url('species', 2025, 12, 34)
 
     def test_year_not_provided_supported(self):
         with self.assertRaises(RuntimeError):
-            request_source.get_api_request_url('catch', None, 12, 34)
+            request_source.get_api_request_url('haul', None, 12, 34)
