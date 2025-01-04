@@ -16,6 +16,7 @@ import itertools
 import functools
 import os
 import sys
+import typing
 
 import boto3
 import coiled
@@ -81,11 +82,13 @@ def make_zero_record(species: dict, haul_record: dict) -> dict:
 
     Args:
         species: Information about the species not found.
-        haul_record: Informatino about the haul for which no specimens were found.
+        haul_record: Information about the haul for which no specimens were found.
 
     Returns:
         Complete output record indicating the given species not found for the given haul.
     """
+    import copy
+
     haul_copy = copy.deepcopy(haul_record)
     haul_copy['species_code'] = species['species_code']
     haul_copy['cpue_kgkm2'] = 0
@@ -124,7 +127,7 @@ def append_species_from_species_list(target: dict, species_by_code: SPECIES_DICT
     return target
 
 
-def make_get_avro(bucket: str, s3_client) -> typling.Callable[[str], typing.List[dict]]:
+def make_get_avro(bucket: str, s3_client) -> typing.Callable[[str], typing.List[dict]]:
     """Build a function which gets a file from a bucket using the given S3 client.
 
     Args:
@@ -153,7 +156,7 @@ def make_get_avro(bucket: str, s3_client) -> typling.Callable[[str], typing.List
     return get_avro
 
 
-def append_catch_haul(catch_record: dict, haul_record: dict) -> dic:
+def append_catch_haul(catch_record: dict, haul_record: dict) -> dict:
     """Combine information between a catch record and a haul record.
 
     Args:
@@ -197,7 +200,7 @@ def mark_incomplete(target: dict) -> dict:
 
 
 def mark_complete(target: dict) -> dict:
-     """Mark a record as complete.
+    """Mark a record as complete.
 
     Args:
         target: Record on which the complete attribute should be changed. This may or may not be
@@ -211,12 +214,14 @@ def mark_complete(target: dict) -> dict:
 
 
 def combine_catch_and_haul(haul_record: dict,
-    catch_records: typing.Optional[typing.List[dict]]) -> typing.Iterable[dict]:
+    catch_records: typing.Optional[typing.List[dict]],
+    species_by_code: SPECIES_DICT) -> typing.Iterable[dict]:
     """Combine catch information with information about the haul in which that catch happened.
 
     Args:
         haul_record: Information about the haul in which the catch took place.
         catch_records: The catch records to be joined with haul information.
+        species_by_code: Information about all tracked species indexed by species code.
 
     Returns:
         Updated catch records or, if no catch records provided, a single record with haul
@@ -229,20 +234,24 @@ def combine_catch_and_haul(haul_record: dict,
             lambda x: append_catch_haul(x, haul_record),
             catch_records
         )
-        catch_with_species = map(append_species, catch_no_species)
+        catch_with_species = map(
+            lambda x: append_species_from_species_list(x, species_by_code),
+            catch_no_species
+        )
         catch_records_out = map(mark_complete, catch_with_species)
     
     return catch_records_out
 
 
 def make_zero_catch_records(catch_records_out_realized: typing.List[dict],
-    species_by_code: SPECIES_DICT) -> typing.Iterable[dict]:
+    species_by_code: SPECIES_DICT, haul_record: dict) -> typing.Iterable[dict]:
     """Generate zero catch records for species not found in catches for a haul.
 
     Args:
         catch_records_out_realized: All catch records for a haul.
         species_by_code: Mapping from species code to information about the species such that all
             formally tracked species are in this dictionary.
+        haul_record: Base record to use in generating zero catch records.
 
     Returns:
         Inferred zero catch records.
@@ -261,7 +270,7 @@ def make_zero_catch_records(catch_records_out_realized: typing.List[dict],
     return catch_records_zero
 
 
-def get_url_for_catches_in_haul(haul: int) -> str:
+def get_path_for_catches_in_haul(haul: int) -> str:
     """Get the URL where the catches associated with a haul may be found.
 
     Args:
@@ -274,7 +283,7 @@ def get_url_for_catches_in_haul(haul: int) -> str:
     return 'catch/%d.avro' % haul
 
 
-def get_meta_url_for_haul(year: int, survey: str, haul: int) -> str:
+def get_meta_path_for_haul(year: int, survey: str, haul: int) -> str:
     """Get the URL for a haul's metadata given the haul location.
 
     Args:
@@ -286,7 +295,22 @@ def get_meta_url_for_haul(year: int, survey: str, haul: int) -> str:
         String path where the Avro file with haul metadata is expected.
     """
     template_vals = (year, survey, haul)
-    return = 'haul/%d_%s_%d.avro' % template_vals
+    return 'haul/%d_%s_%d.avro' % template_vals
+
+
+def get_joined_path(year: int, survey: str, haul: int) -> str:
+    """Get that path at which joined data is expected to be written for a haul.
+
+    Args:
+        year: The year in which the haul occurred like 2025.
+        survey: The name of the survey like "Gulf of Alaska" in which the haul took place.
+        haul: The ID of the haul.
+
+    Returns:
+        STring path where the Avro file with joined haul data is expected.
+    """
+    template_vals = (year, survey, haul)
+    return 'joined/%d_%s_%d.avro' % template_vals
 
 
 def process_haul(bucket: str, year: int, survey: str, haul: int,
@@ -307,7 +331,6 @@ def process_haul(bucket: str, year: int, survey: str, haul: int,
         Diagnostic information about the file written.
     """
 
-    import copy
     import io
     import os
 
@@ -346,18 +369,6 @@ def process_haul(bucket: str, year: int, survey: str, haul: int,
             else:
                 raise RuntimeError('Unexpected S3 head code: %d' % error_code)
 
-    def append_species(target: dict) -> dict:
-        """Add information about the speices found in a catch.
-
-        Args:
-            target: Catch information to which species information should be added. This may or
-                may not be modified in-place.
-
-        Returns:
-            Record with species information added.
-        """
-        return append_species_from_species_list(target, species_by_code)
-
     def convert_to_avro(records: typing.Iterable[dict]) -> io.BytesIO:
         """Convert an iterable of dictionaries to Avro bytes.
 
@@ -384,7 +395,7 @@ def process_haul(bucket: str, year: int, survey: str, haul: int,
         Returns:
             Dictionary record describing the haul or None if the haul was not found.
         """
-        haul_loc = get_meta_url_for_haul(year, survey, haul)
+        haul_loc = get_meta_path_for_haul(year, survey, haul)
 
         if not check_file_exists(haul_loc):
             return None
@@ -404,14 +415,13 @@ def process_haul(bucket: str, year: int, survey: str, haul: int,
             All catch records associated with a haul. Either None or empty list if no data could be
             found.
         """
-        catch_loc = get_url_for_catches_in_haul(haul)
+        catch_loc = get_path_for_catches_in_haul(haul)
         if check_file_exists(catch_loc):
             return get_avro(catch_loc)
         else:
             return None
 
-    haul_record = get_haul_record(haul_loc)
-
+    haul_record = get_haul_record(year, survey, haul)
     if haul_record is None:
         return {
             'complete': 0,
@@ -421,9 +431,13 @@ def process_haul(bucket: str, year: int, survey: str, haul: int,
         }
 
     catch_records = list(get_catch_records(haul))
-    catch_records_out = combine_catch_and_haul(haul_reord, catch_records)
+    catch_records_out = combine_catch_and_haul(haul_record, catch_records, species_by_code)
     catch_records_out_realized = list(catch_records_out)
-    catch_records_zero = make_zero_catch_records(catch_records_out_realized, species_by_code)
+    catch_records_zero = make_zero_catch_records(
+        catch_records_out_realized,
+        species_by_code,
+        haul_record
+    )
 
     # Combine regular records with zero catch inferred records
     catch_records_all = itertools.chain(
@@ -433,7 +447,7 @@ def process_haul(bucket: str, year: int, survey: str, haul: int,
 
     # Upload to S3
     catch_with_species_avro = convert_to_avro(catch_records_all)
-    output_loc = 'joined/%d_%s_%d.avro' % template_vals
+    output_loc = get_joined_path(year, survey, haul)
     s3_client.upload_fileobj(catch_with_species_avro, bucket, output_loc)
 
     # Write out diagnostic information

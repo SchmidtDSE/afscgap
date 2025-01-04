@@ -197,4 +197,4 @@ class CombineTests(unittest.TestCase):
 
     def test_combine_incompatible(self):
         with self.assertRaises(RuntimeError):
-            combined = generate_indicies.combine_records(self._base, self._incompatible)
+            generate_indicies.combine_records(self._base, self._incompatible)
