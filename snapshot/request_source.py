@@ -28,6 +28,7 @@ ENDPOINTS = {
     'catch': '/ods/foss/afsc_groundfish_survey_catch/',
     'species': '/ods/foss/afsc_groundfish_survey_species/'
 }
+YEAR_ENDPOINTS = {'catch'}
 
 HAUL_SCHEMA = {
     'doc': 'Description of a haul',
@@ -102,20 +103,57 @@ SCHEMAS = {
     'species': SPECIES_SCHEMA
 }
 
+DEFAULT_LIMIT = 100000
 
-def get_api_request_url(type_name: str, year: typing.Optional[int], offset: int) -> str:
+
+def get_api_request_url(type_name: str, year: typing.Optional[int], offset: int,
+    limit: int = DEFAULT_LIMIT) -> str:
+    """Get the URL where an API endoping can be found for a given set of records.
+
+    Get the URL where an API endoping can be found for a given set of records, raising an exception
+    if an invalid request is provided like if year is provided but not supported by the endpoint.
+
+    Args:
+        type_name: The type of record requested like "catch" for catch records.
+        year: The year like 2025 for which records are requested. If None, will request without a
+            year filter. Ignored by some endpoints.
+        offset: The offset into this year / type combination.
+        limit: The maximum number of records to return.
+
+    Returns:
+        String URL where the requested records can be found.
+    """
     endpoint = ENDPOINTS[type_name]
 
     if year:
-        params = '?offset=%d&limit=10000&q={"year":%d}' % (offset, year)
+        if type_name not in YEAR_ENDPOINTS:
+            raise RuntimeError('Provided a year filter to an endpoint that does not support it.')
+
+        params = '?offset=%d&limit=%d&q={"year":%d}' % (offset, limit, year)
     else:
-        params = '?offset=%d&limit=10000' % offset
+        if type_name in YEAR_ENDPOINTS:
+            raise RuntimeError('Did not provide a year filter to an endpoint that supports it.')
+
+        params = '?offset=%d&limit=%d' % (offset, limit)
 
     full_url = DOMAIN + endpoint + params
     return full_url
 
 
 def dump_to_s3(year: typing.Optional[int], bucket: str, loc: str, type_name: str):
+    """Dump a set of records to an S3 bucket for later processing / joining.
+
+    Dump a set of records to an S3 bucket. These may be saved for later processing such as joining
+    across record types. This will perform pagination until all records saved, making multiple API
+    requests. Raises an exception if year is provided but not supported.
+
+    Args:
+        year: The year for which records should be dumped. This is ignored by some endpoints and
+            None may be passed.
+        bucket: The name of the bucket within S3 in which they should be dumped.
+        loc: The location within the bucket where they should be written.
+        type_name: The type of record to dump like "catch" for catch records.
+    """
     offset = 0
     done = False
 
@@ -126,12 +164,26 @@ def dump_to_s3(year: typing.Optional[int], bucket: str, loc: str, type_name: str
     )
 
     def convert_to_avro(records: typing.Iterable[dict]) -> io.BytesIO:
+        """Convert a set of records to Avro.
+
+        Args:
+            records: The records to convert to Avro.
+
+        Returns:
+            The provided records as binary.
+        """
         target_buffer = io.BytesIO()
         fastavro.writer(target_buffer, SCHEMAS[type_name], records)
         target_buffer.seek(0)
         return target_buffer
 
     def append_in_bucket(key: str, records: typing.List[dict]):
+        """Append to a file within an S3 bucket, making the file if it does not exist.
+
+        Args:
+            key: The path to the file to be appended.
+            records: The records to be appended as Avro.
+        """
         sample_record = records[0]
 
         if type_name == 'haul':
@@ -148,6 +200,12 @@ def dump_to_s3(year: typing.Optional[int], bucket: str, loc: str, type_name: str
             full_loc = loc + '/%d.avro' % sample_record['species_code']
 
         def read_prior_records() -> typing.Iterable[dict]:
+            """Get the records already at the target file.
+
+            Returns:
+                Iterable over records if prior contents found or an empty iterable if the file does
+                not exist.
+            """
             try:
                 target_buffer = io.BytesIO()
                 s3_client.download_fileobj(bucket, full_loc, target_buffer)
@@ -161,6 +219,11 @@ def dump_to_s3(year: typing.Optional[int], bucket: str, loc: str, type_name: str
         s3_client.upload_fileobj(records_avro, bucket, full_loc)
 
     def write_response(parsed: dict):
+        """Write the result of an API call to S3.
+
+        Args:
+            parsed: The record returned from the API.
+        """
         items = parsed['items']
         key_name = 'species_code' if type_name == 'species' else 'hauljoin'
         by_key = toolz.itertoolz.groupby(lambda x: x[key_name], items)
@@ -170,12 +233,21 @@ def dump_to_s3(year: typing.Optional[int], bucket: str, loc: str, type_name: str
             append_in_bucket(key, records)
 
     def execute_request(offset: int):
-        full_url = get_api_request_url(type_name, year, offset)
+        """Execute a single request for records given an offset into the result set.
+        
+        Args:
+            offset: The number of records to skip at the start of the result set. Used for
+                pagination.
+
+        Returns:
+            Unparsed response from a requests-like object.
+        """
+        full_url = get_api_request_url(type_name, year, offset, limit=DEFAULT_LIMIT)
         response = requests.get(full_url)
         return response
 
     while not done:
-        if offset % 100000 == 0:
+        if offset % DEFAULT_LIMIT == 0:
             print('Offset: %d' % offset)
 
         response = execute_request(offset)
@@ -184,7 +256,7 @@ def dump_to_s3(year: typing.Optional[int], bucket: str, loc: str, type_name: str
         if status_code == 200:
             parsed = response.json()
             write_response(parsed)
-            offset += 10000
+            offset += DEFAULT_LIMIT
             done = len(parsed['items']) == 0
             if done:
                 print('Ending gracefully...')
@@ -195,6 +267,7 @@ def dump_to_s3(year: typing.Optional[int], bucket: str, loc: str, type_name: str
 
 
 def main():
+    """Entrypoint to the request source script."""
     if len(sys.argv) < MIN_ARGS + 1 or len(sys.argv) > MAX_ARGS + 1:
         print(USAGE_STR)
         sys.exit(1)
