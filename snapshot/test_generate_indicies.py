@@ -169,7 +169,7 @@ class BuildOutputRecordTests(unittest.TestCase):
         key = self._output_record['keys'][0]
         self.assertEqual(key['year'], 2025)
         self.assertEqual(key['survey'], 'GOA')
-        self.assertEqual(key['haul'], 124)
+        self.assertEqual(key['haul'], 123)
 
     def test_build_key_meta_check_hauls(self):
         key_1 = self._output_record['keys'][0]
