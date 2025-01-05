@@ -65,8 +65,6 @@ echo "survey_name"
 python generate_indicies.py $BUCKET_NAME survey_name n
 echo "taxon_confidence"
 python generate_indicies.py $BUCKET_NAME taxon_confidence n
-#echo "variables"
-#python generate_indicies.py $BUCKET_NAME variables n
 echo "vessel_id"
 python generate_indicies.py $BUCKET_NAME vessel_id n
 echo "vessel_name"

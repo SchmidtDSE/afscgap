@@ -64,8 +64,6 @@ echo "survey_name"
 python combine_shards.py $BUCKET_NAME survey_name
 echo "taxon_confidence"
 python combine_shards.py $BUCKET_NAME taxon_confidence
-echo "variables"
-python combine_shards.py $BUCKET_NAME variables
 echo "vessel_id"
 python combine_shards.py $BUCKET_NAME vessel_id
 echo "vessel_name"
