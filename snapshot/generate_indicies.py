@@ -127,7 +127,7 @@ def process_file(bucket: str, year: int, survey: str, haul: int, key: str) -> ty
             True if the file is found and false otherwise.
         """
         try:
-            s3_client.head_object(bucket, full_loc)
+            s3_client.head_object(Bucket=bucket, Key=full_loc)
             return True
         except botocore.exceptions.ClientError as e:
             error_code = e.response['Error']['Code']
