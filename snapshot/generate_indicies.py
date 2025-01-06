@@ -332,9 +332,6 @@ def combine_records(a: dict, b: dict) -> dict:
     Returns:
         New index record indicating the cobination of the two records.
     """
-    if a['value'] != b['value']:
-        raise RuntimeError('Tried combining keys for incompatible values.')
-
     return {'value': a['value'], 'keys': a['keys'].union(b['keys'])}
 
 
