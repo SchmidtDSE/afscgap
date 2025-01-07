@@ -43,8 +43,6 @@ echo "net_width_m"
 python generate_indicies.py $BUCKET_NAME net_width_m n
 echo "performance"
 python generate_indicies.py $BUCKET_NAME performance n
-echo "requirements"
-python generate_indicies.py $BUCKET_NAME requirements n
 echo "scientific_name"
 python generate_indicies.py $BUCKET_NAME scientific_name n
 echo "species_code"

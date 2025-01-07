@@ -206,17 +206,51 @@ def dump_to_s3(year: typing.Optional[int], bucket: str, loc: str, type_name: str
                 Iterable over records if prior contents found or an empty iterable if the file does
                 not exist.
             """
-            try:
+            def get_prior_exists() -> bool:
+                try:
+                    s3_client.head_object(Bucket=bucket, Key=full_loc)
+                    return True
+                except botocore.exceptions.ClientError as e:
+                    error_code = e.response['Error']['Code']
+                    error_code_cast = int(error_code)
+                    if error_code_cast == 404:
+                        return False
+                    else:
+                        raise RuntimeError('Unexpected S3 head code: %d' % error_code)
+
+            def get_prior_exists_with_retry() -> bool:
+                try:
+                    return get_prior_exists()
+                except:
+                    time.sleep(const.RETRY_DELAY)
+                    return get_prior_exists()
+
+            def download_prior() -> typing.Iterable[dict]:
                 target_buffer = io.BytesIO()
                 s3_client.download_fileobj(bucket, full_loc, target_buffer)
                 target_buffer.seek(0)
                 return fastavro.reader(target_buffer)  # type: ignore
-            except s3_client.exceptions.ClientError:
+
+            def download_prior_with_retry() -> typing.Iterable[dict]:
+                try:
+                    return download_prior()
+                except:
+                    time.sleep(const.RETRY_DELAY)
+                    return download_prior()
+
+            if get_prior_exists_with_retry():
+                return download_prior_with_retry()
+            else:
                 return []
 
         prior_records = read_prior_records()
         records_avro = convert_to_avro(itertools.chain(prior_records, records))
-        s3_client.upload_fileobj(records_avro, bucket, full_loc)
+
+        try:
+            s3_client.upload_fileobj(records_avro, bucket, full_loc)
+        except:
+            time.sleep(const.RETRY_DELAY)
+            s3_client.upload_fileobj(records_avro, bucket, full_loc)
 
     def write_response(parsed: dict):
         """Write the result of an API call to S3.
@@ -246,11 +280,28 @@ def dump_to_s3(year: typing.Optional[int], bucket: str, loc: str, type_name: str
         response = requests.get(full_url)
         return response
 
+    def execute_request_with_retry(offset: int):
+        original_response = None
+        retry_required = False
+
+        try:
+            original_response = execute_request(offset)
+            retry_required = original_response.status_code != 200
+        except:
+            retry_required = True
+
+        if retry_required:
+            time.sleep(const.RETRY_DELAY)
+            return execute_request
+        else:
+            assert original_response is not None
+            return original_response
+
     while not done:
         if offset % (DEFAULT_LIMIT * 5) == 0:
             print('Offset: %d' % offset)
 
-        response = execute_request(offset)
+        response = execute_request_with_retry(offset)
         status_code = response.status_code
 
         if status_code == 200:

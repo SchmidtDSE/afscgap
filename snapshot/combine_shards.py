@@ -11,11 +11,13 @@ import io
 import itertools
 import os
 import sys
+import time
 import typing
 
 import boto3  # type: ignore
 import fastavro
 
+import const
 import norm_util
 
 INDEX_SCHEMA = {
@@ -96,8 +98,18 @@ def main():
         Returns:
             List of parsed Avro records with each element being one parsed Avro record.
         """
-        target_buffer = io.BytesIO()
-        s3_client.download_fileobj(bucket, full_loc, target_buffer)
+
+        def make_attempt_download() -> io.BytesIO():
+            target_buffer = io.BytesIO()
+            s3_client.download_fileobj(bucket, full_loc, target_buffer)
+            return target_buffer
+
+        try:
+            target_buffer = make_attempt_download()
+        except:
+            time.sleep(const.RETRY_DELAY)
+            target_buffer = make_attempt_download()
+
         target_buffer.seek(0)
         return list(fastavro.reader(target_buffer))  # type: ignore
 
@@ -120,7 +132,15 @@ def main():
         aws_secret_access_key=access_secret
     )
     output_loc = 'index/%s.avro' % key
-    s3_client.upload_fileobj(write_buffer, bucket, output_loc)
+
+    def make_attempt_upload():
+        s3_client.upload_fileobj(write_buffer, bucket, output_loc)
+
+    try:
+        make_attempt_upload()
+    except:
+        time.sleep(const.RETRY_DELAY)
+        make_attempt_upload()
 
 
 if __name__ == '__main__':
