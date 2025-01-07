@@ -99,7 +99,7 @@ def main():
             List of parsed Avro records with each element being one parsed Avro record.
         """
 
-        def make_attempt_download() -> io.BytesIO():
+        def make_attempt_download() -> io.BytesIO:
             target_buffer = io.BytesIO()
             s3_client.download_fileobj(bucket, full_loc, target_buffer)
             return target_buffer

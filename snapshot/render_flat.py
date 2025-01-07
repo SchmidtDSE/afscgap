@@ -16,11 +16,14 @@ import itertools
 import functools
 import os
 import sys
+import time
 import typing
 
 import boto3  # type: ignore
 import coiled  # type: ignore
 import fastavro
+
+import const
 
 USAGE_STR = 'python render_flat.py [bucket] [filenames]'
 NUM_ARGS = 2
@@ -176,11 +179,15 @@ def make_get_avro(bucket: str, s3_client) -> typing.Callable[[str], typing.List[
         Returns:
             All records within that Avro file parsed as dictionaries.
         """
+        import time
+
+        import const
 
         def attempt_download() -> io.BytesIO:
             target_buffer = io.BytesIO()
             s3_client.download_fileobj(bucket, full_loc, target_buffer)
             target_buffer.seek(0)
+            return target_buffer
 
         try:
             target_buffer = attempt_download()
@@ -362,10 +369,13 @@ def process_haul(bucket: str, year: int, survey: str, haul: int,
 
     import io
     import os
+    import time
 
     import botocore  # type: ignore
     import boto3
     import fastavro
+
+    import const
 
     access_key = os.environ['AWS_ACCESS_KEY']
     access_secret = os.environ['AWS_ACCESS_SECRET']

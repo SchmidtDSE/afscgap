@@ -15,9 +15,12 @@ import time
 import typing
 
 import boto3  # type: ignore
+import botocore  # type: ignore
 import fastavro
 import requests
 import toolz.itertoolz  # type: ignore
+
+import const
 
 MIN_ARGS = 3
 MAX_ARGS = 4

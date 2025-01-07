@@ -11,9 +11,13 @@ import io
 import itertools
 import os
 import sys
+import time
+import typing
 
 import boto3  # type: ignore
 import fastavro
+
+import const
 
 KEY_SCHEMA = {
     'doc': 'Key to an observation flat file.',

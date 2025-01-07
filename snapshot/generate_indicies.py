@@ -89,10 +89,13 @@ def process_file(bucket: str, year: int, survey: str, haul: int, key: str) -> ty
     """
     import io
     import os
+    import time
 
     import botocore  # type: ignore
     import boto3  # type: ignore
     import fastavro
+
+    import const
 
     access_key = os.environ['AWS_ACCESS_KEY']
     access_secret = os.environ['AWS_ACCESS_SECRET']
@@ -281,9 +284,12 @@ def write_sample(key: str, bucket: str, sample: typing.Iterable[dict]) -> typing
     import io
     import os
     import random
+    import time
 
     import boto3
     import fastavro
+
+    import const
 
     INDEX_SCHEMA = {
         'doc': 'Index from a value to an observations flat file.',

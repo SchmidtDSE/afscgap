@@ -42,3 +42,5 @@ IGNORE_ZEROS = {
     'scientific_name',
     'common_name'
 }
+
+RETRY_DELAY = 60
