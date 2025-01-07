@@ -159,8 +159,13 @@ def main():
     )
 
     files = list_files(s3_client, bucket, path)
+    i = 0
     for file in files:
+        if i % 1000 == 0:
+            print('Checked %d files.' % i)
+
         check_file(s3_client, bucket, path, fields)
+        i += 1
 
 
 if __name__ == '__main__':
