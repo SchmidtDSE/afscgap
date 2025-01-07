@@ -178,4 +178,4 @@ Annotated version history:
  - `0.0.2`: License under BSD.
  - `0.0.1`: Initial release.
 
-The community files were last updated on Jan 1, 2025.
+The community files were last updated on Jan 7, 2025.
