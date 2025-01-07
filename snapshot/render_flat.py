@@ -16,11 +16,14 @@ import itertools
 import functools
 import os
 import sys
+import time
 import typing
 
 import boto3  # type: ignore
 import coiled  # type: ignore
 import fastavro
+
+import const
 
 USAGE_STR = 'python render_flat.py [bucket] [filenames]'
 NUM_ARGS = 2
@@ -176,9 +179,22 @@ def make_get_avro(bucket: str, s3_client) -> typing.Callable[[str], typing.List[
         Returns:
             All records within that Avro file parsed as dictionaries.
         """
-        target_buffer = io.BytesIO()
-        s3_client.download_fileobj(bucket, full_loc, target_buffer)
-        target_buffer.seek(0)
+        import time
+
+        import const
+
+        def attempt_download() -> io.BytesIO:
+            target_buffer = io.BytesIO()
+            s3_client.download_fileobj(bucket, full_loc, target_buffer)
+            target_buffer.seek(0)
+            return target_buffer
+
+        try:
+            target_buffer = attempt_download()
+        except:
+            time.sleep(const.RETRY_DELAY)
+            target_buffer = attempt_download()
+
         return list(fastavro.reader(target_buffer))  # type: ignore
 
     return get_avro
@@ -353,10 +369,13 @@ def process_haul(bucket: str, year: int, survey: str, haul: int,
 
     import io
     import os
+    import time
 
     import botocore  # type: ignore
     import boto3
     import fastavro
+
+    import const
 
     access_key = os.environ['AWS_ACCESS_KEY']
     access_secret = os.environ['AWS_ACCESS_SECRET']
@@ -378,16 +397,24 @@ def process_haul(bucket: str, year: int, survey: str, haul: int,
         Returns:
             True if the file is found and false otherwise.
         """
+
+        def attempt_head_object() -> bool:
+            try:
+                s3_client.head_object(Bucket=bucket, Key=full_loc)
+                return True
+            except botocore.exceptions.ClientError as e:
+                error_code = e.response['Error']['Code']
+                error_code_cast = int(error_code)
+                if error_code_cast == 404:
+                    return False
+                else:
+                    raise RuntimeError('Unexpected S3 head code: %d' % error_code)
+
         try:
-            s3_client.head_object(Bucket=bucket, Key=full_loc)
-            return True
-        except botocore.exceptions.ClientError as e:
-            error_code = e.response['Error']['Code']
-            error_code_cast = int(error_code)
-            if error_code_cast == 404:
-                return False
-            else:
-                raise RuntimeError('Unexpected S3 head code: %d' % error_code)
+            return attempt_head_object()
+        except:
+            time.sleep(const.RETRY_DELAY)
+            return attempt_head_object()
 
     def convert_to_avro(records: typing.Iterable[dict]) -> io.BytesIO:
         """Convert an iterable of dictionaries to Avro bytes.
@@ -470,7 +497,12 @@ def process_haul(bucket: str, year: int, survey: str, haul: int,
     # Upload to S3
     catch_with_species_avro = convert_to_avro(catch_records_all)
     output_loc = get_joined_path(year, survey, haul)
-    s3_client.upload_fileobj(catch_with_species_avro, bucket, output_loc)
+
+    try:
+        s3_client.upload_fileobj(catch_with_species_avro, bucket, output_loc)
+    except:
+        time.sleep(const.RETRY_DELAY)
+        s3_client.upload_fileobj(catch_with_species_avro, bucket, output_loc)
 
     # Write out diagnostic information
     outputs_dicts = map(
@@ -513,13 +545,21 @@ def get_hauls_meta(bucket: str) -> typing.Iterable[dict]:
         aws_secret_access_key=access_secret
     )
 
-    paginator = s3_client.get_paginator('list_objects_v2')
-    iterator = paginator.paginate(Bucket=bucket, Prefix='haul/')
-    pages = filter(lambda x: 'Contents' in x, iterator)
-    contents = map(lambda x: x['Contents'], pages)
-    contents_flat = itertools.chain(*contents)
-    keys = map(lambda x: x['Key'], contents_flat)
-    return map(make_haul_metadata_record, keys)
+    def attempt_pagination() -> typing.Iterable[dict]:
+        paginator = s3_client.get_paginator('list_objects_v2')
+        iterator = paginator.paginate(Bucket=bucket, Prefix='haul/')
+        pages = filter(lambda x: 'Contents' in x, iterator)
+        contents = map(lambda x: x['Contents'], pages)
+        contents_flat = itertools.chain(*contents)
+        keys = map(lambda x: x['Key'], contents_flat)
+        future_results = map(make_haul_metadata_record, keys)
+        return list(future_results)
+
+    try:
+        return attempt_pagination()
+    except:
+        time.sleep(const.RETRY_DELAY)
+        return attempt_pagination()
 
 
 def get_all_species(bucket: str) -> SPECIES_DICT:
@@ -542,16 +582,23 @@ def get_all_species(bucket: str) -> SPECIES_DICT:
 
     get_avro = make_get_avro(bucket, s3_client)
 
-    paginator = s3_client.get_paginator('list_objects_v2')
-    iterator = paginator.paginate(Bucket=bucket, Prefix='species/')
-    pages = filter(lambda x: 'Contents' in x, iterator)
-    contents = map(lambda x: x['Contents'], pages)
-    contents_flat = itertools.chain(*contents)
-    keys = map(lambda x: x['Key'], contents_flat)
-    records_nest = map(get_avro, keys)
-    records_flat = itertools.chain(*records_nest)
-    records_tuples = map(lambda x: (x['species_code'], x), records_flat)
-    return dict(records_tuples)
+    def attempt_pagination() -> SPECIES_DICT:
+        paginator = s3_client.get_paginator('list_objects_v2')
+        iterator = paginator.paginate(Bucket=bucket, Prefix='species/')
+        pages = filter(lambda x: 'Contents' in x, iterator)
+        contents = map(lambda x: x['Contents'], pages)
+        contents_flat = itertools.chain(*contents)
+        keys = map(lambda x: x['Key'], contents_flat)
+        records_nest = map(get_avro, keys)
+        records_flat = itertools.chain(*records_nest)
+        records_tuples = map(lambda x: (x['species_code'], x), records_flat)
+        return dict(records_tuples)
+
+    try:
+        return attempt_pagination()
+    except:
+        time.sleep(const.RETRY_DELAY)
+        return attempt_pagination()
 
 
 def main():

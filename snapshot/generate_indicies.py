@@ -10,6 +10,7 @@ LICENSE.md.
 import itertools
 import os
 import sys
+import time
 import typing
 
 import boto3  # type: ignore
@@ -88,10 +89,13 @@ def process_file(bucket: str, year: int, survey: str, haul: int, key: str) -> ty
     """
     import io
     import os
+    import time
 
     import botocore  # type: ignore
     import boto3  # type: ignore
     import fastavro
+
+    import const
 
     access_key = os.environ['AWS_ACCESS_KEY']
     access_secret = os.environ['AWS_ACCESS_SECRET']
@@ -112,9 +116,19 @@ def process_file(bucket: str, year: int, survey: str, haul: int, key: str) -> ty
             List of records found at the given location or None if there is an error in reading like
             the file is not found.
         """
-        target_buffer = io.BytesIO()
-        s3_client.download_fileobj(bucket, full_loc, target_buffer)
-        target_buffer.seek(0)
+
+        def attempt_download() -> io.BytesIO:
+            target_buffer = io.BytesIO()
+            s3_client.download_fileobj(bucket, full_loc, target_buffer)
+            target_buffer.seek(0)
+            return target_buffer
+
+        try:
+            target_buffer = attempt_download()
+        except:
+            time.sleep(const.RETRY_DELAY)
+            target_buffer = attempt_download()
+
         return list(fastavro.reader(target_buffer))  # type: ignore
 
     def check_file_exists(full_loc: str) -> bool:
@@ -126,16 +140,23 @@ def process_file(bucket: str, year: int, survey: str, haul: int, key: str) -> ty
         Returns:
             True if the file is found and false otherwise.
         """
+        def make_head_attempt() -> bool:
+            try:
+                s3_client.head_object(Bucket=bucket, Key=full_loc)
+                return True
+            except botocore.exceptions.ClientError as e:
+                error_code = e.response['Error']['Code']
+                error_code_cast = int(error_code)
+                if error_code_cast == 404:
+                    return False
+                else:
+                    raise RuntimeError('Unexpected S3 head code: %d' % error_code)
+
         try:
-            s3_client.head_object(Bucket=bucket, Key=full_loc)
-            return True
-        except botocore.exceptions.ClientError as e:
-            error_code = e.response['Error']['Code']
-            error_code_cast = int(error_code)
-            if error_code_cast == 404:
-                return False
-            else:
-                raise RuntimeError('Unexpected S3 head code: %d' % error_code)
+            return make_head_attempt()
+        except:
+            time.sleep(5)
+            return make_head_attempt()
 
     def infer_index_record(record: dict) -> dict:
         """Build an index record.
@@ -231,13 +252,21 @@ def get_observations_meta(bucket: str) -> typing.Iterable[dict]:
             'haul': int(components[2])
         }
 
-    paginator = s3_client.get_paginator('list_objects_v2')
-    iterator = paginator.paginate(Bucket=bucket, Prefix='joined/')
-    pages = filter(lambda x: 'Contents' in x, iterator)
-    contents = map(lambda x: x['Contents'], pages)
-    contents_flat = itertools.chain(*contents)
-    keys = map(lambda x: x['Key'], contents_flat)
-    return map(make_haul_metadata_record, keys)
+    def make_pagination_attempt() -> typing.Iterable[dict]:
+        paginator = s3_client.get_paginator('list_objects_v2')
+        iterator = paginator.paginate(Bucket=bucket, Prefix='joined/')
+        pages = filter(lambda x: 'Contents' in x, iterator)
+        contents = map(lambda x: x['Contents'], pages)
+        contents_flat = itertools.chain(*contents)
+        keys = map(lambda x: x['Key'], contents_flat)
+        future_results = map(make_haul_metadata_record, keys)
+        return list(future_results)
+
+    try:
+        return make_pagination_attempt()
+    except:
+        time.sleep(const.RETRY_DELAY)
+        return make_pagination_attempt()
 
 
 def write_sample(key: str, bucket: str, sample: typing.Iterable[dict]) -> typing.Optional[int]:
@@ -255,9 +284,12 @@ def write_sample(key: str, bucket: str, sample: typing.Iterable[dict]) -> typing
     import io
     import os
     import random
+    import time
 
     import boto3
     import fastavro
+
+    import const
 
     INDEX_SCHEMA = {
         'doc': 'Index from a value to an observations flat file.',
@@ -304,7 +336,13 @@ def write_sample(key: str, bucket: str, sample: typing.Iterable[dict]) -> typing
         aws_secret_access_key=access_secret
     )
     output_loc = 'index_sharded/%s_%d.avro' % (key, batch)
-    s3_client.upload_fileobj(target_buffer, bucket, output_loc)
+
+    try:
+        s3_client.upload_fileobj(target_buffer, bucket, output_loc)
+    except:
+        time.sleep(const.RETRY_DELAY)
+        s3_client.upload_fileobj(target_buffer, bucket, output_loc)
+
     return batch
 
 

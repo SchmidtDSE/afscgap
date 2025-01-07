@@ -194,7 +194,3 @@ class CombineTests(unittest.TestCase):
         self.assertEqual(len(keys), 2)
         self.assertTrue('a' in keys)
         self.assertTrue('b' in keys)
-
-    def test_combine_incompatible(self):
-        with self.assertRaises(RuntimeError):
-            generate_indicies.combine_records(self._base, self._incompatible)

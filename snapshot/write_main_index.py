@@ -11,9 +11,13 @@ import io
 import itertools
 import os
 import sys
+import time
+import typing
 
 import boto3  # type: ignore
 import fastavro
+
+import const
 
 KEY_SCHEMA = {
     'doc': 'Key to an observation flat file.',
@@ -67,13 +71,21 @@ def main():
         aws_secret_access_key=access_secret
     )
 
-    paginator = s3_client.get_paginator('list_objects_v2')
-    iterator = paginator.paginate(Bucket=bucket, Prefix='joined/')
-    pages = filter(lambda x: 'Contents' in x, iterator)
-    contents = map(lambda x: x['Contents'], pages)
-    contents_flat = itertools.chain(*contents)
-    keys = map(lambda x: x['Key'], contents_flat)
-    metadata_records = map(make_haul_metadata_record, keys)
+    def try_pagination() -> typing.Iterable[dict]:
+        paginator = s3_client.get_paginator('list_objects_v2')
+        iterator = paginator.paginate(Bucket=bucket, Prefix='joined/')
+        pages = filter(lambda x: 'Contents' in x, iterator)
+        contents = map(lambda x: x['Contents'], pages)
+        contents_flat = itertools.chain(*contents)
+        keys = map(lambda x: x['Key'], contents_flat)
+        metadata_records = map(make_haul_metadata_record, keys)
+        return list(metadata_records)
+
+    try:
+        metadata_records = try_pagination()
+    except:
+        time.sleep(const.RETRY_DELAY)
+        metadata_records = try_pagination()
 
     write_buffer = io.BytesIO()
     fastavro.writer(
@@ -89,7 +101,12 @@ def main():
         aws_secret_access_key=access_secret
     )
     output_loc = 'index/main.avro'
-    s3_client.upload_fileobj(write_buffer, bucket, output_loc)
+
+    try:
+        s3_client.upload_fileobj(write_buffer, bucket, output_loc)
+    except:
+        time.sleep(const.RETRY_DELAY)
+        s3_client.upload_fileobj(write_buffer, bucket, output_loc)
 
 
 if __name__ == '__main__':
