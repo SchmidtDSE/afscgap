@@ -124,7 +124,7 @@ def check_file(s3_client, bucket: str, path: str, expected_fields: typing.Iterab
         time.sleep(const.RETRY_DELAY)
         target_buffer = attempt_download()
 
-    results = list(fastavro.reader(target_buffer))  # type: ignore
+    results: typing.Iterable[dict] = list(fastavro.reader(target_buffer))  # type: ignore
     for result in results:
         for field in expected_fields:
             if field not in result:
