@@ -89,6 +89,18 @@ def determine_matching_hauls_from_index(options: typing.Iterable[dict],
 
 
 def get_complete(iterator, url: str) -> typing.List[dict]:
+    """Get the complete payload from an Avro iterator.
+
+    Get the complete payload from an Avro iterator to avoid issues with streaming interruption on
+    weaker connections.
+
+    Args:
+        iterator: The iterator over Avro files read from the stream.
+        url: The URL at which the Avro payload was found.
+
+    Returns:
+        Iterable over the parsed Avro records.
+    """
     try:
         return list(iterator)
     except e:
