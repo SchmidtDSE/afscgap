@@ -183,25 +183,28 @@ def main():
 
     files = list_files(s3_client, bucket, path)
 
-    cluster = coiled.Cluster(
-        name='DseProcessAfscgapCheck',
-        n_workers=10,
-        worker_vm_types=['m7a.medium'],
-        scheduler_vm_types=['m7a.medium'],
-        environ={
-            'AWS_ACCESS_KEY': os.environ.get('AWS_ACCESS_KEY', ''),
-            'AWS_ACCESS_SECRET': os.environ.get('AWS_ACCESS_SECRET', ''),
-            'SOURCE_DATA_LOC': os.environ.get('SOURCE_DATA_LOC', '')
-        }
-    )
-    cluster.adapt(minimum=10, maximum=500)
-    client = cluster.get_client()
+    if type_name != 'index':
+        cluster = coiled.Cluster(
+            name='DseProcessAfscgapCheck',
+            n_workers=10,
+            worker_vm_types=['m7a.medium'],
+            scheduler_vm_types=['m7a.medium'],
+            environ={
+                'AWS_ACCESS_KEY': os.environ.get('AWS_ACCESS_KEY', ''),
+                'AWS_ACCESS_SECRET': os.environ.get('AWS_ACCESS_SECRET', ''),
+                'SOURCE_DATA_LOC': os.environ.get('SOURCE_DATA_LOC', '')
+            }
+        )
+        cluster.adapt(minimum=10, maximum=500)
+        client = cluster.get_client()
 
-    results = client.map(
-        lambda x: check_file(bucket, x, fields),
-        files
-    )
-    results_realized = map(lambda x: x.result(), results)
+        results = client.map(
+            lambda x: check_file(bucket, x, fields),
+            files
+        )
+        results_realized = map(lambda x: x.result(), results)
+    else:
+        results_realized = map(lambda x: check_file(bucket, x, fields), files)
 
     for result in results_realized:
         if result is not None:
