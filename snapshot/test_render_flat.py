@@ -219,7 +219,7 @@ class PathTests(unittest.TestCase):
     def test_make_haul_metadata_record(self):
         path = render_flat.get_joined_path(2025, 'Gulf of Alaska', 123)
         metadata = render_flat.make_haul_metadata_record(path)
-        self.assertEqual(metadata['path'], path)
+        self.assertEqual(metadata['loc'], path)
         self.assertEqual(metadata['year'], 2025)
         self.assertEqual(metadata['survey'], 'Gulf of Alaska')
         self.assertEqual(metadata['haul'], 123)
