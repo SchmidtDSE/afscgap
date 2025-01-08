@@ -217,7 +217,8 @@ def main():
         if result is not None:
             raise RuntimeError(result)
 
-    cluster.close(force_shutdown=True)
+    if type_name != 'index':
+        cluster.close(force_shutdown=True)
 
 
 if __name__ == '__main__':
