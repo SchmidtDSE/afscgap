@@ -88,6 +88,25 @@ def determine_matching_hauls_from_index(options: typing.Iterable[dict],
     return dict_stream
 
 
+def get_complete(iterator, url: str) -> typing.List[dict]:
+    """Get the complete payload from an Avro iterator.
+
+    Get the complete payload from an Avro iterator to avoid issues with streaming interruption on
+    weaker connections.
+
+    Args:
+        iterator: The iterator over Avro files read from the stream.
+        url: The URL at which the Avro payload was found.
+
+    Returns:
+        Iterable over the parsed Avro records.
+    """
+    try:
+        return list(iterator)
+    except Exception as e:
+        raise RuntimeError('Failed on %s (%s).' % (url, str(e)))
+
+
 def get_all_hauls(meta: afscgap.flat_model.ExecuteMetaParams) -> HAUL_KEYS:
     """Get information about all hauls currently available.
 
@@ -109,7 +128,7 @@ def get_all_hauls(meta: afscgap.flat_model.ExecuteMetaParams) -> HAUL_KEYS:
     afscgap.http_util.check_result(response)
 
     stream = response.raw
-    dict_stream = fastavro.reader(stream)  # type: ignore
+    dict_stream = get_complete(fastavro.reader(stream), url)  # type: ignore
     obj_stream = map(build_haul_from_avro, dict_stream)  # type: ignore
     return obj_stream
 
@@ -139,7 +158,7 @@ def get_hauls_for_index_filter(meta: afscgap.flat_model.ExecuteMetaParams,
         afscgap.http_util.check_result(response)
 
         stream = response.raw
-        all_with_value: typing.Iterable[dict] = fastavro.reader(stream)  # type: ignore
+        all_with_value = get_complete(fastavro.reader(stream), url)
         dict_stream = determine_matching_hauls_from_index(all_with_value, index_filter)
 
         obj_stream = map(build_haul_from_avro, dict_stream)
@@ -170,6 +189,6 @@ def get_records_for_haul(meta: afscgap.flat_model.ExecuteMetaParams,
     afscgap.http_util.check_result(response)
 
     stream = response.raw
-    dict_stream = fastavro.reader(stream)  # type: ignore
+    dict_stream = get_complete(fastavro.reader(stream), url)
     obj_stream = map(lambda x: afscgap.flat_model.FlatRecord(x), dict_stream)
     return obj_stream
