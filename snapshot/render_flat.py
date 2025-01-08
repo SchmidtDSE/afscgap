@@ -342,7 +342,7 @@ def make_haul_metadata_record(path: str) -> dict:
     filename = filename_with_path.split('.')[0]
     components = filename.split('_')
     return {
-        'path': path,
+        'loc': path,
         'year': int(components[0]),
         'survey': components[1],
         'haul': int(components[2])
@@ -523,7 +523,7 @@ def process_haul(bucket: str, year: int, survey: str, haul: int,
     )
 
     output_dict_with_loc: typing.Dict[str, typing.Union[str, int]] = output_dict  # type: ignore
-    output_dict_with_loc['path'] = output_loc
+    output_dict_with_loc['loc'] = output_loc
     return output_dict_with_loc
 
 
