@@ -104,7 +104,7 @@ def list_files(s3_client, bucket: str, prefix: str) -> typing.Iterable[str]:
 
 
 def check_file(bucket: str, path: str,
-    expected_fields: typing.Iterable[str]) -> typing.Optinonal[str]:
+    expected_fields: typing.Iterable[str]) -> typing.Optional[str]:
     """Read a file and ensure it is parsable with expected keys.
 
     Args:
