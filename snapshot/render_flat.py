@@ -476,7 +476,7 @@ def process_haul(bucket: str, year: int, survey: str, haul: int,
             'complete': 0,
             'incomplete': 0,
             'zero': 0,
-            'path': None
+            'loc': None
         }
 
     catch_records = list(catch_records_maybe)
