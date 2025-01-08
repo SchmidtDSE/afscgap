@@ -7,7 +7,6 @@ for Data Science and the Environment at UC Berkeley.
 This file is part of afscgap released under the BSD 3-Clause License. See
 LICENSE.md.
 """
-import io
 import itertools
 import os
 import sys
@@ -15,6 +14,7 @@ import time
 import typing
 
 import boto3  # type: ignore
+import coiled  # type: ignore
 import fastavro  # type: ignore
 
 import const
@@ -103,7 +103,7 @@ def list_files(s3_client, bucket: str, prefix: str) -> typing.Iterable[str]:
         return attempt_pagination()
 
 
-def check_file(s3_client, bucket: str, path: str, expected_fields: typing.Iterable[str]):
+def check_file(s3_client, bucket: str, path: str, expected_fields: typing.Iterable[str]) -> bool:
     """Read a file and ensure it is parsable with expected keys.
 
     Args:
@@ -112,6 +112,21 @@ def check_file(s3_client, bucket: str, path: str, expected_fields: typing.Iterab
         path: The path at which the file can be found.
         expected_fields: The names of the fields which are required on the downloaded file.
     """
+    import io
+    import os
+    import time
+
+    import boto3  # type: ignore
+
+    access_key = os.environ['AWS_ACCESS_KEY']
+    access_secret = os.environ['AWS_ACCESS_SECRET']
+
+    s3_client = boto3.client(
+        's3',
+        aws_access_key_id=access_key,
+        aws_secret_access_key=access_secret
+    )
+
     def attempt_download() -> io.BytesIO:
         target_buffer = io.BytesIO()
         s3_client.download_fileobj(bucket, path, target_buffer)
@@ -122,13 +137,19 @@ def check_file(s3_client, bucket: str, path: str, expected_fields: typing.Iterab
         target_buffer = attempt_download()
     except:
         time.sleep(const.RETRY_DELAY)
-        target_buffer = attempt_download()
+
+        try:
+            target_buffer = attempt_download()
+        except:
+            return False
 
     results: typing.Iterable[dict] = list(fastavro.reader(target_buffer))  # type: ignore
     for result in results:
         for field in expected_fields:
             if field not in result:
-                raise RuntimeError('Could not find %s.' % field)
+                return False
+
+    return True
 
 
 def main():
@@ -159,13 +180,29 @@ def main():
     )
 
     files = list_files(s3_client, bucket, path)
-    i = 0
-    for file in files:
-        if i % 1000 == 0:
-            print('Checked %d files.' % i)
 
-        check_file(s3_client, bucket, file, fields)
-        i += 1
+    cluster = coiled.Cluster(
+        name='DseProcessAfscgapCheck',
+        n_workers=10,
+        worker_vm_types=['m7a.medium'],
+        scheduler_vm_types=['m7a.medium'],
+        environ={
+            'AWS_ACCESS_KEY': os.environ.get('AWS_ACCESS_KEY', ''),
+            'AWS_ACCESS_SECRET': os.environ.get('AWS_ACCESS_SECRET', ''),
+            'SOURCE_DATA_LOC': os.environ.get('SOURCE_DATA_LOC', '')
+        }
+    )
+    cluster.adapt(minimum=10, maximum=500)
+    client = cluster.get_client()
+
+    results = client.map(
+        lambda x: check_file(s3_client, bucket, x, fields),
+        files
+    )
+    results_realized = map(lambda x: x.result(), results)
+
+    for result in results_realized:
+        assert result is True
 
 
 if __name__ == '__main__':
