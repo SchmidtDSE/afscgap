@@ -28,6 +28,7 @@ PATHS = {
 }
 
 MAIN_FIELDS = ['year', 'survey', 'haul']
+MAIN_PATH = 'index/main.avro'
 
 FIELDS = {
     'index': [
@@ -150,7 +151,7 @@ def check_file(bucket: str, path: str,
     for result in results:
 
         # TODO: Need to find a better way to split this
-        expected_fields_actual = MAIN_FIELDS if path == 'index/main.avro' else expected_fields
+        expected_fields_actual = MAIN_FIELDS if path == MAIN_PATH else expected_fields
 
         for field in expected_fields_actual:
             if field not in result:
