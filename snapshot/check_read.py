@@ -103,7 +103,7 @@ def list_files(s3_client, bucket: str, prefix: str) -> typing.Iterable[str]:
         return attempt_pagination()
 
 
-def check_file(s3_client, bucket: str, path: str, expected_fields: typing.Iterable[str]) -> bool:
+def check_file(bucket: str, path: str, expected_fields: typing.Iterable[str]) -> bool:
     """Read a file and ensure it is parsable with expected keys.
 
     Args:
@@ -196,7 +196,7 @@ def main():
     client = cluster.get_client()
 
     results = client.map(
-        lambda x: check_file(s3_client, bucket, x, fields),
+        lambda x: check_file(bucket, x, fields),
         files
     )
     results_realized = map(lambda x: x.result(), results)
