@@ -523,7 +523,7 @@ def process_haul(bucket: str, year: int, survey: str, haul: int,
     )
 
     output_dict_with_loc: typing.Dict[str, typing.Union[str, int]] = output_dict  # type: ignore
-    output_dict_with_loc['loc'] = output_loc
+    output_dict_with_loc['path'] = output_loc
     return output_dict_with_loc
 
 
