@@ -148,7 +148,7 @@ def check_file(bucket: str, path: str,
     for result in results:
         for field in expected_fields:
             if field not in result:
-                available = ','.join(field.keys())
+                available = ','.join(result.keys())
                 return 'Could not find %s among %s.' % (field, available)
 
     return None
