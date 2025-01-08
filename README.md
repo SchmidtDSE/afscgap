@@ -162,6 +162,7 @@ Thank you to all of these projects for their contribution.
 ## Version history
 Annotated version history:
 
+ - `2.0.1`: Some minor changes to better support weaker internet connections.
  - `2.0.0`: Switch to support new NOAA endpoints.
  - `1.0.4`: Minor documentation fypo fix.
  - `1.0.3`: Documentation edits for journal article.
