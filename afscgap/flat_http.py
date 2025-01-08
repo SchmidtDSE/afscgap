@@ -103,7 +103,7 @@ def get_complete(iterator, url: str) -> typing.List[dict]:
     """
     try:
         return list(iterator)
-    except e:
+    except Exception as e:
         raise RuntimeError('Failed on %s (%s).' % (url, str(e)))
 
 
