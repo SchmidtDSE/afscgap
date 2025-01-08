@@ -59,7 +59,7 @@ Installing directly from the repo provides the "edge" version of the library whi
 ## Purpose
 Unofficial Python-based tool set for interacting with [bottom trawl surveys](https://www.fisheries.noaa.gov/alaska/commercial-fishing/alaska-groundfish-bottom-trawl-survey-data) from the [Ground Fish Assessment Program (GAP)](https://www.fisheries.noaa.gov/contact/groundfish-assessment-program). It offers:
 
- - Pythonic access to the official [NOAA AFSC GAP API service](https://www.fisheries.noaa.gov/foss/f?p=215%3A28).
+ - Pythonic access to the [NOAA AFSC GAP](https://www.fisheries.noaa.gov/foss/f?p=215%3A28) datasets.
  - Tools for inference of the "negative" observations not provided by the API service.
  - Visualization tools for quickly exploring and creating comparisons within the datasets, including for audiences with limited programming experience.
 
@@ -91,12 +91,17 @@ Detailed information about our data structures and their relationship to the dat
 <br>
 
 ### Absence vs presence data
-By default, the NOAA API service will only return information on hauls matching a query. So, for example, requesting data on Pacific cod will only return information on hauls in which Pacific cod is found. This can complicate the calculation of important metrics like catch per unit effort (CPUE). That in mind, one of the most important features in `afscgap` is the ability to infer "zero catch" records as enabled by `set_presence_only(False)`. See more information in [our inference docs](https://pyafscgap.org/docs/inference/).
+By default, the NOAA service will only return information on hauls matching a query. So, for example, requesting data on Pacific cod will only return information on hauls in which Pacific cod is found. This can complicate the calculation of important metrics like catch per unit effort (CPUE). That in mind, one of the most important features in `afscgap` is the ability to infer "zero catch" records as enabled by `set_presence_only(False)`. See more information in [our inference docs](https://pyafscgap.org/docs/inference/).
 
 <br>
 
 ### Data quality and completeness
 There are a few caveats for working with these data that are important for researchers to understand. These are detailed in our [limitations docs](https://pyafscgap.org/docs/limitations/).
+
+<br>
+
+### Community flat files
+The upstream datasets have shifted starting in 2024 with one important change including decomposing the dataset into hauls, catches, and species. Without the ability to join through the API endpoint, the entire catch dataset has to be queried or catches named individually in requests in order to retrieve complete records. Therefore, starting with the `2.x` releases, this library uses pre-joined community Avro files to speed up requests, offering precomputed indicies such that, where available, hauls can be pre-filtered to reduce download payload size and running time. See [flat file documentation](https://data.pyafscgap.org/) for more details about this service.
 
 <br>
 <br>
@@ -128,9 +133,10 @@ at UC Berkeley](https://dse.berkeley.edu) where [Kevin Koy](https://github.com/k
 <br>
 
 ## Open Source
-We are happy to be part of the open source community.
+We are happy to be part of the open source community. We use the following:
 
-At this time, the only open source dependency used by this microlibrary is [Requests](https://docs.python-requests.org/en/latest/index.html) which is available under the [Apache v2 License](https://github.com/psf/requests/blob/main/LICENSE) from [Kenneth Reitz and other contributors](https://github.com/psf/requests/graphs/contributors).
+ - [Requests](https://docs.python-requests.org/en/latest/index.html) which is available under the [Apache v2 License](https://github.com/psf/requests/blob/main/LICENSE) from [Kenneth Reitz and other contributors](https://github.com/psf/requests/graphs/contributors).
+ - [fastavro](https://fastavro.readthedocs.io/en/latest/) by Miki Tebeka and Contributors under the [MIT License](https://github.com/fastavro/fastavro/blob/master/LICENSE).
 
 In addition to Github-provided [Github Actions](https://docs.github.com/en/actions), our build and documentation systems also use the following but are not distributed with or linked to the project itself:
 
@@ -144,7 +150,7 @@ In addition to Github-provided [Github Actions](https://docs.github.com/en/actio
  - [sftp-action](https://github.com/Creepios/sftp-action) under the [MIT License](https://github.com/Creepios/sftp-action/blob/master/LICENSE) from Niklas Creepios.
  - [ssh-action](https://github.com/appleboy/ssh-action) under the [MIT License](https://github.com/appleboy/ssh-action/blob/master/LICENSE) from Bo-Yi Wu.
 
-Next, the visualization tool has additional dependencies as documented in the [visualization readme](https://github.com/SchmidtDSE/afscgap/blob/main/afscgapviz/README.md).
+Next, the visualization tool has additional dependencies as documented in the [visualization readme](https://github.com/SchmidtDSE/afscgap/blob/main/afscgapviz/README.md). Similarly, the community flat files snapshot updater has additional dependencies as documented in the [snapshot readme](https://github.com/SchmidtDSE/afscgap/blob/main/snapshot/README.md).
 
 Finally, note that the website uses assets from [The Noun Project](thenounproject.com/) under the NounPro plan. If used outside of https://pyafscgap.org, they may be subject to a [different license](https://thenounproject.com/pricing/#icons).
 
@@ -156,6 +162,7 @@ Thank you to all of these projects for their contribution.
 ## Version history
 Annotated version history:
 
+ - `2.0.0`: Switch to support new NOAA endpoints.
  - `1.0.4`: Minor documentation fypo fix.
  - `1.0.3`: Documentation edits for journal article.
  - `1.0.2`: Minor documentation touch ups for pyopensci.
@@ -171,4 +178,4 @@ Annotated version history:
  - `0.0.2`: License under BSD.
  - `0.0.1`: Initial release.
 
-The hauls community file was last updated on Nov 1, 2023. See [108](https://github.com/SchmidtDSE/afscgap/issues/108) for details.
+The community files were last updated on Jan 7, 2025.

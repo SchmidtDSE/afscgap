@@ -13,8 +13,6 @@ from afscgap.typesdef import REQUESTOR
 
 TIMEOUT = 60 * 5  # 5 minutes
 
-ACCEPTABLE_CODES = [200]
-
 
 def check_result(target: requests.Response):
     """Assert that a result returned an acceptable status code.
@@ -26,18 +24,19 @@ def check_result(target: requests.Response):
         RuntimeError: Raised if the response returned indicates an issue or
             unexpected status code.
     """
-    if target.status_code not in ACCEPTABLE_CODES:
-        message = 'Got non-OK response from API: %d (%s)' % (
+    status_ok = target.status_code >= 100 and target.status_code < 400
+    if not status_ok:
+        message = 'Got non-OK response from remote: %d (%s)' % (
             target.status_code,
             target.text
         )
         raise RuntimeError(message)
 
 
-def build_requestor() -> REQUESTOR:
+def build_requestor(stream: bool = False) -> REQUESTOR:
     """Build a requestor strategy that uses the requests library.
 
     Returns:
         Newly built strategy.
     """
-    return lambda x: requests.get(x, timeout=TIMEOUT)
+    return lambda x: requests.get(x, timeout=TIMEOUT, stream=stream)

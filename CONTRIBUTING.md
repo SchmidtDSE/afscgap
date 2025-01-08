@@ -14,9 +14,9 @@ Thank you for your contribution. We appreciate the community's help in any capac
 In order to ensure the conceptual integrity and readability of our code, we have a few guidelines for Python code under the `afscgap` library itself:
 
  - Please try to follow the conventions laid out by the project in existing code. In cases of ambiguity, please refer to the [Google Python Style Guide](https://google.github.io/styleguide/pyguide.html) where possible.
- - Tests are encouraged and we aim for 80% coverage where feasible.
- - Type hints are encouraged and we aim for 80% coverage where feasible.
- - Docstrings are encouraged and we aim for 80% coverage. Please use the [Google-style](https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html) to ensure that our automated documentation system can use your work.
+ - Tests are encouraged.
+ - Type hints are encouraged.
+ - Docstrings are encouraged. Please use the [Google-style](https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html) to ensure that our automated documentation system can use your work.
  - Please check that you have no mypy errors when contributing.
  - Please check that you have no linting (pycodestyle, pyflakes) errors when contributing.
  - As contributors may be periodic, please do not re-write history / squash commits for ease of fast forward.
@@ -26,6 +26,8 @@ In order to ensure the conceptual integrity and readability of our code, we have
 The `afscgap` library itself requires a very high rigor. For other sections including `afscgapviz`, please ensure that documentation (docstrings, jsdoc, or markdown) is included (again with an 80% target) and, for non-notebook code, Python type hints are included. Testing is encouraged where feasible but an explicit target is not set as it may not be practical for some artifacts like notebooks. That said, note that CI / CD systems run checks in some directories outside the `afscgap` library itself that should be passing for all PRs.
 
 Of course, **do not worry if you aren't sure that you met all of our the guidelines!** We encourage pull requests and are happy to work through any necessary outstanding tasks with you.
+
+Previous versions of this guide indicated specific coverage targets but those are removed for the `2.x` release as the codebase spans more modalities where different approaches may be more appropriate in different areas.
 
 <br>
 <br>
@@ -38,7 +40,7 @@ There are reasonable differences of opinion in the community about the ideal imp
 #### Library
 Starting with the `afscgap` library itself:
 
- - It is an explicit goal to provide a class that offers type hints for all record fields for the data returned by the API. See `afscgap.model.Record`.
+ - It is an explicit goal to provide a class that offers type hints for all record fields for the data returned. See `afscgap.model.Record`.
  - For data structures, getters on an immutable record object are encouraged as to enable use of the type system and docstrings for understanding the data structures. This is important to provide contextual information in IDEs.
  - Object attributes should be private and immutable whenever possible.
  - Object immutable attributes should be prefixed by a single underscore available via getters.

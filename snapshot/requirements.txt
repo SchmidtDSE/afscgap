@@ -1,0 +1,6 @@
+bokeh!=3.0.*,>=2.4.2
+boto3==1.35.54
+coiled==1.59.0
+fastavro==1.9.7
+requests==2.32.3
+toolz==1.0.0

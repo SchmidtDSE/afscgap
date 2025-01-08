@@ -5,7 +5,7 @@ There are a few caveats for working with these data that are important for resea
 <br>
 
 ## Incomplete or invalid records
-Metadata fields such as `year` are always required to make a `Record` whereas others such as catch weight `cpue_kgkm2` are not present on all records returned by the API and are optional. See the [data structure section](https://pyafscgap.org/docs/model/) for additional details. For fields with optional values:
+Metadata fields such as `year` are always required to make a `Record` whereas others such as catch weight `cpue_kgkm2` are not present on all records returned and are optional. See the [data structure section](https://pyafscgap.org/docs/model/) for additional details. For fields with optional values:
 
  - A maybe getter (like `get_cpue_weight_maybe`) is provided which will return None without error if the value is not provided or could not be parsed.
  - A regular getter (like `get_cpue_weight`) is provided which asserts the value is not None before it is returned.
@@ -26,7 +26,7 @@ for result in results:
     assert result.is_complete()
 ```
 
-Results returned by the API for which non-Optional fields could not be parsed (like missing `year`) are considered "invalid" and always excluded during iteration when those raw unreadable records are kept in a `queue.Queue[dict]` that can be accessed via `get_invalid` like so:
+Results returned for which non-Optional fields could not be parsed (like missing `year`) are considered "invalid" and always excluded during iteration when those raw unreadable records are kept in a `queue.Queue[dict]` that can be accessed via `get_invalid` like so:
 
 ```python
 import afscgap

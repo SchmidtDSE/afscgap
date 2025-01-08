@@ -62,7 +62,7 @@ See [data structure section](https://pyafscgap.org/docs/model/). Using an iterat
 <br>
 
 ## Enable absence data
-One of the major limitations of the official API is that it only provides presence data. However, this library can optionally infer absence or "zero catch" records using a separate static file produced by NOAA AFSC GAP. The [algorithm and details for absence inference](https://pyafscgap.org/docs/inference/) is further discussed below.
+One of the major limitations of the official API is that it only provides presence data or only provides unjoined datasets. However, this library can join across those datasets and optionally infer absence or "zero catch" records. The [algorithm and details for absence inference](https://pyafscgap.org/docs/inference/) is further discussed below.
 
 Absence data / "zero catch" records inference can be turned on by passing `False` to `set_presence_only` in `Query`. To demonstrate, this example finds total area swept and total weight for Gadus macrocephalus from the Aleutian Islands in 2021:
 
@@ -288,7 +288,7 @@ for record in results:
 print(count_by_common_name['walleye pollock'])
 ```
 
-For more info about the options available, consider the [Oracle docs](https://docs.oracle.com/en/database/oracle/oracle-rest-data-services/19.2/aelig/developing-REST-applications.html#GUID-F0A4D4F9-443B-4EB9-A1D3-1CDE0A8BAFF2) or a helpful unaffiliated [getting started tutorial from Jeff Smith](https://www.thatjeffsmith.com/archive/2019/09/some-query-filtering-examples-in-ords/).
+For more info about the options available, consider the [Oracle docs](https://docs.oracle.com/en/database/oracle/oracle-rest-data-services/19.2/aelig/developing-REST-applications.html#GUID-F0A4D4F9-443B-4EB9-A1D3-1CDE0A8BAFF2) or a helpful unaffiliated [getting started tutorial from Jeff Smith](https://www.thatjeffsmith.com/archive/2019/09/some-query-filtering-examples-in-ords/). Note that this functionality was removed in the `2.x` releases.
 
 <br>
 

@@ -61,14 +61,13 @@ For more details see the [Python functional programming guide](https://docs.pyth
 Though it is not possible to resolve this issue using the AFSC GAP API service alone, this library can infer those missing records using a separate static flat file provided by NOAA and the following algorithm:
 
 
- - Record the set of species observed from API service returned results.
+ - Record the set of species observed from API service returned results. Starting with `2.x` release, we query for the list of all formally tracked species.
  - Record the set of hauls observed from API service returned results.
  - Return records normally while records remain available from the API service.
- - Upon exhaustion of the API service results, [download the ~10M hauls flat file](https://pyafscgap.org/community/hauls.csv) from this library's community.
  - For each species observed in the API returned results, check if that species had a record for each haul reported in the flat file.
  - For any hauls without the species record, yield an 0 catch record from the iterator for that query.
 
-This procedure is disabled by default. However, it can be enabled through the `presence_only` keyword in `query` like so: `asfcgap.query(presence_only=False)`.
+This procedure is disabled by default. However, it can be enabled through the `presence_only` keyword in `query` like so: `asfcgap.query(presence_only=False)`. Starting with the `2.x` release, the results of this computation are cached in [community flat files](https://data.pyafscgap.org/). See `snapshot` for information about the `2.x` community files.
 
 <br>
 
@@ -78,12 +77,12 @@ Note that `presence_only=False` will return a lot of records. Indeed, in some qu
 <br>
 
 ## Manual pagination of zero catch records
-The goal of `Cursor.get_page` is to pull results from a page returned for a query as it appears in the NOAA API service. Note that `get_page` will not return zero catch records even with `presence_only=False` because the "page" requested does not technically exist in the API service. In order to use the negative records inference feature, please use the iterator option instead.
+The goal of `Cursor.get_page` is to pull results from a single page. Note that `get_page` will return zero catch records regardless of `presence_only` because the "page" requested does not technically exist in the flat files. In order to use the negative records inference feature, please use the iterator option instead.
 
 <br>
 
 ## Filtering absence data
-Note that the library will emulate filtering in Python so that haul records are filtered just as presence records are filtered by the API service. This works for "basic" and "advanced" filtering. However, at time of writing, "manual filtering" as described below using ORDS syntax is not supported when `presence_data=False`. Also, by default, a warning will be emitted when using this feature to help new users be aware of potential memory issues. This can be suppressed by including `suppress_large_warning=True` in the call to query.
+Note that the library will emulate filtering in Python so that haul records are filtered just as presence records are filtered by the API service. This works for "basic" and "advanced" filtering. By default, a warning will be emitted when using this feature to help new users be aware of potential memory issues. This can be suppressed by including `suppress_large_warning=True` in the call to query. For the `1.x` releases, "manual filtering" as described below using ORDS syntax is not supported when `presence_data=False`.
 
 <br>
 
@@ -109,4 +108,4 @@ query.set_hauls_prefetch(hauls)
 results = query.execute()
 ```
 
-This can be helpful when executing a lot of queries and the bandwidth to download the [hauls metadata file](https://pyafscgap.org/community/hauls.csv) multiple times may not be desireable. 
+This can be helpful when executing a lot of queries and the bandwidth to download the [hauls metadata file](https://pyafscgap.org/community/hauls.csv) multiple times may not be desireable. Note that this option was removed in the `2.x` series.

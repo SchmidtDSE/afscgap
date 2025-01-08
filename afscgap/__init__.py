@@ -1,42 +1,33 @@
 """Library which allows for Pythonic access to the interacting with AFSC GAP.
 
-This library supports Pythonic utilization of the API for the Ground
-Fish Assessment Program (GAP), a dataset produced by the Resource Assessment
-and Conservation Engineering (RACE) Division of the Alaska Fisheries Science
-Center (AFSC) as part of the National Oceanic and Atmospheric Administration
-(NOAA Fisheries). Note that this is a community-provided library and is not
-officially endorsed by NOAA.
+This library supports Pythonic utilization of the Ground Fish Assessment Program (GAP) datasets
+produced by the Resource Assessment and Conservation Engineering (RACE) Division of the Alaska
+Fisheries Science Center (AFSC) as part of the National Oceanic and Atmospheric Administration
+(NOAA Fisheries). Note that this is a community-provided library and is not officially endorsed by
+NOAA.
 
-(c) 2023 Regents of University of California / The Eric and Wendy Schmidt Center
+(c) 2024 Regents of University of California / The Eric and Wendy Schmidt Center
 for Data Science and the Environment at UC Berkeley.
 
 This file is part of afscgap released under the BSD 3-Clause License. See
 LICENSE.md.
 """
 import typing
-import warnings
 
-import afscgap.client
-import afscgap.inference
-import afscgap.model
-
-from afscgap.typesdef import FLOAT_PARAM
-from afscgap.typesdef import INT_PARAM
-from afscgap.typesdef import STR_PARAM
+import afscgap.cursor
+import afscgap.flat
+import afscgap.param
 
 from afscgap.typesdef import OPT_FLOAT
+from afscgap.typesdef import INT_PARAM
+from afscgap.typesdef import STR_PARAM
 from afscgap.typesdef import OPT_INT
 from afscgap.typesdef import OPT_STR
 from afscgap.typesdef import OPT_REQUESTOR
 
-from afscgap.inference import OPT_HAUL_LIST
-
 WARN_FUNCTION = typing.Optional[typing.Callable[[str], None]]
 
-LARGE_WARNING = ' '.join([
-    'Your query may return a very large amount of records.',
-    'Be sure to interact with results in a memory efficient way.'
-])
+DEFAULT_URL = 'https://data.pyafscgap.org'
 
 
 class Query:
@@ -46,71 +37,62 @@ class Query:
     queries.
     """
 
-    def __init__(self, base_url: OPT_STR = None, hauls_url: OPT_STR = None,
-        requestor: OPT_REQUESTOR = None):
+    def __init__(self, base_url: OPT_STR = None, requestor: OPT_REQUESTOR = None):
         """Create a new Query.
 
         Args:
-            base_url: The URL at which the API can be found. If None, will use
-                default (offical URL at time of release). See
-                afscgap.client.DEFAULT_URL.
-            hauls_url: The URL at which the flat file with hauls metadata can be
-                found or None if a default should be used. Defaults to None.
+            base_url: The URL at which the flat files can be found. If None, will use
+                default. See afscgap.DEFAULT_URL.
             requestor: Strategy to use for making HTTP requests. If None, will
                 use a default as defined by afscgap.client.Cursor.
         """
         # URLs for data
         self._base_url = base_url
-        self._hauls_url = hauls_url
         self._requestor = requestor
 
         # Filter parameters
-        self._year: FLOAT_PARAM = None
-        self._srvy: STR_PARAM = None
-        self._survey: STR_PARAM = None
-        self._survey_id: FLOAT_PARAM = None
-        self._cruise: FLOAT_PARAM = None
-        self._haul: FLOAT_PARAM = None
-        self._stratum: FLOAT_PARAM = None
-        self._station: STR_PARAM = None
-        self._vessel_name: STR_PARAM = None
-        self._vessel_id: FLOAT_PARAM = None
-        self._date_time: STR_PARAM = None
-        self._latitude_dd: FLOAT_PARAM = None
-        self._longitude_dd: FLOAT_PARAM = None
-        self._species_code: FLOAT_PARAM = None
-        self._common_name: STR_PARAM = None
-        self._scientific_name: STR_PARAM = None
-        self._taxon_confidence: STR_PARAM = None
-        self._cpue_kgha: FLOAT_PARAM = None
-        self._cpue_kgkm2: FLOAT_PARAM = None
-        self._cpue_kg1000km2: FLOAT_PARAM = None
-        self._cpue_noha: FLOAT_PARAM = None
-        self._cpue_nokm2: FLOAT_PARAM = None
-        self._cpue_no1000km2: FLOAT_PARAM = None
-        self._weight_kg: FLOAT_PARAM = None
-        self._count: FLOAT_PARAM = None
-        self._bottom_temperature_c: FLOAT_PARAM = None
-        self._surface_temperature_c: FLOAT_PARAM = None
-        self._depth_m: FLOAT_PARAM = None
-        self._distance_fished_km: FLOAT_PARAM = None
-        self._net_width_m: FLOAT_PARAM = None
-        self._net_height_m: FLOAT_PARAM = None
-        self._area_swept_ha: FLOAT_PARAM = None
-        self._duration_hr: FLOAT_PARAM = None
-        self._tsn: INT_PARAM = None
-        self._ak_survey_id: INT_PARAM = None
+        self._year: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._srvy: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._survey: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._survey_id: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._cruise: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._haul: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._stratum: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._station: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._vessel_name: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._vessel_id: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._date_time: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._latitude_dd: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._longitude_dd: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._species_code: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._common_name: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._scientific_name: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._taxon_confidence: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._cpue_kgha: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._cpue_kgkm2: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._cpue_kg1000km2: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._cpue_noha: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._cpue_nokm2: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._cpue_no1000km2: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._weight_kg: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._count: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._bottom_temperature_c: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._surface_temperature_c: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._depth_m: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._distance_fished_km: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._net_width_m: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._net_height_m: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._area_swept_ha: afscgap.param.Param = afscgap.param.EmptyParam()
+        self._duration_hr: afscgap.param.Param = afscgap.param.EmptyParam()
 
         # Query pararmeters
         self._limit: OPT_INT = None
-        self._start_offset: OPT_INT = None
         self._filter_incomplete: bool = False
-        self._presence_only: bool = True
+        self._presence_only: bool = False
         self._suppress_large_warning: bool = False
         self._warn_function: WARN_FUNCTION = None
-        self._hauls_prefetch: OPT_HAUL_LIST = None
 
-    def filter_year(self, eq: FLOAT_PARAM = None, min_val: OPT_FLOAT = None,
+    def filter_year(self, eq: OPT_FLOAT = None, min_val: OPT_FLOAT = None,
         max_val: OPT_FLOAT = None) -> 'Query':
         """Filter on year for the survey in which this observation was made.
 
@@ -121,8 +103,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -149,8 +130,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -174,8 +154,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -189,7 +168,7 @@ class Query:
         self._survey = self._create_str_param(eq, min_val, max_val)
         return self
 
-    def filter_survey_id(self, eq: FLOAT_PARAM = None,
+    def filter_survey_id(self, eq: OPT_FLOAT = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None) -> 'Query':
         """Filter on unique numeric ID for the survey.
 
@@ -199,8 +178,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -214,7 +192,7 @@ class Query:
         self._survey_id = self._create_float_param(eq, min_val, max_val)
         return self
 
-    def filter_cruise(self, eq: FLOAT_PARAM = None, min_val: OPT_FLOAT = None,
+    def filter_cruise(self, eq: OPT_FLOAT = None, min_val: OPT_FLOAT = None,
         max_val: OPT_FLOAT = None) -> 'Query':
         """Filter on cruise ID.
 
@@ -224,8 +202,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -239,7 +216,7 @@ class Query:
         self._cruise = self._create_float_param(eq, min_val, max_val)
         return self
 
-    def filter_haul(self, eq: FLOAT_PARAM = None, min_val: OPT_FLOAT = None,
+    def filter_haul(self, eq: OPT_FLOAT = None, min_val: OPT_FLOAT = None,
         max_val: OPT_FLOAT = None) -> 'Query':
         """Filter on haul identifier.
 
@@ -249,8 +226,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -264,7 +240,7 @@ class Query:
         self._haul = self._create_float_param(eq, min_val, max_val)
         return self
 
-    def filter_stratum(self, eq: FLOAT_PARAM = None, min_val: OPT_FLOAT = None,
+    def filter_stratum(self, eq: OPT_FLOAT = None, min_val: OPT_FLOAT = None,
         max_val: OPT_FLOAT = None) -> 'Query':
         """Filter on unique ID for statistical area / survey combination.
 
@@ -274,8 +250,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -299,8 +274,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -324,8 +298,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -339,7 +312,7 @@ class Query:
         self._vessel_name = self._create_str_param(eq, min_val, max_val)
         return self
 
-    def filter_vessel_id(self, eq: FLOAT_PARAM = None,
+    def filter_vessel_id(self, eq: OPT_FLOAT = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None) -> 'Query':
         """Filter on name of the vessel at the time the observation was made.
 
@@ -349,8 +322,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -378,8 +350,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -393,7 +364,7 @@ class Query:
         self._date_time = self._create_str_param(eq, min_val, max_val)
         return self
 
-    def filter_latitude(self, eq: FLOAT_PARAM = None,
+    def filter_latitude(self, eq: OPT_FLOAT = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None,
         units: str = 'dd') -> 'Query':
         """Filter on latitude in decimal degrees associated with the haul.
@@ -404,8 +375,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -413,20 +383,19 @@ class Query:
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
             units: The units in which the filter values are provided. Currently
-                only dd supported. Ignored if given eq value containing ORDS
-                query.
+                only dd supported.
 
         Returns:
             This object for chaining if desired.
         """
         self._latitude_dd = self._create_float_param(
-            afscgap.convert.unconvert_degrees(eq, units),
-            afscgap.convert.unconvert_degrees(min_val, units),
-            afscgap.convert.unconvert_degrees(max_val, units)
+            afscgap.convert.convert(eq, units, 'dd'),
+            afscgap.convert.convert(min_val, units, 'dd'),
+            afscgap.convert.convert(max_val, units, 'dd')
         )
         return self
 
-    def filter_longitude(self, eq: FLOAT_PARAM = None,
+    def filter_longitude(self, eq: OPT_FLOAT = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None,
         units: str = 'dd') -> 'Query':
         """Filter on longitude in decimal degrees associated with the haul.
@@ -437,8 +406,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -452,13 +420,13 @@ class Query:
             This object for chaining if desired.
         """
         self._longitude_dd = self._create_float_param(
-            afscgap.convert.unconvert_degrees(eq, units),
-            afscgap.convert.unconvert_degrees(min_val, units),
-            afscgap.convert.unconvert_degrees(max_val, units)
+            afscgap.convert.convert(eq, units, 'dd'),
+            afscgap.convert.convert(min_val, units, 'dd'),
+            afscgap.convert.convert(max_val, units, 'dd')
         )
         return self
 
-    def filter_species_code(self, eq: FLOAT_PARAM = None,
+    def filter_species_code(self, eq: OPT_FLOAT = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None) -> 'Query':
         """Filter on unique ID associated with the species observed.
 
@@ -468,8 +436,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -493,8 +460,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -518,8 +484,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -543,8 +508,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -558,7 +522,7 @@ class Query:
         self._taxon_confidence = self._create_str_param(eq, min_val, max_val)
         return self
 
-    def filter_cpue_weight(self, eq: FLOAT_PARAM = None,
+    def filter_cpue_weight(self, eq: OPT_FLOAT = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None,
         units: str = 'kg/ha') -> 'Query':
         """Filter on catch per unit effort.
@@ -570,8 +534,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -579,17 +542,16 @@ class Query:
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
             units: The units for the catch per unit effort provided. Options:
-                kg/ha, kg/km2, kg1000/km2. Defaults to kg/ha. Ignored if given
-                eq value containing ORDS query.
+                kg/ha, kg/km2, kg1000/km2. Defaults to kg/ha.
 
         Returns:
             This object for chaining if desired.
         """
         param = self._create_float_param(eq, min_val, max_val)
 
-        self._cpue_kgha = None
-        self._cpue_kgkm2 = None
-        self._cpue_kg1000km2 = None
+        self._cpue_kgha = afscgap.param.EmptyParam()
+        self._cpue_kgkm2 = afscgap.param.EmptyParam()
+        self._cpue_kg1000km2 = afscgap.param.EmptyParam()
 
         if units == 'kg/ha':
             self._cpue_kgha = param
@@ -602,7 +564,7 @@ class Query:
 
         return self
 
-    def filter_cpue_count(self, eq: FLOAT_PARAM = None,
+    def filter_cpue_count(self, eq: OPT_FLOAT = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None,
         units: str = 'count/ha') -> 'Query':
         """Filter catch per unit effort as count over area in hectares.
@@ -614,8 +576,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -624,16 +585,15 @@ class Query:
                 thrown if eq also proivded.
             units: The units for the given catch per unit effort. Options:
                 count/ha, count/km2, and count1000/km2. Defaults to count/ha.
-                Ignored if given eq value containing ORDS query.
 
         Returns:
             This object for chaining if desired.
         """
         param = self._create_float_param(eq, min_val, max_val)
 
-        self._cpue_noha = None
-        self._cpue_nokm2 = None
-        self._cpue_no1000km2 = None
+        self._cpue_noha = afscgap.param.EmptyParam()
+        self._cpue_nokm2 = afscgap.param.EmptyParam()
+        self._cpue_no1000km2 = afscgap.param.EmptyParam()
 
         if units == 'count/ha':
             self._cpue_noha = param
@@ -646,7 +606,7 @@ class Query:
 
         return self
 
-    def filter_weight(self, eq: FLOAT_PARAM = None,
+    def filter_weight(self, eq: OPT_FLOAT = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None,
         units: str = 'kg') -> 'Query':
         """Filter on taxon weight (kg) if available.
@@ -657,8 +617,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -667,19 +626,18 @@ class Query:
                 thrown if eq also proivded.
             units: The units in which the weight are given. Options are
                 g, kg for grams and kilograms respectively. Deafults to kg.
-                Ignored if given eq value containing ORDS query.
 
         Returns:
             This object for chaining if desired.
         """
         self._weight_kg = self._create_float_param(
-            afscgap.convert.unconvert_weight(eq, units),
-            afscgap.convert.unconvert_weight(min_val, units),
-            afscgap.convert.unconvert_weight(max_val, units)
+            afscgap.convert.convert(eq, units, 'kg'),
+            afscgap.convert.convert(min_val, units, 'kg'),
+            afscgap.convert.convert(max_val, units, 'kg')
         )
         return self
 
-    def filter_count(self, eq: FLOAT_PARAM = None, min_val: OPT_FLOAT = None,
+    def filter_count(self, eq: OPT_FLOAT = None, min_val: OPT_FLOAT = None,
         max_val: OPT_FLOAT = None) -> 'Query':
         """Filter on total number of organism individuals in haul.
 
@@ -689,15 +647,13 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
-                thrown if eq also proivded. Ignored if given eq value containing
-                ORDS query.
+                thrown if eq also proivded.
 
         Returns:
             This object for chaining if desired.
@@ -705,7 +661,7 @@ class Query:
         self._count = self._create_float_param(eq, min_val, max_val)
         return self
 
-    def filter_bottom_temperature(self, eq: FLOAT_PARAM = None,
+    def filter_bottom_temperature(self, eq: OPT_FLOAT = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None,
         units: str = 'c') -> 'Query':
         """Filter on bottom temperature.
@@ -717,8 +673,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -727,19 +682,19 @@ class Query:
                 thrown if eq also proivded.
             units: The units in which the temperature filter values are given.
                 Options: c or f for Celcius and Fahrenheit respectively.
-                Defaults to c. Ignored if given eq value containing ORDS query.
+                Defaults to c.
 
         Returns:
             This object for chaining if desired.
         """
         self._bottom_temperature_c = self._create_float_param(
-            afscgap.convert.unconvert_temperature(eq, units),
-            afscgap.convert.unconvert_temperature(min_val, units),
-            afscgap.convert.unconvert_temperature(max_val, units)
+            afscgap.convert.convert(eq, units, 'c'),
+            afscgap.convert.convert(min_val, units, 'c'),
+            afscgap.convert.convert(max_val, units, 'c')
         )
         return self
 
-    def filter_surface_temperature(self, eq: FLOAT_PARAM = None,
+    def filter_surface_temperature(self, eq: OPT_FLOAT = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None,
         units: str = 'c') -> 'Query':
         """Filter on surface temperature.
@@ -751,8 +706,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -761,19 +715,19 @@ class Query:
                 thrown if eq also proivded.
             units: The units in which the temperature filter values are given.
                 Options: c or f for Celcius and Fahrenheit respectively.
-                Defaults to c. Ignored if given eq value containing ORDS query.
+                Defaults to c.
 
         Returns:
             This object for chaining if desired.
         """
         self._surface_temperature_c = self._create_float_param(
-            afscgap.convert.unconvert_temperature(eq, units),
-            afscgap.convert.unconvert_temperature(min_val, units),
-            afscgap.convert.unconvert_temperature(max_val, units)
+            afscgap.convert.convert(eq, units, 'c'),
+            afscgap.convert.convert(min_val, units, 'c'),
+            afscgap.convert.convert(max_val, units, 'c')
         )
         return self
 
-    def filter_depth(self, eq: FLOAT_PARAM = None, min_val: OPT_FLOAT = None,
+    def filter_depth(self, eq: OPT_FLOAT = None, min_val: OPT_FLOAT = None,
         max_val: OPT_FLOAT = None, units: str = 'm') -> 'Query':
         """Filter on depth of the bottom in meters.
 
@@ -783,8 +737,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -793,19 +746,18 @@ class Query:
                 thrown if eq also proivded.
             units: The units in which the distance are given. Options:
                 m or km for meters and kilometers respectively. Defaults to m.
-                Ignored if given eq value containing ORDS query.
 
         Returns:
             This object for chaining if desired.
         """
         self._depth_m = self._create_float_param(
-            afscgap.convert.unconvert_distance(eq, units),
-            afscgap.convert.unconvert_distance(min_val, units),
-            afscgap.convert.unconvert_distance(max_val, units)
+            afscgap.convert.convert(eq, units, 'm'),
+            afscgap.convert.convert(min_val, units, 'm'),
+            afscgap.convert.convert(max_val, units, 'm')
         )
         return self
 
-    def filter_distance_fished(self, eq: FLOAT_PARAM = None,
+    def filter_distance_fished(self, eq: OPT_FLOAT = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None,
         units: str = 'm') -> 'Query':
         """Filter on distance of the net fished.
@@ -816,8 +768,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -826,14 +777,12 @@ class Query:
                 thrown if eq also proivded.
             units: The units in which the distance values are given. Options:
                 m or km for meters and kilometers respectively. Defaults to m.
-                Ignored if given eq value containing ORDS query.
 
         Returns:
             This object for chaining if desired.
         """
         def convert_to_km(target, units):
-            in_meters = afscgap.convert.unconvert_distance(target, units)
-            return afscgap.convert.convert_distance(in_meters, 'km')
+            return afscgap.convert.convert(target, units, 'km')
 
         self._distance_fished_km = self._create_float_param(
             convert_to_km(eq, units),
@@ -842,7 +791,7 @@ class Query:
         )
         return self
 
-    def filter_net_width(self, eq: FLOAT_PARAM = None,
+    def filter_net_width(self, eq: OPT_FLOAT = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None,
         units: str = 'm') -> 'Query':
         """Filter on distance of the net fished.
@@ -853,8 +802,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -868,13 +816,13 @@ class Query:
             This object for chaining if desired.
         """
         self._net_width_m = self._create_float_param(
-            afscgap.convert.unconvert_distance(eq, units),
-            afscgap.convert.unconvert_distance(min_val, units),
-            afscgap.convert.unconvert_distance(max_val, units)
+            afscgap.convert.convert(eq, units, 'm'),
+            afscgap.convert.convert(min_val, units, 'm'),
+            afscgap.convert.convert(max_val, units, 'm')
         )
         return self
 
-    def filter_net_height(self, eq: FLOAT_PARAM = None,
+    def filter_net_height(self, eq: OPT_FLOAT = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None,
         units: str = 'm') -> 'Query':
         """Filter on height of the net fished.
@@ -885,8 +833,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -900,13 +847,13 @@ class Query:
             This object for chaining if desired.
         """
         self._net_height_m = self._create_float_param(
-            afscgap.convert.unconvert_distance(eq, units),
-            afscgap.convert.unconvert_distance(min_val, units),
-            afscgap.convert.unconvert_distance(max_val, units)
+            afscgap.convert.convert(eq, units, 'm'),
+            afscgap.convert.convert(min_val, units, 'm'),
+            afscgap.convert.convert(max_val, units, 'm')
         )
         return self
 
-    def filter_area_swept(self, eq: FLOAT_PARAM = None,
+    def filter_area_swept(self, eq: OPT_FLOAT = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None,
         units: str = 'm') -> 'Query':
         """Filter on area covered by the net while fishing.
@@ -917,8 +864,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -932,13 +878,13 @@ class Query:
             This object for chaining if desired.
         """
         self._area_swept_ha = self._create_float_param(
-            afscgap.convert.unconvert_area(eq, units),
-            afscgap.convert.unconvert_area(min_val, units),
-            afscgap.convert.unconvert_area(max_val, units)
+            afscgap.convert.convert(eq, units, 'ha'),
+            afscgap.convert.convert(min_val, units, 'ha'),
+            afscgap.convert.convert(max_val, units, 'ha')
         )
         return self
 
-    def filter_duration(self, eq: FLOAT_PARAM = None,
+    def filter_duration(self, eq: OPT_FLOAT = None,
         min_val: OPT_FLOAT = None, max_val: OPT_FLOAT = None,
         units: str = 'hr') -> 'Query':
         """Filter on duration of the haul.
@@ -949,8 +895,7 @@ class Query:
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -964,60 +909,10 @@ class Query:
             This object for chaining if desired.
         """
         self._duration_hr = self._create_float_param(
-            afscgap.convert.unconvert_time(eq, units),
-            afscgap.convert.unconvert_time(min_val, units),
-            afscgap.convert.unconvert_time(max_val, units)
+            afscgap.convert.convert(eq, units, 'hr'),
+            afscgap.convert.convert(min_val, units, 'hr'),
+            afscgap.convert.convert(max_val, units, 'hr')
         )
-        return self
-
-    def filter_tsn(self, eq: INT_PARAM = None, min_val: OPT_INT = None,
-        max_val: OPT_INT = None) -> 'Query':
-        """Filter on taxonomic information system species code.
-
-        Filter on taxonomic information system species code, overwritting all
-        prior TSN filters applied to this Query.
-
-        Args:
-            eq: The exact value that must be matched for a record to be
-                returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
-            min_val: The minimum allowed value, inclusive. Pass None if no
-                minimum value filter should be applied. Defaults to None. Error
-                thrown if eq also proivded.
-            max_val: The maximum allowed value, inclusive. Pass None if no
-                maximum value filter should be applied. Defaults to None. Error
-                thrown if eq also proivded.
-
-        Returns:
-            This object for chaining if desired.
-        """
-        self._tsn = self._create_int_param(eq, min_val, max_val)
-        return self
-
-    def filter_ak_survey_id(self, eq: INT_PARAM = None, min_val: OPT_INT = None,
-        max_val: OPT_INT = None) -> 'Query':
-        """Filter on AK identifier for the survey.
-
-        Filter on AK identifier for the survey, overwritting all prior AK ID
-        filters applied to this Query.
-
-        Args:
-            eq: The exact value that must be matched for a record to be
-                returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
-            min_val: The minimum allowed value, inclusive. Pass None if no
-                minimum value filter should be applied. Defaults to None. Error
-                thrown if eq also proivded.
-            max_val: The maximum allowed value, inclusive. Pass None if no
-                maximum value filter should be applied. Defaults to None. Error
-                thrown if eq also proivded.
-
-        Returns:
-            This object for chaining if desired.
-        """
-        self._ak_survey_id = self._create_int_param(eq, min_val, max_val)
         return self
 
     def set_limit(self, limit: OPT_INT) -> 'Query':
@@ -1034,22 +929,6 @@ class Query:
             This object for chaining if desired.
         """
         self._limit = limit
-        return self
-
-    def set_start_offset(self, start_offset: OPT_INT) -> 'Query':
-        """Indicate how many results to skip.
-
-        Indicate how many results to skip, overwritting prior offset settings on
-        this Query.
-
-        Args:
-            start_offset: The number of initial results to skip in retrieving
-                results. If None or not provided, none will be skipped.
-
-        Returns:
-            This object for chaining if desired.
-        """
-        self._start_offset = start_offset
         return self
 
     def set_filter_incomplete(self, filter_incomplete: bool) -> 'Query':
@@ -1122,24 +1001,6 @@ class Query:
         self._warn_function = warn_function
         return self
 
-    def set_hauls_prefetch(self, hauls_prefetch: OPT_HAUL_LIST) -> 'Query':
-        """Indicate if hauls' data were prefetched.
-
-        Indicate if hauls' data were prefetched, overwritting prior prefetch
-        settings on this Query.
-
-        Args:
-            hauls_prefetch: If using presence_only=True, this is ignored.
-                Otherwise, if None, will instruct the library to download hauls
-                metadata. If not None, will use this as the hauls list for zero
-                catch record inference.
-
-        Returns:
-            This object for chaining if desired.
-        """
-        self._hauls_prefetch = hauls_prefetch
-        return self
-
     def execute(self) -> afscgap.cursor.Cursor:
         """Execute the query built up in this object.
 
@@ -1150,7 +1011,7 @@ class Query:
         Returns:
             Cursor to manage HTTP requests and query results.
         """
-        all_dict_raw = {
+        params_dict = {
             'year': self._year,
             'srvy': self._srvy,
             'survey': self._survey,
@@ -1183,49 +1044,29 @@ class Query:
             'net_width_m': self._net_width_m,
             'net_height_m': self._net_height_m,
             'area_swept_ha': self._area_swept_ha,
-            'duration_hr': self._duration_hr,
-            'tsn': self._tsn,
-            'ak_survey_id': self._ak_survey_id
+            'duration_hr': self._duration_hr
         }
 
-        api_cursor = afscgap.client.build_api_cursor(
-            all_dict_raw,
-            limit=self._limit,
-            start_offset=self._start_offset,
-            filter_incomplete=self._filter_incomplete,
-            requestor=self._requestor,
-            base_url=self._base_url
+        meta_params = afscgap.flat_model.ExecuteMetaParams(
+            self._base_url if self._base_url else DEFAULT_URL,
+            self._requestor,
+            self._limit,
+            self._filter_incomplete,
+            self._presence_only,
+            self._suppress_large_warning,
+            self._warn_function
         )
 
-        if self._presence_only:
-            return api_cursor
-
-        decorated_cursor = afscgap.inference.build_inference_cursor(
-            all_dict_raw,
-            api_cursor,
-            requestor=self._requestor,
-            hauls_url=self._hauls_url,
-            hauls_prefetch=self._hauls_prefetch
-        )
-
-        if not self._suppress_large_warning:
-            warn_function = self._warn_function
-            if not warn_function:
-                warn_function = lambda x: warnings.warn(x)
-
-            warn_function(LARGE_WARNING)
-
-        return decorated_cursor
+        return afscgap.flat.execute(params_dict, meta_params)
 
     def _create_str_param(self, eq: STR_PARAM = None, min_val: OPT_STR = None,
-        max_val: OPT_STR = None) -> STR_PARAM:
+        max_val: OPT_STR = None) -> afscgap.param.Param:
         """Create a new string parameter.
 
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
@@ -1233,75 +1074,88 @@ class Query:
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
 
+        Returns:
+            Newly initalized parameter.
         """
-        return self._create_param(eq, min_val, max_val)  # type: ignore
+        param_type = self._get_param_type(eq, min_val, max_val)
+        strategy = {
+            'empty': lambda: afscgap.param.EmptyParam(),
+            'equals': lambda: afscgap.param.StrEqualsParam(eq),  # type: ignore
+            'range': lambda: afscgap.param.StrRangeParam(min_val, max_val)  # type: ignore
+        }[param_type]
+        return strategy()  # type: ignore
 
-    def _create_float_param(self, eq: FLOAT_PARAM = None,
-        min_val: FLOAT_PARAM = None,
-        max_val: FLOAT_PARAM = None) -> FLOAT_PARAM:
+    def _create_float_param(self, eq: OPT_FLOAT = None,
+        min_val: OPT_FLOAT = None,
+        max_val: OPT_FLOAT = None) -> afscgap.param.Param:
         """Create a new float parameter.
 
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
+
+        Returns:
+            Newly initalized parameter.
         """
-        return self._create_param(eq, min_val, max_val)  # type: ignore
+        param_type = self._get_param_type(eq, min_val, max_val)
+        strategy = {
+            'empty': lambda: afscgap.param.EmptyParam(),
+            'equals': lambda: afscgap.param.FloatEqualsParam(eq),    # type: ignore
+            'range': lambda: afscgap.param.FloatRangeParam(min_val, max_val)   # type: ignore
+        }[param_type]
+        return strategy()  # type: ignore
 
     def _create_int_param(self, eq: INT_PARAM = None, min_val: OPT_INT = None,
-        max_val: OPT_INT = None) -> INT_PARAM:
+        max_val: OPT_INT = None) -> afscgap.param.Param:
         """Create a new int parameter.
 
         Args:
             eq: The exact value that must be matched for a record to be
                 returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
+                Error thrown if min_val or max_val also provided.
             min_val: The minimum allowed value, inclusive. Pass None if no
                 minimum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
             max_val: The maximum allowed value, inclusive. Pass None if no
                 maximum value filter should be applied. Defaults to None. Error
                 thrown if eq also proivded.
-        Returns:
-            Compatible param representation.
-        """
-        return self._create_param(eq, min_val, max_val)  # type: ignore
 
-    def _create_param(self, eq=None, min_val=None, max_val=None):
-        """Create a new parameter.
+        Returns:
+            Newly initalized parameter.
+        """
+        param_type = self._get_param_type(eq, min_val, max_val)
+        strategy = {
+            'empty': lambda: afscgap.param.EmptyParam(),
+            'equals': lambda: afscgap.param.IntEqualsParam(eq),  # type: ignore
+            'range': lambda: afscgap.param.IntRangeParam(min_val, max_val)  # type: ignore
+        }[param_type]
+        return strategy()  # type: ignore
+
+    def _get_param_type(self, eq, min_val, max_val) -> str:
+        """Determine how the parameter should be interpreted.
 
         Args:
-            eq: The exact value that must be matched for a record to be
-                returned. Pass None if no equality filter should be applied.
-                Error thrown if min_val or max_val also provided. May also be
-                a dictionary representing an ORDS query.
-            min_val: The minimum allowed value, inclusive. Pass None if no
-                minimum value filter should be applied. Defaults to None. Error
-                thrown if eq also proivded.
-            max_val: The maximum allowed value, inclusive. Pass None if no
-                maximum value filter should be applied. Defaults to None. Error
-                thrown if eq also proivded.
+            eq: The value for equality or None if no equals filter.
+            min_val: The minimum value or None if no minimum filter.
+            max_val: The maximum value or None if no maximum filter.
+
         Returns:
-            Compatible param representation.
+            One of the following as a string: empty, equals, range.
         """
-        eq_given = eq is not None
-        min_val_given = min_val is not None
-        max_val_given = max_val is not None
-
-        if eq_given and (min_val_given and max_val_given):
-            raise RuntimeError('Cannot query with both eq and min/max val.')
-
-        if eq_given:
-            return eq
-        elif min_val_given or max_val_given:
-            return [min_val, max_val]
+        if eq is None:
+            if min_val is None and max_val is None:
+                return 'empty'
+            else:
+                return 'range'
         else:
-            return None
+            if min_val is not None or max_val is not None:
+                raise RuntimeError('Both range and equality filters provided.')
+            else:
+                return 'equals'

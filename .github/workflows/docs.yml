@@ -21,7 +21,7 @@ jobs:
     environment: deployweb
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/setup-python@v4
         with:
           python-version: '3.11'
@@ -53,7 +53,7 @@ jobs:
           port: ${{ secrets.SSHPORT }}
           script: bash reload_afscgap.sh
       - name: Upload JOSS preview
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v4
         with:
           name: paper
           path: paper/paper.pdf
