@@ -27,6 +27,8 @@ PATHS = {
     'joined': 'joined/'
 }
 
+MAIN_FIELDS = ['year', 'survey', 'haul']
+
 FIELDS = {
     'index': [
         'value',
@@ -146,7 +148,11 @@ def check_file(bucket: str, path: str,
 
     results: typing.Iterable[dict] = list(fastavro.reader(target_buffer))  # type: ignore
     for result in results:
-        for field in expected_fields:
+
+        # TODO: Need to find a better way to split this
+        expected_fields_actual = MAIN_FIELDS if path == 'index/main.avro' else expected_fields
+
+        for field in expected_fields_actual:
             if field not in result:
                 available = ','.join(result.keys())
                 return 'Could not find %s among %s.' % (field, available)
