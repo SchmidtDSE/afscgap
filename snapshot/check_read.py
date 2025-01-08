@@ -103,7 +103,8 @@ def list_files(s3_client, bucket: str, prefix: str) -> typing.Iterable[str]:
         return attempt_pagination()
 
 
-def check_file(bucket: str, path: str, expected_fields: typing.Iterable[str]) -> bool:
+def check_file(bucket: str, path: str,
+    expected_fields: typing.Iterable[str]) -> typing.Optinonal[str]:
     """Read a file and ensure it is parsable with expected keys.
 
     Args:
@@ -141,15 +142,15 @@ def check_file(bucket: str, path: str, expected_fields: typing.Iterable[str]) ->
         try:
             target_buffer = attempt_download()
         except:
-            return False
+            return 'Failed to get payload.'
 
     results: typing.Iterable[dict] = list(fastavro.reader(target_buffer))  # type: ignore
     for result in results:
         for field in expected_fields:
             if field not in result:
-                return False
+                return 'Could not find %s.' % field
 
-    return True
+    return None
 
 
 def main():
@@ -202,7 +203,8 @@ def main():
     results_realized = map(lambda x: x.result(), results)
 
     for result in results_realized:
-        assert result is True
+        if result is not None:
+            raise RuntimeError(result)
 
     cluster.close(force_shutdown=True)
 
