@@ -204,6 +204,7 @@ def main():
     for result in results_realized:
         assert result is True
 
+    cluster.close(force_shutdown=True)
 
 if __name__ == '__main__':
     main()
