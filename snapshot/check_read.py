@@ -164,7 +164,7 @@ def main():
         if i % 1000 == 0:
             print('Checked %d files.' % i)
 
-        check_file(s3_client, bucket, path, fields)
+        check_file(s3_client, bucket, file, fields)
         i += 1
 
 
