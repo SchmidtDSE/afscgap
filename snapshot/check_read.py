@@ -23,8 +23,8 @@ NUM_ARGS = 2
 USAGE_STR = 'python check_read.py [bucket] [type]'
 
 PATHS = {
-    'index': 'index',
-    'joined': 'joined'
+    'index': 'index/',
+    'joined': 'joined/'
 }
 
 FIELDS = {
