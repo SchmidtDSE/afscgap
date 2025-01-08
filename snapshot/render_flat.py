@@ -622,7 +622,7 @@ def main():
             'SOURCE_DATA_LOC': os.environ.get('SOURCE_DATA_LOC', '')
         }
     )
-    cluster.adapt(minimum=10, maximum=500)
+    cluster.adapt(minimum=100, maximum=500)
     client = cluster.get_client()
 
     hauls_meta_realized = list(hauls_meta)
