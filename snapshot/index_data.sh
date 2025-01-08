@@ -1,7 +1,7 @@
 mkdir index_shards
 
-echo "area_swept_km"
-python generate_indicies.py $BUCKET_NAME area_swept_km n
+echo "area_swept_km2"
+python generate_indicies.py $BUCKET_NAME area_swept_km2 n
 [ $? -ne 0 ] && exit $?
 
 echo "bottom_temperature_c"

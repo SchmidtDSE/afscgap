@@ -1,5 +1,5 @@
-echo "area_swept_km"
-python combine_shards.py $BUCKET_NAME area_swept_km
+echo "area_swept_km2"
+python combine_shards.py $BUCKET_NAME area_swept_km2
 [ $? -ne 0 ] && exit $?
 
 echo "bottom_temperature_c"

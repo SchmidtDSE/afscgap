@@ -443,7 +443,7 @@ INDICIES = {
     'distance_fished_km': ['distance_fished_km'],
     'net_width_m': ['net_width_m'],
     'net_height_m': ['net_height_m'],
-    'area_swept_ha': ['area_swept_km'],
+    'area_swept_ha': ['area_swept_km2'],
     'duration_hr': ['duration_hr']
 }
 
