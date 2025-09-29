@@ -34,16 +34,21 @@ jobs:
           paper-path: paper/paper.md
       - name: Copy paper
         run: cp paper/paper.pdf website/static/paper_preview.pdf
-      - name: Upload website
-        id: uploadWebsite
-        uses: Creepios/sftp-action@v1.0.3
-        with:
-          host: ${{ secrets.SFTPHOST }}
-          port: 22
-          username: ${{ secrets.SFTPUSER }}
-          password: ${{ secrets.SFTPPASSWORD }}
-          localPath: './website'
-          remotePath: './pyafscgap.org'
+      - name: Install SSH client and sshpass
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y openssh-client sshpass
+      - name: Setup SSH known hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H -p 22 ${{ secrets.SFTPHOST }} >> ~/.ssh/known_hosts
+      - name: Upload website via SCP
+        env:
+          SSHPASS: ${{ secrets.SFTPPASSWORD }}
+        run: |
+          sshpass -e scp -r -P 22 -o StrictHostKeyChecking=no \
+            ./website/* \
+            ${{ secrets.SFTPUSER }}@${{ secrets.SFTPHOST }}:./pyafscgap.org/
       - name: Deploy app
         uses: appleboy/ssh-action@v0.1.8
         with:
