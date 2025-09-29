@@ -59,7 +59,7 @@ Next, for `afscgapviz`:
  - The tool must address both programmer and non-programmer audiences.
  - A mixture of JSON and CSV endpoints are used as the later are useful for non-programmer audiences. We are not considering other wiretypes or unification of the wire types to just one of the two currently used.
  - The intro sequence employs [Hayashida-inspired level design](https://www.youtube.com/watch?v=dBmIkEvEBtA) for the intro sequence. Not changing the controls on behalf of the user was intentional.
- - We use CSS and JS which should be usable directly without transpilation or compilation. Language compilation (Elm, SASS, CoffeeScript, etc) including migration to node / npm are not being considered at this time.
+ - We use CSS and JS which should be usable directly without transpilation or compilation. Language compilation (Elm, SASS, CoffeeScript, etc) are not being considered at this time.
  - We do not use CDNs for privacy reasons and CDN migration PRs are discouraged.
  - We are using qunit and grunt for CI / CD.
  - We are using Flask for the `afscgapviz` server.
