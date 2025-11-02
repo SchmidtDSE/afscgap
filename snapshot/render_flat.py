@@ -448,7 +448,12 @@ def process_haul(bucket: str, year: int, survey: str, haul: int,
             return None
 
         haul_records = get_avro(haul_loc)
-        assert len(haul_records) == 1
+        if len(haul_records) != 1:
+            raise ValueError(
+                f"Expected exactly 1 haul record but found "
+                f"{len(haul_records)} records for year={year}, "
+                f"survey={survey}, haul={haul}, file={haul_loc}"
+            )
         haul_record = haul_records[0]
         return haul_record
 

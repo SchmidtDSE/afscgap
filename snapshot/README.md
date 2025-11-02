@@ -22,6 +22,13 @@ Note that, while provided as a service to the community, these Avro files and di
 ### Manual execution
 In order to build the Avro files yourself by requesting, joining, and indexing original upstream API data, you can simply execute `bash execute_all.sh` after local setup. These will build these files on S3 but they may be deployed to an SFTP server trivially.
 
+For updating just a specific year, use `get_year.sh`:
+```bash
+bash get_year.sh 2025
+```
+
+This will fetch species, catch, and haul data for the specified year and upload to S3. After running this, you'll need to run the remaining pipeline steps (render_flat.py, indexing, etc.) to complete the update.
+
 ## Local setup
 Local environment setup varies depending on how these files are used.
 
@@ -37,8 +44,11 @@ To perform manual execution, these scripts expect to use [AWS S3](https://aws.am
  - `AWS_ACCESS_KEY`: This is the access key used to upload completed payloads to AWS S3 or to request those data as part of distributed indexing and processing.
  - `AWS_ACCESS_SECRET`: This is the secret associated with the access key used to upload completed payloads to AWS S3 or to request those data as part of distributed indexing and processing.
  - `BUCKET_NAME`: This is the name of the bucket where completed uploads should be uploaded or requested within S3.
+ - `SFTP_HOST`: The SFTP server hostname for deploying files to data.pyafscgap.org.
+ - `SFTP_USER`: The SFTP username for authentication.
+ - `SFTP_PASS`: The SFTP password for authentication.
 
-These may be set within `.bashrc` files or similar through `EXPORT` commands. Finally, these scripts expect [Coiled](https://www.coiled.io/) to perform distributed tasks.
+These may be set within `.bashrc` files or similar through `EXPORT` commands. A `setup_env.sh` file in the parent directory can also be used (should not be committed to version control). Finally, these scripts expect [Coiled](https://www.coiled.io/) to perform distributed tasks.
 
 ## Testing
 Unit tests can be executed by running `nose2` within the `snapshot` directory.
